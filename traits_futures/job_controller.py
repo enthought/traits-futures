@@ -72,15 +72,14 @@ class JobController(HasStrictTraits):
 
     def run_loop(self):
         while self._current_jobs:
-            msg = self._results_queue.get()
-            self._process_message(msg)
+            self._process_message()
 
     def run_loop_until(self, condition):
         while not condition():
-            msg = self._results_queue.get()
-            self._process_message(msg)
+            self._process_message()
 
-    def _process_message(self, msg):
+    def _process_message(self):
+        msg = self._results_queue.get()
         job_id = msg[0]
         job = self._current_jobs[job_id]
         done = job.process_message(msg[1:])
