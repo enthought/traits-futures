@@ -3,20 +3,33 @@ import time
 
 import concurrent.futures
 
-from traits.api import (
-    Button, Color, Enum, HasStrictTraits, Instance, Int, List,
-    on_trait_change, Range, Unicode,
-)
+from traits.api import Button, HasStrictTraits, Instance, List, Range
 from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
-from traits_futures.api import Job, JobController, COMPLETED
+from traits_futures.api import (
+    Job,
+    JobController,
+    IDLE,
+    EXECUTING,
+    CANCELLING,
+    SUCCEEDED,
+    FAILED,
+    CANCELLED,
+)
 
 
-def slow_square(n):
-    sleep_time = random.expovariate(0.2)
-    if sleep_time > 10.0:
-        time.sleep(10.0)
+def slow_square(n, timeout=10.0):
+    """
+    Compute the square of an integer, slowly.
+
+    The input should be in the range 0-100. The larger
+    the input, the longer the expected time to complete the operation.
+    """
+    mean_time = (n + 5.0) / 5.0
+    sleep_time = random.expovariate(1.0 / mean_time)
+    if sleep_time > timeout:
+        time.sleep(timeout)
         raise RuntimeError("Calculation took too long.")
     else:
         time.sleep(sleep_time)
@@ -24,90 +37,52 @@ def slow_square(n):
 
 
 class JobTabularAdapter(TabularAdapter):
-    executing_color = Color(0x8080ff)
-    succeeded_color = Color(0x80ff80)
-    failed_color = Color(0xffc0ff)
-    cancelling_color = Color(0xff8000)
-    cancelled_color = Color(0xff0000)
-
     columns = [
-        ('Job State', 'text'),
+        ('Argument', 'args'),
+        ('Job State', 'state'),
+        ('Result', 'result'),
+        ('Exception', 'exception'),
     ]
 
+    #: Row colors for the table.
+    colors = {
+        IDLE: 0xffffff,
+        EXECUTING: 0x8080ff,
+        CANCELLING: 0xff8000,
+        CANCELLED: 0xff0000,
+        FAILED: 0xffc0ff,
+        SUCCEEDED: 0x80ff80,
+    }
+
     def _get_bg_color(self):
-        item = self.item
-        if item.state == "Succeeded":
-            bg_color = self.succeeded_color
-        elif item.state == "Executing":
-            bg_color = self.executing_color
-        elif item.state == "Failed":
-            bg_color = self.failed_color
-        elif item.state == "Cancelling":
-            bg_color = self.cancelling_color
-        elif item.state == "Cancelled":
-            bg_color = self.cancelled_color
-
-        return bg_color
-
-
-class JobWrapper(HasStrictTraits):
-    job = Instance(Job)
-
-    arg = Int
-
-    state = Enum("Executing", "Failed", "Succeeded", "Cancelling", "Cancelled")
-
-    text = Unicode
-
-    def cancel(self):
-        self.job.cancel()
-        self.state = "Cancelling"
-        self.text = u"Squaring {}: cancelling".format(self.arg)
-
-    def _text_default(self):
-        return u"Squaring {}".format(self.arg)
-
-    @on_trait_change('job:result')
-    def _got_result(self, result):
-        self.state = "Succeeded"
-        self.text = u"Squared {}; result = {}".format(self.arg, result)
-
-    @on_trait_change('job:exception')
-    def _got_exception(self, exception):
-        self.state = "Failed"
-        self.text = u"Square of {} failed : {}".format(self.arg, exception)
-
-    @on_trait_change('job:state')
-    def _got_state_change(self, state):
-        if state == COMPLETED and self.state == "Cancelling":
-            self.state = "Cancelled"
-            self.text = u"Squaring {}: Cancelled".format(self.arg)
+        return self.colors[self.item.state]
 
 
 class SquaringHelper(HasStrictTraits):
-
+    #: The executor backing the controller.
     executor = Instance(concurrent.futures.Executor)
 
+    #: The controller for the background jobs.
     job_controller = Instance(JobController)
 
-    current_jobs = List(JobWrapper)
+    #: List of the submitted jobs, for display purposes.
+    current_jobs = List(Job)
 
+    #: Start a new calculation.
     calculate = Button
 
+    #: Cancel all currently executing jobs.
     cancel_all = Button
 
+    #: Clear completed jobs from the list of current jobs.
     clear_completed = Button
 
+    #: Value that we'll square.
     input = Range(low=0, high=100)
 
     def _calculate_fired(self):
-        # Need better API.
-        job = Job(
-            job=slow_square,
-            args=(self.input,),
-        )
-        wrapper = JobWrapper(job=job, arg=self.input)
-        self.current_jobs.append(wrapper)
+        job = Job(job=slow_square, args=(self.input,))
+        self.current_jobs.append(job)
         self.job_controller.submit(job)
 
     def _cancel_all_fired(self):
@@ -117,7 +92,7 @@ class SquaringHelper(HasStrictTraits):
 
     def _clear_completed_fired(self):
         for job in list(self.current_jobs):
-            if job.state in ("Cancelled", "Failed", "Succeeded"):
+            if job.completed:
                 self.current_jobs.remove(job)
 
     def _job_controller_default(self):

@@ -11,20 +11,17 @@
 #     to a running job.
 #     JobRunner: needs to be pickleable, shouldn't need to hold
 #       a reference to the Job object.
-# XXX Should cancel_event come from the controller?
+# XXX Should cancel_event come from the controller? Certainly
+#     the trait default looks wrong.
 
 import threading
 
 from traits.api import (
-    Any, Callable, Dict, Enum, Event, HasStrictTraits, Str, Tuple)
+    Any, Bool, Callable, Dict, Enum, HasStrictTraits, Property, Str, Tuple)
 
-from traits_futures.job_runner import (
-    JobRunner,
-    INTERRUPTED,
-    RAISED,
-    RETURNED,
-)
+from traits_futures.job_runner import JobRunner
 
+# --- Job states --------------------------------------------------------------
 
 #: Job not yet submitted.
 IDLE = "Idle"
@@ -32,12 +29,17 @@ IDLE = "Idle"
 #: Job is executing.
 EXECUTING = "Executing"
 
-#: Job has completed, either returning a result, raising an
-#: exception, or returning after cancellation.
-COMPLETED = "Completed"
-
 #: Job has been cancelled; awaiting completion.
 CANCELLING = "Cancelling"
+
+#: Job succeeded, returning a result.
+SUCCEEDED = "Succeeded"
+
+#: Job failed, raising an exception.
+FAILED = "Failed"
+
+#: Job completed following cancellation.
+CANCELLED = "Cancelled"
 
 
 class Job(HasStrictTraits):
@@ -51,15 +53,19 @@ class Job(HasStrictTraits):
     kwargs = Dict(Str, Any)
 
     #: The state of this job.
-    state = Enum(IDLE, EXECUTING, COMPLETED, CANCELLING)
+    state = Enum(IDLE, EXECUTING, CANCELLING, SUCCEEDED, FAILED, CANCELLED)
 
     #: Event fired when the callable completes normally. The payload
     #: of the event is the result of the job.
-    result = Event
+    result = Any
 
     #: Event fired when the callable fails due to an exception.
     #: The payload contains exception information.
-    exception = Event
+    exception = Any
+
+    #: True if we've received the final message from the background job,
+    #: else False.
+    completed = Property(Bool, depends_on='state')
 
     #: Event used to request cancellation of this job.
     _cancel_event = Any
@@ -71,12 +77,8 @@ class Job(HasStrictTraits):
         """
         if self.state != IDLE:
             raise RuntimeError("Cannot prepare job twice.")
-
-        runner = JobRunner(
-            job=self,
-            job_id=job_id,
-            results_queue=results_queue,
-        )
+        runner = JobRunner(job=self, job_id=job_id,
+                           results_queue=results_queue)
         self.state = EXECUTING
         return runner
 
@@ -86,49 +88,43 @@ class Job(HasStrictTraits):
         indicate that the job should be cancelled (provided
         it hasn't already started running).
         """
-        state = self.state
-        if state == IDLE:
-            raise RuntimeError("Job has not been scheduled; cannot cancel.")
-        elif state == COMPLETED:
-            raise RuntimeError("Can't cancel a completed job.")
-        elif state == EXECUTING:
-            self.state = CANCELLING
-        elif state == CANCELLING:
-            # Cancel should be idempotent.
-            pass
-        else:
-            raise ValueError("Unexpected state: {}".format(state))
+        if self.state != EXECUTING:
+            raise RuntimeError("Can only cancel an executing job.")
         self._cancel_event.set()
+        self.state = CANCELLING
 
     def process_message(self, message):
         msg_type, msg_args = message
-        if msg_type == RETURNED:
-            self._process_returned(msg_args)
-        elif msg_type == RAISED:
-            self._process_raised(msg_args)
-        elif msg_type == INTERRUPTED:
-            self._process_interrupted(msg_args)
-        else:
-            raise ValueError(
-                "Unrecognised message type: {!r}".format(msg_type))
-        # Have we finished?
-        return self.state == COMPLETED
+        method_name = "_process_{}".format(msg_type.lower())
+        getattr(self, method_name)(msg_args)
+        return self.completed
+
+    # Private methods #########################################################
 
     def _process_interrupted(self, args):
         assert self.state == CANCELLING
-        self.state = COMPLETED
+        self.state = CANCELLED
 
     def _process_raised(self, args):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self.exception = args
-        self.state = COMPLETED
+            self.state = FAILED
+        else:
+            self.state = CANCELLED
 
     def _process_returned(self, args):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self.result = args
-        self.state = COMPLETED
+            self.state = SUCCEEDED
+        else:
+            self.state = CANCELLED
+
+    # Traits methods ##########################################################
+
+    def _get_completed(self):
+        return self.state in (SUCCEEDED, FAILED, CANCELLED)
 
     def __cancel_event_default(self):
         return threading.Event()
