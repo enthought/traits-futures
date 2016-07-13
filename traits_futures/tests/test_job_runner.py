@@ -1,9 +1,8 @@
 import Queue as queue
 import unittest
 
-from traits_futures.job import Job, QUEUED
+from traits_futures.job import Job
 from traits_futures.job_runner import (
-    JobRunner,
     INTERRUPTED,
     RAISED,
     RETURNED,
@@ -11,9 +10,21 @@ from traits_futures.job_runner import (
 )
 
 
-# Timeout (in seconds) to make sure that tests don't run forever as a result of
-# programming errors.
-SAFETY_TIMEOUT = 10.0
+class DummyQueue(object):
+    """
+    Dummy object with queue interface, for testing purposes.
+    """
+    def __init__(self):
+        self.messages = []
+
+    def put(self, message):
+        self.messages.append(message)
+
+    def get(self):
+        if self.messages:
+            return self.messages.pop(0)
+        else:
+            raise queue.Empty
 
 
 def square(n):
@@ -26,26 +37,18 @@ def fail_with_exception(exc_type):
 
 class TestJobRunner(unittest.TestCase):
     def setUp(self):
-        self.results_queue = queue.Queue()
+        self.results_queue = DummyQueue()
 
     def test_successful_run(self):
         job = Job(job=square, args=(11,))
-
-        runner = JobRunner(
-            job=job,
-            job_id=1729,
-            results_queue=self.results_queue,
-        )
-        job.state = QUEUED
+        runner = job.prepare(job_id=1729, results_queue=self.results_queue)
 
         runner()
-
-        # Get messages.
         messages = self._get_messages()
 
         # Check that there are no more messages.
         with self.assertRaises(queue.Empty):
-            self.results_queue.get(timeout=0.1)
+            self.results_queue.get()
 
         self.assertEqual(
             messages,
@@ -57,20 +60,14 @@ class TestJobRunner(unittest.TestCase):
 
     def test_failed_run(self):
         job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
-        runner = JobRunner(
-            job=job,
-            job_id=1729,
-            results_queue=self.results_queue,
-        )
-        job.state = QUEUED
+        runner = job.prepare(job_id=1729, results_queue=self.results_queue)
 
         runner()
-
         messages = self._get_messages()
 
         # Check that there are no more messages.
         with self.assertRaises(queue.Empty):
-            self.results_queue.get(timeout=0.1)
+            self.results_queue.get()
 
         self.assertEqual(len(messages), 2)
         self.assertEqual(messages[0], (1729, STARTING, None))
@@ -79,18 +76,17 @@ class TestJobRunner(unittest.TestCase):
 
     def test_cancelled_run(self):
         job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
-        runner = JobRunner(
-            job=job,
-            job_id=1729,
-            results_queue=self.results_queue,
-        )
-        job.state = QUEUED
+        runner = job.prepare(job_id=1729, results_queue=self.results_queue)
 
         job.cancel()
 
         runner()
-
         messages = self._get_messages()
+
+        # Check that there are no more messages.
+        with self.assertRaises(queue.Empty):
+            self.results_queue.get()
+
         self.assertEqual(
             messages,
             [(1729, INTERRUPTED, None)],
@@ -99,7 +95,7 @@ class TestJobRunner(unittest.TestCase):
     def _get_messages(self):
         messages = []
         while True:
-            message = self.results_queue.get(timeout=SAFETY_TIMEOUT)
+            message = self.results_queue.get()
             messages.append(message)
             if message[1] in (INTERRUPTED, RAISED, RETURNED):
                 return messages

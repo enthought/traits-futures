@@ -18,7 +18,9 @@ class JobRunner(object):
         self.job_id = job_id
         self.results_queue = results_queue
         self.cancel_event = job._cancel_event
-        self.job = job
+        self.job = job.job
+        self.args = job.args
+        self.kwargs = job.kwargs
 
     def __call__(self):
         if self.cancel_event.is_set():
@@ -27,7 +29,7 @@ class JobRunner(object):
 
         self.send(STARTING)
         try:
-            result = self.job()
+            result = self.job(*self.args, **self.kwargs)
         except BaseException as e:
             marshalled_exception = traceback.format_exc(e)
             self.send(RAISED, marshalled_exception)

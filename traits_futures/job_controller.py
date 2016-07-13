@@ -8,20 +8,7 @@ import concurrent.futures
 
 from traits.api import Any, Dict, HasStrictTraits, Instance, Int
 
-from traits_futures.job import (
-    Job,
-    CANCELLING,
-    COMPLETED,
-    EXECUTING,
-    QUEUED,
-)
-from traits_futures.job_runner import (
-    JobRunner,
-    INTERRUPTED,
-    RAISED,
-    RETURNED,
-    STARTING,
-)
+from traits_futures.job import Job
 
 
 class JobController(HasStrictTraits):
@@ -41,15 +28,12 @@ class JobController(HasStrictTraits):
 
     def submit(self, job):
         job_id = next(self._job_ids)
-        runner = JobRunner(
-            job=job,
+        runner = job.prepare(
             job_id=job_id,
             results_queue=self._results_queue,
         )
-        self.executor.submit(runner)
         self._current_jobs[job_id] = job
-        job.state = QUEUED
-        return job_id
+        self.executor.submit(runner)
 
     def run_loop(self):
         while self._current_jobs:
@@ -62,30 +46,11 @@ class JobController(HasStrictTraits):
             self._process_message(msg)
 
     def _process_message(self, msg):
-        job_id, msg_type, msg_args = msg
+        job_id = msg[0]
         job = self._current_jobs[job_id]
-        if msg_type == STARTING:
-            assert job.state in (QUEUED, CANCELLING)
-            if job.state == QUEUED:
-                job.state = EXECUTING
-        elif msg_type == RETURNED:
-            assert job.state in (EXECUTING, CANCELLING)
-            if job.state == EXECUTING:
-                job.result = msg_args
-            self._remove_job(job_id)
-        elif msg_type == RAISED:
-            assert job.state in (EXECUTING, CANCELLING)
-            if job.state == EXECUTING:
-                job.exception = msg_args
-            self._remove_job(job_id)
-        elif msg_type == INTERRUPTED:
-            assert job.state == CANCELLING
-            self._remove_job(job_id)
-        else:
-            raise ValueError(
-                "Unrecognised message type: {!r}".format(msg_type))
+        done = job.process_message(msg[1:])
+        if done:
+            self._current_jobs.pop(job_id)
 
     def _remove_job(self, job_id):
-        job = self._current_jobs[job_id]
-        job.state = COMPLETED
         self._current_jobs.pop(job_id)

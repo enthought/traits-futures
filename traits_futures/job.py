@@ -23,6 +23,15 @@ import threading
 from traits.api import (
     Any, Callable, Dict, Enum, Event, HasStrictTraits, Str, Tuple)
 
+from traits_futures.job_runner import (
+    JobRunner,
+    INTERRUPTED,
+    RAISED,
+    RETURNED,
+    STARTING,
+)
+
+
 #: Job not yet submitted.
 IDLE = "Idle"
 
@@ -64,6 +73,22 @@ class Job(HasStrictTraits):
     #: Event used to request cancellation of this job.
     _cancel_event = Any
 
+    def prepare(self, results_queue, job_id):
+        """
+        Prepare the job for running, and return a callable
+        with no arguments that represents the background run.
+        """
+        if self.state != IDLE:
+            raise RuntimeError("Cannot prepare job twice.")
+
+        runner = JobRunner(
+            job=self,
+            job_id=job_id,
+            results_queue=results_queue,
+        )
+        self.state = QUEUED
+        return runner
+
     def cancel(self):
         """
         Method that can be called from the main thread to
@@ -84,8 +109,42 @@ class Job(HasStrictTraits):
             raise ValueError("Unexpected state: {}".format(state))
         self._cancel_event.set()
 
-    def __call__(self):
-        return self.job(*self.args, **self.kwargs)
+    def process_message(self, message):
+        msg_type, msg_args = message
+        if msg_type == STARTING:
+            self._process_starting(msg_args)
+        elif msg_type == RETURNED:
+            self._process_returned(msg_args)
+        elif msg_type == RAISED:
+            self._process_raised(msg_args)
+        elif msg_type == INTERRUPTED:
+            self._process_interrupted(msg_args)
+        else:
+            raise ValueError(
+                "Unrecognised message type: {!r}".format(msg_type))
+        # Have we finished?
+        return self.state == COMPLETED
+
+    def _process_interrupted(self, args):
+        assert self.state == CANCELLING
+        self.state = COMPLETED
+
+    def _process_raised(self, args):
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
+            self.exception = args
+        self.state = COMPLETED
+
+    def _process_returned(self, args):
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
+            self.result = args
+        self.state = COMPLETED
+
+    def _process_starting(self, args):
+        assert self.state in (QUEUED, CANCELLING)
+        if self.state == QUEUED:
+            self.state = EXECUTING
 
     def __cancel_event_default(self):
         return threading.Event()
