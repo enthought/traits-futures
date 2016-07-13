@@ -8,7 +8,6 @@ from traits.api import HasStrictTraits, Instance, List, on_trait_change
 from traits_futures.job import (
     Job,
     IDLE,
-    QUEUED,
     EXECUTING,
     CANCELLING,
     COMPLETED,
@@ -79,7 +78,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.assertEqual(listener.exceptions, [])
         self.assertEqual(
             listener.states,
-            [IDLE, QUEUED, EXECUTING, COMPLETED],
+            [IDLE, EXECUTING, COMPLETED],
         )
 
     def test_submit_failing_job(self):
@@ -95,7 +94,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.assertIn('ZeroDivisionError', exception)
         self.assertEqual(
             listener.states,
-            [IDLE, QUEUED, EXECUTING, COMPLETED],
+            [IDLE, EXECUTING, COMPLETED],
         )
 
     def test_cancel(self):
@@ -112,7 +111,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
             listener.states,
-            [IDLE, QUEUED, CANCELLING, COMPLETED],
+            [IDLE, EXECUTING, CANCELLING, COMPLETED],
         )
 
     def test_cancel_after_start(self):
@@ -130,7 +129,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
             listener.states,
-            [IDLE, QUEUED, EXECUTING, CANCELLING, COMPLETED],
+            [IDLE, EXECUTING, CANCELLING, COMPLETED],
         )
 
     def test_cancel_failing(self):
@@ -145,7 +144,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.assertEqual(listener.exceptions, [])
         self.assertEqual(
             listener.states,
-            [IDLE, QUEUED, CANCELLING, COMPLETED],
+            [IDLE, EXECUTING, CANCELLING, COMPLETED],
         )
 
     def test_cancel_failing_after_start(self):
@@ -161,5 +160,5 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.assertEqual(listener.exceptions, [])
         self.assertEqual(
             listener.states,
-            [IDLE, QUEUED, EXECUTING, CANCELLING, COMPLETED],
+            [IDLE, EXECUTING, CANCELLING, COMPLETED],
         )

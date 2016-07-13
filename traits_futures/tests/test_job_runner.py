@@ -6,7 +6,6 @@ from traits_futures.job_runner import (
     INTERRUPTED,
     RAISED,
     RETURNED,
-    STARTING,
 )
 
 
@@ -52,10 +51,7 @@ class TestJobRunner(unittest.TestCase):
 
         self.assertEqual(
             messages,
-            [
-                (1729, STARTING, None),
-                (1729, RETURNED, 121),
-            ],
+            [(1729, RETURNED, 121)],
         )
 
     def test_failed_run(self):
@@ -69,10 +65,9 @@ class TestJobRunner(unittest.TestCase):
         with self.assertRaises(queue.Empty):
             self.results_queue.get()
 
-        self.assertEqual(len(messages), 2)
-        self.assertEqual(messages[0], (1729, STARTING, None))
-        self.assertEqual(messages[1][:2], (1729, RAISED))
-        self.assertIn("ZeroDivisionError", messages[1][2])
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0][:2], (1729, RAISED))
+        self.assertIn("ZeroDivisionError", messages[0][2])
 
     def test_cancelled_run(self):
         job = Job(job=fail_with_exception, args=(ZeroDivisionError,))

@@ -1,8 +1,6 @@
 import traceback
 
 # Job runner messages.
-
-STARTING = "Starting"
 RETURNED = "Returned"
 RAISED = "Raised"
 INTERRUPTED = "Interrupted"
@@ -25,16 +23,14 @@ class JobRunner(object):
     def __call__(self):
         if self.cancel_event.is_set():
             self.send(INTERRUPTED)
-            return
-
-        self.send(STARTING)
-        try:
-            result = self.job(*self.args, **self.kwargs)
-        except BaseException as e:
-            marshalled_exception = traceback.format_exc(e)
-            self.send(RAISED, marshalled_exception)
         else:
-            self.send(RETURNED, result)
+            try:
+                result = self.job(*self.args, **self.kwargs)
+            except BaseException as e:
+                marshalled_exception = traceback.format_exc(e)
+                self.send(RAISED, marshalled_exception)
+            else:
+                self.send(RETURNED, result)
 
     def send(self, message_type, message_args=None):
         self.results_queue.put((self.job_id, message_type, message_args))

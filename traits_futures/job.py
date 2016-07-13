@@ -11,12 +11,7 @@
 #     to a running job.
 #     JobRunner: needs to be pickleable, shouldn't need to hold
 #       a reference to the Job object.
-# XXX The Job itself should be responsible for maintaining invariants, etc.
-#     Transitions should be methods. The controller should merely hand off
-#     responsibility to the appropriate job; it just becomes a message router.
-#     E.g.: there should be a method to construct and return a JobRunner from
-#     the job; that same method should set the state to QUEUED. Then there
-#     should be methods to handle the messages from the job runner.
+# XXX Should cancel_event come from the controller?
 
 import threading
 
@@ -28,15 +23,11 @@ from traits_futures.job_runner import (
     INTERRUPTED,
     RAISED,
     RETURNED,
-    STARTING,
 )
 
 
 #: Job not yet submitted.
 IDLE = "Idle"
-
-#: Job is queued, and waiting to execute.
-QUEUED = "Queued"
 
 #: Job is executing.
 EXECUTING = "Executing"
@@ -60,7 +51,7 @@ class Job(HasStrictTraits):
     kwargs = Dict(Str, Any)
 
     #: The state of this job.
-    state = Enum(IDLE, QUEUED, EXECUTING, COMPLETED, CANCELLING)
+    state = Enum(IDLE, EXECUTING, COMPLETED, CANCELLING)
 
     #: Event fired when the callable completes normally. The payload
     #: of the event is the result of the job.
@@ -86,7 +77,7 @@ class Job(HasStrictTraits):
             job_id=job_id,
             results_queue=results_queue,
         )
-        self.state = QUEUED
+        self.state = EXECUTING
         return runner
 
     def cancel(self):
@@ -100,7 +91,7 @@ class Job(HasStrictTraits):
             raise RuntimeError("Job has not been scheduled; cannot cancel.")
         elif state == COMPLETED:
             raise RuntimeError("Can't cancel a completed job.")
-        elif state in (QUEUED, EXECUTING):
+        elif state == EXECUTING:
             self.state = CANCELLING
         elif state == CANCELLING:
             # Cancel should be idempotent.
@@ -111,9 +102,7 @@ class Job(HasStrictTraits):
 
     def process_message(self, message):
         msg_type, msg_args = message
-        if msg_type == STARTING:
-            self._process_starting(msg_args)
-        elif msg_type == RETURNED:
+        if msg_type == RETURNED:
             self._process_returned(msg_args)
         elif msg_type == RAISED:
             self._process_raised(msg_args)
@@ -140,11 +129,6 @@ class Job(HasStrictTraits):
         if self.state == EXECUTING:
             self.result = args
         self.state = COMPLETED
-
-    def _process_starting(self, args):
-        assert self.state in (QUEUED, CANCELLING)
-        if self.state == QUEUED:
-            self.state = EXECUTING
 
     def __cancel_event_default(self):
         return threading.Event()
