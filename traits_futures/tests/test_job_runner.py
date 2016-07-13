@@ -39,7 +39,7 @@ class TestJobRunner(unittest.TestCase):
         self.results_queue = DummyQueue()
 
     def test_successful_run(self):
-        job = Job(job=square, args=(11,))
+        job = Job(callable=square, args=(11,))
         runner = job.prepare(job_id=1729, results_queue=self.results_queue)
 
         runner()
@@ -55,7 +55,7 @@ class TestJobRunner(unittest.TestCase):
         )
 
     def test_failed_run(self):
-        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
         runner = job.prepare(job_id=1729, results_queue=self.results_queue)
 
         runner()
@@ -70,7 +70,7 @@ class TestJobRunner(unittest.TestCase):
         self.assertIn("ZeroDivisionError", messages[0][2])
 
     def test_cancelled_run(self):
-        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
         runner = job.prepare(job_id=1729, results_queue=self.results_queue)
 
         job.cancel()

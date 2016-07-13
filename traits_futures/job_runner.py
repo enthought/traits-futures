@@ -16,7 +16,7 @@ class JobRunner(object):
         self.job_id = job_id
         self.results_queue = results_queue
         self.cancel_event = job._cancel_event
-        self.job = job.job
+        self.callable = job.callable
         self.args = job.args
         self.kwargs = job.kwargs
 
@@ -25,7 +25,7 @@ class JobRunner(object):
             self.send(INTERRUPTED)
         else:
             try:
-                result = self.job(*self.args, **self.kwargs)
+                result = self.callable(*self.args, **self.kwargs)
             except BaseException as e:
                 marshalled_exception = traceback.format_exc(e)
                 self.send(RAISED, marshalled_exception)

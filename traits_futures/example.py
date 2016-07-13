@@ -81,7 +81,7 @@ class SquaringHelper(HasStrictTraits):
     input = Range(low=0, high=100)
 
     def _calculate_fired(self):
-        job = Job(job=slow_square, args=(self.input,))
+        job = Job(callable=slow_square, args=(self.input,))
         self.current_jobs.append(job)
         self.job_controller.submit(job)
 
@@ -110,10 +110,8 @@ class SquaringHelper(HasStrictTraits):
                 VGroup(
                     UItem(
                         'current_jobs',
-                        editor=TabularEditor(
-                            adapter=JobTabularAdapter(),
-                            auto_update=True,
-                        ),
+                        editor=TabularEditor(adapter=JobTabularAdapter(),
+                                             auto_update=True),
                     ),
                 ),
             ),

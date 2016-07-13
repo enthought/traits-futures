@@ -44,12 +44,12 @@ CANCELLED = "Cancelled"
 
 class Job(HasStrictTraits):
     #: The callable to be executed.
-    job = Callable
+    callable = Callable
 
-    #: Arguments to be passed to the job.
+    #: Arguments to be passed to the callable.
     args = Tuple
 
-    #: Keyword arguments.
+    #: Keyword arguments to be passed to the callable.
     kwargs = Dict(Str, Any)
 
     #: The state of this job.

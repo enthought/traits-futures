@@ -70,7 +70,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.executor.shutdown()
 
     def test_submit_simple_job(self):
-        job = Job(job=square, args=(10,))
+        job = Job(callable=square, args=(10,))
         listener = Listener(job=job)
 
         self.controller.submit(job)
@@ -84,7 +84,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_submit_failing_job(self):
-        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
         listener = Listener(job=job)
 
         self.controller.submit(job)
@@ -100,7 +100,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel(self):
-        job = Job(job=square, args=(10,))
+        job = Job(callable=square, args=(10,))
         listener = Listener(job=job)
 
         self.controller.submit(job)
@@ -117,7 +117,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel_after_start(self):
-        job = Job(job=square, args=(3,))
+        job = Job(callable=square, args=(3,))
         listener = Listener(job=job)
 
         self.controller.submit(job)
@@ -135,7 +135,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel_failing(self):
-        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
         listener = Listener(job=job)
 
         self.controller.submit(job)
@@ -150,7 +150,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel_failing_after_start(self):
-        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
         listener = Listener(job=job)
 
         self.controller.submit(job)
