@@ -20,13 +20,14 @@ def main():
         controller = JobController(executor=executor)
 
         def got_result(obj, name, arg):
-            print "Got result: ", obj, name, arg
+            print "Got result for {}: {}".format(obj, arg)
 
         def got_exception(obj, name, arg):
-            print "Got exception: ", obj, name, arg
+            print "Got exception for {}: {}".format(obj, arg)
 
         def got_state_change(obj, name, old, new):
-            print "State for {} changed from {} to {}".format(obj, old, new)
+            print("Got state change for {}: state changed "
+                  "from {} to {}".format(obj, old, new))
 
         jobs = [
             Job(job=slow_square, args=(n,))

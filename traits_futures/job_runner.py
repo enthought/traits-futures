@@ -3,8 +3,8 @@ import traceback
 # Job runner messages.
 
 STARTING = "Starting"
-RAISED = "Raised"
 RETURNED = "Returned"
+RAISED = "Raised"
 INTERRUPTED = "Interrupted"
 
 
@@ -17,9 +17,14 @@ class JobRunner(object):
     def __init__(self, job, job_id, results_queue):
         self.job_id = job_id
         self.results_queue = results_queue
+        self.cancel_event = job._cancel_event
         self.job = job
 
     def __call__(self):
+        if self.cancel_event.is_set():
+            self.send(INTERRUPTED)
+            return
+
         self.send(STARTING)
         try:
             result = self.job()

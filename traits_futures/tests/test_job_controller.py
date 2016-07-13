@@ -1,0 +1,165 @@
+import Queue as queue
+import unittest
+
+import concurrent.futures
+
+from traits.api import HasStrictTraits, Instance, List, on_trait_change
+
+from traits_futures.job import (
+    Job,
+    IDLE,
+    QUEUED,
+    EXECUTING,
+    CANCELLING,
+    COMPLETED,
+)
+from traits_futures.job_controller import JobController
+
+
+def square(n):
+    return n * n
+
+
+def fail_with_exception(exc_type):
+    raise exc_type()
+
+
+def notify_at_start(notify_event, wait_event):
+    notify_event.set()
+    wait_event.wait()
+    return 42
+
+
+class Listener(HasStrictTraits):
+    job = Instance(Job)
+
+    results = List
+
+    exceptions = List
+
+    states = List
+
+    @on_trait_change('job:result')
+    def record_result(self, result):
+        self.results.append(result)
+
+    @on_trait_change('job:exception')
+    def record_exception(self, exception):
+        self.exceptions.append(exception)
+
+    @on_trait_change('job:state')
+    def record_state_change(self, obj, name, old_state, new_state):
+        if not self.states:
+            self.states.append(old_state)
+        else:
+            assert old_state == self.states[-1]
+        self.states.append(new_state)
+
+
+class TestJobControllerNoUI(unittest.TestCase):
+    def setUp(self):
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+        self.results_queue = queue.Queue()
+        self.controller = JobController(
+            executor=self.executor,
+            _results_queue=self.results_queue,
+        )
+
+    def tearDown(self):
+        self.executor.shutdown()
+
+    def test_submit_simple_job(self):
+        job = Job(job=square, args=(10,))
+        listener = Listener(job=job)
+
+        self.controller.submit(job)
+        self.controller.run_loop()
+
+        self.assertEqual(listener.results, [100])
+        self.assertEqual(listener.exceptions, [])
+        self.assertEqual(
+            listener.states,
+            [IDLE, QUEUED, EXECUTING, COMPLETED],
+        )
+
+    def test_submit_failing_job(self):
+        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        listener = Listener(job=job)
+
+        self.controller.submit(job)
+        self.controller.run_loop()
+
+        self.assertEqual(listener.results, [])
+        self.assertEqual(len(listener.exceptions), 1)
+        exception = listener.exceptions[0]
+        self.assertIn('ZeroDivisionError', exception)
+        self.assertEqual(
+            listener.states,
+            [IDLE, QUEUED, EXECUTING, COMPLETED],
+        )
+
+    def test_cancel(self):
+        job = Job(job=square, args=(10,))
+        listener = Listener(job=job)
+
+        self.controller.submit(job)
+        job.cancel()
+        self.controller.run_loop()
+
+        self.assertEqual(listener.results, [])
+        self.assertEqual(listener.exceptions, [])
+        # Here we cancelled before processing any of the
+        # messages received, so we don't see the "EXECUTING" state.
+        self.assertEqual(
+            listener.states,
+            [IDLE, QUEUED, CANCELLING, COMPLETED],
+        )
+
+    def test_cancel_after_start(self):
+        job = Job(job=square, args=(3,))
+        listener = Listener(job=job)
+
+        self.controller.submit(job)
+        self.controller.run_loop_until(lambda: job.state == EXECUTING)
+        job.cancel()
+        self.controller.run_loop()
+
+        self.assertEqual(listener.results, [])
+        self.assertEqual(listener.exceptions, [])
+        # Here we cancelled before processing any of the
+        # messages received, so we don't see the "EXECUTING" state.
+        self.assertEqual(
+            listener.states,
+            [IDLE, QUEUED, EXECUTING, CANCELLING, COMPLETED],
+        )
+
+    def test_cancel_failing(self):
+        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        listener = Listener(job=job)
+
+        self.controller.submit(job)
+        job.cancel()
+        self.controller.run_loop()
+
+        self.assertEqual(listener.results, [])
+        self.assertEqual(listener.exceptions, [])
+        self.assertEqual(
+            listener.states,
+            [IDLE, QUEUED, CANCELLING, COMPLETED],
+        )
+
+    def test_cancel_failing_after_start(self):
+        job = Job(job=fail_with_exception, args=(ZeroDivisionError,))
+        listener = Listener(job=job)
+
+        self.controller.submit(job)
+        self.controller.run_loop_until(lambda: job.state == EXECUTING)
+        job.cancel()
+        self.controller.run_loop()
+
+        self.assertEqual(listener.results, [])
+        self.assertEqual(listener.exceptions, [])
+        self.assertEqual(
+            listener.states,
+            [IDLE, QUEUED, EXECUTING, CANCELLING, COMPLETED],
+        )
