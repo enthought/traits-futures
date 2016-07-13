@@ -11,10 +11,6 @@
 #     to a running job.
 #     JobRunner: needs to be pickleable, shouldn't need to hold
 #       a reference to the Job object.
-# XXX Should cancel_event come from the controller? Certainly
-#     the trait default looks wrong.
-
-import threading
 
 from traits.api import (
     Any, Bool, Callable, Dict, Enum, HasStrictTraits, Property, Str, Tuple)
@@ -70,13 +66,14 @@ class Job(HasStrictTraits):
     #: Event used to request cancellation of this job.
     _cancel_event = Any
 
-    def prepare(self, results_queue, job_id):
+    def prepare(self, job_id, cancel_event, results_queue):
         """
         Prepare the job for running, and return a callable
         with no arguments that represents the background run.
         """
         if self.state != IDLE:
             raise RuntimeError("Cannot prepare job twice.")
+        self._cancel_event = cancel_event
         runner = JobRunner(job=self, job_id=job_id,
                            results_queue=results_queue)
         self.state = EXECUTING
@@ -125,6 +122,3 @@ class Job(HasStrictTraits):
 
     def _get_completed(self):
         return self.state in (SUCCEEDED, FAILED, CANCELLED)
-
-    def __cancel_event_default(self):
-        return threading.Event()

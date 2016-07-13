@@ -1,4 +1,5 @@
 import Queue as queue
+import threading
 import unittest
 
 from traits_futures.job import Job
@@ -37,10 +38,15 @@ def fail_with_exception(exc_type):
 class TestJobRunner(unittest.TestCase):
     def setUp(self):
         self.results_queue = DummyQueue()
+        self.cancel_event = threading.Event()
 
     def test_successful_run(self):
         job = Job(callable=square, args=(11,))
-        runner = job.prepare(job_id=1729, results_queue=self.results_queue)
+        runner = job.prepare(
+            job_id=1729,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
 
         runner()
         messages = self._get_messages()
@@ -56,7 +62,11 @@ class TestJobRunner(unittest.TestCase):
 
     def test_failed_run(self):
         job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        runner = job.prepare(job_id=1729, results_queue=self.results_queue)
+        runner = job.prepare(
+            job_id=1729,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
 
         runner()
         messages = self._get_messages()
@@ -71,7 +81,11 @@ class TestJobRunner(unittest.TestCase):
 
     def test_cancelled_run(self):
         job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        runner = job.prepare(job_id=1729, results_queue=self.results_queue)
+        runner = job.prepare(
+            job_id=1729,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
 
         job.cancel()
 

@@ -3,6 +3,7 @@
 import collections
 import itertools
 import Queue as queue
+import threading
 
 import concurrent.futures
 
@@ -65,6 +66,7 @@ class JobController(HasStrictTraits):
         job_id = next(self._job_ids)
         runner = job.prepare(
             job_id=job_id,
+            cancel_event=threading.Event(),
             results_queue=self._results_queue,
         )
         self._current_jobs[job_id] = job
