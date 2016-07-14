@@ -8,6 +8,7 @@ from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
+    background_job,
     Job,
     JobController,
     IDLE,
@@ -81,7 +82,7 @@ class SquaringHelper(HasStrictTraits):
     input = Range(low=0, high=100)
 
     def _calculate_fired(self):
-        job = Job(callable=slow_square, args=(self.input,))
+        job = background_job(slow_square, self.input)
         self.current_jobs.append(job)
         self.job_controller.submit(job)
 

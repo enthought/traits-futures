@@ -122,3 +122,10 @@ class Job(HasStrictTraits):
 
     def _get_completed(self):
         return self.state in (SUCCEEDED, FAILED, CANCELLED)
+
+
+def background_job(callable, *args, **kwargs):
+    """
+    Convenience function for creating background tasks.
+    """
+    return Job(callable=callable, args=args, kwargs=kwargs)
