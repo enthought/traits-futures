@@ -116,6 +116,8 @@ class SquaringHelper(HasStrictTraits):
                     ),
                 ),
             ),
+            width=1024,
+            height=768,
             resizable=True,
         )
 
