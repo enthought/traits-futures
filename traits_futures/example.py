@@ -3,7 +3,7 @@ import time
 
 import concurrent.futures
 
-from traits.api import Button, HasStrictTraits, Instance, List, Range
+from traits.api import Button, HasStrictTraits, Instance, List, Property, Range
 from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
@@ -55,8 +55,19 @@ class JobTabularAdapter(TabularAdapter):
         SUCCEEDED: 0x80ff80,
     }
 
+    #: Text to be displayed for the exception column
+    exception_text = Property
+
     def _get_bg_color(self):
         return self.colors[self.item.state]
+
+    def _get_exception_text(self):
+        job = self.item
+        if job.exception is None:
+            return "None"
+        else:
+            exc_type, exc_message, exc_traceback = job.exception
+            return exc_message
 
 
 class SquaringHelper(HasStrictTraits):

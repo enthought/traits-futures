@@ -79,7 +79,9 @@ class TestJobRunner(unittest.TestCase):
         job_id, (msg_type, msg_args) = messages[0]
         self.assertEqual(job_id, 1729)
         self.assertEqual(msg_type, RAISED)
-        self.assertIn("ZeroDivisionError", msg_args)
+        exc_type, exc_value, exc_tb = msg_args
+        self.assertIn("ZeroDivisionError", exc_type)
+        self.assertIn("ZeroDivisionError", exc_tb)
 
     def test_cancelled_run(self):
         job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))

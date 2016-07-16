@@ -6,6 +6,17 @@ RAISED = "Raised"
 INTERRUPTED = "Interrupted"
 
 
+def _marshal_exception(e):
+    """
+    Turn exception details into something that can be safely
+    transmitted across thread / process boundaries.
+    """
+    exc_type = str(type(e))
+    exc_value = str(e)
+    formatted_traceback = traceback.format_exc(e)
+    return exc_type, exc_value, formatted_traceback
+
+
 class JobRunner(object):
     """
     Wrapper around the actual callable to be run. This wrapper
@@ -27,8 +38,7 @@ class JobRunner(object):
             try:
                 result = self.callable(*self.args, **self.kwargs)
             except BaseException as e:
-                marshalled_exception = traceback.format_exc(e)
-                self.send(RAISED, marshalled_exception)
+                self.send(RAISED, _marshal_exception(e))
             else:
                 self.send(RETURNED, result)
 
