@@ -33,4 +33,4 @@ class JobRunner(object):
                 self.send(RETURNED, result)
 
     def send(self, message_type, message_args=None):
-        self.results_queue.put((self.job_id, message_type, message_args))
+        self.results_queue.put((self.job_id, (message_type, message_args)))

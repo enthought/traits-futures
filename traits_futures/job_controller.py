@@ -81,9 +81,8 @@ class JobController(HasStrictTraits):
             self._process_message()
 
     def _process_message(self):
-        msg = self._results_queue.get()
-        job_id = msg[0]
+        job_id, msg = self._results_queue.get()
         job = self._current_jobs[job_id]
-        done = job.process_message(msg[1:])
+        done = job.process_message(msg)
         if done:
             self._current_jobs.pop(job_id)

@@ -57,7 +57,7 @@ class TestJobRunner(unittest.TestCase):
 
         self.assertEqual(
             messages,
-            [(1729, RETURNED, 121)],
+            [(1729, (RETURNED, 121))],
         )
 
     def test_failed_run(self):
@@ -76,8 +76,10 @@ class TestJobRunner(unittest.TestCase):
             self.results_queue.get()
 
         self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0][:2], (1729, RAISED))
-        self.assertIn("ZeroDivisionError", messages[0][2])
+        job_id, (msg_type, msg_args) = messages[0]
+        self.assertEqual(job_id, 1729)
+        self.assertEqual(msg_type, RAISED)
+        self.assertIn("ZeroDivisionError", msg_args)
 
     def test_cancelled_run(self):
         job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
@@ -98,13 +100,14 @@ class TestJobRunner(unittest.TestCase):
 
         self.assertEqual(
             messages,
-            [(1729, INTERRUPTED, None)],
+            [(1729, (INTERRUPTED, None))],
         )
 
     def _get_messages(self):
         messages = []
         while True:
-            message = self.results_queue.get()
-            messages.append(message)
-            if message[1] in (INTERRUPTED, RAISED, RETURNED):
+            msg = self.results_queue.get()
+            job_id, (msg_type, msg_args) = msg
+            messages.append(msg)
+            if msg_type in (INTERRUPTED, RAISED, RETURNED):
                 return messages
