@@ -199,7 +199,7 @@ def regenerate_bundles():
                     "--bundle-format", "2.0",
                     "--version", cfg.RUNTIME_VERSION[python_version],
                     "--output-file", bundle_file,
-                ] + cfg.BUNDLE_MODIFIERS + requirements
+                ] + requirements
             )
 
 
