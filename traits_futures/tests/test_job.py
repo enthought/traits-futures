@@ -37,7 +37,7 @@ def fail_with_exception(exc_type):
     raise exc_type()
 
 
-class TestJobRunner(unittest.TestCase):
+class TestJob(unittest.TestCase):
     def setUp(self):
         self.results_queue = DummyQueue()
         self.cancel_event = threading.Event()
