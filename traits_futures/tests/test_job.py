@@ -4,7 +4,9 @@ import unittest
 from six.moves import queue
 
 from traits_futures.job import (
+    background_job,
     Job,
+    CANCELLED,
     INTERRUPTED,
     RAISED,
     RETURNED,
@@ -113,6 +115,76 @@ class TestJob(unittest.TestCase):
             messages,
             [(1729, (INTERRUPTED, None))],
         )
+
+        for job_id, message in messages:
+            job_handle.process_message(message)
+
+        self.assertIsNone(job_handle.result)
+        self.assertIsNone(job_handle.exception)
+        self.assertEqual(job_handle.state, CANCELLED)
+
+    def test_cancellable(self):
+        job = Job(callable=square, args=(13,))
+        job_handle, runner = job.prepare(
+            job_id=47,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
+        runner()
+
+        self.assertTrue(job_handle.cancellable)
+        for job_id, message in self._get_messages():
+            self.assertEqual(job_id, 47)
+            job_handle.process_message(message)
+
+        self.assertFalse(job_handle.cancellable)
+
+    def test_cancel_twice(self):
+        job = Job(callable=square, args=(13,))
+        job_handle, runner = job.prepare(
+            job_id=47,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
+        runner()
+
+        self.assertTrue(job_handle.cancellable)
+        job_handle.cancel()
+        self.assertFalse(job_handle.cancellable)
+        with self.assertRaises(RuntimeError):
+            job_handle.cancel()
+
+    def test_cancel_completed(self):
+        job = Job(callable=square, args=(13,))
+        job_handle, runner = job.prepare(
+            job_id=47,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
+        runner()
+
+        for job_id, message in self._get_messages():
+            self.assertEqual(job_id, 47)
+            job_handle.process_message(message)
+
+        self.assertFalse(job_handle.cancellable)
+        with self.assertRaises(RuntimeError):
+            job_handle.cancel()
+
+    def test_background_job(self):
+        job = background_job(int, "1101", base=2)
+        job_handle, runner = job.prepare(
+            job_id=47,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
+        runner()
+
+        for job_id, message in self._get_messages():
+            self.assertEqual(job_id, 47)
+            job_handle.process_message(message)
+
+        self.assertEqual(job_handle.result, 13)
 
     def _get_messages(self):
         messages = []
