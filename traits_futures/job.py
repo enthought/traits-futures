@@ -59,13 +59,15 @@ class JobRunner(object):
     provides the callable that the concurrent.futures executor
     will use.
     """
-    def __init__(self, job, job_id, results_queue, cancel_event):
+    def __init__(
+            self, job_id, callable, args, kwargs,
+            results_queue, cancel_event):
         self.job_id = job_id
+        self.callable = callable
+        self.args = args
+        self.kwargs = kwargs
         self.results_queue = results_queue
         self.cancel_event = cancel_event
-        self.callable = job.callable
-        self.args = job.args
-        self.kwargs = job.kwargs
 
     def __call__(self):
         if self.cancel_event.is_set():
@@ -193,8 +195,11 @@ class Job(HasStrictTraits):
             cancel_event=cancel_event,
         )
         runner = JobRunner(
-            job=self,
             job_id=job_id,
+            callable=self.callable,
+            args=self.args,
+            # Convert TraitsDict to a regular dict
+            kwargs=dict(self.kwargs),
             results_queue=results_queue,
             cancel_event=cancel_event,
         )

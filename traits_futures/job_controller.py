@@ -48,7 +48,7 @@ class JobController(HasStrictTraits):
 
     _results_queue = Any
 
-    _current_jobs = Dict(Int, JobHandle)
+    _current_jobs = Dict(Int, Instance(JobHandle))
 
     _job_ids = Instance(collections.Iterator)
 
