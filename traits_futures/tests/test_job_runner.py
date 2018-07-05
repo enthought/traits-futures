@@ -1,6 +1,7 @@
-import Queue as queue
 import threading
 import unittest
+
+from six.moves import queue
 
 from traits_futures.job import Job
 from traits_futures.job_runner import (
