@@ -1,0 +1,46 @@
+language: generic
+sudo: false
+
+env:
+  global:
+    - INSTALL_EDM_VERSION=1.9.2
+      PYTHONUNBUFFERED="1"
+
+cache:
+  directories:
+    - $HOME/.cache/edm
+
+matrix:
+  include:
+  - os: linux
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyside"
+  - os: linux
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyqt"
+  - os: linux
+    env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="pyqt"
+  - os: linux
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT=pyqt
+  - os: osx
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyside"
+  - os: osx
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyqt"
+  - os: osx
+    env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="pyqt"
+  - os: osx
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT=pyqt
+
+before_install:
+  - mkdir -p "${HOME}/.cache/download"
+  - export DISPLAY=:99.0
+  - if [[ ${TRAVIS_OS_NAME} == "linux" ]] ; then sh -e /etc/init.d/xvfb start; fi
+  - if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then sh -e install-edm-linux.sh; export PATH="${HOME}/edm/bin:${PATH}"; fi
+  - if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then sh -e install-edm-osx.sh; export PATH="${PATH}:/usr/local/bin"; fi
+  - edm install -y -e bootstrap click pyyaml setuptools
+install:
+  - edm run -e bootstrap -- python -m ci build-devenv
+script:
+  - edm run -e bootstrap -- python -m ci flake8
+  - edm run -e bootstrap -- python -m ci test
+notifications:
+  email:
+    - travis-ci@enthought.com
