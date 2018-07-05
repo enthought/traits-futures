@@ -2,10 +2,10 @@
 
 import collections
 import itertools
-import Queue as queue
 import threading
 
 import concurrent.futures
+from six.moves import queue
 
 from traits.api import Any, Dict, HasStrictTraits, Instance, Int
 from traits.trait_notifiers import ui_dispatch

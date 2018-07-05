@@ -1,7 +1,7 @@
-import Queue as queue
 import unittest
 
 import concurrent.futures
+from six.moves import queue
 
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
