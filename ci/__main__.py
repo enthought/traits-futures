@@ -13,9 +13,6 @@ from __future__ import absolute_import, division, print_function
 
 import contextlib
 import os
-import shutil
-import stat
-import subprocess
 
 import click
 import yaml
