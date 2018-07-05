@@ -1,0 +1,228 @@
+{
+    "mark": [
+        {
+            "name": "appdirs",
+            "state": "auto"
+        },
+        {
+            "name": "coverage",
+            "state": "manual"
+        },
+        {
+            "name": "distribute_remove",
+            "state": "auto"
+        },
+        {
+            "name": "flake8",
+            "state": "manual"
+        },
+        {
+            "name": "libpng",
+            "state": "auto"
+        },
+        {
+            "name": "mccabe",
+            "state": "auto"
+        },
+        {
+            "name": "packaging",
+            "state": "auto"
+        },
+        {
+            "name": "pip",
+            "state": "manual"
+        },
+        {
+            "name": "pycodestyle",
+            "state": "auto"
+        },
+        {
+            "name": "pyface",
+            "state": "auto"
+        },
+        {
+            "name": "pyflakes",
+            "state": "auto"
+        },
+        {
+            "name": "pygments",
+            "state": "auto"
+        },
+        {
+            "name": "pyparsing",
+            "state": "auto"
+        },
+        {
+            "name": "pyqt",
+            "state": "manual"
+        },
+        {
+            "name": "qt",
+            "state": "auto"
+        },
+        {
+            "name": "setuptools",
+            "state": "manual"
+        },
+        {
+            "name": "sip",
+            "state": "auto"
+        },
+        {
+            "name": "six",
+            "state": "manual"
+        },
+        {
+            "name": "traits",
+            "state": "manual"
+        },
+        {
+            "name": "traitsui",
+            "state": "manual"
+        }
+    ],
+    "metadata_version": "2.0",
+    "modifiers": {
+        "allow_any": [],
+        "allow_newer": [],
+        "allow_older": []
+    },
+    "repositories": {
+        "packages": [
+            "enthought/free"
+        ],
+        "runtimes": [
+            "enthought/free"
+        ]
+    },
+    "requirements": [
+        {
+            "name": "appdirs",
+            "repository": "enthought/free",
+            "sha256": "e37bb06c4735d703e882bc0fa4e01e4bad43bbc277025119780acb2ece74cdce",
+            "version": "1.4.3-1"
+        },
+        {
+            "name": "coverage",
+            "repository": "enthought/free",
+            "sha256": "7e77cc65625ecebe3e021169075000bc442d8129e0abb5c22cf2f723059d819e",
+            "version": "4.3.4-1"
+        },
+        {
+            "name": "distribute_remove",
+            "repository": "enthought/free",
+            "sha256": "5b4bb4853c23e04280c844134dfee13d1ec969673aed1c86d652d26d77c87520",
+            "version": "1.0.0-4"
+        },
+        {
+            "name": "flake8",
+            "repository": "enthought/free",
+            "sha256": "aac2137af996ebd4760ea17564f8253b288049cdfc72ff7145dd6212f347f3e7",
+            "version": "3.3.0-2"
+        },
+        {
+            "name": "libpng",
+            "repository": "enthought/free",
+            "sha256": "72402221f70eadf881d7d4c6db115720daa277941e32b5d806c32db1072f4f4d",
+            "version": "1.6.12-6"
+        },
+        {
+            "name": "mccabe",
+            "repository": "enthought/free",
+            "sha256": "18fea4a07abec3f3f532e4246ae187c289da26656da17bbc5773987495efb2a2",
+            "version": "0.6.1-1"
+        },
+        {
+            "name": "packaging",
+            "repository": "enthought/free",
+            "sha256": "920db8d9c36b40ad33a91c7a7ef556ebaeaff2eaad00c0a9d02ea1803ac07f79",
+            "version": "16.8-2"
+        },
+        {
+            "name": "pip",
+            "repository": "enthought/free",
+            "sha256": "ee8fcebe67cfdd8007d30b8bd9ef0ba775ddb675d6cbde7e29b92a6c7da688f7",
+            "version": "10.0.1-1"
+        },
+        {
+            "name": "pycodestyle",
+            "repository": "enthought/free",
+            "sha256": "020167454d8654c07cd6fe03bcf41047a32a7ad89c97f869139c3208c08d8e0d",
+            "version": "2.3.1-1"
+        },
+        {
+            "name": "pyface",
+            "repository": "enthought/free",
+            "sha256": "c14f6191b3cfff0f026ff08e6e084ca300f98d2fba224f4dbe4c6c79859aa4d3",
+            "version": "6.0.0-1"
+        },
+        {
+            "name": "pyflakes",
+            "repository": "enthought/free",
+            "sha256": "53b21054175f89917655317b414b01b02a1016e112c0922d5f3e8a4d0c95a53e",
+            "version": "1.5.0-1"
+        },
+        {
+            "name": "pygments",
+            "repository": "enthought/free",
+            "sha256": "01440ee690db4ef48917a4c3cffc176db517743f1d0e69ace48c905287edc676",
+            "version": "2.2.0-1"
+        },
+        {
+            "name": "pyparsing",
+            "repository": "enthought/free",
+            "sha256": "9c43a1ea64102e39b0b9e3182b14c85b68ae915e0403bc5d05f908f2f67dd7df",
+            "version": "2.2.0-1"
+        },
+        {
+            "name": "pyqt",
+            "repository": "enthought/free",
+            "sha256": "3b7cd752167c19093483a5b7ce8cb41d7d1f685f64859fe8274c360bb20bbebb",
+            "version": "4.12-1"
+        },
+        {
+            "name": "qt",
+            "repository": "enthought/free",
+            "sha256": "a2a953317f1d8e1973f2859b1dc6dda2f9545c82494ab7593ae23fff6212a69d",
+            "version": "4.8.7-8"
+        },
+        {
+            "name": "setuptools",
+            "repository": "enthought/free",
+            "sha256": "197b9bea794318c8e7c969be54d1b58d68a99443698db5a5da94a93100f60436",
+            "version": "38.2.5-1"
+        },
+        {
+            "name": "sip",
+            "repository": "enthought/free",
+            "sha256": "b528b1fd661fb369b068b6b92a4e677eda324b3fead2b0f06c9f5969a7bf861e",
+            "version": "4.19.2-2"
+        },
+        {
+            "name": "six",
+            "repository": "enthought/free",
+            "sha256": "2d78da662127c1af575c9e1ff510b8ee334209469349486277f946c1fe9f83e9",
+            "version": "1.10.0-1"
+        },
+        {
+            "name": "traits",
+            "repository": "enthought/free",
+            "sha256": "304f18c29f95171bd636157a2ca6a9515b9ca15a161d24f745cc332a4d23b4b0",
+            "version": "4.6.0-1"
+        },
+        {
+            "name": "traitsui",
+            "repository": "enthought/free",
+            "sha256": "6921fba32132ba63da3f23e602864be3410c02bbb02675a56a7238d32eb094bd",
+            "version": "6.0.0-1"
+        }
+    ],
+    "runtime": {
+        "implementation": "cpython",
+        "platform": "rh6_x86_64",
+        "platform_abi": "gnu",
+        "repository": "enthought/free",
+        "sha256": "384a3f5e04edec77eb7483e13cb6af6423b0ad45761146b05a20462c0cd486c9",
+        "version": "3.5.2+9"
+    }
+}
