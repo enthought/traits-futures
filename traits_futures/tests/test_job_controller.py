@@ -26,12 +26,6 @@ def fail_with_exception(exc_type):
     raise exc_type()
 
 
-def notify_at_start(notify_event, wait_event):
-    notify_event.set()
-    wait_event.wait()
-    return 42
-
-
 class Listener(HasStrictTraits):
     job = Instance(JobHandle)
 
