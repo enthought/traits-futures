@@ -1,0 +1,208 @@
+{
+    "mark": [
+        {
+            "name": "appdirs",
+            "state": "auto"
+        },
+        {
+            "name": "coverage",
+            "state": "manual"
+        },
+        {
+            "name": "distribute_remove",
+            "state": "auto"
+        },
+        {
+            "name": "flake8",
+            "state": "manual"
+        },
+        {
+            "name": "mccabe",
+            "state": "auto"
+        },
+        {
+            "name": "packaging",
+            "state": "auto"
+        },
+        {
+            "name": "pip",
+            "state": "manual"
+        },
+        {
+            "name": "pycodestyle",
+            "state": "auto"
+        },
+        {
+            "name": "pyface",
+            "state": "auto"
+        },
+        {
+            "name": "pyflakes",
+            "state": "auto"
+        },
+        {
+            "name": "pygments",
+            "state": "auto"
+        },
+        {
+            "name": "pyparsing",
+            "state": "auto"
+        },
+        {
+            "name": "pyqt",
+            "state": "manual"
+        },
+        {
+            "name": "setuptools",
+            "state": "manual"
+        },
+        {
+            "name": "sip",
+            "state": "auto"
+        },
+        {
+            "name": "six",
+            "state": "manual"
+        },
+        {
+            "name": "traits",
+            "state": "manual"
+        },
+        {
+            "name": "traitsui",
+            "state": "manual"
+        }
+    ],
+    "metadata_version": "2.0",
+    "modifiers": {
+        "allow_any": [],
+        "allow_newer": [],
+        "allow_older": []
+    },
+    "repositories": {
+        "packages": [
+            "enthought/free"
+        ],
+        "runtimes": [
+            "enthought/free"
+        ]
+    },
+    "requirements": [
+        {
+            "name": "appdirs",
+            "repository": "enthought/free",
+            "sha256": "bfea50588488e47b2df937c02dc1d97b25d74b12786840109b7b654f40e95dfe",
+            "version": "1.4.3-1"
+        },
+        {
+            "name": "coverage",
+            "repository": "enthought/free",
+            "sha256": "9e9c603e70876e7c1b605fddd78096b117b0f62550f946ab07a20292178d028f",
+            "version": "4.3.4-1"
+        },
+        {
+            "name": "distribute_remove",
+            "repository": "enthought/free",
+            "sha256": "8dfa28992cebe732dc876f97b3157bfbdf16ca8e58f95e54da29d54e4ddd14b3",
+            "version": "1.0.0-4"
+        },
+        {
+            "name": "flake8",
+            "repository": "enthought/free",
+            "sha256": "a674750cac9b3afa562a7d45beeff4d904cfeb86aefea575fc2b49294ed46de2",
+            "version": "3.3.0-2"
+        },
+        {
+            "name": "mccabe",
+            "repository": "enthought/free",
+            "sha256": "5ef2bd3ad55c4da43a2a53550eed3fc64b7c0974c3d783449678346a059f8dab",
+            "version": "0.6.1-1"
+        },
+        {
+            "name": "packaging",
+            "repository": "enthought/free",
+            "sha256": "53dc57b6e7d3f586cddd5986ee4cbac780662be9d8f22fac7f0f9df98a7adc7d",
+            "version": "16.8-2"
+        },
+        {
+            "name": "pip",
+            "repository": "enthought/free",
+            "sha256": "7ff9328a9ddf5e17ff880397d32b601ef3465aa005259bacb97c77f1c7afb9ad",
+            "version": "10.0.1-1"
+        },
+        {
+            "name": "pycodestyle",
+            "repository": "enthought/free",
+            "sha256": "e41cbd5cd3bd519629f04462ffe44b2bf5c2cb462e727982193e6d740bd3473f",
+            "version": "2.3.1-1"
+        },
+        {
+            "name": "pyface",
+            "repository": "enthought/free",
+            "sha256": "2badd6aae65d0ab9c6017b76bd75ab25e437127da86ef159ad1350648de48530",
+            "version": "6.0.0-1"
+        },
+        {
+            "name": "pyflakes",
+            "repository": "enthought/free",
+            "sha256": "6e5fdff4788d03502e2f5a5abb2c5c7db2933e8f48444e0497ce6992299f3c31",
+            "version": "1.5.0-1"
+        },
+        {
+            "name": "pygments",
+            "repository": "enthought/free",
+            "sha256": "589c22af756ded210872dcee46c8dcfd59cfd852ed8ac87afb9ca0de65c0acd3",
+            "version": "2.2.0-1"
+        },
+        {
+            "name": "pyparsing",
+            "repository": "enthought/free",
+            "sha256": "07ef95bc2b52e1f6595f6c783ed455b774dc0770772cd2969dc600be7e6b3c69",
+            "version": "2.2.0-1"
+        },
+        {
+            "name": "pyqt",
+            "repository": "enthought/free",
+            "sha256": "a6c132e2687ecc42c57812fca6004d34a67993c3df2781843134b72e60ffa67a",
+            "version": "4.12-1"
+        },
+        {
+            "name": "setuptools",
+            "repository": "enthought/free",
+            "sha256": "ecc705bc92e3b8370d814142847fe7755f175ee40cb37470b7aae0bb68332615",
+            "version": "38.2.5-1"
+        },
+        {
+            "name": "sip",
+            "repository": "enthought/free",
+            "sha256": "61cc9b26f41e48852dff76106c0de15e27b0a662901e1372dec001e24da35eae",
+            "version": "4.19.2-2"
+        },
+        {
+            "name": "six",
+            "repository": "enthought/free",
+            "sha256": "928e26a637c7b5e610e1ea9af9b56c0f5e3d9553ac7ff5dcbce3aa23f89d2881",
+            "version": "1.10.0-1"
+        },
+        {
+            "name": "traits",
+            "repository": "enthought/free",
+            "sha256": "f4b843db7a78451e1365ae7f6b8376884da57ee7aa37f464596468db25b24c1c",
+            "version": "4.6.0-1"
+        },
+        {
+            "name": "traitsui",
+            "repository": "enthought/free",
+            "sha256": "8ae522d0a8bc12b79caa7465234da69ac3dfd5035181852595efe1f927c9f96c",
+            "version": "6.0.0-1"
+        }
+    ],
+    "runtime": {
+        "implementation": "cpython",
+        "platform": "win_x86_64",
+        "platform_abi": "msvc2015",
+        "repository": "enthought/free",
+        "sha256": "4b91c784f2f5c9260a6117c49a51c7ca7fd703da1d7b7c475867d34f8542e892",
+        "version": "3.6.0+7"
+    }
+}
