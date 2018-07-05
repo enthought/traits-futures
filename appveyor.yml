@@ -1,0 +1,34 @@
+build: false
+platform: x64
+
+environment:
+  global:
+    PYTHONUNBUFFERED: "1"
+    INSTALL_EDM_VERSION: "1.9.2"
+
+  matrix:
+    - CI_PYTHON_VERSION: "py27"
+      CI_TOOLKIT: "pyside"
+    - CI_PYTHON_VERSION: "py27"
+      CI_TOOLKIT: "pyqt"
+    - CI_PYTHON_VERSION: "py35"
+      CI_TOOLKIT: "pyqt"
+    - CI_PYTHON_VERSION: "py36"
+      CI_TOOLKIT: "pyqt"
+
+cache:
+  - C:\Users\appveyor\.cache -> appveyor-clean-cache.txt
+  - C:\Users\appveyor\AppData\Local\pip\Cache -> appveyor-clean-cache.txt
+
+init:
+  - ps: $Env:path = "C:/Enthought/edm;" + $Env:path
+  - ps: md C:/Users/appveyor/.cache -Force
+
+install:
+  - install-edm-windows.cmd
+  - edm install -y -e bootstrap click pyyaml setuptools
+  - edm run -e bootstrap -- python -m ci build
+
+test_script:
+  - edm run -e bootstrap -- python -m ci flake8
+  - edm run -e bootstrap -- python -m ci test
