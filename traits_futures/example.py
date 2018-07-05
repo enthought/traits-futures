@@ -9,14 +9,14 @@ from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
     background_job,
-    Job,
     JobController,
-    IDLE,
-    EXECUTING,
-    CANCELLING,
-    SUCCEEDED,
-    FAILED,
+    JobHandle,
     CANCELLED,
+    CANCELLING,
+    EXECUTING,
+    FAILED,
+    SUCCEEDED,
+    WAITING,
 )
 
 
@@ -39,7 +39,6 @@ def slow_square(n, timeout=10.0):
 
 class JobTabularAdapter(TabularAdapter):
     columns = [
-        ('Argument', 'args'),
         ('Job State', 'state'),
         ('Result', 'result'),
         ('Exception', 'exception'),
@@ -47,12 +46,12 @@ class JobTabularAdapter(TabularAdapter):
 
     #: Row colors for the table.
     colors = {
-        IDLE: 0xffffff,
-        EXECUTING: 0x8080ff,
-        CANCELLING: 0xff8000,
         CANCELLED: 0xff0000,
+        CANCELLING: 0xff8000,
+        EXECUTING: 0x8080ff,
         FAILED: 0xffc0ff,
         SUCCEEDED: 0x80ff80,
+        WAITING: 0xffffff,
     }
 
     #: Text to be displayed for the exception column
@@ -78,7 +77,7 @@ class SquaringHelper(HasStrictTraits):
     job_controller = Instance(JobController)
 
     #: List of the submitted jobs, for display purposes.
-    current_jobs = List(Job)
+    current_jobs = List(JobHandle)
 
     #: Start a new calculation.
     calculate = Button
@@ -94,12 +93,12 @@ class SquaringHelper(HasStrictTraits):
 
     def _calculate_fired(self):
         job = background_job(slow_square, self.input)
-        self.current_jobs.append(job)
-        self.job_controller.submit(job)
+        job_handle = self.job_controller.submit(job)
+        self.current_jobs.append(job_handle)
 
     def _cancel_all_fired(self):
         for job in self.current_jobs:
-            if job.state == "Executing":
+            if job.cancellable:
                 job.cancel()
 
     def _clear_completed_fired(self):
@@ -122,8 +121,10 @@ class SquaringHelper(HasStrictTraits):
                 VGroup(
                     UItem(
                         'current_jobs',
-                        editor=TabularEditor(adapter=JobTabularAdapter(),
-                                             auto_update=True),
+                        editor=TabularEditor(
+                            adapter=JobTabularAdapter(),
+                            auto_update=True,
+                        ),
                     ),
                 ),
             ),

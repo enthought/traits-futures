@@ -3,11 +3,12 @@ import unittest
 
 from six.moves import queue
 
-from traits_futures.job import Job
-from traits_futures.job_runner import (
+from traits_futures.job import (
+    Job,
     INTERRUPTED,
     RAISED,
     RETURNED,
+    STARTED,
 )
 
 
@@ -43,7 +44,7 @@ class TestJobRunner(unittest.TestCase):
 
     def test_successful_run(self):
         job = Job(callable=square, args=(11,))
-        runner = job.prepare(
+        job_handle, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -58,12 +59,15 @@ class TestJobRunner(unittest.TestCase):
 
         self.assertEqual(
             messages,
-            [(1729, (RETURNED, 121))],
+            [
+                (1729, (STARTED, None)),
+                (1729, (RETURNED, 121)),
+            ],
         )
 
     def test_failed_run(self):
         job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        runner = job.prepare(
+        job_handle, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -76,8 +80,12 @@ class TestJobRunner(unittest.TestCase):
         with self.assertRaises(queue.Empty):
             self.results_queue.get()
 
-        self.assertEqual(len(messages), 1)
-        job_id, (msg_type, msg_args) = messages[0]
+        self.assertEqual(len(messages), 2)
+        self.assertEqual(
+            messages[0],
+            (1729, (STARTED, None)),
+        )
+        job_id, (msg_type, msg_args) = messages[1]
         self.assertEqual(job_id, 1729)
         self.assertEqual(msg_type, RAISED)
         exc_type, exc_value, exc_tb = msg_args
@@ -86,13 +94,13 @@ class TestJobRunner(unittest.TestCase):
 
     def test_cancelled_run(self):
         job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        runner = job.prepare(
+        job_handle, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
         )
 
-        job.cancel()
+        job_handle.cancel()
 
         runner()
         messages = self._get_messages()

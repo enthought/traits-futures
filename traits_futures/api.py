@@ -1,7 +1,7 @@
 from traits_futures.job import (
     background_job,
-    Job,
-    IDLE,
+    JobHandle,
+    WAITING,
     EXECUTING,
     CANCELLING,
     SUCCEEDED,
@@ -12,9 +12,9 @@ from traits_futures.job_controller import JobController
 
 __all__ = [
     "background_job",
-    "Job",
     "JobController",
-    "IDLE",
+    "JobHandle",
+    "WAITING",
     "EXECUTING",
     "CANCELLING",
     "CANCELLED",
