@@ -27,7 +27,7 @@ init:
 install:
   - install-edm-windows.cmd
   - edm install -y -e bootstrap click pyyaml setuptools
-  - edm run -e bootstrap -- python -m ci build-devenv
+  - edm run -e bootstrap -- python -m ci build
 
 test_script:
   - edm run -e bootstrap -- python -m ci flake8
