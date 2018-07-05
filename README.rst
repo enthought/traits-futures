@@ -34,7 +34,7 @@ Note: build infrastructure for this repository is in progress, and these
 instructions will become less vague and easier to use once it's complete.
 
 There's an example Traits UI application in ``traits_futures.example``. After
-setting up a suitable development environment, you can run the example with:
+setting up a suitable development environment, you can run the example with::
 
     python -m traits_futures.example
 
