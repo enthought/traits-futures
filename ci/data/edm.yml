@@ -1,0 +1,5 @@
+# EDM configuration used for the various environments.
+store_url: https://packages.enthought.com
+
+repositories:
+- enthought/free
