@@ -13,7 +13,7 @@ def _marshal_exception(e):
     """
     exc_type = str(type(e))
     exc_value = str(e)
-    formatted_traceback = traceback.format_exc(e)
+    formatted_traceback = traceback.format_exc()
     return exc_type, exc_value, formatted_traceback
 
 
