@@ -21,9 +21,6 @@ CONFIGURATION = os.path.join(DEPLOY_ROOT, 'config.yaml')
 REQUIREMENTS_ROOT = os.path.abspath(os.path.join(DEPLOY_ROOT, 'requirements'))
 SOURCE_BUILD_FILE = os.path.join(DEPLOY_ROOT, 'source_builds.yaml')
 
-# Path to the system GIT to use.
-GIT = "git"
-
 # Platforms
 MACOS = "osx-x86_64"
 LINUX = "rh6-x86_64"
@@ -102,18 +99,6 @@ CORE_DEPS = [
     'traits',
     'traitsui',
 ]
-
-# Version-specific core dependencies.
-CORE_DEPS_PY27 = [
-    'futures',
-]
-
-CORE_DEPS_PY35 = []
-CORE_DEPS_PY36 = []
-
-# Modifiers used during bundle generation. These are extra arguments passed
-# to EDM's bundle generation functionality; e.g. ["--allow-newer", "envisage"]
-BUNDLE_MODIFIERS = []
 
 # Python-version-specific core dependencies. Dictionary mapping Python version
 # to list of requirements.
