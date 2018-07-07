@@ -177,6 +177,21 @@ def coverage(python_version, toolkit, branch, html, report):
         click.echo("All tests passed.")
 
 
+@cli.command()
+@python_version_option
+@toolkit_option
+def example(python_version, toolkit):
+    """
+    Run the example application.
+    """
+    pyenv = _get_devenv(python_version, toolkit)
+
+    example_cmd = [
+        "-m", "traits_futures.example",
+    ]
+    pyenv.python(example_cmd)
+
+
 @cli.command(name='regenerate-bundles')
 def regenerate_bundles():
     """
