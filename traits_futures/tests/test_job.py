@@ -186,6 +186,21 @@ class TestJob(unittest.TestCase):
 
         self.assertEqual(job_handle.result, 13)
 
+    def test_background_job_multiple_arguments(self):
+        job = background_job(pow, 3, 5, 7)
+        job_handle, runner = job.prepare(
+            job_id=47,
+            cancel_event=self.cancel_event,
+            results_queue=self.results_queue,
+        )
+        runner()
+
+        for job_id, message in self._get_messages():
+            self.assertEqual(job_id, 47)
+            job_handle.process_message(message)
+
+        self.assertEqual(job_handle.result, 5)
+
     def _get_messages(self):
         messages = []
         while True:

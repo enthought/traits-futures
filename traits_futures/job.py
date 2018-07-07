@@ -165,7 +165,7 @@ class Job(HasStrictTraits):
     callable = Callable
 
     #: Arguments to be passed to the callable.
-    args = Tuple(Any)
+    args = Tuple
 
     #: Keyword arguments to be passed to the callable.
     kwargs = Dict(Str, Any)
