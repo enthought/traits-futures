@@ -2,8 +2,8 @@
 # XXX Add logging
 
 from traits.api import (
-    Any, Bool, Callable, Dict, Enum, HasStrictTraits, Int, Property, Str,
-    Tuple)
+    Any, Bool, Callable, Dict, Either, Enum, HasStrictTraits, Int, Property,
+    Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 
@@ -91,7 +91,7 @@ class JobHandle(HasStrictTraits):
     #: The value gives a marshalled form of the exception: three
     #: strings representing the exception type, the exception value
     #: and the exception traceback.
-    exception = Tuple(Str, Str, Str)
+    exception = Either(None, Tuple(Str, Str, Str))
 
     #: True if we've received the final message from the background job,
     #: else False.
