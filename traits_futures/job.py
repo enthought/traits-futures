@@ -84,13 +84,14 @@ class JobHandle(HasStrictTraits):
     #: The state of this job.
     state = Enum(WAITING, EXECUTING, CANCELLING, SUCCEEDED, FAILED, CANCELLED)
 
-    #: Event fired when the callable completes normally. The payload
-    #: of the event is the result of the job.
+    #: Trait set when the callable completes normally.
     result = Any
 
-    #: Event fired when the callable fails due to an exception.
-    #: The payload contains exception information.
-    exception = Any
+    #: Trait set when the callable fails due to an exception.
+    #: The value gives a marshalled form of the exception: three
+    #: strings representing the exception type, the exception value
+    #: and the exception traceback.
+    exception = Tuple(Str, Str, Str)
 
     #: True if we've received the final message from the background job,
     #: else False.
