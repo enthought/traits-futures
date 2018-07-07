@@ -92,7 +92,7 @@ class TestJob(unittest.TestCase):
         self.assertEqual(msg_type, RAISED)
         exc_type, exc_value, exc_tb = msg_args
         self.assertIn("ZeroDivisionError", exc_type)
-        self.assertIn("division by zero", exc_value)
+        self.assertIn("by zero", exc_value)
         self.assertIn("ZeroDivisionError", exc_tb)
 
     def test_cancelled_run(self):

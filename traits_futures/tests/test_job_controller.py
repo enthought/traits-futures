@@ -89,7 +89,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.assertEqual(len(listener.exceptions), 1)
         exc_type, exc_value, exc_tb = listener.exceptions[0]
         self.assertIn("ZeroDivisionError", exc_type)
-        self.assertIn("division by zero", exc_value)
+        self.assertIn("by zero", exc_value)
         self.assertIn("ZeroDivisionError", exc_tb)
         self.assertEqual(
             listener.states,
