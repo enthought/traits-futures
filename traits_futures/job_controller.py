@@ -10,8 +10,6 @@ from six.moves import queue
 from traits.api import Any, Dict, HasStrictTraits, Instance, Int
 from traits.trait_notifiers import ui_dispatch
 
-from traits_futures.job import JobHandle
-
 
 class QueueWithCallback(object):
     """
@@ -48,7 +46,7 @@ class JobController(HasStrictTraits):
 
     _results_queue = Any
 
-    _current_jobs = Dict(Int, Instance(JobHandle))
+    _current_jobs = Dict(Int, Any)
 
     _job_ids = Instance(collections.Iterator)
 
