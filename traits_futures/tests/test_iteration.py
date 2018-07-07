@@ -112,7 +112,7 @@ class TestIterationNoUI(unittest.TestCase):
         self.assertEqual(iteration_future.state, FAILED)
         exc_type, exc_value, exc_traceback = iteration_future.exception
         self.assertIn("ZeroDivisionError", exc_type)
-        self.assertIn("division by zero", exc_value)
+        self.assertIn("by zero", exc_value)
         self.assertIn("traits_futures", exc_traceback)
         self.assertIn("iteration.py", exc_traceback)
 
