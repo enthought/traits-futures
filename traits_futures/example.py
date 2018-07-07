@@ -65,8 +65,7 @@ class JobTabularAdapter(TabularAdapter):
         if job.exception is None:
             return "None"
         else:
-            exc_type, exc_message, exc_traceback = job.exception
-            return exc_message
+            return job.exception[1]
 
 
 class SquaringHelper(HasStrictTraits):
