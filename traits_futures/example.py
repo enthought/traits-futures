@@ -89,7 +89,7 @@ class JobTabularAdapter(TabularAdapter):
         if job.exception is None:
             return "None"
         else:
-            return job.exception[0]
+            return job.exception[1]
 
 
 class SquaringHelper(HasStrictTraits):

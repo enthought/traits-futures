@@ -35,8 +35,8 @@ def square(n):
     return n * n
 
 
-def fail_with_exception(exc_type):
-    raise exc_type()
+def divide_by_zero():
+    5 / 0
 
 
 class TestJob(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestJob(unittest.TestCase):
 
     def test_successful_run(self):
         job = Job(callable=square, args=(11,))
-        job_handle, runner = job.prepare(
+        _, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -68,8 +68,8 @@ class TestJob(unittest.TestCase):
         )
 
     def test_failed_run(self):
-        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        job_handle, runner = job.prepare(
+        job = Job(callable=divide_by_zero)
+        _, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -92,10 +92,11 @@ class TestJob(unittest.TestCase):
         self.assertEqual(msg_type, RAISED)
         exc_type, exc_value, exc_tb = msg_args
         self.assertIn("ZeroDivisionError", exc_type)
+        self.assertIn("division by zero", exc_value)
         self.assertIn("ZeroDivisionError", exc_tb)
 
     def test_cancelled_run(self):
-        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
+        job = Job(callable=divide_by_zero)
         job_handle, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
@@ -116,7 +117,7 @@ class TestJob(unittest.TestCase):
             [(1729, (INTERRUPTED, None))],
         )
 
-        for job_id, message in messages:
+        for _, message in messages:
             job_handle.process_message(message)
 
         self.assertIsNone(job_handle.result)
@@ -205,7 +206,7 @@ class TestJob(unittest.TestCase):
         messages = []
         while True:
             msg = self.results_queue.get()
-            job_id, (msg_type, msg_args) = msg
+            _, (msg_type, _) = msg
             messages.append(msg)
             if msg_type in (INTERRUPTED, RAISED, RETURNED):
                 return messages
