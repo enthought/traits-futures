@@ -1,11 +1,11 @@
 # XXX Should have a JobState trait type.
 # XXX Add logging
 
-import traceback
-
 from traits.api import (
     Any, Bool, Callable, Dict, Enum, HasStrictTraits, Int, Property, Str,
     Tuple)
+
+from traits_futures.exception_handling import marshal_exception
 
 # Job runner messages.
 
@@ -42,17 +42,6 @@ FAILED = "Failed"
 CANCELLED = "Cancelled"
 
 
-def _marshal_exception(e):
-    """
-    Turn exception details into something that can be safely
-    transmitted across thread / process boundaries.
-    """
-    exc_type = str(type(e))
-    exc_value = str(e)
-    formatted_traceback = traceback.format_exc()
-    return exc_type, exc_value, formatted_traceback
-
-
 class JobRunner(object):
     """
     Wrapper around the actual callable to be run. This wrapper
@@ -77,7 +66,7 @@ class JobRunner(object):
             try:
                 result = self.callable(*self.args, **self.kwargs)
             except BaseException as e:
-                self.send(RAISED, _marshal_exception(e))
+                self.send(RAISED, marshal_exception(e))
             else:
                 self.send(RETURNED, result)
 
