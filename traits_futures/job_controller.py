@@ -7,38 +7,47 @@ import threading
 import concurrent.futures
 from six.moves import queue
 
+from pyface.qt.QtCore import QObject, Slot, Signal
 from traits.api import Any, Dict, HasStrictTraits, Instance, Int
-from traits.trait_notifiers import ui_dispatch
 
 
-class QueueWithCallback(object):
+class Signaller(QObject):
+    fired = Signal()
+
+
+class Responder(QObject):
+    def __init__(self, controller):
+        QObject.__init__(self)
+        self.controller = controller
+
+    @Slot()
+    def respond(self, *args, **kwargs):
+        self.controller._process_message()
+
+
+class WorkerQueue(object):
     """
-    Wrapper around a regular queue that fires a user-supplied callback exactly
-    once for each item placed on the queue.
+    Represents the worker end of the main thread's message queue. Despite
+    the name, this can't really be regarded as a queue any more. But
+    it _does_ have a put method, which is all the worker needs.
     """
-    def __init__(self, queue, callback):
-        # Underlying queue. May be any object that supports the get / put API
-        # of queue.Queue. This trait should be supplied at creation time.
-        self.queue = queue
+    def __init__(self, queue, responder):
+        self.message_queue = queue
+        self.responder = responder
+        self.signaller = None
 
-        # Callback that gets called (with no arguments) every time something is
-        # added to the underlying queue. This is used for example to alert the
-        # UI mainloop that it needs to check the queue at some point in the
-        # future.
-        self.callback = callback
+    def put(self, item):
+        # Initialize the Signaller lazily, because we want to make sure
+        # to create it on the worker thread. (XXX Test what happens
+        # if we create it on the main thread. It may not matter.)
+        if self.signaller is None:
+            self.signaller = Signaller()
+            # XXX We should probably do the corresponding disconnect at some
+            # point.
+            self.signaller.fired.connect(self.responder.respond)
 
-    def put(self, item, block=True, timeout=None):
-        """
-        Put an item into the queue.
-        """
-        self.queue.put(item, block=block, timeout=timeout)
-        self.callback()
-
-    def get(self, block=True, timeout=None):
-        """
-        Remove and return an item from the queue.
-        """
-        return self.queue.get(block=block, timeout=timeout)
+        self.message_queue.put(item)
+        self.signaller.fired.emit()
 
 
 class JobController(HasStrictTraits):
@@ -50,22 +59,26 @@ class JobController(HasStrictTraits):
 
     _job_ids = Instance(collections.Iterator)
 
+    _responder = Instance(Responder)
+
+    def __responder_default(self):
+        # XXX Circular reference!
+        return Responder(self)
+
     def __results_queue_default(self):
         # The default message queue ties into a running TraitsUI session.
-        return QueueWithCallback(
-            queue=queue.Queue(),
-            callback=lambda: ui_dispatch(self._process_message),
-        )
+        return queue.Queue()
 
     def __job_ids_default(self):
         return itertools.count()
 
     def submit(self, job):
         job_id = next(self._job_ids)
+        worker_queue = WorkerQueue(self._results_queue, self._responder)
         job_handle, runner = job.prepare(
             job_id=job_id,
             cancel_event=threading.Event(),
-            results_queue=self._results_queue,
+            results_queue=worker_queue,
         )
         self._current_jobs[job_id] = job_handle
         self.executor.submit(runner)
