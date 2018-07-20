@@ -4,14 +4,16 @@ import unittest
 class TestApi(unittest.TestCase):
     def test_imports(self):
         from traits_futures.api import (  # noqa
+            background_job,
+            CANCELLED,
+            CANCELLING,
+            EXECUTING,
+            FAILED,
             Job,
             JobController,
-            IDLE,
-            EXECUTING,
-            CANCELLING,
+            JobHandle,
             SUCCEEDED,
-            FAILED,
-            CANCELLED,
+            WAITING,
         )
 
     def test___all__(self):

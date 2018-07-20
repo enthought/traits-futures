@@ -7,7 +7,8 @@ from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.job import (
     Job,
-    IDLE,
+    JobHandle,
+    WAITING,
     EXECUTING,
     CANCELLING,
     SUCCEEDED,
@@ -21,18 +22,12 @@ def square(n):
     return n * n
 
 
-def fail_with_exception(exc_type):
-    raise exc_type()
-
-
-def notify_at_start(notify_event, wait_event):
-    notify_event.set()
-    wait_event.wait()
-    return 42
+def divide_by_zero():
+    3 / 0
 
 
 class Listener(HasStrictTraits):
-    job = Instance(Job)
+    job = Instance(JobHandle)
 
     results = List
 
@@ -40,15 +35,15 @@ class Listener(HasStrictTraits):
 
     states = List
 
-    @on_trait_change('job:result')
+    @on_trait_change("job:result")
     def record_result(self, result):
         self.results.append(result)
 
-    @on_trait_change('job:exception')
+    @on_trait_change("job:exception")
     def record_exception(self, exception):
         self.exceptions.append(exception)
 
-    @on_trait_change('job:state')
+    @on_trait_change("job:state")
     def record_state_change(self, obj, name, old_state, new_state):
         if not self.states:
             self.states.append(old_state)
@@ -71,41 +66,42 @@ class TestJobControllerNoUI(unittest.TestCase):
 
     def test_submit_simple_job(self):
         job = Job(callable=square, args=(10,))
-        listener = Listener(job=job)
+        job_handle = self.controller.submit(job)
+        listener = Listener(job=job_handle)
 
-        self.controller.submit(job)
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [100])
         self.assertEqual(listener.exceptions, [])
         self.assertEqual(
             listener.states,
-            [IDLE, EXECUTING, SUCCEEDED],
+            [WAITING, EXECUTING, SUCCEEDED],
         )
 
     def test_submit_failing_job(self):
-        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        listener = Listener(job=job)
+        job = Job(callable=divide_by_zero)
+        job_handle = self.controller.submit(job)
+        listener = Listener(job=job_handle)
 
-        self.controller.submit(job)
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
         self.assertEqual(len(listener.exceptions), 1)
         exc_type, exc_value, exc_tb = listener.exceptions[0]
-        self.assertIn('ZeroDivisionError', exc_type)
-        self.assertIn('ZeroDivisionError', exc_tb)
+        self.assertIn("ZeroDivisionError", exc_type)
+        self.assertIn("by zero", exc_value)
+        self.assertIn("ZeroDivisionError", exc_tb)
         self.assertEqual(
             listener.states,
-            [IDLE, EXECUTING, FAILED],
+            [WAITING, EXECUTING, FAILED],
         )
 
     def test_cancel(self):
         job = Job(callable=square, args=(10,))
-        listener = Listener(job=job)
+        job_handle = self.controller.submit(job)
+        listener = Listener(job=job_handle)
 
-        self.controller.submit(job)
-        job.cancel()
+        job_handle.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
@@ -114,16 +110,16 @@ class TestJobControllerNoUI(unittest.TestCase):
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
             listener.states,
-            [IDLE, EXECUTING, CANCELLING, CANCELLED],
+            [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_after_start(self):
         job = Job(callable=square, args=(3,))
-        listener = Listener(job=job)
+        job_handle = self.controller.submit(job)
+        listener = Listener(job=job_handle)
 
-        self.controller.submit(job)
-        self.controller.run_loop_until(lambda: job.state == EXECUTING)
-        job.cancel()
+        self.controller.run_loop_until(lambda: job_handle.state == EXECUTING)
+        job_handle.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
@@ -132,36 +128,36 @@ class TestJobControllerNoUI(unittest.TestCase):
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
             listener.states,
-            [IDLE, EXECUTING, CANCELLING, CANCELLED],
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_failing(self):
-        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        listener = Listener(job=job)
+        job = Job(callable=divide_by_zero)
+        job_handle = self.controller.submit(job)
+        listener = Listener(job=job_handle)
 
-        self.controller.submit(job)
-        job.cancel()
+        job_handle.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
         self.assertEqual(listener.exceptions, [])
         self.assertEqual(
             listener.states,
-            [IDLE, EXECUTING, CANCELLING, CANCELLED],
+            [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_failing_after_start(self):
-        job = Job(callable=fail_with_exception, args=(ZeroDivisionError,))
-        listener = Listener(job=job)
+        job = Job(callable=divide_by_zero)
+        job_handle = self.controller.submit(job)
+        listener = Listener(job=job_handle)
 
-        self.controller.submit(job)
-        self.controller.run_loop_until(lambda: job.state == EXECUTING)
-        job.cancel()
+        self.controller.run_loop_until(lambda: job_handle.state == EXECUTING)
+        job_handle.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
         self.assertEqual(listener.exceptions, [])
         self.assertEqual(
             listener.states,
-            [IDLE, EXECUTING, CANCELLING, CANCELLED],
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
