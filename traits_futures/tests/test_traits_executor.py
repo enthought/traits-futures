@@ -5,7 +5,9 @@ import unittest
 import concurrent.futures
 from six.moves import queue
 
-from traits.api import HasStrictTraits, Instance, List, on_trait_change
+from traits.api import (
+    HasStrictTraits, Instance, List, on_trait_change,
+)
 
 from traits_futures.background_call import (
     BackgroundCall,
@@ -29,23 +31,11 @@ def divide_by_zero():
 
 
 class Listener(HasStrictTraits):
-    job = Instance(CallFuture)
-
-    results = List
-
-    exceptions = List
+    future = Instance(CallFuture)
 
     states = List
 
-    @on_trait_change("job:result")
-    def record_result(self, result):
-        self.results.append(result)
-
-    @on_trait_change("job:exception")
-    def record_exception(self, exception):
-        self.exceptions.append(exception)
-
-    @on_trait_change("job:state")
+    @on_trait_change("future:state")
     def record_state_change(self, obj, name, old_state, new_state):
         if not self.states:
             self.states.append(old_state)
@@ -68,13 +58,14 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_submit_simple_job(self):
         job = BackgroundCall(callable=square, args=(10,))
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [100])
-        self.assertEqual(listener.exceptions, [])
+        self.assertEqual(future.result, 100)
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(
             listener.states,
             [WAITING, EXECUTING, SUCCEEDED],
@@ -82,14 +73,15 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_submit_failing_job(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(len(listener.exceptions), 1)
-        exc_type, exc_value, exc_tb = listener.exceptions[0]
+        with self.assertRaises(AttributeError):
+            future.result
+        self.assertIsNotNone(future.exception)
+        exc_type, exc_value, exc_tb = future.exception
         self.assertIn("ZeroDivisionError", exc_type)
         self.assertIn("by zero", exc_value)
         self.assertIn("ZeroDivisionError", exc_tb)
@@ -100,14 +92,17 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel(self):
         job = BackgroundCall(callable=square, args=(10,))
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        job_handle.cancel()
+        future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
+
         # Here we cancelled before processing any of the
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
@@ -117,15 +112,17 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel_after_start(self):
         job = BackgroundCall(callable=square, args=(3,))
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        self.controller.run_loop_until(lambda: job_handle.state == EXECUTING)
-        job_handle.cancel()
+        self.controller.run_loop_until(lambda: future.state == EXECUTING)
+        future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         # Here we cancelled before processing any of the
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
@@ -135,14 +132,16 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel_failing(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        job_handle.cancel()
+        future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(
             listener.states,
             [WAITING, CANCELLING, CANCELLED],
@@ -150,15 +149,17 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel_failing_after_start(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        self.controller.run_loop_until(lambda: job_handle.state == EXECUTING)
-        job_handle.cancel()
+        self.controller.run_loop_until(lambda: future.state == EXECUTING)
+        future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(
             listener.states,
             [WAITING, EXECUTING, CANCELLING, CANCELLED],

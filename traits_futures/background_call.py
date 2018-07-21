@@ -4,7 +4,7 @@ Background task consisting of a simple callable.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, Either, Enum, HasStrictTraits, Int, Property,
+    Any, Bool, Callable, Dict, Enum, HasStrictTraits, Int, Property,
     Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
@@ -105,34 +105,50 @@ CallFutureState = Enum(
 
 class CallFuture(HasStrictTraits):
     """
-    Object representing the front-end handle to a background job.
+    Object representing the front-end handle to a background call.
     """
-    #: The state of this job.
+    #: The state of the background call.
     state = CallFutureState
 
-    #: Trait set when the callable completes normally.
-    result = Any
-
-    #: Trait set when the callable fails due to an exception.
-    #: The value gives a marshalled form of the exception: three
-    #: strings representing the exception type, the exception value
-    #: and the exception traceback.
-    exception = Either(None, Tuple(Str, Str, Str))
-
     #: True if we've received the final message from the background job,
-    #: else False.
+    #: else False. `True` indicates either that the background job
+    #: succeeded, or that it raised, or that it was cancelled.
     completed = Property(Bool, depends_on='state')
 
-    #: True if this job can be cancelled (and hasn't already been cancelled),
-    #: else False.
+    #: True if this job can be cancelled, else False.
     cancellable = Property(Bool, depends_on='state')
 
-    #: Private event used to request cancellation of this job. Users
-    #: should call the cancel() method instead of using this event.
-    _cancel_event = Any
+    @property
+    def result(self):
+        """
+        Result of the background call. Raises an ``Attributerror`` on access if
+        no result is available (because the background call failed, was
+        cancelled, or has not yet completed).
 
-    #: The id of this job. Potentially useful for debugging and logging.
-    _job_id = Int()
+        Note: this is deliberately a regular Python property rather than a
+        Trait, to discourage users from attaching Traits listeners to
+        it. Listen to the state or its derived traits instead.
+        """
+        if self.state == SUCCEEDED:
+            return self._result
+        else:
+            raise AttributeError("No result available for this task.")
+
+    @property
+    def exception(self):
+        """
+        Information about any exception raised by the background call. Raises
+        an ``AttributeError`` on access if no exception was raised (because the
+        call succeeded, was cancelled, or has not yet completed).
+
+        Note: this is deliberately a regular Python property rather than a
+        Trait, to discourage users from attaching Traits listeners to
+        it. Listen to the state or its derived traits instead.
+        """
+        if self.state == FAILED:
+            return self._exception
+        else:
+            raise AttributeError("No exception has been raised for this task.")
 
     def cancel(self):
         """
@@ -157,6 +173,21 @@ class CallFuture(HasStrictTraits):
         getattr(self, method_name)(msg_args)
         return self.completed
 
+    # Private traits ##########################################################
+
+    #: Private event used to request cancellation of this job. Users
+    #: should call the cancel() method instead of using this event.
+    _cancel_event = Any
+
+    #: The id of this job. Potentially useful for debugging and logging.
+    _job_id = Int()
+
+    #: Result from the background task.
+    _result = Any
+
+    #: Exception information from the background task.
+    _exception = Tuple
+
     # Private methods #########################################################
 
     def _process_interrupted(self, args):
@@ -171,7 +202,7 @@ class CallFuture(HasStrictTraits):
     def _process_raised(self, args):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
-            self.exception = args
+            self._exception = args
             self.state = FAILED
         else:
             self.state = CANCELLED
@@ -179,7 +210,7 @@ class CallFuture(HasStrictTraits):
     def _process_returned(self, args):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
-            self.result = args
+            self._result = args
             self.state = SUCCEEDED
         else:
             self.state = CANCELLED
@@ -208,12 +239,12 @@ class BackgroundCall(HasStrictTraits):
         """
         Prepare the job for running.
 
-        Returns a pair (job_handle, background_call), where
-        the job_handle acts as a handle for job cancellation, etc.,
+        Returns a pair (future, background_call), where
+        the future acts as a handle for job cancellation, etc.,
         and the background_call is a callable to be executed
         in the background.
         """
-        handle = CallFuture(
+        future = CallFuture(
             _job_id=job_id,
             _cancel_event=cancel_event,
         )
@@ -226,7 +257,7 @@ class BackgroundCall(HasStrictTraits):
             results_queue=results_queue,
             cancel_event=cancel_event,
         )
-        return handle, runner
+        return future, runner
 
 
 def background_call(callable, *args, **kwargs):

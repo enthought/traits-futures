@@ -5,7 +5,9 @@ import time
 
 import concurrent.futures
 
-from traits.api import Button, HasStrictTraits, Instance, List, Property, Range
+from traits.api import (
+    Button, Event, HasStrictTraits, Instance, List, on_trait_change,
+    Property, Range, Unicode)
 from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
@@ -22,12 +24,13 @@ from traits_futures.api import (
 )
 
 
-def slow_square(n, timeout=10.0):
+def slow_square(n, timeout=5.0):
     """
-    Compute the square of an integer, slowly.
+    Compute the square of an integer, slowly and unreliably.
 
     The input should be in the range 0-100. The larger
-    the input, the longer the expected time to complete the operation.
+    the input, the longer the expected time to complete the operation,
+    and the higher the likelihood of timeout.
     """
     mean_time = (n + 5.0) / 5.0
     sleep_time = random.expovariate(1.0 / mean_time)
@@ -42,8 +45,6 @@ def slow_square(n, timeout=10.0):
 class JobTabularAdapter(TabularAdapter):
     columns = [
         ('Job State', 'state'),
-        ('Result', 'result'),
-        ('Exception', 'exception'),
     ]
 
     #: Row colors for the table.
@@ -56,75 +57,86 @@ class JobTabularAdapter(TabularAdapter):
         WAITING: 0xffffff,
     }
 
-    #: Text to be displayed for the exception column
-    exception_text = Property
+    #: Text to be displayed for the state column.
+    state_text = Property(Unicode)
 
     def _get_bg_color(self):
         return self.colors[self.item.state]
 
-    def _get_exception_text(self):
+    def _get_state_text(self):
         job = self.item
-        if job.exception is None:
-            return "None"
-        else:
-            return job.exception[1]
+        state = job.state
+        state_text = state.title()
+        if state == SUCCEEDED:
+            state_text += ": result={}".format(job.result)
+        elif state == FAILED:
+            state_text += ": {}".format(job.exception[1])
+        return state_text
 
 
 class SquaringHelper(HasStrictTraits):
     #: The executor backing the controller.
     executor = Instance(concurrent.futures.Executor)
 
-    #: The controller for the background jobs.
-    job_controller = Instance(TraitsExecutor)
+    #: The Traits executor for the background jobs.
+    traits_executor = Instance(TraitsExecutor)
 
     #: List of the submitted jobs, for display purposes.
-    current_jobs = List(CallFuture)
+    current_futures = List(CallFuture)
 
-    #: Start a new calculation.
-    calculate = Button
+    #: Start a new squaring operation.
+    square = Button()
 
     #: Cancel all currently executing jobs.
-    cancel_all = Button
+    cancel_all = Button()
 
     #: Clear completed jobs from the list of current jobs.
-    clear_completed = Button
+    clear_completed = Button()
 
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
-    def _calculate_fired(self):
-        job = background_call(slow_square, self.input)
-        job_handle = self.job_controller.submit(job)
-        self.current_jobs.append(job_handle)
+    #: Event fired to indicate that the table needs refreshing.
+    update_table = Event()
+
+    def _square_fired(self):
+        future = self.traits_executor.submit(
+            background_call(slow_square, self.input)
+        )
+        self.current_futures.append(future)
 
     def _cancel_all_fired(self):
-        for job in self.current_jobs:
-            if job.cancellable:
-                job.cancel()
+        for future in self.current_futures:
+            if future.cancellable:
+                future.cancel()
 
     def _clear_completed_fired(self):
-        for job in list(self.current_jobs):
-            if job.completed:
-                self.current_jobs.remove(job)
+        for future in list(self.current_futures):
+            if future.completed:
+                self.current_futures.remove(future)
 
-    def _job_controller_default(self):
+    def _traits_executor_default(self):
         return TraitsExecutor(executor=self.executor)
+
+    @on_trait_change('current_futures:state')
+    def request_table_update(self):
+        self.update_table = True
 
     def default_traits_view(self):
         return View(
             HGroup(
                 VGroup(
                     Item('input'),
-                    UItem('calculate'),
+                    UItem('square'),
                     UItem('cancel_all'),
                     UItem('clear_completed'),
                 ),
                 VGroup(
                     UItem(
-                        'current_jobs',
+                        'current_futures',
                         editor=TabularEditor(
                             adapter=JobTabularAdapter(),
-                            auto_update=True,
+                            update='update_table',
                         ),
                     ),
                 ),
