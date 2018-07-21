@@ -73,7 +73,12 @@ class CallBackgroundTask(object):
 # CallFuture states. These represent the future's current
 # state of knowledge of the background task. A task starts out
 # in WAITING state and ends in one of the three final states:
-# SUCCEEDED, FAILED, OR CANCELLED.
+# SUCCEEDED, FAILED, OR CANCELLED. The possible progressions of states are:
+#
+# WAITING -> CANCELLING -> CANCELLED
+# WAITING -> EXECUTING -> CANCELLING -> CANCELLED
+# WAITING -> EXECUTING -> FAILED
+# WAITING -> EXECUTING -> SUCCEEDED
 
 #: Task queued, waiting to be executed.
 WAITING = "waiting"
@@ -187,6 +192,9 @@ class CallFuture(HasStrictTraits):
 
 
 class BackgroundCall(HasStrictTraits):
+    """
+    Object representing the background call to be executed.
+    """
     #: The callable to be executed.
     callable = Callable
 
