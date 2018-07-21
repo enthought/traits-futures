@@ -25,6 +25,7 @@ from traits_futures.api import (
 def slow_square(n, timeout=5.0):
     """
     Compute the square of an integer, slowly and unreliably.
+
     The input should be in the range 0-100. The larger
     the input, the longer the expected time to complete the operation,
     and the higher the likelihood of timeout.
@@ -74,14 +75,14 @@ class SquaringHelper(HasStrictTraits):
     #: The executor backing the controller.
     executor = Instance(concurrent.futures.Executor)
 
-    #: The controller for the background jobs.
+    #: The Traits executor for the background jobs.
     traits_executor = Instance(TraitsExecutor)
 
     #: List of the submitted jobs, for display purposes.
     current_futures = List(CallFuture)
 
-    #: Start a new calculation.
-    calculate = Button()
+    #: Start a new squaring operation.
+    square = Button()
 
     #: Cancel all currently executing jobs.
     cancel_all = Button()
@@ -92,9 +93,10 @@ class SquaringHelper(HasStrictTraits):
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
-    def _calculate_fired(self):
-        job = background_call(slow_square, self.input)
-        future = self.traits_executor.submit(job)
+    def _square_fired(self):
+        future = self.traits_executor.submit(
+            background_call(slow_square, self.input)
+        )
         self.current_futures.append(future)
 
     def _cancel_all_fired(self):
@@ -115,7 +117,7 @@ class SquaringHelper(HasStrictTraits):
             HGroup(
                 VGroup(
                     Item('input'),
-                    UItem('calculate'),
+                    UItem('square'),
                     UItem('cancel_all'),
                     UItem('clear_completed'),
                 ),
