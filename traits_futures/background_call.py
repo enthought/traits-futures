@@ -92,9 +92,6 @@ class CallFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a background job.
     """
-    #: The id of this job.
-    job_id = Int()
-
     #: The state of this job.
     state = CallFutureState
 
@@ -115,8 +112,12 @@ class CallFuture(HasStrictTraits):
     #: else False.
     cancellable = Property(Bool, depends_on='state')
 
-    #: Event used to request cancellation of this job.
-    cancel_event = Any
+    #: Private event used to request cancellation of this job. Users
+    #: should call the cancel() method instead of using this event.
+    _cancel_event = Any
+
+    #: The id of this job. Potentially useful for debugging and logging.
+    _job_id = Int()
 
     def cancel(self):
         """
@@ -129,7 +130,7 @@ class CallFuture(HasStrictTraits):
             # will ensure that the Cancel button can only be pushed if
             # we're in a cancellable state.
             raise RuntimeError("Can only cancel a queued or executing job.")
-        self.cancel_event.set()
+        self._cancel_event.set()
         self.state = CANCELLING
 
     def process_message(self, message):
@@ -195,8 +196,8 @@ class BackgroundCall(HasStrictTraits):
         in the background.
         """
         handle = CallFuture(
-            job_id=job_id,
-            cancel_event=cancel_event,
+            _job_id=job_id,
+            _cancel_event=cancel_event,
         )
         runner = CallBackgroundTask(
             job_id=job_id,
