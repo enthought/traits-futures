@@ -127,13 +127,6 @@ class CallFuture(HasStrictTraits):
     #: else False.
     cancellable = Property(Bool, depends_on='state')
 
-    #: Private event used to request cancellation of this job. Users
-    #: should call the cancel() method instead of using this event.
-    _cancel_event = Any
-
-    #: The id of this job. Potentially useful for debugging and logging.
-    _job_id = Int()
-
     def cancel(self):
         """
         Method that can be called from the main thread to
@@ -156,6 +149,15 @@ class CallFuture(HasStrictTraits):
         method_name = "_process_{}".format(msg_type)
         getattr(self, method_name)(msg_args)
         return self.completed
+
+    # Private traits ##########################################################
+
+    #: Private event used to request cancellation of this job. Users
+    #: should call the cancel() method instead of using this event.
+    _cancel_event = Any
+
+    #: The id of this job. Potentially useful for debugging and logging.
+    _job_id = Int()
 
     # Private methods #########################################################
 
@@ -208,12 +210,12 @@ class BackgroundCall(HasStrictTraits):
         """
         Prepare the job for running.
 
-        Returns a pair (job_handle, background_call), where
-        the job_handle acts as a handle for job cancellation, etc.,
+        Returns a pair (future, background_call), where
+        the future acts as a handle for job cancellation, etc.,
         and the background_call is a callable to be executed
         in the background.
         """
-        handle = CallFuture(
+        future = CallFuture(
             _job_id=job_id,
             _cancel_event=cancel_event,
         )
@@ -226,7 +228,7 @@ class BackgroundCall(HasStrictTraits):
             results_queue=results_queue,
             cancel_event=cancel_event,
         )
-        return handle, runner
+        return future, runner
 
 
 def background_call(callable, *args, **kwargs):

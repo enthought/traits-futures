@@ -29,7 +29,7 @@ def divide_by_zero():
 
 
 class Listener(HasStrictTraits):
-    job = Instance(CallFuture)
+    future = Instance(CallFuture)
 
     results = List
 
@@ -37,15 +37,15 @@ class Listener(HasStrictTraits):
 
     states = List
 
-    @on_trait_change("job:result")
+    @on_trait_change("future:result")
     def record_result(self, result):
         self.results.append(result)
 
-    @on_trait_change("job:exception")
+    @on_trait_change("future:exception")
     def record_exception(self, exception):
         self.exceptions.append(exception)
 
-    @on_trait_change("job:state")
+    @on_trait_change("future:state")
     def record_state_change(self, obj, name, old_state, new_state):
         if not self.states:
             self.states.append(old_state)
@@ -68,8 +68,8 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_submit_simple_job(self):
         job = BackgroundCall(callable=square, args=(10,))
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
         self.controller.run_loop()
 
@@ -82,8 +82,8 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_submit_failing_job(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
         self.controller.run_loop()
 
@@ -100,10 +100,10 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel(self):
         job = BackgroundCall(callable=square, args=(10,))
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        job_handle.cancel()
+        future.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
@@ -117,11 +117,11 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel_after_start(self):
         job = BackgroundCall(callable=square, args=(3,))
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        self.controller.run_loop_until(lambda: job_handle.state == EXECUTING)
-        job_handle.cancel()
+        self.controller.run_loop_until(lambda: future.state == EXECUTING)
+        future.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
@@ -135,10 +135,10 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel_failing(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        job_handle.cancel()
+        future.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])
@@ -150,11 +150,11 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
     def test_cancel_failing_after_start(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle = self.controller.submit(job)
-        listener = Listener(job=job_handle)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        self.controller.run_loop_until(lambda: job_handle.state == EXECUTING)
-        job_handle.cancel()
+        self.controller.run_loop_until(lambda: future.state == EXECUTING)
+        future.cancel()
         self.controller.run_loop()
 
         self.assertEqual(listener.results, [])

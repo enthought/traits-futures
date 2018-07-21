@@ -22,12 +22,12 @@ from traits_futures.api import (
 )
 
 
-def slow_square(n, timeout=10.0):
+def slow_square(n, timeout=5.0):
     """
-    Compute the square of an integer, slowly.
-
+    Compute the square of an integer, slowly and unreliably.
     The input should be in the range 0-100. The larger
-    the input, the longer the expected time to complete the operation.
+    the input, the longer the expected time to complete the operation,
+    and the higher the likelihood of timeout.
     """
     mean_time = (n + 5.0) / 5.0
     sleep_time = random.expovariate(1.0 / mean_time)
@@ -75,39 +75,39 @@ class SquaringHelper(HasStrictTraits):
     executor = Instance(concurrent.futures.Executor)
 
     #: The controller for the background jobs.
-    job_controller = Instance(TraitsExecutor)
+    traits_executor = Instance(TraitsExecutor)
 
     #: List of the submitted jobs, for display purposes.
-    current_jobs = List(CallFuture)
+    current_futures = List(CallFuture)
 
     #: Start a new calculation.
-    calculate = Button
+    calculate = Button()
 
     #: Cancel all currently executing jobs.
-    cancel_all = Button
+    cancel_all = Button()
 
     #: Clear completed jobs from the list of current jobs.
-    clear_completed = Button
+    clear_completed = Button()
 
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
     def _calculate_fired(self):
         job = background_call(slow_square, self.input)
-        job_handle = self.job_controller.submit(job)
-        self.current_jobs.append(job_handle)
+        future = self.traits_executor.submit(job)
+        self.current_futures.append(future)
 
     def _cancel_all_fired(self):
-        for job in self.current_jobs:
-            if job.cancellable:
-                job.cancel()
+        for future in self.current_futures:
+            if future.cancellable:
+                future.cancel()
 
     def _clear_completed_fired(self):
-        for job in list(self.current_jobs):
-            if job.completed:
-                self.current_jobs.remove(job)
+        for future in list(self.current_futures):
+            if future.completed:
+                self.current_futures.remove(future)
 
-    def _job_controller_default(self):
+    def _traits_executor_default(self):
         return TraitsExecutor(executor=self.executor)
 
     def default_traits_view(self):
@@ -121,7 +121,7 @@ class SquaringHelper(HasStrictTraits):
                 ),
                 VGroup(
                     UItem(
-                        'current_jobs',
+                        'current_futures',
                         editor=TabularEditor(
                             adapter=JobTabularAdapter(),
                             auto_update=True,
