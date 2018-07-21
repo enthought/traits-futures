@@ -185,11 +185,7 @@ def example(python_version, toolkit):
     Run the example application.
     """
     pyenv = _get_devenv(python_version, toolkit)
-
-    example_cmd = [
-        "-m", "traits_futures.example",
-    ]
-    pyenv.python(example_cmd)
+    pyenv.python(["examples/background_call.py"])
 
 
 @cli.command(name='regenerate-bundles')
