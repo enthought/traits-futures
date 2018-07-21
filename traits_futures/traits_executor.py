@@ -47,7 +47,7 @@ class TraitsExecutor(HasStrictTraits):
 
     _results_queue = Any
 
-    _current_jobs = Dict(Int, Any)
+    _current_futures = Dict(Int, Any)
 
     _job_ids = Instance(collections.Iterator)
 
@@ -63,17 +63,17 @@ class TraitsExecutor(HasStrictTraits):
 
     def submit(self, job):
         job_id = next(self._job_ids)
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=job_id,
             cancel_event=threading.Event(),
             results_queue=self._results_queue,
         )
-        self._current_jobs[job_id] = job_handle
+        self._current_futures[job_id] = future
         self.executor.submit(runner)
-        return job_handle
+        return future
 
     def run_loop(self):
-        while self._current_jobs:
+        while self._current_futures:
             self._process_message()
 
     def run_loop_until(self, condition):
@@ -82,7 +82,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def _process_message(self):
         job_id, msg = self._results_queue.get()
-        job = self._current_jobs[job_id]
+        job = self._current_futures[job_id]
         done = job.process_message(msg)
         if done:
-            self._current_jobs.pop(job_id)
+            self._current_futures.pop(job_id)

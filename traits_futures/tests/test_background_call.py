@@ -99,13 +99,13 @@ class TestBackgroundCall(unittest.TestCase):
 
     def test_cancelled_run(self):
         job = BackgroundCall(callable=divide_by_zero)
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
         )
 
-        job_handle.cancel()
+        future.cancel()
 
         runner()
         messages = self._get_messages()
@@ -120,46 +120,46 @@ class TestBackgroundCall(unittest.TestCase):
         )
 
         for _, message in messages:
-            job_handle.process_message(message)
+            future.process_message(message)
 
-        self.assertIsNone(job_handle.result)
-        self.assertIsNone(job_handle.exception)
-        self.assertEqual(job_handle.state, CANCELLED)
+        self.assertIsNone(future.result)
+        self.assertIsNone(future.exception)
+        self.assertEqual(future.state, CANCELLED)
 
     def test_cancellable(self):
         job = BackgroundCall(callable=square, args=(13,))
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
         )
         runner()
 
-        self.assertTrue(job_handle.cancellable)
+        self.assertTrue(future.cancellable)
         for job_id, message in self._get_messages():
             self.assertEqual(job_id, 47)
-            job_handle.process_message(message)
+            future.process_message(message)
 
-        self.assertFalse(job_handle.cancellable)
+        self.assertFalse(future.cancellable)
 
     def test_cancel_twice(self):
         job = BackgroundCall(callable=square, args=(13,))
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
         )
         runner()
 
-        self.assertTrue(job_handle.cancellable)
-        job_handle.cancel()
-        self.assertFalse(job_handle.cancellable)
+        self.assertTrue(future.cancellable)
+        future.cancel()
+        self.assertFalse(future.cancellable)
         with self.assertRaises(RuntimeError):
-            job_handle.cancel()
+            future.cancel()
 
     def test_cancel_completed(self):
         job = BackgroundCall(callable=square, args=(13,))
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -168,15 +168,15 @@ class TestBackgroundCall(unittest.TestCase):
 
         for job_id, message in self._get_messages():
             self.assertEqual(job_id, 47)
-            job_handle.process_message(message)
+            future.process_message(message)
 
-        self.assertFalse(job_handle.cancellable)
+        self.assertFalse(future.cancellable)
         with self.assertRaises(RuntimeError):
-            job_handle.cancel()
+            future.cancel()
 
     def test_background_call(self):
         job = background_call(int, "1101", base=2)
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -185,13 +185,13 @@ class TestBackgroundCall(unittest.TestCase):
 
         for job_id, message in self._get_messages():
             self.assertEqual(job_id, 47)
-            job_handle.process_message(message)
+            future.process_message(message)
 
-        self.assertEqual(job_handle.result, 13)
+        self.assertEqual(future.result, 13)
 
     def test_background_call_multiple_arguments(self):
         job = background_call(pow, 3, 5, 7)
-        job_handle, runner = job.prepare(
+        future, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
             results_queue=self.results_queue,
@@ -200,9 +200,9 @@ class TestBackgroundCall(unittest.TestCase):
 
         for job_id, message in self._get_messages():
             self.assertEqual(job_id, 47)
-            job_handle.process_message(message)
+            future.process_message(message)
 
-        self.assertEqual(job_handle.result, 5)
+        self.assertEqual(future.result, 5)
 
     def _get_messages(self):
         messages = []
