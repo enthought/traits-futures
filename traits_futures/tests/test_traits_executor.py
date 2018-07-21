@@ -5,9 +5,7 @@ import unittest
 import concurrent.futures
 from six.moves import queue
 
-from traits.api import (
-    HasStrictTraits, Instance, List, on_trait_change,
-)
+from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.background_call import (
     BackgroundCall,

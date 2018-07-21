@@ -129,10 +129,9 @@ class CallFuture(HasStrictTraits):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state == SUCCEEDED:
-            return self._result
-        else:
-            raise AttributeError("No result available for this task.")
+        if self.state != SUCCEEDED:
+            raise AttributeError("No result available for this call.")
+        return self._result
 
     @property
     def exception(self):
@@ -145,10 +144,9 @@ class CallFuture(HasStrictTraits):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state == FAILED:
-            return self._exception
-        else:
-            raise AttributeError("No exception has been raised for this task.")
+        if self.state != FAILED:
+            raise AttributeError("No exception has been raised for this call.")
+        return self._exception
 
     def cancel(self):
         """
@@ -183,10 +181,10 @@ class CallFuture(HasStrictTraits):
     _job_id = Int()
 
     #: Result from the background task.
-    _result = Any
+    _result = Any()
 
     #: Exception information from the background task.
-    _exception = Tuple
+    _exception = Tuple(Str, Str, Str)
 
     # Private methods #########################################################
 
