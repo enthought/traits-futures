@@ -1,3 +1,5 @@
+from __future__ import absolute_import, print_function, unicode_literals
+
 import random
 import time
 
@@ -8,9 +10,9 @@ from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
-    background_job,
-    JobController,
-    JobHandle,
+    background_call,
+    TraitsExecutor,
+    CallFuture,
     CANCELLED,
     CANCELLING,
     EXECUTING,
@@ -73,10 +75,10 @@ class SquaringHelper(HasStrictTraits):
     executor = Instance(concurrent.futures.Executor)
 
     #: The controller for the background jobs.
-    job_controller = Instance(JobController)
+    job_controller = Instance(TraitsExecutor)
 
     #: List of the submitted jobs, for display purposes.
-    current_jobs = List(JobHandle)
+    current_jobs = List(CallFuture)
 
     #: Start a new calculation.
     calculate = Button
@@ -91,7 +93,7 @@ class SquaringHelper(HasStrictTraits):
     input = Range(low=0, high=100)
 
     def _calculate_fired(self):
-        job = background_job(slow_square, self.input)
+        job = background_call(slow_square, self.input)
         job_handle = self.job_controller.submit(job)
         self.current_jobs.append(job_handle)
 
@@ -106,7 +108,7 @@ class SquaringHelper(HasStrictTraits):
                 self.current_jobs.remove(job)
 
     def _job_controller_default(self):
-        return JobController(executor=self.executor)
+        return TraitsExecutor(executor=self.executor)
 
     def default_traits_view(self):
         return View(

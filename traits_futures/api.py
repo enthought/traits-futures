@@ -1,25 +1,29 @@
-from traits_futures.job import (
-    background_job,
+from __future__ import absolute_import, print_function, unicode_literals
+
+from traits_futures.background_call import (
+    background_call,
+    BackgroundCall,
+    CallFuture,
+    CallFutureState,
     CANCELLED,
     CANCELLING,
     EXECUTING,
     FAILED,
-    Job,
-    JobHandle,
     SUCCEEDED,
     WAITING,
 )
-from traits_futures.job_controller import JobController
+from traits_futures.traits_executor import TraitsExecutor
 
 __all__ = [
-    "background_job",
+    "TraitsExecutor",
+    "background_call",
+    "BackgroundCall",
+    "CallFuture",
+    "CallFutureState",
     "CANCELLED",
     "CANCELLING",
     "EXECUTING",
     "FAILED",
-    "Job",
-    "JobController",
-    "JobHandle",
     "SUCCEEDED",
     "WAITING",
 ]

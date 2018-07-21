@@ -1,3 +1,5 @@
+from __future__ import absolute_import, print_function, unicode_literals
+
 import unittest
 
 import concurrent.futures
@@ -5,9 +7,9 @@ from six.moves import queue
 
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
-from traits_futures.job import (
-    Job,
-    JobHandle,
+from traits_futures.background_call import (
+    BackgroundCall,
+    CallFuture,
     WAITING,
     EXECUTING,
     CANCELLING,
@@ -15,7 +17,7 @@ from traits_futures.job import (
     FAILED,
     CANCELLED,
 )
-from traits_futures.job_controller import JobController
+from traits_futures.traits_executor import TraitsExecutor
 
 
 def square(n):
@@ -27,7 +29,7 @@ def divide_by_zero():
 
 
 class Listener(HasStrictTraits):
-    job = Instance(JobHandle)
+    job = Instance(CallFuture)
 
     results = List
 
@@ -52,11 +54,11 @@ class Listener(HasStrictTraits):
         self.states.append(new_state)
 
 
-class TestJobControllerNoUI(unittest.TestCase):
+class TestTraitsExecutorNoUI(unittest.TestCase):
     def setUp(self):
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
         self.results_queue = queue.Queue()
-        self.controller = JobController(
+        self.controller = TraitsExecutor(
             executor=self.executor,
             _results_queue=self.results_queue,
         )
@@ -65,7 +67,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         self.executor.shutdown()
 
     def test_submit_simple_job(self):
-        job = Job(callable=square, args=(10,))
+        job = BackgroundCall(callable=square, args=(10,))
         job_handle = self.controller.submit(job)
         listener = Listener(job=job_handle)
 
@@ -79,7 +81,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_submit_failing_job(self):
-        job = Job(callable=divide_by_zero)
+        job = BackgroundCall(callable=divide_by_zero)
         job_handle = self.controller.submit(job)
         listener = Listener(job=job_handle)
 
@@ -97,7 +99,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel(self):
-        job = Job(callable=square, args=(10,))
+        job = BackgroundCall(callable=square, args=(10,))
         job_handle = self.controller.submit(job)
         listener = Listener(job=job_handle)
 
@@ -114,7 +116,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel_after_start(self):
-        job = Job(callable=square, args=(3,))
+        job = BackgroundCall(callable=square, args=(3,))
         job_handle = self.controller.submit(job)
         listener = Listener(job=job_handle)
 
@@ -132,7 +134,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel_failing(self):
-        job = Job(callable=divide_by_zero)
+        job = BackgroundCall(callable=divide_by_zero)
         job_handle = self.controller.submit(job)
         listener = Listener(job=job_handle)
 
@@ -147,7 +149,7 @@ class TestJobControllerNoUI(unittest.TestCase):
         )
 
     def test_cancel_failing_after_start(self):
-        job = Job(callable=divide_by_zero)
+        job = BackgroundCall(callable=divide_by_zero)
         job_handle = self.controller.submit(job)
         listener = Listener(job=job_handle)
 

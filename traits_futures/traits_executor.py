@@ -1,4 +1,5 @@
 # Main-thread controller for background jobs.
+from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
 import itertools
@@ -41,7 +42,7 @@ class QueueWithCallback(object):
         return self.queue.get(block=block, timeout=timeout)
 
 
-class JobController(HasStrictTraits):
+class TraitsExecutor(HasStrictTraits):
     executor = Instance(concurrent.futures.Executor)
 
     _results_queue = Any
