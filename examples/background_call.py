@@ -5,9 +5,7 @@ import time
 
 import concurrent.futures
 
-from traits.api import (
-    Button, Event, HasStrictTraits, Instance, List, on_trait_change,
-    Property, Range, Unicode)
+from traits.api import Button, HasStrictTraits, Instance, List, Property, Range
 from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
@@ -58,7 +56,7 @@ class JobTabularAdapter(TabularAdapter):
     }
 
     #: Text to be displayed for the state column.
-    state_text = Property(Unicode)
+    state_text = Property
 
     def _get_bg_color(self):
         return self.colors[self.item.state]
@@ -96,9 +94,6 @@ class SquaringHelper(HasStrictTraits):
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
-    #: Event fired to indicate that the table needs refreshing.
-    update_table = Event()
-
     def _square_fired(self):
         future = self.traits_executor.submit(
             background_call(slow_square, self.input)
@@ -118,10 +113,6 @@ class SquaringHelper(HasStrictTraits):
     def _traits_executor_default(self):
         return TraitsExecutor(executor=self.executor)
 
-    @on_trait_change('current_futures:state')
-    def request_table_update(self):
-        self.update_table = True
-
     def default_traits_view(self):
         return View(
             HGroup(
@@ -136,7 +127,7 @@ class SquaringHelper(HasStrictTraits):
                         'current_futures',
                         editor=TabularEditor(
                             adapter=JobTabularAdapter(),
-                            update='update_table',
+                            auto_update=True,
                         ),
                     ),
                 ),
