@@ -69,7 +69,7 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
     def test_submit_simple_job(self):
         job = BackgroundCall(callable=square, args=(10,))
         future = self.controller.submit(job)
-        listener = Listener(job=future)
+        listener = Listener(future=future)
 
         self.controller.run_loop()
 
@@ -83,7 +83,7 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
     def test_submit_failing_job(self):
         job = BackgroundCall(callable=divide_by_zero)
         future = self.controller.submit(job)
-        listener = Listener(job=future)
+        listener = Listener(future=future)
 
         self.controller.run_loop()
 
@@ -101,7 +101,7 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
     def test_cancel(self):
         job = BackgroundCall(callable=square, args=(10,))
         future = self.controller.submit(job)
-        listener = Listener(job=future)
+        listener = Listener(future=future)
 
         future.cancel()
         self.controller.run_loop()
@@ -118,7 +118,7 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
     def test_cancel_after_start(self):
         job = BackgroundCall(callable=square, args=(3,))
         future = self.controller.submit(job)
-        listener = Listener(job=future)
+        listener = Listener(future=future)
 
         self.controller.run_loop_until(lambda: future.state == EXECUTING)
         future.cancel()
@@ -136,7 +136,7 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
     def test_cancel_failing(self):
         job = BackgroundCall(callable=divide_by_zero)
         future = self.controller.submit(job)
-        listener = Listener(job=future)
+        listener = Listener(future=future)
 
         future.cancel()
         self.controller.run_loop()
@@ -151,7 +151,7 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
     def test_cancel_failing_after_start(self):
         job = BackgroundCall(callable=divide_by_zero)
         future = self.controller.submit(job)
-        listener = Listener(job=future)
+        listener = Listener(future=future)
 
         self.controller.run_loop_until(lambda: future.state == EXECUTING)
         future.cancel()
