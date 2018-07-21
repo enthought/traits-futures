@@ -1,51 +1,37 @@
-# XXX Should have a JobState trait type.
-# XXX Add logging
-
+"""
+Background task consisting of a simple callable.
+"""
 from traits.api import (
     Any, Bool, Callable, Dict, Either, Enum, HasStrictTraits, Int, Property,
     Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 
-# Job runner messages.
+# Message types for messages from CallBackgroundTask to CallFuture.
+# The background task will emit exactly one of the following
+# sequences of message types:
+#
+#   [INTERRUPTED]
+#   [STARTED, RAISED]
+#   [STARTED, RETURNED]
 
-#: Job was cancelled before it started.
+#: Call was cancelled before it started.
 INTERRUPTED = "Interrupted"
 
-#: Job failed with an exception.
-RAISED = "Raised"
-
-#: Job succeeded and returned a result.
-RETURNED = "Returned"
-
-#: Job started executing.
+#: Call started executing.
 STARTED = "Started"
 
-# JobHandle states.
+#: Call failed with an exception.
+RAISED = "Raised"
 
-#: Job queued, waiting to be executed.
-WAITING = "Waiting"
-
-#: Job is executing.
-EXECUTING = "Executing"
-
-#: Job has been cancelled; awaiting completion.
-CANCELLING = "Cancelling"
-
-#: Job succeeded, returning a result.
-SUCCEEDED = "Succeeded"
-
-#: Job failed, raising an exception.
-FAILED = "Failed"
-
-#: Job completed following cancellation.
-CANCELLED = "Cancelled"
+#: Call succeeded and returned a result.
+RETURNED = "Returned"
 
 
-class JobRunner(object):
+class CallBackgroundTask(object):
     """
     Wrapper around the actual callable to be run. This wrapper
-    provides the callable that the concurrent.futures executor
+    provides the task that the concurrent.futures executor
     will use.
     """
     def __init__(
@@ -74,7 +60,35 @@ class JobRunner(object):
         self.results_queue.put((self.job_id, (message_type, message_args)))
 
 
-class JobHandle(HasStrictTraits):
+# CallFuture states. These represent the future's current
+# state of knowledge of the background task. A task starts out
+# in WAITING state and ends in one of the three final states:
+# SUCCEEDED, FAILED, OR CANCELLED.
+
+#: Task queued, waiting to be executed.
+WAITING = "Waiting"
+
+#: Task is executing.
+EXECUTING = "Executing"
+
+#: Task has been cancelled; awaiting completion.
+CANCELLING = "Cancelling"
+
+#: Task succeeded, returning a result.
+SUCCEEDED = "Succeeded"
+
+#: Task failed, raising an exception.
+FAILED = "Failed"
+
+#: Task completed following cancellation.
+CANCELLED = "Cancelled"
+
+#: Trait type representing the state of a CallFuture.
+CallFutureState = Enum(
+    WAITING, EXECUTING, CANCELLING, SUCCEEDED, FAILED, CANCELLED)
+
+
+class CallFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a background job.
     """
@@ -82,7 +96,7 @@ class JobHandle(HasStrictTraits):
     job_id = Int()
 
     #: The state of this job.
-    state = Enum(WAITING, EXECUTING, CANCELLING, SUCCEEDED, FAILED, CANCELLED)
+    state = CallFutureState
 
     #: Trait set when the callable completes normally.
     result = Any
@@ -161,7 +175,7 @@ class JobHandle(HasStrictTraits):
         return self.state in (SUCCEEDED, FAILED, CANCELLED)
 
 
-class Job(HasStrictTraits):
+class BackgroundCall(HasStrictTraits):
     #: The callable to be executed.
     callable = Callable
 
@@ -175,16 +189,16 @@ class Job(HasStrictTraits):
         """
         Prepare the job for running.
 
-        Returns a pair (job_handle, background_job), where
+        Returns a pair (job_handle, background_call), where
         the job_handle acts as a handle for job cancellation, etc.,
-        and the background_job is a callable to be executed
+        and the background_call is a callable to be executed
         in the background.
         """
-        handle = JobHandle(
+        handle = CallFuture(
             job_id=job_id,
             cancel_event=cancel_event,
         )
-        runner = JobRunner(
+        runner = CallBackgroundTask(
             job_id=job_id,
             callable=self.callable,
             args=self.args,
@@ -196,8 +210,8 @@ class Job(HasStrictTraits):
         return handle, runner
 
 
-def background_job(callable, *args, **kwargs):
+def background_call(callable, *args, **kwargs):
     """
     Convenience function for creating background tasks.
     """
-    return Job(callable=callable, args=args, kwargs=kwargs)
+    return BackgroundCall(callable=callable, args=args, kwargs=kwargs)

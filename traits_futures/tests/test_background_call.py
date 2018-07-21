@@ -3,9 +3,9 @@ import unittest
 
 from six.moves import queue
 
-from traits_futures.job import (
-    background_job,
-    Job,
+from traits_futures.background_call import (
+    background_call,
+    BackgroundCall,
     CANCELLED,
     INTERRUPTED,
     RAISED,
@@ -39,13 +39,13 @@ def divide_by_zero():
     5 / 0
 
 
-class TestJob(unittest.TestCase):
+class TestBackgroundCall(unittest.TestCase):
     def setUp(self):
         self.results_queue = DummyQueue()
         self.cancel_event = threading.Event()
 
     def test_successful_run(self):
-        job = Job(callable=square, args=(11,))
+        job = BackgroundCall(callable=square, args=(11,))
         _, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
@@ -68,7 +68,7 @@ class TestJob(unittest.TestCase):
         )
 
     def test_failed_run(self):
-        job = Job(callable=divide_by_zero)
+        job = BackgroundCall(callable=divide_by_zero)
         _, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
@@ -96,7 +96,7 @@ class TestJob(unittest.TestCase):
         self.assertIn("ZeroDivisionError", exc_tb)
 
     def test_cancelled_run(self):
-        job = Job(callable=divide_by_zero)
+        job = BackgroundCall(callable=divide_by_zero)
         job_handle, runner = job.prepare(
             job_id=1729,
             cancel_event=self.cancel_event,
@@ -125,7 +125,7 @@ class TestJob(unittest.TestCase):
         self.assertEqual(job_handle.state, CANCELLED)
 
     def test_cancellable(self):
-        job = Job(callable=square, args=(13,))
+        job = BackgroundCall(callable=square, args=(13,))
         job_handle, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
@@ -141,7 +141,7 @@ class TestJob(unittest.TestCase):
         self.assertFalse(job_handle.cancellable)
 
     def test_cancel_twice(self):
-        job = Job(callable=square, args=(13,))
+        job = BackgroundCall(callable=square, args=(13,))
         job_handle, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
@@ -156,7 +156,7 @@ class TestJob(unittest.TestCase):
             job_handle.cancel()
 
     def test_cancel_completed(self):
-        job = Job(callable=square, args=(13,))
+        job = BackgroundCall(callable=square, args=(13,))
         job_handle, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
@@ -172,8 +172,8 @@ class TestJob(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             job_handle.cancel()
 
-    def test_background_job(self):
-        job = background_job(int, "1101", base=2)
+    def test_background_call(self):
+        job = background_call(int, "1101", base=2)
         job_handle, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,
@@ -187,8 +187,8 @@ class TestJob(unittest.TestCase):
 
         self.assertEqual(job_handle.result, 13)
 
-    def test_background_job_multiple_arguments(self):
-        job = background_job(pow, 3, 5, 7)
+    def test_background_call_multiple_arguments(self):
+        job = background_call(pow, 3, 5, 7)
         job_handle, runner = job.prepare(
             job_id=47,
             cancel_event=self.cancel_event,

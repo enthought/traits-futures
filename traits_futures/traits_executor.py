@@ -41,7 +41,7 @@ class QueueWithCallback(object):
         return self.queue.get(block=block, timeout=timeout)
 
 
-class JobController(HasStrictTraits):
+class TraitsExecutor(HasStrictTraits):
     executor = Instance(concurrent.futures.Executor)
 
     _results_queue = Any
