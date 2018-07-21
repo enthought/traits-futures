@@ -18,23 +18,22 @@ from traits_futures.exception_handling import marshal_exception
 #   [STARTED, RETURNED]
 
 #: Call was cancelled before it started.
-INTERRUPTED = "Interrupted"
+INTERRUPTED = "interrupted"
 
 #: Call started executing.
-STARTED = "Started"
+STARTED = "started"
 
 #: Call failed with an exception.
-RAISED = "Raised"
+RAISED = "raised"
 
 #: Call succeeded and returned a result.
-RETURNED = "Returned"
+RETURNED = "returned"
 
 
 class CallBackgroundTask(object):
     """
-    Wrapper around the actual callable to be run. This wrapper
-    provides the task that the concurrent.futures executor
-    will use.
+    Wrapper around the actual callable to be run. This wrapper provides the
+    task that will be submitted to the concurrent.futures executor
     """
     def __init__(
             self, job_id, callable, args, kwargs,
@@ -59,7 +58,16 @@ class CallBackgroundTask(object):
                 self.send(RETURNED, result)
 
     def send(self, message_type, message_args=None):
-        self.results_queue.put((self.job_id, (message_type, message_args)))
+        """
+        Send a message to the foreground controller.
+
+        Parameters
+        ----------
+        message_type : string
+            One of
+        """
+        message = message_type, message_args
+        self.results_queue.put((self.job_id, message))
 
 
 # CallFuture states. These represent the future's current
@@ -68,22 +76,22 @@ class CallBackgroundTask(object):
 # SUCCEEDED, FAILED, OR CANCELLED.
 
 #: Task queued, waiting to be executed.
-WAITING = "Waiting"
+WAITING = "waiting"
 
 #: Task is executing.
-EXECUTING = "Executing"
+EXECUTING = "executing"
 
 #: Task has been cancelled; awaiting completion.
-CANCELLING = "Cancelling"
+CANCELLING = "cancelling"
 
 #: Task succeeded, returning a result.
-SUCCEEDED = "Succeeded"
+SUCCEEDED = "succeeded"
 
 #: Task failed, raising an exception.
-FAILED = "Failed"
+FAILED = "failed"
 
 #: Task completed following cancellation.
-CANCELLED = "Cancelled"
+CANCELLED = "cancelled"
 
 #: Trait type representing the state of a CallFuture.
 CallFutureState = Enum(
@@ -140,7 +148,7 @@ class CallFuture(HasStrictTraits):
         Process a message from the background job.
         """
         msg_type, msg_args = message
-        method_name = "_process_{}".format(msg_type.lower())
+        method_name = "_process_{}".format(msg_type)
         getattr(self, method_name)(msg_args)
         return self.completed
 
