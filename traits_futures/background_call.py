@@ -1,6 +1,8 @@
 """
 Background task consisting of a simple callable.
 """
+from __future__ import absolute_import, print_function, unicode_literals
+
 from traits.api import (
     Any, Bool, Callable, Dict, Either, Enum, HasStrictTraits, Int, Property,
     Str, Tuple)
