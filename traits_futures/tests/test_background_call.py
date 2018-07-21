@@ -122,8 +122,10 @@ class TestBackgroundCall(unittest.TestCase):
         for _, message in messages:
             future.process_message(message)
 
-        self.assertIsNone(future.result)
-        self.assertIsNone(future.exception)
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(future.state, CANCELLED)
 
     def test_cancellable(self):

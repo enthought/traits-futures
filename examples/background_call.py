@@ -43,8 +43,6 @@ def slow_square(n, timeout=5.0):
 class JobTabularAdapter(TabularAdapter):
     columns = [
         ('Job State', 'state'),
-        ('Result', 'result'),
-        ('Exception', 'exception'),
     ]
 
     #: Row colors for the table.
@@ -57,18 +55,21 @@ class JobTabularAdapter(TabularAdapter):
         WAITING: 0xffffff,
     }
 
-    #: Text to be displayed for the exception column
-    exception_text = Property
+    #: Text to be displayed for the state column.
+    state_text = Property
 
     def _get_bg_color(self):
         return self.colors[self.item.state]
 
-    def _get_exception_text(self):
+    def _get_state_text(self):
         job = self.item
-        if job.exception is None:
-            return "None"
-        else:
-            return job.exception[1]
+        state = job.state
+        state_text = state.title()
+        if state == SUCCEEDED:
+            state_text += ": result={}".format(job.result)
+        elif state == FAILED:
+            state_text += ": {}".format(job.exception[1])
+        return state_text
 
 
 class SquaringHelper(HasStrictTraits):

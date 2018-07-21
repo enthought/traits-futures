@@ -31,19 +31,7 @@ def divide_by_zero():
 class Listener(HasStrictTraits):
     future = Instance(CallFuture)
 
-    results = List
-
-    exceptions = List
-
     states = List
-
-    @on_trait_change("future:result")
-    def record_result(self, result):
-        self.results.append(result)
-
-    @on_trait_change("future:exception")
-    def record_exception(self, exception):
-        self.exceptions.append(exception)
 
     @on_trait_change("future:state")
     def record_state_change(self, obj, name, old_state, new_state):
@@ -73,8 +61,9 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [100])
-        self.assertEqual(listener.exceptions, [])
+        self.assertEqual(future.result, 100)
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(
             listener.states,
             [WAITING, EXECUTING, SUCCEEDED],
@@ -87,9 +76,10 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
 
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(len(listener.exceptions), 1)
-        exc_type, exc_value, exc_tb = listener.exceptions[0]
+        with self.assertRaises(AttributeError):
+            future.result
+        self.assertIsNotNone(future.exception)
+        exc_type, exc_value, exc_tb = future.exception
         self.assertIn("ZeroDivisionError", exc_type)
         self.assertIn("by zero", exc_value)
         self.assertIn("ZeroDivisionError", exc_tb)
@@ -106,8 +96,11 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
         future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
+
         # Here we cancelled before processing any of the
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
@@ -124,8 +117,10 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
         future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         # Here we cancelled before processing any of the
         # messages received, so we don't see the "EXECUTING" state.
         self.assertEqual(
@@ -141,8 +136,10 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
         future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(
             listener.states,
             [WAITING, CANCELLING, CANCELLED],
@@ -157,8 +154,10 @@ class TestTraitsExecutorNoUI(unittest.TestCase):
         future.cancel()
         self.controller.run_loop()
 
-        self.assertEqual(listener.results, [])
-        self.assertEqual(listener.exceptions, [])
+        with self.assertRaises(AttributeError):
+            future.result
+        with self.assertRaises(AttributeError):
+            future.exception
         self.assertEqual(
             listener.states,
             [WAITING, EXECUTING, CANCELLING, CANCELLED],
