@@ -105,9 +105,9 @@ CallFutureState = Enum(
 
 class CallFuture(HasStrictTraits):
     """
-    Object representing the front-end handle to a background job.
+    Object representing the front-end handle to a background call.
     """
-    #: The state of this job.
+    #: The state of the background call.
     state = CallFutureState
 
     #: Trait set when the callable completes normally.
@@ -120,11 +120,11 @@ class CallFuture(HasStrictTraits):
     exception = Either(None, Tuple(Str, Str, Str))
 
     #: True if we've received the final message from the background job,
-    #: else False.
+    #: else False. `True` indicates either that the background job
+    #: succeeded, or that it raised, or that it was cancelled.
     completed = Property(Bool, depends_on='state')
 
-    #: True if this job can be cancelled (and hasn't already been cancelled),
-    #: else False.
+    #: True if this job can be cancelled, else False.
     cancellable = Property(Bool, depends_on='state')
 
     def cancel(self):
