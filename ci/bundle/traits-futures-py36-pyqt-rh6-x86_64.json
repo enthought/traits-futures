@@ -17,6 +17,10 @@
             "state": "manual"
         },
         {
+            "name": "funcsigs",
+            "state": "auto"
+        },
+        {
             "name": "libpng",
             "state": "auto"
         },
@@ -25,7 +29,15 @@
             "state": "auto"
         },
         {
+            "name": "mock",
+            "state": "manual"
+        },
+        {
             "name": "packaging",
+            "state": "auto"
+        },
+        {
+            "name": "pbr",
             "state": "auto"
         },
         {
@@ -121,6 +133,12 @@
             "version": "3.3.0-2"
         },
         {
+            "name": "funcsigs",
+            "repository": "enthought/free",
+            "sha256": "2136481e3958e6152736f9f583e4448f387744e21d5efc21175b2352a1e93cc7",
+            "version": "1.0.2-1"
+        },
+        {
             "name": "libpng",
             "repository": "enthought/free",
             "sha256": "72402221f70eadf881d7d4c6db115720daa277941e32b5d806c32db1072f4f4d",
@@ -133,10 +151,22 @@
             "version": "0.6.1-1"
         },
         {
+            "name": "mock",
+            "repository": "enthought/free",
+            "sha256": "57cb14632a8578ac0a06982fae21729eed429015eb50223229c555ff55abe8cd",
+            "version": "2.0.0-1"
+        },
+        {
             "name": "packaging",
             "repository": "enthought/free",
             "sha256": "d95ae75c2ed7e286b3272999cc708fbebee368d220b631074bb75dcf1b7e164e",
             "version": "16.8-2"
+        },
+        {
+            "name": "pbr",
+            "repository": "enthought/free",
+            "sha256": "987b1f653f6224f67dce9aa17e6b2bd5c14aacf2b2f49c591ca58a7258f440eb",
+            "version": "1.8.1-13"
         },
         {
             "name": "pip",
@@ -183,8 +213,8 @@
         {
             "name": "qt",
             "repository": "enthought/free",
-            "sha256": "a2a953317f1d8e1973f2859b1dc6dda2f9545c82494ab7593ae23fff6212a69d",
-            "version": "4.8.7-8"
+            "sha256": "e84538ec21670273598d4c9d701e67d2e9ee62912450cb650145caf635823a0c",
+            "version": "4.8.7-9"
         },
         {
             "name": "setuptools",
