@@ -94,6 +94,7 @@ PLATFORMS = [
 CORE_DEPS = [
     'coverage',
     'flake8',
+    'mock',  # used by the pyface GuiTestAssistant
     'pip',
     'setuptools',
     'six',
