@@ -1,157 +1,274 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import contextlib
+import operator
 import threading
 import unittest
 
+import concurrent.futures
+import six
 from six.moves import queue
 
-from traits_futures.background_call import (
-    background_call,
-    BackgroundCall,
-    CANCELLED,
-    INTERRUPTED,
-    RAISED,
-    RETURNED,
-    STARTED,
+from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
+from traits.api import HasStrictTraits, Instance, List, on_trait_change
+
+from traits_futures.api import (
+    background_call, CallFuture, CallFutureState, TraitsExecutor,
+    CANCELLED, CANCELLING, EXECUTING, FAILED, SUCCEEDED, WAITING,
 )
 
 
-class DummyQueue(object):
-    """
-    Dummy object with queue interface, for testing purposes.
-    """
-    def __init__(self):
-        self.messages = []
-
-    def put(self, message):
-        self.messages.append(message)
-
-    def get(self):
-        if self.messages:
-            return self.messages.pop(0)
-        else:
-            raise queue.Empty
+#: Number of workers for the test executors.
+WORKERS = 4
 
 
-def square(n):
-    return n * n
+class Listener(HasStrictTraits):
+    #: Future that we're listening to.
+    future = Instance(CallFuture)
+
+    #: List of states of that future.
+    states = List(CallFutureState)
+
+    @on_trait_change("future:state")
+    def record_state_change(self, obj, name, old_state, new_state):
+        if not self.states:
+            # On the first state change, record the initial state as well as
+            # the new one.
+            self.states.append(old_state)
+        self.states.append(new_state)
 
 
-def divide_by_zero():
-    5 / 0
-
-
-class TestBackgroundCall(unittest.TestCase):
+class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
-        self.results_queue = DummyQueue()
-        self.cancel_event = threading.Event()
+        GuiTestAssistant.setUp(self)
+        self.executor = concurrent.futures.ThreadPoolExecutor(
+            max_workers=WORKERS)
+        self.controller = TraitsExecutor(executor=self.executor)
 
-    def test_successful_run(self):
-        job = BackgroundCall(callable=square, args=(11,))
-        _, runner = job.prepare(
-            job_id=1729,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
-        )
+    def tearDown(self):
+        self.executor.shutdown()
+        GuiTestAssistant.tearDown(self)
 
-        runner()
-        messages = self._get_messages()
+    def test_successful_call(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        # Check that there are no more messages.
-        with self.assertRaises(queue.Empty):
-            self.results_queue.get()
+        self.wait_for_completion(future)
 
+        self.assertResult(future, 8)
+        self.assertNoException(future)
         self.assertEqual(
-            messages,
-            [
-                (1729, (STARTED, None)),
-                (1729, (RETURNED, 121)),
-            ],
+            listener.states,
+            [WAITING, EXECUTING, SUCCEEDED],
         )
 
-    def test_failed_run(self):
-        job = BackgroundCall(callable=divide_by_zero)
-        _, runner = job.prepare(
-            job_id=1729,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
-        )
+    def test_failed_call(self):
+        job = background_call(operator.floordiv, 1, 0)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        runner()
-        messages = self._get_messages()
+        self.wait_for_completion(future)
 
-        # Check that there are no more messages.
-        with self.assertRaises(queue.Empty):
-            self.results_queue.get()
-
-        self.assertEqual(len(messages), 2)
+        self.assertNoResult(future)
+        self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            messages[0],
-            (1729, (STARTED, None)),
-        )
-        job_id, (msg_type, msg_args) = messages[1]
-        self.assertEqual(job_id, 1729)
-        self.assertEqual(msg_type, RAISED)
-        exc_type, exc_value, exc_tb = msg_args
-        self.assertIn("ZeroDivisionError", exc_type)
-        self.assertIn("by zero", exc_value)
-        self.assertIn("ZeroDivisionError", exc_tb)
-
-    def test_cancelled_run(self):
-        job = BackgroundCall(callable=divide_by_zero)
-        future, runner = job.prepare(
-            job_id=1729,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
+            listener.states,
+            [WAITING, EXECUTING, FAILED],
         )
 
+    def test_cancellation_before_execution(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        self.assertTrue(future.cancellable)
         future.cancel()
+        self.wait_for_completion(future)
 
-        runner()
-        messages = self._get_messages()
-
-        # Check that there are no more messages.
-        with self.assertRaises(queue.Empty):
-            self.results_queue.get()
-
+        self.assertNoResult(future)
+        self.assertNoException(future)
         self.assertEqual(
-            messages,
-            [(1729, (INTERRUPTED, None))],
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
 
-        for _, message in messages:
-            future.process_message(message)
+    # Helpers
 
+    def wait_for_completion(self, future):
+        with self.event_loop_until_condition(lambda: future.completed):
+            pass
+
+    # Assertions
+
+    def assertResult(self, future, expected_result):
+        self.assertEqual(future.result, expected_result)
+
+    def assertNoResult(self, future):
         with self.assertRaises(AttributeError):
             future.result
+
+    def assertException(self, future, exc_type):
+        self.assertEqual(future.exception[0], six.text_type(exc_type))
+
+    def assertNoException(self, future):
         with self.assertRaises(AttributeError):
             future.exception
-        self.assertEqual(future.state, CANCELLED)
 
-    def test_cancellable(self):
-        job = BackgroundCall(callable=square, args=(13,))
-        future, runner = job.prepare(
-            job_id=47,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
+
+class TestBackgroundCallNoUI(unittest.TestCase):
+    def setUp(self):
+        self.executor = concurrent.futures.ThreadPoolExecutor(
+            max_workers=WORKERS)
+        self.results_queue = queue.Queue()
+        self.controller = TraitsExecutor(
+            executor=self.executor,
+            _results_queue=self.results_queue,
         )
-        runner()
+
+    def tearDown(self):
+        self.executor.shutdown()
+
+    def test_successful_call(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        self.controller.run_loop()
+
+        self.assertResult(future, 8)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, SUCCEEDED],
+        )
+
+    def test_failed_call(self):
+        job = background_call(operator.floordiv, 1, 0)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        self.controller.run_loop()
+
+        self.assertNoResult(future)
+        self.assertException(future, ZeroDivisionError)
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, FAILED],
+        )
+
+    def test_cancellation_before_execution(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
         self.assertTrue(future.cancellable)
-        for job_id, message in self._get_messages():
-            self.assertEqual(job_id, 47)
-            future.process_message(message)
+        future.cancel()
+        self.controller.run_loop()
+
+        self.assertNoResult(future)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
+        )
+
+    def test_cancellation_before_background_job_starts(self):
+        # Not quite the same as the test above: that one lets the background
+        # job start executing, but cancels before we receive any messages from
+        # it. This test cancels before the background job begins execution at
+        # all, so exercises a different code path in the background job code.
+        job = background_call(pow, 2, 3)
+        with self.blocked_executor():
+            future = self.controller.submit(job)
+            listener = Listener(future=future)
+            self.assertTrue(future.cancellable)
+            future.cancel()
+
+        self.controller.run_loop()
+
+        self.assertNoResult(future)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
+        )
+
+    def test_cancellation_before_success(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        def is_executing():
+            return listener.states and listener.states[-1] == EXECUTING
+
+        self.controller.run_loop_until(is_executing)
+        self.assertTrue(future.cancellable)
+        future.cancel()
+        self.controller.run_loop()
+
+        self.assertNoResult(future)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+        )
+
+    def test_cancellation_before_failure(self):
+        job = background_call(operator.floordiv, 1, 0)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        self.controller.run_loop_until(lambda: future.state == EXECUTING)
+        self.assertTrue(future.cancellable)
+        future.cancel()
+        self.controller.run_loop()
+
+        self.assertNoResult(future)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+        )
+
+    def test_cancel_after_success(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        self.controller.run_loop()
 
         self.assertFalse(future.cancellable)
-
-    def test_cancel_twice(self):
-        job = BackgroundCall(callable=square, args=(13,))
-        future, runner = job.prepare(
-            job_id=47,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
+        with self.assertRaises(RuntimeError):
+            future.cancel()
+        self.assertResult(future, 8)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, SUCCEEDED],
         )
-        runner()
+
+    def test_cancel_after_failure(self):
+        job = background_call(operator.floordiv, 1, 0)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
+
+        self.controller.run_loop()
+
+        self.assertFalse(future.cancellable)
+        with self.assertRaises(RuntimeError):
+            future.cancel()
+        self.assertNoResult(future)
+        self.assertException(future, ZeroDivisionError)
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, FAILED],
+        )
+
+    def test_double_cancel(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
         self.assertTrue(future.cancellable)
         future.cancel()
@@ -159,58 +276,99 @@ class TestBackgroundCall(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             future.cancel()
 
-    def test_cancel_completed(self):
-        job = BackgroundCall(callable=square, args=(13,))
-        future, runner = job.prepare(
-            job_id=47,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
+        self.controller.run_loop()
+
+        self.assertNoResult(future)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
-        runner()
 
-        for job_id, message in self._get_messages():
-            self.assertEqual(job_id, 47)
-            future.process_message(message)
+    def test_double_cancel_variant(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+        listener = Listener(future=future)
 
-        self.assertFalse(future.cancellable)
+        self.assertTrue(future.cancellable)
+        future.cancel()
+        self.controller.run_loop_until(lambda: future.state == CANCELLING)
         with self.assertRaises(RuntimeError):
+            self.assertFalse(future.cancellable)
             future.cancel()
+        self.controller.run_loop()
 
-    def test_background_call(self):
-        job = background_call(int, "1101", base=2)
-        future, runner = job.prepare(
-            job_id=47,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
+        self.assertNoResult(future)
+        self.assertNoException(future)
+        self.assertEqual(
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
-        runner()
 
-        for job_id, message in self._get_messages():
-            self.assertEqual(job_id, 47)
-            future.process_message(message)
+    def test_background_call_keyword_arguments(self):
+        job = background_call(int, "10101", base=2)
+        future = self.controller.submit(job)
 
-        self.assertEqual(future.result, 13)
+        self.controller.run_loop()
 
-    def test_background_call_multiple_arguments(self):
-        job = background_call(pow, 3, 5, 7)
-        future, runner = job.prepare(
-            job_id=47,
-            cancel_event=self.cancel_event,
-            results_queue=self.results_queue,
-        )
-        runner()
+        self.assertResult(future, 21)
 
-        for job_id, message in self._get_messages():
-            self.assertEqual(job_id, 47)
-            future.process_message(message)
+    def test_completed_success(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
 
-        self.assertEqual(future.result, 5)
+        self.assertFalse(future.completed)
+        self.controller.run_loop()
+        self.assertTrue(future.completed)
 
-    def _get_messages(self):
-        messages = []
-        while True:
-            msg = self.results_queue.get()
-            _, (msg_type, _) = msg
-            messages.append(msg)
-            if msg_type in (INTERRUPTED, RAISED, RETURNED):
-                return messages
+    def test_completed_failure(self):
+        job = background_call(operator.floordiv, 1, 0)
+        future = self.controller.submit(job)
+
+        self.assertFalse(future.completed)
+        self.controller.run_loop()
+        self.assertTrue(future.completed)
+
+    def test_completed_cancelled(self):
+        job = background_call(pow, 2, 3)
+        future = self.controller.submit(job)
+
+        self.assertFalse(future.completed)
+        future.cancel()
+        self.assertFalse(future.completed)
+        self.controller.run_loop_until(lambda: future.state == CANCELLING)
+        self.assertFalse(future.completed)
+        self.controller.run_loop()
+        self.assertTrue(future.completed)
+
+    # Helper functions
+
+    @contextlib.contextmanager
+    def blocked_executor(self):
+        """
+        Context manager to temporarily block the executor.
+        """
+        events = [threading.Event() for _ in range(WORKERS)]
+        for event in events:
+            self.executor.submit(event.wait)
+        try:
+            yield
+        finally:
+            for event in events:
+                event.set()
+
+    # Assertions
+
+    def assertResult(self, future, expected_result):
+        self.assertEqual(future.result, expected_result)
+
+    def assertNoResult(self, future):
+        with self.assertRaises(AttributeError):
+            future.result
+
+    def assertException(self, future, exc_type):
+        self.assertEqual(future.exception[0], six.text_type(exc_type))
+
+    def assertNoException(self, future):
+        with self.assertRaises(AttributeError):
+            future.exception
