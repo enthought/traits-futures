@@ -4,8 +4,7 @@ Background task consisting of a simple callable.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, Enum, HasStrictTraits, Int, Property,
-    Str, Tuple)
+    Any, Bool, Callable, Dict, Enum, HasStrictTraits, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 
@@ -35,17 +34,16 @@ class CallBackgroundTask(object):
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor
     """
-    def __init__(
-            self, job_id, callable, args, kwargs,
-            results_queue, cancel_event):
-        self.job_id = job_id
+    def __init__(self, callable, args, kwargs, message_sender, cancel_event):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
-        self.results_queue = results_queue
+        self.message_sender = message_sender
         self.cancel_event = cancel_event
 
     def __call__(self):
+        self.message_sender.connect()
+
         if self.cancel_event.is_set():
             self.send(INTERRUPTED)
         else:
@@ -57,17 +55,13 @@ class CallBackgroundTask(object):
             else:
                 self.send(RETURNED, result)
 
+        self.message_sender.disconnect()
+
     def send(self, message_type, message_args=None):
         """
         Send a message to the foreground controller.
-
-        Parameters
-        ----------
-        message_type : string
-            One of
         """
-        message = message_type, message_args
-        self.results_queue.put((self.job_id, message))
+        self.message_sender.send((message_type, message_args))
 
 
 # CallFuture states. These represent the future's current
@@ -166,9 +160,9 @@ class CallFuture(HasStrictTraits):
         """
         Process a message from the background job.
         """
-        msg_type, msg_args = message
-        method_name = "_process_{}".format(msg_type)
-        getattr(self, method_name)(msg_args)
+        message_type, message_args = message
+        method_name = "_process_{}".format(message_type)
+        getattr(self, method_name)(message_args)
         return self.completed
 
     # Private traits ##########################################################
@@ -176,9 +170,6 @@ class CallFuture(HasStrictTraits):
     #: Private event used to request cancellation of this job. Users
     #: should call the cancel() method instead of using this event.
     _cancel_event = Any
-
-    #: The id of this job. Potentially useful for debugging and logging.
-    _job_id = Int()
 
     #: Result from the background task.
     _result = Any()
@@ -233,7 +224,7 @@ class BackgroundCall(HasStrictTraits):
     #: Keyword arguments to be passed to the callable.
     kwargs = Dict(Str, Any)
 
-    def prepare(self, job_id, cancel_event, results_queue):
+    def prepare(self, cancel_event, message_sender):
         """
         Prepare the job for running.
 
@@ -243,16 +234,14 @@ class BackgroundCall(HasStrictTraits):
         in the background.
         """
         future = CallFuture(
-            _job_id=job_id,
             _cancel_event=cancel_event,
         )
         runner = CallBackgroundTask(
-            job_id=job_id,
             callable=self.callable,
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            results_queue=results_queue,
+            message_sender=message_sender,
             cancel_event=cancel_event,
         )
         return future, runner

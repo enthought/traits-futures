@@ -7,7 +7,6 @@ import unittest
 
 import concurrent.futures
 import six
-from six.moves import queue
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
@@ -117,14 +116,13 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
 
 class TestBackgroundCallNoUI(unittest.TestCase):
+    # XXX We're still putting events onto the Qt task queue
+    # in these tests; need to find a way not to do that.
+
     def setUp(self):
         self.executor = concurrent.futures.ThreadPoolExecutor(
             max_workers=WORKERS)
-        self.results_queue = queue.Queue()
-        self.controller = TraitsExecutor(
-            executor=self.executor,
-            _results_queue=self.results_queue,
-        )
+        self.controller = TraitsExecutor(executor=self.executor)
 
     def tearDown(self):
         self.executor.shutdown()
