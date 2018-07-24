@@ -173,9 +173,6 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
 
 class TestBackgroundCallNoUI(unittest.TestCase):
-    # XXX We're still putting events onto the Qt task queue
-    # in these tests; need to find a way not to do that.
-
     def setUp(self):
         self.receiver = LazyMessageReceiver()
         self.executor = concurrent.futures.ThreadPoolExecutor(

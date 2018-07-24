@@ -11,7 +11,7 @@ from traits.api import Any, Event, HasStrictTraits, Instance, Int, Tuple
 
 class _MessageSignaller(QObject):
     """
-    QObject used by to tell the UI that a message is queued.
+    QObject used to tell the UI that a message is queued.
 
     This class must be instantiated in the worker thread.
     """
