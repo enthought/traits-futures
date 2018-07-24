@@ -10,7 +10,7 @@ import concurrent.futures
 from traits.api import (
     Any, Dict, HasStrictTraits, Instance, Int, on_trait_change)
 
-from traits_futures.message_handling import MessageSender, MessageReceiver
+from traits_futures.message_handling import MessageReceiver, MessageSender
 
 
 class TraitsExecutor(HasStrictTraits):
