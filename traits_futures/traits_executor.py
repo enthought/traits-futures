@@ -17,12 +17,16 @@ class TraitsExecutor(HasStrictTraits):
     """
     Executor to initiate and manage background jobs.
     """
+    #: Executor instance backing this object.
     executor = Instance(concurrent.futures.Executor)
 
+    #: Endpoint for receiving messages.
     _message_receiver = Instance(MessageReceiver, ())
 
+    #: Currently executing futures, keyed by their job_id.
     _current_futures = Dict(Int, Any)
 
+    #: Source of job ids for new jobs.
     _job_ids = Instance(collections.Iterator)
 
     def __job_ids_default(self):
