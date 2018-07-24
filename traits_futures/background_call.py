@@ -104,12 +104,12 @@ class CallFuture(HasStrictTraits):
     #: The state of the background call.
     state = CallFutureState
 
-    #: True if we've received the final message from the background job,
-    #: else False. `True` indicates either that the background job
+    #: True if we've received the final message from the background task,
+    #: else False. `True` indicates either that the background task
     #: succeeded, or that it raised, or that it was cancelled.
     completed = Property(Bool, depends_on='state')
 
-    #: True if this job can be cancelled, else False.
+    #: True if this task can be cancelled, else False.
     cancellable = Property(Bool, depends_on='state')
 
     @property
@@ -145,20 +145,20 @@ class CallFuture(HasStrictTraits):
     def cancel(self):
         """
         Method that can be called from the main thread to
-        indicate that the job should be cancelled (provided
+        indicate that the task should be cancelled (provided
         it hasn't already started running).
         """
         if not self.cancellable:
             # Might want to downgrade this to a warning. But a good UI
             # will ensure that the Cancel button can only be pushed if
             # we're in a cancellable state.
-            raise RuntimeError("Can only cancel a queued or executing job.")
+            raise RuntimeError("Can only cancel a queued or executing task.")
         self._cancel_event.set()
         self.state = CANCELLING
 
     def process_message(self, message):
         """
-        Process a message from the background job.
+        Process a message from the background task.
         """
         message_type, message_args = message
         method_name = "_process_{}".format(message_type)
@@ -167,7 +167,7 @@ class CallFuture(HasStrictTraits):
 
     # Private traits ##########################################################
 
-    #: Private event used to request cancellation of this job. Users
+    #: Private event used to request cancellation of this task. Users
     #: should call the cancel() method instead of using this event.
     _cancel_event = Any
 
@@ -226,10 +226,10 @@ class BackgroundCall(HasStrictTraits):
 
     def prepare(self, cancel_event, message_sender):
         """
-        Prepare the job for running.
+        Prepare the task for running.
 
         Returns a pair (future, background_call), where
-        the future acts as a handle for job cancellation, etc.,
+        the future acts as a handle for task cancellation, etc.,
         and the background_call is a callable to be executed
         in the background.
         """

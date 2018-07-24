@@ -1,4 +1,4 @@
-# Main-thread controller for background jobs.
+# Main-thread controller for background tasks.
 from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
@@ -15,7 +15,7 @@ from traits_futures.message_handling import MessageReceiver, MessageSender
 
 class TraitsExecutor(HasStrictTraits):
     """
-    Executor to initiate and manage background jobs.
+    Executor to initiate and manage background tasks.
     """
     #: Executor instance backing this object.
     executor = Instance(concurrent.futures.Executor)
@@ -26,19 +26,19 @@ class TraitsExecutor(HasStrictTraits):
     #: Currently executing futures, keyed by their task_id.
     _current_futures = Dict(Int, Any)
 
-    #: Source of job ids for new jobs.
+    #: Source of task ids for new tasks.
     _task_ids = Instance(collections.Iterator)
 
     def __task_ids_default(self):
         return itertools.count()
 
-    def submit(self, job):
+    def submit(self, task):
         task_id = next(self._task_ids)
         message_sender = MessageSender(
             task_id=task_id,
             receiver=self._message_receiver,
         )
-        future, runner = job.prepare(
+        future, runner = task.prepare(
             cancel_event=threading.Event(),
             message_sender=message_sender,
         )
@@ -59,7 +59,7 @@ class TraitsExecutor(HasStrictTraits):
     @on_trait_change('_message_receiver:received')
     def _process_message(self, message):
         task_id, msg = message
-        job = self._current_futures[task_id]
-        done = job.process_message(msg)
+        future = self._current_futures[task_id]
+        done = future.process_message(msg)
         if done:
             self._current_futures.pop(task_id)

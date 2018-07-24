@@ -39,7 +39,7 @@ class MessageIndicator(QObject):
     a message has been queued.
 
     This class will be instantiated in the worker thread, once per background
-    job.
+    task.
     """
     message_sent = Signal()
 
