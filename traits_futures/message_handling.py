@@ -14,10 +14,10 @@ class MessageSender(object):
     the worker thread to allow it to communicate. Only the worker thread
     should call the connect, disconnect and send methods.
     """
-    def __init__(self, receiver, job_id):
+    def __init__(self, receiver, task_id):
         self.message_queue = receiver.message_queue
         self.receiver = receiver.signal_receiver
-        self.job_id = job_id
+        self.task_id = task_id
         self.message_indicator = None
 
     def connect(self):
@@ -29,7 +29,7 @@ class MessageSender(object):
         self.message_indicator = None
 
     def send(self, message):
-        self.message_queue.put((self.job_id, message))
+        self.message_queue.put((self.task_id, message))
         self.message_indicator.message_sent.emit()
 
 

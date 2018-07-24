@@ -23,26 +23,26 @@ class TraitsExecutor(HasStrictTraits):
     #: Endpoint for receiving messages.
     _message_receiver = Instance(MessageReceiver, ())
 
-    #: Currently executing futures, keyed by their job_id.
+    #: Currently executing futures, keyed by their task_id.
     _current_futures = Dict(Int, Any)
 
     #: Source of job ids for new jobs.
-    _job_ids = Instance(collections.Iterator)
+    _task_ids = Instance(collections.Iterator)
 
-    def __job_ids_default(self):
+    def __task_ids_default(self):
         return itertools.count()
 
     def submit(self, job):
-        job_id = next(self._job_ids)
+        task_id = next(self._task_ids)
         message_sender = MessageSender(
-            job_id=job_id,
+            task_id=task_id,
             receiver=self._message_receiver,
         )
         future, runner = job.prepare(
             cancel_event=threading.Event(),
             message_sender=message_sender,
         )
-        self._current_futures[job_id] = future
+        self._current_futures[task_id] = future
         self.executor.submit(runner)
         return future
 
@@ -58,8 +58,8 @@ class TraitsExecutor(HasStrictTraits):
 
     @on_trait_change('_message_receiver:received')
     def _process_message(self, message):
-        job_id, msg = message
-        job = self._current_futures[job_id]
+        task_id, msg = message
+        job = self._current_futures[task_id]
         done = job.process_message(msg)
         if done:
-            self._current_futures.pop(job_id)
+            self._current_futures.pop(task_id)
