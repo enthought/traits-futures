@@ -10,7 +10,7 @@ import concurrent.futures
 from traits.api import (
     Any, Dict, HasStrictTraits, Instance, Int, on_trait_change)
 
-from traits_futures.messages import MessageSender, MessageReceiver
+from traits_futures.message_handling import MessageSender, MessageReceiver
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -44,11 +44,13 @@ class TraitsExecutor(HasStrictTraits):
 
     def run_loop(self):
         while self._current_futures:
-            self._process_message()
+            message = self._message_receiver.message_queue.get()
+            self._process_message(message)
 
     def run_loop_until(self, condition):
         while not condition():
-            self._process_message()
+            message = self._message_receiver.message_queue.get()
+            self._process_message(message)
 
     @on_trait_change('_message_receiver:received')
     def _process_message(self, message):
