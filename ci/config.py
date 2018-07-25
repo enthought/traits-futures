@@ -65,7 +65,8 @@ RUNTIME_VERSION = {
 FLAKE8_TARGETS = [
     'ci',
     'setup.py',
-    PACKAGE_NAME
+    PACKAGE_NAME,
+    'examples',
 ]
 
 # Platforms and Python versions that we support.
@@ -93,6 +94,7 @@ PLATFORMS = [
 CORE_DEPS = [
     'coverage',
     'flake8',
+    'mock',  # used by the pyface GuiTestAssistant
     'pip',
     'setuptools',
     'six',

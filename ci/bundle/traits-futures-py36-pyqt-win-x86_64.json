@@ -17,11 +17,23 @@
             "state": "manual"
         },
         {
+            "name": "funcsigs",
+            "state": "auto"
+        },
+        {
             "name": "mccabe",
             "state": "auto"
         },
         {
+            "name": "mock",
+            "state": "manual"
+        },
+        {
             "name": "packaging",
+            "state": "auto"
+        },
+        {
+            "name": "pbr",
             "state": "auto"
         },
         {
@@ -113,16 +125,34 @@
             "version": "3.3.0-2"
         },
         {
+            "name": "funcsigs",
+            "repository": "enthought/free",
+            "sha256": "5a0c8b1bee069f4875ca4265c7dfc6e8f5170879dd24c1dcf94e65b013ebb92f",
+            "version": "1.0.2-1"
+        },
+        {
             "name": "mccabe",
             "repository": "enthought/free",
             "sha256": "5ef2bd3ad55c4da43a2a53550eed3fc64b7c0974c3d783449678346a059f8dab",
             "version": "0.6.1-1"
         },
         {
+            "name": "mock",
+            "repository": "enthought/free",
+            "sha256": "df9cceeddb66883a48527cb60c034605961627cb0fd0d06a88bd4a4fbb7b6ef2",
+            "version": "2.0.0-1"
+        },
+        {
             "name": "packaging",
             "repository": "enthought/free",
             "sha256": "53dc57b6e7d3f586cddd5986ee4cbac780662be9d8f22fac7f0f9df98a7adc7d",
             "version": "16.8-2"
+        },
+        {
+            "name": "pbr",
+            "repository": "enthought/free",
+            "sha256": "aa037012942129d045d7a8690e27ce6b23208e205dc663590a266ce9bd50e0f4",
+            "version": "1.8.1-13"
         },
         {
             "name": "pip",
