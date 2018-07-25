@@ -5,18 +5,24 @@ import unittest
 
 class TestApi(unittest.TestCase):
     def test_imports(self):
-        from traits_futures.api import (  # noqa
+        from traits_futures.api import (  # noqa: F401
             TraitsExecutor,
+
             background_call,
             BackgroundCall,
             CallFuture,
-            CallFutureState,
+
+            background_iteration,
+            BackgroundIteration,
+            IterationFuture,
+
             CANCELLED,
             CANCELLING,
             EXECUTING,
             FAILED,
-            SUCCEEDED,
+            COMPLETED,
             WAITING,
+            FutureState,
         )
 
     def test___all__(self):
