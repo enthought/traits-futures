@@ -1,24 +1,21 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-import collections
 import contextlib
-import itertools
 import operator
 import threading
 import unittest
 
 import concurrent.futures
 import six
-from six.moves import queue
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
-from traits.api import (
-    Any, Event, HasStrictTraits, Instance, Int, List, on_trait_change, Tuple)
+from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    background_call, CallFuture, CallFutureState, TraitsExecutor,
-    CANCELLED, CANCELLING, EXECUTING, FAILED, SUCCEEDED, WAITING,
+    background_call, CallFuture, FutureState, TraitsExecutor,
+    CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
+from traits_futures.tests.lazy_message_handling import LazyMessageReceiver
 
 
 #: Number of workers for the test executors.
@@ -28,62 +25,12 @@ WORKERS = 4
 TIMEOUT = 10.0
 
 
-class LazyMessageSender(object):
-    def __init__(self, sender_id, message_queue):
-        self.sender_id = sender_id
-        self.message_queue = message_queue
-
-    def connect(self):
-        pass
-
-    def disconnect(self):
-        pass
-
-    def send(self, message):
-        self.message_queue.put((self.sender_id, message))
-
-
-class LazyMessageReceiver(HasStrictTraits):
-    #: Event fired whenever a message is received. The first part of
-    #: the received message is the sender id. The second part is
-    #: the message itself.
-    received = Event(Tuple(Int, Any))
-
-    #: Internal queue for messages from workers.
-    _message_queue = Any
-
-    #: Source of task ids for new tasks.
-    _sender_ids = Instance(collections.Iterator)
-
-    def __message_queue_default(self):
-        return queue.Queue()
-
-    def __sender_ids_default(self):
-        return itertools.count()
-
-    def sender(self):
-        """
-        Create a new LazyMessageSender for this receiver.
-        """
-        sender_id = next(self._sender_ids)
-        sender = LazyMessageSender(
-            sender_id=sender_id,
-            message_queue=self._message_queue,
-        )
-        return sender_id, sender
-
-    def send_until(self, condition):
-        while not condition():
-            message = self._message_queue.get(timeout=TIMEOUT)
-            self.received = message
-
-
 class Listener(HasStrictTraits):
     #: Future that we're listening to.
     future = Instance(CallFuture)
 
     #: List of states of that future.
-    states = List(CallFutureState)
+    states = List(FutureState)
 
     @on_trait_change("future:state")
     def record_state_change(self, obj, name, old_state, new_state):
@@ -116,7 +63,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoException(future)
         self.assertEqual(
             listener.states,
-            [WAITING, EXECUTING, SUCCEEDED],
+            [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_failed_call(self):
@@ -190,13 +137,13 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
         listener = Listener(future=future)
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
             listener.states,
-            [WAITING, EXECUTING, SUCCEEDED],
+            [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_failed_call(self):
@@ -204,7 +151,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
         listener = Listener(future=future)
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
@@ -230,7 +177,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         event.wait()
         self.assertTrue(future.cancellable)
         future.cancel()
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -251,7 +198,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
             self.assertTrue(future.cancellable)
             future.cancel()
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -265,10 +212,10 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
         listener = Listener(future=future)
 
-        self.receiver.send_until(lambda: future.state == EXECUTING)
+        self.wait_for_state(future, EXECUTING)
         self.assertTrue(future.cancellable)
         future.cancel()
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -282,10 +229,10 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
         listener = Listener(future=future)
 
-        self.receiver.send_until(lambda: future.state == EXECUTING)
+        self.wait_for_state(future, EXECUTING)
         self.assertTrue(future.cancellable)
         future.cancel()
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -299,7 +246,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
         listener = Listener(future=future)
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertFalse(future.cancellable)
         with self.assertRaises(RuntimeError):
@@ -308,7 +255,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         self.assertNoException(future)
         self.assertEqual(
             listener.states,
-            [WAITING, EXECUTING, SUCCEEDED],
+            [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_cancel_after_failure(self):
@@ -316,7 +263,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
         listener = Listener(future=future)
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertFalse(future.cancellable)
         with self.assertRaises(RuntimeError):
@@ -339,7 +286,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             future.cancel()
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -355,11 +302,11 @@ class TestBackgroundCallNoUI(unittest.TestCase):
 
         self.assertTrue(future.cancellable)
         future.cancel()
-        self.receiver.send_until(lambda: future.state == CANCELLING)
+        self.wait_for_state(future, CANCELLING)
         with self.assertRaises(RuntimeError):
             self.assertFalse(future.cancellable)
             future.cancel()
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -372,7 +319,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         job = background_call(int, "10101", base=2)
         future = self.controller.submit(job)
 
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
 
         self.assertResult(future, 21)
 
@@ -381,7 +328,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
 
         self.assertFalse(future.completed)
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
         self.assertTrue(future.completed)
 
     def test_completed_failure(self):
@@ -389,7 +336,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.controller.submit(job)
 
         self.assertFalse(future.completed)
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
         self.assertTrue(future.completed)
 
     def test_completed_cancelled(self):
@@ -399,12 +346,19 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         self.assertFalse(future.completed)
         future.cancel()
         self.assertFalse(future.completed)
-        self.receiver.send_until(lambda: future.state == CANCELLING)
+        self.wait_for_state(future, CANCELLING)
         self.assertFalse(future.completed)
-        self.receiver.send_until(lambda: future.completed)
+        self.wait_for_completion(future)
         self.assertTrue(future.completed)
 
     # Helper functions
+
+    def wait_for_state(self, future, state):
+        self.receiver.send_until(
+            lambda: future.state == state, timeout=TIMEOUT)
+
+    def wait_for_completion(self, future):
+        self.receiver.send_until(lambda: future.completed, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_executor(self):

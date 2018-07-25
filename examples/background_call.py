@@ -17,7 +17,7 @@ from traits_futures.api import (
     CANCELLING,
     EXECUTING,
     FAILED,
-    SUCCEEDED,
+    COMPLETED,
     WAITING,
 )
 
@@ -51,7 +51,7 @@ class JobTabularAdapter(TabularAdapter):
         CANCELLING: 0xff8000,
         EXECUTING: 0x8080ff,
         FAILED: 0xffc0ff,
-        SUCCEEDED: 0x80ff80,
+        COMPLETED: 0x80ff80,
         WAITING: 0xffffff,
     }
 
@@ -65,7 +65,7 @@ class JobTabularAdapter(TabularAdapter):
         job = self.item
         state = job.state
         state_text = state.title()
-        if state == SUCCEEDED:
+        if state == COMPLETED:
             state_text += ": result={}".format(job.result)
         elif state == FAILED:
             state_text += ": {}".format(job.exception[1])

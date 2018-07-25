@@ -1,41 +1,50 @@
 """
-Background task consisting of a simple callable.
+Background task that sends results from an iteration.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, HasStrictTraits, Property, Str, Tuple)
+    Any, Bool, Callable, Dict, Event, HasStrictTraits, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
     FINAL_STATES, CANCELLABLE_STATES, FutureState)
 
-# Message types for messages from CallBackgroundTask to CallFuture.
-# The background task will emit exactly one of the following
-# sequences of message types:
+# Message types for messages from IterationBackgroundTask to IterationFuture.
+# The background iteration will emit exactly one of the following
+# sequences of message types, where GENERATED* indicates zero-or-more
+# GENERATED messages.
 #
 #   [INTERRUPTED]
-#   [STARTED, RAISED]
-#   [STARTED, RETURNED]
+#   [RAISED]
+#   [STARTED, GENERATED*, INTERRUPTED]
+#   [STARTED, GENERATED*, RAISED]
+#   [STARTED, GENERATED*, EXHAUSTED]
 
-#: Call was cancelled before it started. No arguments.
+#: Iteration was cancelled either before it started or during the
+#: iteration. No arguments.
 INTERRUPTED = "interrupted"
 
-#: Call started executing. No arguments.
+#: Iteration started executing. No arguments.
 STARTED = "started"
 
-#: Call failed with an exception. Argument gives exception information.
+#: Iteration failed with an exception, or there was
+#: an exception on creation of the iterator. Argument gives
+#: exception information.
 RAISED = "raised"
 
-#: Call succeeded and returned a result. Argument is the result.
-RETURNED = "returned"
+#: Iteration completed normally. No arguments.
+EXHAUSTED = "exhausted"
+
+#: Message sent whenever the iteration yields a result.
+#: Argument is the result generated.
+GENERATED = "generated"
 
 
-class CallBackgroundTask(object):
+class IterationBackgroundTask(object):
     """
-    Wrapper around the actual callable to be run. This wrapper provides the
-    task that will be submitted to the concurrent.futures executor
+    Iteration to be executed in the background.
     """
     def __init__(self, callable, args, kwargs, message_sender, cancel_event):
         self.callable = callable
@@ -46,19 +55,36 @@ class CallBackgroundTask(object):
 
     def __call__(self):
         self.message_sender.connect()
+        try:
+            if self.cancel_event.is_set():
+                self.send(INTERRUPTED)
+                return
 
-        if self.cancel_event.is_set():
-            self.send(INTERRUPTED)
-        else:
-            self.send(STARTED)
             try:
-                result = self.callable(*self.args, **self.kwargs)
+                iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
                 self.send(RAISED, marshal_exception(e))
-            else:
-                self.send(RETURNED, result)
+                return
 
-        self.message_sender.disconnect()
+            self.send(STARTED)
+
+            while True:
+                if self.cancel_event.is_set():
+                    self.send(INTERRUPTED)
+                    break
+
+                try:
+                    result = next(iterable)
+                except StopIteration:
+                    self.send(EXHAUSTED)
+                    break
+                except BaseException as e:
+                    self.send(RAISED, marshal_exception(e))
+                    break
+                else:
+                    self.send(GENERATED, result)
+        finally:
+            self.message_sender.disconnect()
 
     def send(self, message_type, message_args=None):
         """
@@ -67,47 +93,41 @@ class CallBackgroundTask(object):
         self.message_sender.send((message_type, message_args))
 
 
-# CallFuture states. These represent the future's current
-# state of knowledge of the background task. A task starts out
-# in WAITING state and ends in one of the three final states:
-# COMPLETED, FAILED, OR CANCELLED. The possible progressions of states are:
+# IterationFuture states. These represent the futures' current state of
+# knowledge of the background iteration. An iteration starts out in WAITING
+# state and ends with one of COMPLETED, FAILED or CANCELLED. The possible
+# progressions of states are:
 #
+# WAITING -> FAILED
 # WAITING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> FAILED
 # WAITING -> EXECUTING -> COMPLETED
+#
+# The ``result`` trait will only be fired when the state is EXECUTING;
+# no results events will be fired after cancelling.
 
 
-class CallFuture(HasStrictTraits):
+class IterationFuture(HasStrictTraits):
     """
-    Object representing the front-end handle to a background call.
+    Foreground representation of an iteration executing in the
+    background.
     """
-    #: The state of the background call, to the best of the knowledge of
+    #: The state of the background iteration, to the best of the knowledge of
     #: this future.
     state = FutureState
 
-    #: True if we've received the final message from the background task,
-    #: else False. `True` indicates either that the background task
+    #: True if we've received the final message from the background iteration,
+    #: else False. `True` indicates either that the background iteration
     #: succeeded, or that it raised, or that it was cancelled.
     completed = Property(Bool, depends_on='state')
 
     #: True if this task can be cancelled, else False.
     cancellable = Property(Bool, depends_on='state')
 
-    @property
-    def result(self):
-        """
-        Result of the background call. Raises an ``Attributerror`` on access if
-        no result is available (because the background call failed, was
-        cancelled, or has not yet completed).
-
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError("No result available for this call.")
-        return self._result
+    #: Event fired whenever a result arrives from the background
+    #: iteration.
+    result = Event(Any)
 
     @property
     def exception(self):
@@ -126,9 +146,8 @@ class CallFuture(HasStrictTraits):
 
     def cancel(self):
         """
-        Method that can be called from the main thread to
-        indicate that the task should be cancelled (provided
-        it hasn't already started running).
+        Method called from the main thread to request cancellation
+        of the background job.
         """
         # In the interests of catching coding errors early in client
         # code, we're strict about what states we allow cancellation
@@ -167,9 +186,6 @@ class CallFuture(HasStrictTraits):
     #: should call the cancel() method instead of using this event.
     _cancel_event = Any
 
-    #: Result from the background task.
-    _result = Any()
-
     #: Exception information from the background task.
     _exception = Tuple(Str, Str, Str)
 
@@ -185,20 +201,29 @@ class CallFuture(HasStrictTraits):
             self.state = EXECUTING
 
     def _process_raised(self, arg):
-        assert self.state in (EXECUTING, CANCELLING)
+        assert self.state in (WAITING, EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._exception = arg
             self.state = FAILED
+        elif self.state == WAITING:
+            self._exception = arg
+            self.state = FAILED
         else:
+            # Don't record the exception if the job was already cancelled.
             self.state = CANCELLED
 
-    def _process_returned(self, arg):
+    def _process_exhausted(self, arg):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
-            self._result = arg
             self.state = COMPLETED
         else:
             self.state = CANCELLED
+
+    def _process_generated(self, arg):
+        assert self.state in (EXECUTING, CANCELLING)
+        # Any results arriving after a cancellation request are ignored.
+        if self.state == EXECUTING:
+            self.result = arg
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
@@ -207,11 +232,11 @@ class CallFuture(HasStrictTraits):
         return self.state in FINAL_STATES
 
 
-class BackgroundCall(HasStrictTraits):
+class BackgroundIteration(HasStrictTraits):
     """
-    Object representing the background call to be executed.
+    Object representing the background iteration to be executed.
     """
-    #: The callable to be executed.
+    #: The callable to be executed. This should return something iterable.
     callable = Callable
 
     #: Positional arguments to be passed to the callable.
@@ -222,17 +247,17 @@ class BackgroundCall(HasStrictTraits):
 
     def prepare(self, cancel_event, message_sender):
         """
-        Prepare the task for running.
+        Prepare the background iteration for running.
 
-        Returns a pair (future, background_call), where
+        Returns a pair (future, background_iteration), where
         the future acts as a handle for task cancellation, etc.,
-        and the background_call is a callable to be executed
+        and the background_iteration is a callable to be executed
         in the background.
         """
-        future = CallFuture(
+        future = IterationFuture(
             _cancel_event=cancel_event,
         )
-        runner = CallBackgroundTask(
+        runner = IterationBackgroundTask(
             callable=self.callable,
             args=self.args,
             # Convert TraitsDict to a regular dict
@@ -243,8 +268,8 @@ class BackgroundCall(HasStrictTraits):
         return future, runner
 
 
-def background_call(callable, *args, **kwargs):
+def background_iteration(callable, *args, **kwargs):
     """
-    Convenience function for creating BackgroundCall objects.
+    Convenience function for creating BackgroundIteration objects.
     """
-    return BackgroundCall(callable=callable, args=args, kwargs=kwargs)
+    return BackgroundIteration(callable=callable, args=args, kwargs=kwargs)
