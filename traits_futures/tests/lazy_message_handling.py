@@ -13,10 +13,10 @@ class LazyMessageSender(object):
         self.sender_id = sender_id
         self.message_queue = message_queue
 
-    def connect(self):
+    def __enter__(self):
         pass
 
-    def disconnect(self):
+    def __exit__(self, *exc_info):
         pass
 
     def send(self, message):

@@ -54,8 +54,7 @@ class IterationBackgroundTask(object):
         self.cancel_event = cancel_event
 
     def __call__(self):
-        self.message_sender.connect()
-        try:
+        with self.message_sender:
             if self.cancel_event.is_set():
                 self.send(INTERRUPTED)
                 return
@@ -83,8 +82,6 @@ class IterationBackgroundTask(object):
                     break
                 else:
                     self.send(GENERATED, result)
-        finally:
-            self.message_sender.disconnect()
 
     def send(self, message_type, message_args=None):
         """

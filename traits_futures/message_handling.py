@@ -39,8 +39,10 @@ class QtMessageSender(object):
 
     This class will be instantiated in the main thread, but passed to the
     worker thread to allow the worker to communicate back to the main
-    thread. Only the worker thread should call the connect, disconnect and send
-    methods.
+    thread.
+
+    Only the worker thread should use the send method, and only
+    inside a "with sender:" block.
     """
     def __init__(self, sender_id, signallee, message_queue):
         self.sender_id = sender_id
@@ -48,17 +50,12 @@ class QtMessageSender(object):
         self.signaller = None
         self.message_queue = message_queue
 
-    def connect(self):
-        """
-        Connect to the receiver.
-        """
+    def __enter__(self):
         self.signaller = _MessageSignaller()
         self.signaller.message_sent.connect(self.signallee.message_sent)
+        return self
 
-    def disconnect(self):
-        """
-        Disconnect from the receiver.
-        """
+    def __exit__(self, *exc_info):
         self.signaller.message_sent.disconnect(self.signallee.message_sent)
         self.signaller = None
 
