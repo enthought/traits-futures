@@ -11,8 +11,6 @@ from traits_futures.qt_message_router import (
     QtMessageRouter,
 )
 
-FINAL = "final"
-
 
 def send_messages(sender, messages):
     """
@@ -53,7 +51,7 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
         sender, receiver = router.sender()
         listener = Listener(receiver=receiver)
 
-        messages = ["inconceivable", 15206, (23, 5.6), FINAL]
+        messages = ["inconceivable", 15206, (23, 5.6)]
 
         # Send messages from a background thread.
         worker = threading.Thread(
@@ -116,13 +114,12 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
         self.assertEqual(received_messages, worker_messages)
 
     def test_synchronous_message_sending(self):
-        # Sending from the same thread should work, and should
-        # be synchronous: no need to run the event loop.
+        # Sending from the same thread is synchronous; no event loop needed.
         router = QtMessageRouter()
         sender, receiver = router.sender()
         listener = Listener(receiver=receiver)
 
-        messages = ["inconceivable", 15206, (23, 5.6), FINAL]
+        messages = ["inconceivable", 15206, (23, 5.6)]
         with sender:
             for message in messages:
                 sender.send(message)
