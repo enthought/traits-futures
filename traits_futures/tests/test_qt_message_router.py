@@ -23,18 +23,6 @@ def send_messages(sender, messages):
             sender.send(message)
 
 
-class OldListener(HasStrictTraits):
-    # The router we're listening to.
-    router = Instance(QtMessageRouter)
-
-    # Messages received.
-    messages = List
-
-    @on_trait_change('router:received')
-    def _record_message(self, message):
-        self.messages.append(message)
-
-
 class Listener(HasStrictTraits):
     """
     Test helper that listens to and records all messages from a
