@@ -56,6 +56,9 @@ class QtMessageSender(object):
         return self
 
     def __exit__(self, *exc_info):
+        self.message_queue.put(("done", self.sender_id))
+        self.signaller.message_sent.emit()
+
         self.signaller.message_sent.disconnect(self.signallee.message_sent)
         self.signaller = None
 
@@ -63,7 +66,7 @@ class QtMessageSender(object):
         """
         Send a message to the router.
         """
-        self.message_queue.put((self.sender_id, message))
+        self.message_queue.put(("message", self.sender_id, message))
         self.signaller.message_sent.emit()
 
 
@@ -90,7 +93,7 @@ class QtMessageRouter(HasStrictTraits):
     #: Receivers, keyed by sender_id.
     _receivers = Dict(Int, Any)
 
-    #: Router for the Qt "message_sent" signal.
+    #: QObject providing slot for the "message_sent" signal.
     _signallee = Instance(_MessageSignallee)
 
     def __message_queue_default(self):
@@ -113,11 +116,16 @@ class QtMessageRouter(HasStrictTraits):
             message_queue=self._message_queue,
         )
         receiver = QtMessageReceiver()
-        # XXX Need way to remove these!
         self._receivers[sender_id] = receiver
         return sender, receiver
 
     def _read_message(self):
-        sender_id, message = self._message_queue.get()
-        receiver = self._receivers[sender_id]
-        receiver.message = message
+        wrapped_message = self._message_queue.get()
+        if wrapped_message[0] == "message":
+            _, sender_id, message = wrapped_message
+            receiver = self._receivers[sender_id]
+            receiver.message = message
+        else:
+            assert wrapped_message[0] == "done"
+            _, sender_id = wrapped_message
+            del self._receivers[sender_id]

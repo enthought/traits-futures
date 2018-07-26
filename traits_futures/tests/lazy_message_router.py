@@ -17,10 +17,10 @@ class LazyMessageSender(object):
         pass
 
     def __exit__(self, *exc_info):
-        pass
+        self.message_queue.put(("done", self.sender_id))
 
     def send(self, message):
-        self.message_queue.put((self.sender_id, message))
+        self.message_queue.put(("message", self.sender_id, message))
 
 
 class LazyMessageReceiver(HasStrictTraits):
@@ -54,12 +54,20 @@ class LazyMessageRouter(HasStrictTraits):
             message_queue=self._message_queue,
         )
         receiver = LazyMessageReceiver()
-        # XXX Need way to remove these!
         self._receivers[sender_id] = receiver
         return sender, receiver
 
-    def send_until(self, condition, timeout):
-        while not condition():
-            sender_id, message = self._message_queue.get(timeout=timeout)
+    def _read_message(self):
+        wrapped_message = self._message_queue.get()
+        if wrapped_message[0] == "message":
+            _, sender_id, message = wrapped_message
             receiver = self._receivers[sender_id]
             receiver.message = message
+        else:
+            assert wrapped_message[0] == "done"
+            _, sender_id = wrapped_message
+            del self._receivers[sender_id]
+
+    def send_until(self, condition, timeout):
+        while not condition():
+            self._read_message()
