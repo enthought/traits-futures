@@ -15,7 +15,7 @@ from traits_futures.api import (
     background_call, CallFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
-from traits_futures.tests.lazy_message_handling import LazyMessageRouter
+from traits_futures.tests.lazy_message_router import LazyMessageRouter
 
 
 #: Number of workers for the test executors.

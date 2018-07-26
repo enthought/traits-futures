@@ -7,7 +7,7 @@ import concurrent.futures
 
 from traits.api import Any, HasStrictTraits, Instance
 
-from traits_futures.message_handling import QtMessageRouter
+from traits_futures.qt_message_router import QtMessageRouter
 
 
 class TraitsExecutor(HasStrictTraits):

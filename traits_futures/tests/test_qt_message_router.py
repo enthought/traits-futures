@@ -7,7 +7,7 @@ import unittest
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
-from traits_futures.message_handling import QtMessageRouter
+from traits_futures.qt_message_router import QtMessageRouter
 
 FINAL = "final"
 
@@ -33,7 +33,7 @@ class Listener(HasStrictTraits):
         self.messages.append(message)
 
 
-class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
+class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
 
