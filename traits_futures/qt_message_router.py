@@ -44,8 +44,8 @@ class QtMessageSender(object):
     Only the worker thread should use the send method, and only
     inside a "with sender:" block.
     """
-    def __init__(self, sender_id, signallee, message_queue):
-        self.sender_id = sender_id
+    def __init__(self, connection_id, signallee, message_queue):
+        self.connection_id = connection_id
         self.signallee = signallee
         self.signaller = None
         self.message_queue = message_queue
@@ -56,7 +56,7 @@ class QtMessageSender(object):
         return self
 
     def __exit__(self, *exc_info):
-        self.message_queue.put(("done", self.sender_id))
+        self.message_queue.put(("done", self.connection_id))
         self.signaller.message_sent.emit()
 
         self.signaller.message_sent.disconnect(self.signallee.message_sent)
@@ -66,7 +66,7 @@ class QtMessageSender(object):
         """
         Send a message to the router.
         """
-        self.message_queue.put(("message", self.sender_id, message))
+        self.message_queue.put(("message", self.connection_id, message))
         self.signaller.message_sent.emit()
 
 
@@ -84,48 +84,59 @@ class QtMessageRouter(HasStrictTraits):
 
     Requires the event loop to be running in order for messages to arrive.
     """
+    def pipe(self):
+        """
+        Create a (sender, receiver) pair for sending messages.
+
+        Returns
+        -------
+        sender : QtMessageSender
+            Object to be passed to the background task to send messages.
+        receiver : QtMessageReceiver
+            Object to be kept in the foreground which reacts to messages.
+        """
+        connection_id = next(self._connection_ids)
+        sender = QtMessageSender(
+            connection_id=connection_id,
+            signallee=self._signallee,
+            message_queue=self._message_queue,
+        )
+        receiver = QtMessageReceiver()
+        self._receivers[connection_id] = receiver
+        return sender, receiver
+
+    # Private traits ##########################################################
+
     #: Internal queue for messages from all senders.
     _message_queue = Any
 
-    #: Source of task ids for new tasks.
-    _sender_ids = Instance(collections.Iterator)
+    #: Source of new connection ids.
+    _connection_ids = Instance(collections.Iterator)
 
-    #: Receivers, keyed by sender_id.
+    #: Receivers, keyed by connection_id.
     _receivers = Dict(Int, Any)
 
     #: QObject providing slot for the "message_sent" signal.
     _signallee = Instance(_MessageSignallee)
 
-    def __message_queue_default(self):
-        return queue.Queue()
+    # Private methods #########################################################
 
-    def __sender_ids_default(self):
-        return itertools.count()
-
-    def __signallee_default(self):
-        return _MessageSignallee(on_message_sent=self._read_message)
-
-    def sender(self):
-        """
-        Create a new QtMessageSender for this router.
-        """
-        sender_id = next(self._sender_ids)
-        sender = QtMessageSender(
-            sender_id=sender_id,
-            signallee=self._signallee,
-            message_queue=self._message_queue,
-        )
-        receiver = QtMessageReceiver()
-        self._receivers[sender_id] = receiver
-        return sender, receiver
-
-    def _read_message(self):
+    def _route_message(self):
         wrapped_message = self._message_queue.get()
         if wrapped_message[0] == "message":
-            _, sender_id, message = wrapped_message
-            receiver = self._receivers[sender_id]
+            _, connection_id, message = wrapped_message
+            receiver = self._receivers[connection_id]
             receiver.message = message
         else:
             assert wrapped_message[0] == "done"
-            _, sender_id = wrapped_message
-            del self._receivers[sender_id]
+            _, connection_id = wrapped_message
+            del self._receivers[connection_id]
+
+    def __message_queue_default(self):
+        return queue.Queue()
+
+    def __connection_ids_default(self):
+        return itertools.count()
+
+    def __signallee_default(self):
+        return _MessageSignallee(on_message_sent=self._route_message)

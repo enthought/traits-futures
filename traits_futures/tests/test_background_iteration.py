@@ -165,7 +165,7 @@ class TestIterationNoUI(unittest.TestCase):
         future = self.controller.submit(iteration)
         listener = Listener(future=future)
 
-        self.router.send_until(
+        self.router.route_until(
             lambda: len(listener.results) > 0,
             timeout=TIMEOUT,
         )
@@ -202,7 +202,7 @@ class TestIterationNoUI(unittest.TestCase):
         future = self.controller.submit(iteration)
         listener = Listener(future=future)
 
-        self.router.send_until(
+        self.router.route_until(
             lambda: len(listener.results) > 0,
             timeout=TIMEOUT,
         )
@@ -306,11 +306,11 @@ class TestIterationNoUI(unittest.TestCase):
     # Helper functions
 
     def wait_for_state(self, future, state):
-        self.router.send_until(
+        self.router.route_until(
             lambda: future.state == state, timeout=TIMEOUT)
 
     def wait_for_completion(self, future):
-        self.router.send_until(lambda: future.completed, timeout=TIMEOUT)
+        self.router.route_until(lambda: future.completed, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_executor(self):

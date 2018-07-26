@@ -48,7 +48,7 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
         router = QtMessageRouter()
-        sender, receiver = router.sender()
+        sender, receiver = router.pipe()
         listener = Listener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6)]
@@ -85,7 +85,7 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
         workers = []
         listeners = []
         for messages in worker_messages:
-            sender, receiver = router.sender()
+            sender, receiver = router.pipe()
             listeners.append(Listener(receiver=receiver))
             workers.append(
                 threading.Thread(
@@ -116,7 +116,7 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
     def test_synchronous_message_sending(self):
         # Sending from the same thread is synchronous; no event loop needed.
         router = QtMessageRouter()
-        sender, receiver = router.sender()
+        sender, receiver = router.pipe()
         listener = Listener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6)]
