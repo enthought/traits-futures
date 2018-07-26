@@ -21,7 +21,7 @@ class TraitsExecutor(HasStrictTraits):
     _message_router = Any
 
     def submit(self, task):
-        sender_id, sender, receiver = self._message_router.sender()
+        sender, receiver = self._message_router.sender()
         future, runner = task.prepare(
             cancel_event=threading.Event(),
             message_sender=sender,

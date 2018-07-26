@@ -1,13 +1,15 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-import collections
 import threading
 import unittest
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
-from traits_futures.qt_message_router import QtMessageRouter
+from traits_futures.qt_message_router import (
+    QtMessageReceiver,
+    QtMessageRouter,
+)
 
 FINAL = "final"
 
@@ -21,7 +23,7 @@ def send_messages(sender, messages):
             sender.send(message)
 
 
-class Listener(HasStrictTraits):
+class OldListener(HasStrictTraits):
     # The router we're listening to.
     router = Instance(QtMessageRouter)
 
@@ -29,6 +31,22 @@ class Listener(HasStrictTraits):
     messages = List
 
     @on_trait_change('router:received')
+    def _record_message(self, message):
+        self.messages.append(message)
+
+
+class Listener(HasStrictTraits):
+    """
+    Test helper that listens to and records all messages from a
+    QtMessageReceiver.
+    """
+    #: The receiver that we're listening to.
+    receiver = Instance(QtMessageReceiver)
+
+    #: Messages received.
+    messages = List
+
+    @on_trait_change('receiver:message')
     def _record_message(self, message):
         self.messages.append(message)
 
@@ -44,8 +62,8 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
         router = QtMessageRouter()
-        listener = Listener(router=router)
-        sender_id, sender, _ = router.sender()
+        sender, receiver = router.sender()
+        listener = Listener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6), FINAL]
 
@@ -63,64 +81,62 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
         with self.event_loop_until_condition(got_all_messages):
             pass
 
-        expected_messages = [(sender_id, message) for message in messages]
-        self.assertEqual(listener.messages, expected_messages)
+        self.assertEqual(listener.messages, messages)
 
     def test_multiple_senders(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
         router = QtMessageRouter()
-        listener = Listener(router=router)
-
         worker_count = 64
+        message_count = 64
 
-        sender_ids = []
+        # Messages for each worker to send: one list of messages per worker.
+        worker_messages = [
+            [(i, j) for j in range(message_count)]
+            for i in range(worker_count)
+        ]
+
         workers = []
-
-        expected_messages = {}
-        for i in range(worker_count):
-            sender_id, sender, _ = router.sender()
-
-            sender_ids.append(sender_id)
-
-            messages = [i**2, FINAL]
-            worker = threading.Thread(
-                target=send_messages,
-                args=(sender, messages),
+        listeners = []
+        for messages in worker_messages:
+            sender, receiver = router.sender()
+            listeners.append(Listener(receiver=receiver))
+            workers.append(
+                threading.Thread(
+                    target=send_messages,
+                    args=(sender, messages),
+                )
             )
-            workers.append(worker)
-            expected_messages[sender_id] = messages
 
-        # Run workers; wait until we receive the expected number of messages.
+        # Run the workers.
         for worker in workers:
             worker.start()
-        for worker in workers:
-            worker.join()
 
+        # Wait until we receive the expected number of messages.
         def received_all_messages():
-            return len(listener.messages) >= 2 * worker_count
+            return all(len(listener.messages) >= 2 for listener in listeners)
 
         with self.event_loop_until_condition(received_all_messages):
             pass
 
-        # Sort messages by sender_id.
-        received_messages = collections.defaultdict(list)
-        for sender_id, message in listener.messages:
-            received_messages[sender_id].append(message)
+        # Workers should all be ready to join.
+        for worker in workers:
+            worker.join()
 
-        self.assertEqual(received_messages, expected_messages)
+        # Check we got the expected messages.
+        received_messages = [listener.messages for listener in listeners]
+        self.assertEqual(received_messages, worker_messages)
 
     def test_synchronous_message_sending(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
         router = QtMessageRouter()
-        listener = Listener(router=router)
-        sender_id, sender, _ = router.sender()
+        sender, receiver = router.sender()
+        listener = Listener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6), FINAL]
         with sender:
             for message in messages:
                 sender.send(message)
 
-        expected_messages = [(sender_id, message) for message in messages]
-        self.assertEqual(listener.messages, expected_messages)
+        self.assertEqual(listener.messages, messages)

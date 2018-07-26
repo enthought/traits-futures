@@ -128,4 +128,4 @@ class QtMessageRouter(HasStrictTraits):
         receiver = QtMessageReceiver()
         # XXX Need way to remove these!
         self._receivers[sender_id] = receiver
-        return sender_id, sender, receiver
+        return sender, receiver

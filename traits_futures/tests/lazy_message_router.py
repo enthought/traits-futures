@@ -61,7 +61,7 @@ class LazyMessageRouter(HasStrictTraits):
         receiver = LazyMessageReceiver()
         # XXX Need way to remove these!
         self._receivers[sender_id] = receiver
-        return sender_id, sender, receiver
+        return sender, receiver
 
     def send_until(self, condition, timeout):
         while not condition():
