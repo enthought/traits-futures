@@ -68,20 +68,25 @@ class QtMessageSender(object):
 
 
 class QtMessageReceiver(HasStrictTraits):
+    """
+    Main-thread object that receives messages from a QtMessageSender.
+    """
     #: Event fired when a message is received from the paired sender.
     message = Event(Any)
 
 
 class QtMessageRouter(HasStrictTraits):
     """
-    Main-thread object that receives messages from background threads.
+    Router for messages, sent by means of Qt signals and slots.
+
+    Requires the event loop to be running in order for messages to arrive.
     """
     #: Event fired whenever a message is received. The first part of
     #: the received message is the sender id. The second part is
     #: the message itself.
     received = Event(Tuple(Int, Any))
 
-    #: Internal queue for messages from worker.
+    #: Internal queue for messages from all senders.
     _message_queue = Any
 
     #: Router for the Qt "message_sent" signal.
