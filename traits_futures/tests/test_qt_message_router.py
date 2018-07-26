@@ -100,7 +100,10 @@ class TestQtMessageRouter(GuiTestAssistant, unittest.TestCase):
 
         # Wait until we receive the expected number of messages.
         def received_all_messages():
-            return all(len(listener.messages) >= 2 for listener in listeners)
+            return all(
+                len(listener.messages) >= message_count
+                for listener in listeners
+            )
 
         with self.event_loop_until_condition(received_all_messages):
             pass
