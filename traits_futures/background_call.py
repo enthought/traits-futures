@@ -4,7 +4,7 @@ Background task consisting of a simple callable.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, HasStrictTraits, Property, Str, Tuple)
+    Any, Bool, Callable, Dict, HasStrictTraits, Instance, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
@@ -170,6 +170,9 @@ class CallFuture(HasStrictTraits):
     #: Exception information from the background task.
     _exception = Tuple(Str, Str, Str)
 
+    #: Object that receives messages from the background task.
+    _message_receiver = Instance(HasStrictTraits)
+
     # Private methods #########################################################
 
     def _process_interrupted(self, arg):
@@ -217,7 +220,7 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str, Any)
 
-    def prepare(self, cancel_event, message_sender):
+    def prepare(self, cancel_event, message_sender, message_receiver):
         """
         Prepare the task for running.
 
@@ -228,6 +231,7 @@ class BackgroundCall(HasStrictTraits):
         """
         future = CallFuture(
             _cancel_event=cancel_event,
+            _message_receiver=message_receiver,
         )
         runner = CallBackgroundTask(
             callable=self.callable,

@@ -4,7 +4,8 @@ Background task that sends results from an iteration.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, Event, HasStrictTraits, Property, Str, Tuple)
+    Any, Bool, Callable, Dict, Event, HasStrictTraits, Instance, Property, Str,
+    Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
@@ -186,6 +187,9 @@ class IterationFuture(HasStrictTraits):
     #: Exception information from the background task.
     _exception = Tuple(Str, Str, Str)
 
+    #: Object that receives messages from the background task.
+    _message_receiver = Instance(HasStrictTraits)
+
     # Private methods #########################################################
 
     def _process_interrupted(self, arg):
@@ -242,7 +246,7 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str, Any)
 
-    def prepare(self, cancel_event, message_sender):
+    def prepare(self, cancel_event, message_sender, message_receiver):
         """
         Prepare the background iteration for running.
 
@@ -253,6 +257,7 @@ class BackgroundIteration(HasStrictTraits):
         """
         future = IterationFuture(
             _cancel_event=cancel_event,
+            _message_receiver=message_receiver,
         )
         runner = IterationBackgroundTask(
             callable=self.callable,
