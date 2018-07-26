@@ -4,7 +4,8 @@ Background task consisting of a simple callable.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, HasStrictTraits, Instance, Property, Str, Tuple)
+    Any, Bool, Callable, Dict, HasStrictTraits, Instance,
+    on_trait_change, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
@@ -136,28 +137,6 @@ class CallFuture(HasStrictTraits):
         self._cancel_event.set()
         self.state = CANCELLING
 
-    def process_message(self, message):
-        """
-        Process a message from the background task.
-
-        Parameters
-        ----------
-        message : tuple (string, any)
-            Message from the background task. The first part is the
-            message type, and the second part provides any message
-            arguments.
-
-        Returns
-        -------
-        bool
-            True if this message represents the final communication
-            from the background job, else False.
-        """
-        message_type, message_arg = message
-        method_name = "_process_{}".format(message_type)
-        getattr(self, method_name)(message_arg)
-        return self.completed
-
     # Private traits ##########################################################
 
     #: Private event used to request cancellation of this task. Users
@@ -174,6 +153,12 @@ class CallFuture(HasStrictTraits):
     _message_receiver = Instance(HasStrictTraits)
 
     # Private methods #########################################################
+
+    @on_trait_change('_message_receiver:message')
+    def _process_message(self, message):
+        message_type, message_arg = message
+        method_name = "_process_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
 
     def _process_interrupted(self, arg):
         assert self.state in (CANCELLING,)
