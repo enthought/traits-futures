@@ -6,7 +6,7 @@ import itertools
 from six.moves import queue
 
 from pyface.qt.QtCore import QObject, Signal, Slot
-from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int, Tuple
+from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
 class _MessageSignaller(QObject):
@@ -81,16 +81,8 @@ class QtMessageRouter(HasStrictTraits):
 
     Requires the event loop to be running in order for messages to arrive.
     """
-    #: Event fired whenever a message is received. The first part of
-    #: the received message is the sender id. The second part is
-    #: the message itself.
-    received = Event(Tuple(Int, Any))
-
     #: Internal queue for messages from all senders.
     _message_queue = Any
-
-    #: Router for the Qt "message_sent" signal.
-    _signallee = Instance(_MessageSignallee)
 
     #: Source of task ids for new tasks.
     _sender_ids = Instance(collections.Iterator)
@@ -98,22 +90,17 @@ class QtMessageRouter(HasStrictTraits):
     #: Receivers, keyed by sender_id.
     _receivers = Dict(Int, Any)
 
+    #: Router for the Qt "message_sent" signal.
+    _signallee = Instance(_MessageSignallee)
+
     def __message_queue_default(self):
         return queue.Queue()
-
-    def __signallee_default(self):
-        return _MessageSignallee(on_message_sent=self._read_message)
 
     def __sender_ids_default(self):
         return itertools.count()
 
-    def _read_message(self):
-        wrapped_message = self._message_queue.get()
-        self.received = wrapped_message
-
-        sender_id, message = wrapped_message
-        receiver = self._receivers[sender_id]
-        receiver.message = message
+    def __signallee_default(self):
+        return _MessageSignallee(on_message_sent=self._read_message)
 
     def sender(self):
         """
@@ -129,3 +116,8 @@ class QtMessageRouter(HasStrictTraits):
         # XXX Need way to remove these!
         self._receivers[sender_id] = receiver
         return sender, receiver
+
+    def _read_message(self):
+        sender_id, message = self._message_queue.get()
+        receiver = self._receivers[sender_id]
+        receiver.message = message

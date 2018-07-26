@@ -5,7 +5,7 @@ import itertools
 
 from six.moves import queue
 
-from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int, Tuple
+from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
 class LazyMessageSender(object):
@@ -29,11 +29,6 @@ class LazyMessageReceiver(HasStrictTraits):
 
 
 class LazyMessageRouter(HasStrictTraits):
-    #: Event fired whenever a message is received. The first part of
-    #: the received message is the sender id. The second part is
-    #: the message itself.
-    received = Event(Tuple(Int, Any))
-
     #: Internal queue for messages from workers.
     _message_queue = Any
 
@@ -65,9 +60,6 @@ class LazyMessageRouter(HasStrictTraits):
 
     def send_until(self, condition, timeout):
         while not condition():
-            wrapped_message = self._message_queue.get(timeout=timeout)
-            self.received = wrapped_message
-
-            sender_id, message = wrapped_message
+            sender_id, message = self._message_queue.get(timeout=timeout)
             receiver = self._receivers[sender_id]
             receiver.message = message
