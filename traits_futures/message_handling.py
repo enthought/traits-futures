@@ -6,7 +6,7 @@ import itertools
 from six.moves import queue
 
 from pyface.qt.QtCore import QObject, Signal, Slot
-from traits.api import Any, Event, HasStrictTraits, Instance, Int, Tuple
+from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int, Tuple
 
 
 class _MessageSignaller(QObject):
@@ -90,6 +90,9 @@ class QtMessageRouter(HasStrictTraits):
     #: Source of task ids for new tasks.
     _sender_ids = Instance(collections.Iterator)
 
+    #: Receivers, keyed by sender_id.
+    _receivers = Dict(Int, Any)
+
     def __message_queue_default(self):
         return queue.Queue()
 
@@ -100,7 +103,12 @@ class QtMessageRouter(HasStrictTraits):
         return itertools.count()
 
     def _read_message(self):
-        self.received = self._message_queue.get()
+        wrapped_message = self._message_queue.get()
+        self.received = wrapped_message
+
+        sender_id, message = wrapped_message
+        receiver = self._receivers[sender_id]
+        receiver.message = message
 
     def sender(self):
         """
@@ -113,4 +121,6 @@ class QtMessageRouter(HasStrictTraits):
             message_queue=self._message_queue,
         )
         receiver = QtMessageReceiver()
+        # XXX Need way to remove these!
+        self._receivers[sender_id] = receiver
         return sender_id, sender, receiver
