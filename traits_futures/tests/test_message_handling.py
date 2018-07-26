@@ -45,7 +45,7 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
         # be synchronous: no need to run the event loop.
         router = QtMessageRouter()
         listener = Listener(router=router)
-        sender_id, sender = router.sender()
+        sender_id, sender, _ = router.sender()
 
         messages = ["inconceivable", 15206, (23, 5.6), FINAL]
 
@@ -79,7 +79,7 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
 
         expected_messages = {}
         for i in range(worker_count):
-            sender_id, sender = router.sender()
+            sender_id, sender, _ = router.sender()
 
             sender_ids.append(sender_id)
 
@@ -115,7 +115,7 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
         # be synchronous: no need to run the event loop.
         router = QtMessageRouter()
         listener = Listener(router=router)
-        sender_id, sender = router.sender()
+        sender_id, sender, _ = router.sender()
 
         messages = ["inconceivable", 15206, (23, 5.6), FINAL]
         with sender:

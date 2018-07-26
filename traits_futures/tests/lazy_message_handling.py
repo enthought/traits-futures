@@ -23,6 +23,11 @@ class LazyMessageSender(object):
         self.message_queue.put((self.sender_id, message))
 
 
+class LazyMessageReceiver(HasStrictTraits):
+    #: Event fired when a message is received from the paired sender.
+    message = Event(Any)
+
+
 class LazyMessageRouter(HasStrictTraits):
     #: Event fired whenever a message is received. The first part of
     #: the received message is the sender id. The second part is
@@ -50,7 +55,8 @@ class LazyMessageRouter(HasStrictTraits):
             sender_id=sender_id,
             message_queue=self._message_queue,
         )
-        return sender_id, sender
+        receiver = LazyMessageReceiver()
+        return sender_id, sender, receiver
 
     def send_until(self, condition, timeout):
         while not condition():

@@ -67,6 +67,11 @@ class QtMessageSender(object):
         self.signaller.message_sent.emit()
 
 
+class QtMessageReceiver(HasStrictTraits):
+    #: Event fired when a message is received from the paired sender.
+    message = Event(Any)
+
+
 class QtMessageRouter(HasStrictTraits):
     """
     Main-thread object that receives messages from background threads.
@@ -107,4 +112,5 @@ class QtMessageRouter(HasStrictTraits):
             signallee=self._signallee,
             message_queue=self._message_queue,
         )
-        return sender_id, sender
+        receiver = QtMessageReceiver()
+        return sender_id, sender, receiver

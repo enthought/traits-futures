@@ -25,7 +25,7 @@ class TraitsExecutor(HasStrictTraits):
     _current_futures = Dict(Int, Any)
 
     def submit(self, task):
-        sender_id, message_sender = self._message_router.sender()
+        sender_id, message_sender, _ = self._message_router.sender()
         future, runner = task.prepare(
             cancel_event=threading.Event(),
             message_sender=message_sender,
