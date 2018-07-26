@@ -61,13 +61,13 @@ class QtMessageSender(object):
 
     def send(self, message):
         """
-        Send a message to the receiver.
+        Send a message to the router.
         """
         self.message_queue.put((self.sender_id, message))
         self.signaller.message_sent.emit()
 
 
-class QtMessageReceiver(HasStrictTraits):
+class QtMessageRouter(HasStrictTraits):
     """
     Main-thread object that receives messages from background threads.
     """
@@ -79,7 +79,7 @@ class QtMessageReceiver(HasStrictTraits):
     #: Internal queue for messages from worker.
     _message_queue = Any
 
-    #: Receiver for the Qt "message_sent" signal.
+    #: Router for the Qt "message_sent" signal.
     _signallee = Instance(_MessageSignallee)
 
     #: Source of task ids for new tasks.
@@ -99,7 +99,7 @@ class QtMessageReceiver(HasStrictTraits):
 
     def sender(self):
         """
-        Create a new QtMessageSender for this receiver.
+        Create a new QtMessageSender for this router.
         """
         sender_id = next(self._sender_ids)
         sender = QtMessageSender(

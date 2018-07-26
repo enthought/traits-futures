@@ -23,7 +23,7 @@ class LazyMessageSender(object):
         self.message_queue.put((self.sender_id, message))
 
 
-class LazyMessageReceiver(HasStrictTraits):
+class LazyMessageRouter(HasStrictTraits):
     #: Event fired whenever a message is received. The first part of
     #: the received message is the sender id. The second part is
     #: the message itself.
@@ -43,7 +43,7 @@ class LazyMessageReceiver(HasStrictTraits):
 
     def sender(self):
         """
-        Create a new LazyMessageSender for this receiver.
+        Create a new LazyMessageSender for this router.
         """
         sender_id = next(self._sender_ids)
         sender = LazyMessageSender(

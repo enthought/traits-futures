@@ -7,7 +7,7 @@ import unittest
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
-from traits_futures.message_handling import QtMessageReceiver
+from traits_futures.message_handling import QtMessageRouter
 
 FINAL = "final"
 
@@ -22,13 +22,13 @@ def send_messages(sender, messages):
 
 
 class Listener(HasStrictTraits):
-    # The receiver we're listening to.
-    receiver = Instance(QtMessageReceiver)
+    # The router we're listening to.
+    router = Instance(QtMessageRouter)
 
     # Messages received.
     messages = List
 
-    @on_trait_change('receiver:received')
+    @on_trait_change('router:received')
     def _record_message(self, message):
         self.messages.append(message)
 
@@ -43,9 +43,9 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
     def test_message_sending_from_background_thread(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
-        receiver = QtMessageReceiver()
-        listener = Listener(receiver=receiver)
-        sender_id, sender = receiver.sender()
+        router = QtMessageRouter()
+        listener = Listener(router=router)
+        sender_id, sender = router.sender()
 
         messages = ["inconceivable", 15206, (23, 5.6), FINAL]
 
@@ -69,8 +69,8 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
     def test_multiple_senders(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
-        receiver = QtMessageReceiver()
-        listener = Listener(receiver=receiver)
+        router = QtMessageRouter()
+        listener = Listener(router=router)
 
         worker_count = 64
 
@@ -79,7 +79,7 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
 
         expected_messages = {}
         for i in range(worker_count):
-            sender_id, sender = receiver.sender()
+            sender_id, sender = router.sender()
 
             sender_ids.append(sender_id)
 
@@ -113,9 +113,9 @@ class TestMessageHandling(GuiTestAssistant, unittest.TestCase):
     def test_synchronous_message_sending(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
-        receiver = QtMessageReceiver()
-        listener = Listener(receiver=receiver)
-        sender_id, sender = receiver.sender()
+        router = QtMessageRouter()
+        listener = Listener(router=router)
+        sender_id, sender = router.sender()
 
         messages = ["inconceivable", 15206, (23, 5.6), FINAL]
         with sender:

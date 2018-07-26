@@ -15,7 +15,7 @@ from traits_futures.api import (
     background_call, CallFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
-from traits_futures.tests.lazy_message_handling import LazyMessageReceiver
+from traits_futures.tests.lazy_message_handling import LazyMessageRouter
 
 
 #: Number of workers for the test executors.
@@ -121,12 +121,12 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
 class TestBackgroundCallNoUI(unittest.TestCase):
     def setUp(self):
-        self.receiver = LazyMessageReceiver()
+        self.router = LazyMessageRouter()
         self.executor = concurrent.futures.ThreadPoolExecutor(
             max_workers=WORKERS)
         self.controller = TraitsExecutor(
             executor=self.executor,
-            _message_receiver=self.receiver
+            _message_router=self.router
         )
 
     def tearDown(self):
@@ -354,11 +354,11 @@ class TestBackgroundCallNoUI(unittest.TestCase):
     # Helper functions
 
     def wait_for_state(self, future, state):
-        self.receiver.send_until(
+        self.router.send_until(
             lambda: future.state == state, timeout=TIMEOUT)
 
     def wait_for_completion(self, future):
-        self.receiver.send_until(lambda: future.completed, timeout=TIMEOUT)
+        self.router.send_until(lambda: future.completed, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_executor(self):
