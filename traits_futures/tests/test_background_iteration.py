@@ -18,7 +18,7 @@ from traits_futures.api import (
     TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
-from traits_futures.tests.lazy_message_handling import LazyMessageReceiver
+from traits_futures.tests.lazy_message_router import LazyMessageRouter
 
 
 #: Number of workers for the test executors.
@@ -78,12 +78,12 @@ class TestIterationNoUI(unittest.TestCase):
     We have to explicitly pump the "event loop" to get events.
     """
     def setUp(self):
-        self.receiver = LazyMessageReceiver()
+        self.router = LazyMessageRouter()
         self.executor = concurrent.futures.ThreadPoolExecutor(
             max_workers=WORKERS)
         self.controller = TraitsExecutor(
             executor=self.executor,
-            _message_receiver=self.receiver,
+            _message_router=self.router,
         )
 
     def tearDown(self):
@@ -165,7 +165,7 @@ class TestIterationNoUI(unittest.TestCase):
         future = self.controller.submit(iteration)
         listener = Listener(future=future)
 
-        self.receiver.send_until(
+        self.router.route_until(
             lambda: len(listener.results) > 0,
             timeout=TIMEOUT,
         )
@@ -202,7 +202,7 @@ class TestIterationNoUI(unittest.TestCase):
         future = self.controller.submit(iteration)
         listener = Listener(future=future)
 
-        self.receiver.send_until(
+        self.router.route_until(
             lambda: len(listener.results) > 0,
             timeout=TIMEOUT,
         )
@@ -306,11 +306,11 @@ class TestIterationNoUI(unittest.TestCase):
     # Helper functions
 
     def wait_for_state(self, future, state):
-        self.receiver.send_until(
+        self.router.route_until(
             lambda: future.state == state, timeout=TIMEOUT)
 
     def wait_for_completion(self, future):
-        self.receiver.send_until(lambda: future.completed, timeout=TIMEOUT)
+        self.router.route_until(lambda: future.completed, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_executor(self):
