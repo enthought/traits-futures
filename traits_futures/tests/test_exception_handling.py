@@ -38,4 +38,3 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(exc_type, six.text_type(ValueError))
         self.assertIn(message, exc_value)
         self.assertIn("test_marshal_exception", exc_traceback)
-
