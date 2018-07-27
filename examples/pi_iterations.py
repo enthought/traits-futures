@@ -133,12 +133,13 @@ class PiIterator(HasStrictTraits):
         # We need the reshape for the case where the results list is empty.
         results = np.array(self.results[-self.max_points:]).reshape((-1, 3))
         counts, approx, errors = results.T
-
-        self.plot_data.set_data('counts', counts / 1e6)
-        self.plot_data.set_data('approx', approx)
-        self.plot_data.set_data('upper', approx + errors)
-        self.plot_data.set_data('lower', approx - errors)
-        self.plot_data.set_data('pi', np.full_like(approx, np.pi))
+        self.plot_data.update_data(
+            counts=counts / 1e6,
+            approx=approx,
+            upper=approx + errors,
+            lower=approx - errors,
+            pi=np.full_like(approx, np.pi),
+        )
 
     def _plot_default(self):
         plot = Plot(self.plot_data)
