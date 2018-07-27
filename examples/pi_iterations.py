@@ -30,10 +30,9 @@ def pi_iterations(chunk_size):
     """
     Generate successive approximations to pi via a Monte Carlo method.
 
-    Infinite iterator producing successive approximations to pi,
-    via the usual Monte-Carlo method (generated random points
-    in a square, and count the proportion that lie in an
-    inscribed circle.
+    Infinite iterator producing successive approximations to pi, via the usual
+    Monte-Carlo method: generate random points in a square, and count the
+    proportion that lie in an inscribed circle.
 
     Parameters
     ----------
@@ -57,7 +56,7 @@ def pi_iterations(chunk_size):
         ninside += np.sum((samples*samples).sum(axis=1) <= 1.0)
 
         # Compute approximation along with a two-sided error giving
-        # (approximately) a 95% confidence interval on that approximation.
+        # a ~95% confidence interval on that approximation.
         #
         # We use a normal approximation interval. See wikipedia for details:
         # https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
