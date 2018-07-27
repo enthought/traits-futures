@@ -30,9 +30,9 @@ class TraitsExecutor(HasStrictTraits):
         ----------
         callable : callable
             Function to execute in the background.
-        args : tuple
+        *args
             Positional arguments to pass to that function.
-        kwargs : dict
+        **kwargs
             Named arguments to pass to that function.
 
         Returns
@@ -55,9 +55,9 @@ class TraitsExecutor(HasStrictTraits):
         ----------
         callable : callable
             Function executed in the background to provide the iterable.
-        args : tuple
+        *args
             Positional arguments to pass to that function.
-        kwargs : dict
+        **kwargs
             Named arguments to pass to that function.
 
         Returns
@@ -73,6 +73,19 @@ class TraitsExecutor(HasStrictTraits):
         return self.submit(task)
 
     def submit(self, task):
+        """
+        Submit a task to the executor, and return the corresponding future.
+
+        Parameters
+        ----------
+        task : BackgroundCall or BackgroundIteration
+            The task to be executed.
+
+        Returns
+        -------
+        future : CallFuture or IterationFuture
+            Future for this task.
+        """
         sender, receiver = self._message_router.pipe()
         future, runner = task.prepare(
             cancel_event=threading.Event(),
