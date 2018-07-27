@@ -124,7 +124,7 @@ class PiIterator(HasStrictTraits):
         self._update_plot_data()
 
     def _get_approximate_enabled(self):
-        return self.future is None or self.future.completed
+        return self.future is None or self.future.done
 
     def _get_cancel_enabled(self):
         return self.future is not None and self.future.cancellable

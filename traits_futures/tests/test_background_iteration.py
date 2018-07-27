@@ -273,35 +273,35 @@ class TestIterationNoUI(unittest.TestCase):
         iteration = background_iteration(squares, 0, 10)
         future = self.controller.submit(iteration)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     def test_completed_exception(self):
         iteration = background_iteration(reciprocals, -5, 5)
         future = self.controller.submit(iteration)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     def test_completed_bad_iterable(self):
         iteration = background_iteration(pow, 2, 3)
         future = self.controller.submit(iteration)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     def test_completed_cancelled(self):
         iteration = background_iteration(squares, 0, 10)
         future = self.controller.submit(iteration)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         future.cancel()
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     # Helper functions
 
@@ -310,7 +310,7 @@ class TestIterationNoUI(unittest.TestCase):
             lambda: future.state == state, timeout=TIMEOUT)
 
     def wait_for_completion(self, future):
-        self.router.route_until(lambda: future.completed, timeout=TIMEOUT)
+        self.router.route_until(lambda: future.done, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_executor(self):

@@ -89,7 +89,7 @@ class SquaringHelper(HasStrictTraits):
     cancel_all = Button()
 
     #: Clear completed jobs from the list of current jobs.
-    clear_completed = Button()
+    clear_finished = Button()
 
     #: Value that we'll square.
     input = Range(low=0, high=100)
@@ -105,9 +105,9 @@ class SquaringHelper(HasStrictTraits):
             if future.cancellable:
                 future.cancel()
 
-    def _clear_completed_fired(self):
+    def _clear_finished_fired(self):
         for future in list(self.current_futures):
-            if future.completed:
+            if future.done:
                 self.current_futures.remove(future)
 
     def _traits_executor_default(self):
@@ -120,7 +120,7 @@ class SquaringHelper(HasStrictTraits):
                     Item('input'),
                     UItem('square'),
                     UItem('cancel_all'),
-                    UItem('clear_completed'),
+                    UItem('clear_finished'),
                 ),
                 VGroup(
                     UItem(

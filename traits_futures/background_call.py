@@ -87,7 +87,7 @@ class CallFuture(HasStrictTraits):
     #: True if we've received the final message from the background task,
     #: else False. `True` indicates either that the background task
     #: succeeded, or that it raised, or that it was cancelled.
-    completed = Property(Bool, depends_on='state')
+    done = Property(Bool, depends_on='state')
 
     #: True if this task can be cancelled, else False.
     cancellable = Property(Bool, depends_on='state')
@@ -188,7 +188,7 @@ class CallFuture(HasStrictTraits):
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
 
-    def _get_completed(self):
+    def _get_done(self):
         return self.state in FINAL_STATES
 
 

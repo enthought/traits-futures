@@ -99,7 +99,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
     # Helpers
 
     def wait_for_completion(self, future):
-        with self.event_loop_until_condition(lambda: future.completed):
+        with self.event_loop_until_condition(lambda: future.done):
             pass
 
     # Assertions
@@ -327,29 +327,29 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         job = background_call(pow, 2, 3)
         future = self.controller.submit(job)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     def test_completed_failure(self):
         job = background_call(operator.floordiv, 1, 0)
         future = self.controller.submit(job)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     def test_completed_cancelled(self):
         job = background_call(pow, 2, 3)
         future = self.controller.submit(job)
 
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         future.cancel()
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_state(future, CANCELLING)
-        self.assertFalse(future.completed)
+        self.assertFalse(future.done)
         self.wait_for_completion(future)
-        self.assertTrue(future.completed)
+        self.assertTrue(future.done)
 
     # Helper functions
 
@@ -358,7 +358,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
             lambda: future.state == state, timeout=TIMEOUT)
 
     def wait_for_completion(self, future):
-        self.router.route_until(lambda: future.completed, timeout=TIMEOUT)
+        self.router.route_until(lambda: future.done, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_executor(self):
