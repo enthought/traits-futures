@@ -158,6 +158,9 @@ class PiIterator(HasStrictTraits):
         )
         plot.underlays.append(pi_line)
 
+        # Allow extra room for the y-axis label.
+        plot.padding_left = 100
+
         return plot
 
     def _traits_executor_default(self):
