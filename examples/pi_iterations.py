@@ -168,18 +168,14 @@ class PiIterator(HasStrictTraits):
             HGroup(
                 UItem('plot', editor=ComponentEditor()),
                 VGroup(
-                    VGroup(
-                        Item('chunk_size'),
+                    Item('chunk_size'),
+                    UItem(
+                        'approximate',
+                        enabled_when='approximate_enabled',
                     ),
-                    HGroup(
-                        UItem(
-                            'cancel',
-                            enabled_when='cancel_enabled',
-                        ),
-                        UItem(
-                            'approximate',
-                            enabled_when='approximate_enabled',
-                        ),
+                    UItem(
+                        'cancel',
+                        enabled_when='cancel_enabled',
                     ),
                 ),
             ),
