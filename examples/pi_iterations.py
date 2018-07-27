@@ -12,6 +12,7 @@ import concurrent.futures
 import numpy as np
 
 from chaco.api import ArrayPlotData, Plot
+from chaco.overlays.coordinate_line_overlay import CoordinateLineOverlay
 from enable.component_editor import ComponentEditor
 from traits.api import (
     Bool, Button, Float, HasStrictTraits, Instance, Int, List,
@@ -138,7 +139,6 @@ class PiIterator(HasStrictTraits):
             approx=approx,
             upper=approx + errors,
             lower=approx - errors,
-            pi=np.full_like(approx, np.pi),
         )
 
     def _plot_default(self):
@@ -147,9 +147,18 @@ class PiIterator(HasStrictTraits):
         plot.plot(("counts", "approx"), color="red")
         plot.plot(("counts", "upper"), color="gray")
         plot.plot(("counts", "lower"), color="gray")
-        plot.plot(("counts", "pi"), color="green", line_style="dash")
         plot.x_axis.title = "Counts (millions of points)"
         plot.y_axis.title = "Approximation"
+
+        # Add dashed horizontal line at pi.
+        pi_line = CoordinateLineOverlay(
+            component=plot,
+            value_data=[np.pi],
+            color="green",
+            line_style="dash",
+        )
+        plot.underlays.append(pi_line)
+
         return plot
 
     def _traits_executor_default(self):
