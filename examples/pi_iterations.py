@@ -20,7 +20,6 @@ from traits.api import (
 from traitsui.api import HGroup, Item, UItem, VGroup, View
 
 from traits_futures.api import (
-    background_iteration,
     IterationFuture,
     TraitsExecutor,
 )
@@ -107,9 +106,8 @@ class PiIterator(HasStrictTraits):
     plot = Instance(Plot)
 
     def _approximate_fired(self):
-        self.future = self.traits_executor.submit(
-            background_iteration(pi_iterations, chunk_size=self.chunk_size)
-        )
+        self.future = self.traits_executor.submit_iteration(
+            pi_iterations, chunk_size=self.chunk_size)
 
     def _cancel_fired(self):
         self.future.cancel()

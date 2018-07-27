@@ -227,10 +227,3 @@ class BackgroundCall(HasStrictTraits):
             cancel_event=cancel_event,
         )
         return future, runner
-
-
-def background_call(callable, *args, **kwargs):
-    """
-    Convenience function for creating BackgroundCall objects.
-    """
-    return BackgroundCall(callable=callable, args=args, kwargs=kwargs)

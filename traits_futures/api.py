@@ -1,12 +1,10 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits_futures.background_call import (
-    background_call,
     BackgroundCall,
     CallFuture,
 )
 from traits_futures.background_iteration import (
-    background_iteration,
     BackgroundIteration,
     IterationFuture,
 )
@@ -26,12 +24,10 @@ __all__ = [
     "TraitsExecutor",
 
     # Background calls
-    "background_call",
     "BackgroundCall",
     "CallFuture",
 
     # Background iterations
-    "background_iteration",
     "BackgroundIteration",
     "IterationFuture",
 

@@ -14,8 +14,7 @@ import six
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    background_iteration, IterationFuture, FutureState,
-    TraitsExecutor,
+    IterationFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
 from traits_futures.tests.lazy_message_router import LazyMessageRouter
@@ -91,8 +90,7 @@ class TestIterationNoUI(unittest.TestCase):
 
     def test_successful_iteration(self):
         # A simple case.
-        iteration = background_iteration(reciprocals, start=1, stop=4)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(reciprocals, start=1, stop=4)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -104,8 +102,7 @@ class TestIterationNoUI(unittest.TestCase):
     def test_bad_iteration_setup(self):
         # Deliberately passing a callable that returns
         # something non-iterable.
-        iteration = background_iteration(pow, 2, 5)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(pow, 2, 5)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -116,8 +113,8 @@ class TestIterationNoUI(unittest.TestCase):
 
     def test_failing_iteration(self):
         # Iteration that eventually fails.
-        iteration = background_iteration(reciprocals, start=-2, stop=2)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(
+            reciprocals, start=-2, stop=2)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -137,8 +134,7 @@ class TestIterationNoUI(unittest.TestCase):
             yield 1
             yield 2
 
-        iteration = background_iteration(set_then_yield)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(set_then_yield)
         listener = Listener(future=future)
 
         event.wait()
@@ -161,8 +157,7 @@ class TestIterationNoUI(unittest.TestCase):
             blocker.wait()
             yield 2
 
-        iteration = background_iteration(wait_midway)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(wait_midway)
         listener = Listener(future=future)
 
         self.router.route_until(
@@ -185,8 +180,7 @@ class TestIterationNoUI(unittest.TestCase):
 
     def test_cancel_before_start(self):
         with self.blocked_executor():
-            iteration = background_iteration(squares, 0, 10)
-            future = self.controller.submit(iteration)
+            future = self.controller.submit_iteration(squares, 0, 10)
             listener = Listener(future=future)
             self.assertTrue(future.cancellable)
             future.cancel()
@@ -198,8 +192,7 @@ class TestIterationNoUI(unittest.TestCase):
         self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
 
     def test_cancel_after_start(self):
-        iteration = background_iteration(squares, 0, 10)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(squares, 0, 10)
         listener = Listener(future=future)
 
         self.router.route_until(
@@ -218,8 +211,8 @@ class TestIterationNoUI(unittest.TestCase):
         )
 
     def test_cancel_before_failure(self):
-        iteration = background_iteration(reciprocals, start=-2, stop=2)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(
+            reciprocals, start=-2, stop=2)
         listener = Listener(future=future)
 
         self.wait_for_state(future, EXECUTING)
@@ -235,8 +228,7 @@ class TestIterationNoUI(unittest.TestCase):
         )
 
     def test_cancel_bad_job(self):
-        iteration = background_iteration(pow, 10, 3)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(pow, 10, 3)
         listener = Listener(future=future)
 
         self.assertTrue(future.cancellable)
@@ -249,8 +241,7 @@ class TestIterationNoUI(unittest.TestCase):
         self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
 
     def test_double_cancel(self):
-        iteration = background_iteration(squares, 0, 10)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(squares, 0, 10)
 
         self.assertTrue(future.cancellable)
         future.cancel()
@@ -260,8 +251,7 @@ class TestIterationNoUI(unittest.TestCase):
             future.cancel()
 
     def test_completed_cancel(self):
-        iteration = background_iteration(squares, 0, 10)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(squares, 0, 10)
 
         self.wait_for_completion(future)
 
@@ -270,32 +260,28 @@ class TestIterationNoUI(unittest.TestCase):
             future.cancel()
 
     def test_completed_normal_completion(self):
-        iteration = background_iteration(squares, 0, 10)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(squares, 0, 10)
 
         self.assertFalse(future.done)
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
     def test_completed_exception(self):
-        iteration = background_iteration(reciprocals, -5, 5)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(reciprocals, -5, 5)
 
         self.assertFalse(future.done)
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
     def test_completed_bad_iterable(self):
-        iteration = background_iteration(pow, 2, 3)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(pow, 2, 3)
 
         self.assertFalse(future.done)
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
     def test_completed_cancelled(self):
-        iteration = background_iteration(squares, 0, 10)
-        future = self.controller.submit(iteration)
+        future = self.controller.submit_iteration(squares, 0, 10)
 
         self.assertFalse(future.done)
         future.cancel()
