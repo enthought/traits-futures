@@ -54,3 +54,8 @@ To run a style check::
 
 Finally, ``python -m ci example`` runs one of the example scripts.
 
+All of the above commands take two options. The ``--python-version`` option
+lets you specify the Python version to use for the development environment. The
+``--toolkit`` option allows you to choose between using PyQt and PySide on
+Python 2. Run ``python -m ci <command> --help`` for more information on any
+of these commands.
