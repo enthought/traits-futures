@@ -30,14 +30,27 @@ And there are some further ease-of-development requirements:
 
 Getting started
 ---------------
-Note: build infrastructure for this repository is in progress, and these
-instructions will become less vague and easier to use once it's complete.
+The ``ci`` helper package in the source repository aids in setting up
+a development environment. It requires EDM, and it requires a Python bootstrap
+environment equipped with ``click``, ``pyyaml`` and ``setuptools``.
 
-There's an example Traits UI application in ``traits_futures.example``. After
-setting up a suitable development environment, you can run the example with::
+To create a development environment, run::
 
-    python -m traits_futures.example
+    python -m ci build
 
-Now look at the ``example.py`` source code and note how straightforward it is:
-Traits listeners, but no explicit threads or locks in sight.
+from the top-level of the repository, within the Python bootstrap environment.
+
+To run tests for the traits-futures EDM environment, do::
+
+    python -m ci test
+
+To run tests under coverage::
+
+    python -m ci coverage
+
+To run a style check::
+
+    python -m ci flake8
+
+Finally, ``python -m ci example`` runs one of the example scripts.
 
