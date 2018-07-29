@@ -103,7 +103,8 @@ def docgen(python_version, toolkit):
         '--output-dir', cfg.DOCS_API_SOURCE_DIR,
         cfg.PACKAGE_DIR,
         # paths to exclude
-        os.path.join(cfg.PACKAGE_DIR, 'tests')
+        os.path.join(cfg.PACKAGE_DIR, 'tests'),
+        os.path.join(cfg.PACKAGE_DIR, 'api.py'),
     ]
     pyenv.python(cmd)
 
