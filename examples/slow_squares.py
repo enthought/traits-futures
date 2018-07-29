@@ -3,8 +3,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 import random
 import time
 
-import concurrent.futures
-
 from traits.api import Button, Instance, List, Property, Range
 from traitsui.api import (
     Handler, HGroup, Item, TabularEditor, UItem, VGroup, View)
