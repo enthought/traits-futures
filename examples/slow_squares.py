@@ -73,11 +73,8 @@ class JobTabularAdapter(TabularAdapter):
 
 
 class SquaringHelper(Handler):
-    #: The executor backing the controller.
-    executor = Instance(concurrent.futures.Executor)
-
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor)
+    traits_executor = Instance(TraitsExecutor, ())
 
     #: List of the submitted jobs, for display purposes.
     current_futures = List(CallFuture)
@@ -112,12 +109,6 @@ class SquaringHelper(Handler):
         for future in list(self.current_futures):
             if future.done:
                 self.current_futures.remove(future)
-
-    def _executor_default(self):
-        return concurrent.futures.ThreadPoolExecutor(max_workers=4)
-
-    def _traits_executor_default(self):
-        return TraitsExecutor(executor=self.executor)
 
     def default_traits_view(self):
         return View(

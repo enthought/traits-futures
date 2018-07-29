@@ -68,11 +68,8 @@ class PiIterator(Handler):
     """
     View and plot of pi approximation running in the background.
     """
-    #: The executor backing the controller.
-    executor = Instance(concurrent.futures.Executor)
-
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor)
+    traits_executor = Instance(TraitsExecutor, ())
 
     #: Chunk size to use for the approximations.
     chunk_size = Int(1000000)
@@ -165,12 +162,6 @@ class PiIterator(Handler):
         plot.padding_left = 100
 
         return plot
-
-    def _executor_default(self):
-        return concurrent.futures.ThreadPoolExecutor(max_workers=4)
-
-    def _traits_executor_default(self):
-        return TraitsExecutor(executor=self.executor)
 
     def default_traits_view(self):
         return View(

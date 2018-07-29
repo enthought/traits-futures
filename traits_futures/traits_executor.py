@@ -95,5 +95,8 @@ class TraitsExecutor(HasStrictTraits):
         self.executor.submit(runner)
         return future
 
+    def _executor_default(self):
+        return concurrent.futures.ThreadPoolExecutor(max_workers=4)
+
     def __message_router_default(self):
         return QtMessageRouter()
