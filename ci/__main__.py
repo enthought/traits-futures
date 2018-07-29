@@ -91,6 +91,26 @@ def doc(python_version, toolkit):
 @cli.command()
 @python_version_option
 @toolkit_option
+def docgen(python_version, toolkit):
+    """
+    Autogenerate documentation.
+    """
+    pyenv = _get_devenv(python_version, toolkit)
+
+    cmd = [
+        '-m', 'sphinx.apidoc',
+        '--separate',
+        '--output-dir', cfg.DOCS_API_SOURCE_DIR,
+        cfg.PACKAGE_DIR,
+        # paths to exclude
+        os.path.join(cfg.PACKAGE_DIR, 'tests')
+    ]
+    pyenv.python(cmd)
+
+
+@cli.command()
+@python_version_option
+@toolkit_option
 def flake8(python_version, toolkit):
     """
     Run flake8 on all Python files.
