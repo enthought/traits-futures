@@ -4,7 +4,6 @@
 # The code in the ci/ package is proprietary and should not be redistributed
 # without explicit approval.
 
-import os
 import re
 import subprocess
 import sys
@@ -40,62 +39,6 @@ class PythonEnvironment(object):
         if edm_platform is None:
             edm_platform = current_platform()
         self.edm_platform = edm_platform
-
-        self.git = "git"
-        if sys.platform == "win32":
-            entry_suffix = ".exe"
-        else:
-            entry_suffix = ""
-
-        # Extract it from edm environments prefix
-        self.install_root = self.get_install_dir()
-
-        # Add an instance attribute for each command entry point
-        entry_points = ("easy_install", "pip", "coverage", "flake8", "egginst",
-                        "hatcher")
-        for entry in entry_points:
-            entry_path = os.path.join(self.scriptsdir, entry + entry_suffix)
-            setattr(self, entry, entry_path)
-
-    @property
-    def bindir(self):
-        if sys.platform == "win32":
-            return os.path.join(self.install_root)
-        else:
-            return os.path.join(self.install_root, "bin")
-
-    @property
-    def scriptsdir(self):
-        if sys.platform == "win32":
-            return os.path.join(self.bindir, "Scripts")
-        else:
-            return self.bindir
-
-    def get_install_dir(self):
-        # this might be called before the environment exists.
-        # we're extracting the path from the edm info call, parsing the `root
-        # directory` configuration
-        results = self.edm_info(capture=True)
-        lines = results.split('\n')
-        for line in lines:
-            if 'root directory' in line:
-                # Windows root directory has multiple : in the line
-                _, root_directory = line.split(':', 1)
-                return os.path.join(
-                    root_directory.strip(), 'envs',
-                    self.environment_name
-                )
-        else:
-            raise ValueError("Can't find the install directory")
-
-    def rungit(self, command, capture=False):
-        """ Run the given command locally using git.
-        """
-        cmd = [self.git] + command
-        if capture:
-            return subprocess.check_output(cmd)
-        else:
-            return subprocess.check_call(cmd)
 
     def edm(self, command):
         """
@@ -271,46 +214,6 @@ class PythonEnvironment(object):
         """
         return self.run(["python"] + command, capture)
 
-    def edm_info(self, capture=False):
-        """ Get EDM info.
-
-        If *capture* is true, return the output of "edm info" as a string.
-        Otherwise, print it to the console.
-        """
-        if capture:
-            return self.edm_capture(["info"])
-        else:
-            self.edm(["info"])
-
-    def edm_install(self, command, capture=False):
-        """ Run edm install the configured environment.
-
-        The '--yes' option avoids prompts that would wait for user input.
-        """
-        return self.run(["edm", "install", "--yes"] + command, capture)
-
-    def runhatcher(self, command, capture=False):
-        """ Run hatcher locally using this environment's python interpreter
-        """
-        if not os.path.exists(self.hatcher):
-            raise RuntimeError("Hatcher must be installed to use runhatcher!")
-
-        return self.run([self.hatcher] + command, capture)
-
-    def runegginst(self, egg, capture=False):
-        """ Run egginst locally using this environment's python interpreter
-        """
-        if not os.path.exists(self.egginst):
-            raise RuntimeError("egginst must be installed to use runegginst!")
-
-        return self.run([self.egginst, egg], capture)
-
-    def get_pep425_python_tag(self):
-        ci_tools_dir = os.path.abspath(os.path.dirname(__file__))
-        script = os.path.join(ci_tools_dir, 'pep425tags.py')
-        python_tag = self.python(script, capture=True)
-        return python_tag.strip()
-
     @property
     def _edm_base_command(self):
         """
@@ -323,10 +226,6 @@ class PythonEnvironment(object):
         if self.api_token is not None:
             cmd.extend(["--api-token", self.api_token])
         return cmd
-
-    @property
-    def compiler_switch(self):
-        return '--compiler=msvc' if 'win' in self.edm_platform else ''
 
 
 # Utils ################################################################
@@ -358,35 +257,3 @@ def _edm_version():
     m = re.match(r'(?:EDM|edm) (?P<version>\d+\.\d+\.\d+)', edm_version_info)
     version = m.group('version')
     return tuple(int(piece) for piece in version.split('.'))
-
-
-def edm_is_embedded():
-    """ Determine whether EDM is embedded (e.g., Canopy's EDM) or standalone.
-
-    Returns
-    -------
-    is_embedded : bool
-        True if EDM is embedded, else False.
-
-    Raises
-    ------
-    RuntimeError
-        If unable to interpret the output of "edm info".
-    """
-    edm_info = subprocess.check_output(["edm", "info"]).decode("utf-8")
-    match = re.search(
-        r"^running mode:\s*\b(?P<mode>.*)\b\s*$",
-        edm_info, re.MULTILINE)
-    if match is None:
-        raise RuntimeError(
-            "Unable to determine EDM running mode. No line starting with "
-            "'running mode:' in the output of 'edm info'")
-
-    mode = match.group('mode')
-    if mode == "embedded":
-        return True
-    elif mode == "standalone":
-        return False
-    else:
-        raise RuntimeError(
-            "Don't know how to interpret running mode: {!r}".format(mode))
