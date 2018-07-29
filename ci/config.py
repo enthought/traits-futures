@@ -104,6 +104,7 @@ CORE_DEPS = [
     'pip',
     'setuptools',
     'six',
+    'sphinx',
     'traits',
     'traitsui',
 ]
