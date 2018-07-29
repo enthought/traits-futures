@@ -101,9 +101,8 @@ class PiIterator(Handler):
     plot = Instance(Plot)
 
     def closed(self, info, is_ok):
-        # At shutdown, cancel the infinite iteration if it's still running.
-        if self.cancel_enabled:
-            self.cancel = True
+        # Stopping the executor cancels any running future.
+        self.traits_executor.stop()
         super(PiIterator, self).closed(info, is_ok)
 
     def _approximate_fired(self):
