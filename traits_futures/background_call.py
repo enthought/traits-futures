@@ -4,7 +4,7 @@ Background task consisting of a simple callable.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, Event, HasStrictTraits, Instance,
+    Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
     on_trait_change, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
