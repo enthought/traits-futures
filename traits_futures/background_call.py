@@ -162,7 +162,7 @@ class CallFuture(HasStrictTraits):
     _exception = Tuple(Str, Str, Str)
 
     #: Object that receives messages from the background task.
-    _message_receiver = Instance(HasStrictTraits)
+    _message_receiver = Instance(HasTraits)
 
     #: Event fired when the background task is on the point of exiting.
     #: This is mostly used for internal bookkeeping.
