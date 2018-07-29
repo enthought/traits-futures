@@ -119,7 +119,7 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture or IterationFuture
             Future for this task.
         """
-        if self.state != RUNNING:
+        if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
         sender, receiver = self._message_router.pipe()
@@ -136,7 +136,7 @@ class TraitsExecutor(HasStrictTraits):
         """
         Initiate stop: cancel existing jobs and prevent new ones.
         """
-        if self.state != RUNNING:
+        if not self.running:
             raise RuntimeError("Executor is not currently running.")
 
         # For consistency, we always go through the STOPPING state,

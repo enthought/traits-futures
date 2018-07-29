@@ -140,7 +140,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.wait_for_stop(executor)
         self.assertTrue(executor.stopped)
 
-    def test_own_thread_pool(self):
+    def test_owned_thread_pool(self):
         executor = TraitsExecutor()
         thread_pool = executor._thread_pool
 
