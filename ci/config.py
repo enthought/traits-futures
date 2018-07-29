@@ -35,10 +35,19 @@ TOOLKITS = [PYSIDE, PYQT]
 DEFAULT_PYTHON = PYTHON36
 DEFAULT_TOOLKIT = PYQT
 
+# Location of repository root. Assumes that the ci script is being
+# run from the root of the repository.
+ROOT_DIR = os.path.abspath('.')
+
 # Locations of data directories for the ci package.
 BUNDLE = pkg_resources.resource_filename('ci', 'bundle')
 DATA = pkg_resources.resource_filename('ci', 'data')
 SCRIPTS = pkg_resources.resource_filename('ci', 'scripts')
+
+# Locations of documentation directories.
+DOCS_DIR = os.path.join(ROOT_DIR, 'docs')
+DOCS_SOURCE_DIR = os.path.join(DOCS_DIR, 'source')
+DOCS_BUILD_DIR = os.path.join(DOCS_DIR, 'build')
 
 # Templates for bundle and environment names.
 BUNDLE_TEMPLATE = "{prefix}-{python_version}-{toolkit}-{platform}.json"

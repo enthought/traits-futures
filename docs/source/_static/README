@@ -1,0 +1,2 @@
+Sphinx complains if there's no _static directory, and Git won't let us check in
+an empty directory. This file exists purely to avoid the Sphinx complaint.
