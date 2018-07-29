@@ -4,7 +4,7 @@ Background task consisting of a simple callable.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits.api import (
-    Any, Bool, Callable, Dict, HasStrictTraits, Instance,
+    Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
     on_trait_change, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
@@ -162,9 +162,17 @@ class CallFuture(HasStrictTraits):
     _exception = Tuple(Str, Str, Str)
 
     #: Object that receives messages from the background task.
-    _message_receiver = Instance(HasStrictTraits)
+    _message_receiver = Instance(HasTraits)
+
+    #: Event fired when the background task is on the point of exiting.
+    #: This is mostly used for internal bookkeeping.
+    _exiting = Event
 
     # Private methods #########################################################
+
+    @on_trait_change('_message_receiver:done')
+    def _send_exiting_event(self):
+        self._exiting = True
 
     @on_trait_change('_message_receiver:message')
     def _process_message(self, message):

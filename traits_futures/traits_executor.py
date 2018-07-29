@@ -1,26 +1,51 @@
 # Main-thread controller for background tasks.
 from __future__ import absolute_import, print_function, unicode_literals
 
+import concurrent.futures
 import threading
 
-import concurrent.futures
-
-from traits.api import Any, HasStrictTraits, Instance
+from traits.api import (
+    Bool, Enum, HasStrictTraits, HasTraits, Instance, on_trait_change,
+    Property, Set)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.qt_message_router import QtMessageRouter
 
 
+# Executor states.
+
+#: Executor is currently running (this is the initial state).
+RUNNING = "running"
+
+#: Executor has been requested to stop. In this state, no new
+#: jobs can be submitted, and we're waiting for old ones to complete.
+STOPPING = "stopping"
+
+#: Executor is stopped.
+STOPPED = "stopped"
+
+#: Trait type representing the executor state.
+ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
+
+
 class TraitsExecutor(HasStrictTraits):
     """
     Executor to initiate and manage background tasks.
     """
-    #: Executor instance backing this object.
-    executor = Instance(concurrent.futures.Executor)
+    #: Current state of this executor.
+    state = ExecutorState
 
-    #: Endpoint for receiving messages.
-    _message_router = Any
+    #: Derived state: true if this executor is running; False if it's
+    #: stopped or stopping.
+    running = Property(Bool, depends_on='state')
+
+    #: Derived state: true if this executor is stopped and it's safe
+    #: to dispose of related resources (like the thread pool).
+    stopped = Property(Bool, depends_on='state')
+
+    #: concurrent.futures.Executor instance providing the thread pool.
+    thread_pool = Instance(concurrent.futures.Executor)
 
     def submit_call(self, callable, *args, **kwargs):
         """
@@ -86,17 +111,63 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture or IterationFuture
             Future for this task.
         """
+        if self.state != RUNNING:
+            raise RuntimeError("Can't submit task unless executor is running.")
+
         sender, receiver = self._message_router.pipe()
         future, runner = task.future_and_callable(
             cancel_event=threading.Event(),
             message_sender=sender,
             message_receiver=receiver,
         )
-        self.executor.submit(runner)
+        self.thread_pool.submit(runner)
+        self._futures.add(future)
         return future
 
-    def _executor_default(self):
+    def stop(self):
+        """
+        Initiate stop: cancel existing jobs and prevent new ones.
+        """
+        if self.state != RUNNING:
+            raise RuntimeError("Executor is not currently running.")
+
+        # For consistency, we always go through the STOPPING state,
+        # even if there are no jobs.
+        self.state = STOPPING
+
+        # Cancel any futures that aren't already cancelled.
+        for future in self._futures:
+            if future.cancellable:
+                future.cancel()
+
+        if not self._futures:
+            self.state = STOPPED
+
+    # Private traits #########################################################
+
+    #: Router providing message connections between background tasks
+    #: and foreground futures.
+    _message_router = Instance(HasTraits)
+
+    #: Currently executing futures.
+    _futures = Set()
+
+    def _get_running(self):
+        return self.state == RUNNING
+
+    def _get_stopped(self):
+        return self.state == STOPPED
+
+    def _thread_pool_default(self):
         return concurrent.futures.ThreadPoolExecutor(max_workers=4)
 
     def __message_router_default(self):
         return QtMessageRouter()
+
+    @on_trait_change('_futures:_exiting')
+    def _remove_future(self, future, name, new):
+        self._futures.remove(future)
+        # If we're in STOPPING state and the last future has just exited,
+        # go to STOPPED state.
+        if self.state == STOPPING and not self._futures:
+            self.state = STOPPED
