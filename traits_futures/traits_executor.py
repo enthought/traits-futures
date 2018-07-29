@@ -125,6 +125,12 @@ class TraitsExecutor(HasStrictTraits):
         # For consistency, we always go through the STOPPING state,
         # even if there are no jobs.
         self.state = STOPPING
+
+        # Cancel any futures that aren't already cancelled.
+        for future in self._futures:
+            if future.cancellable:
+                future.cancel()
+
         if not self._futures:
             self.state = STOPPED
 
@@ -146,5 +152,7 @@ class TraitsExecutor(HasStrictTraits):
     @on_trait_change('_futures:_exiting')
     def _remove_future(self, future, name, new):
         self._futures.remove(future)
+        # If we're in STOPPING state and the last future has just exited,
+        # go to STOPPED state.
         if self.state == STOPPING and not self._futures:
             self.state = STOPPED
