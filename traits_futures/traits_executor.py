@@ -5,17 +5,36 @@ import threading
 
 import concurrent.futures
 
-from traits.api import Any, HasStrictTraits, Instance
+from traits.api import Any, Enum, HasStrictTraits, Instance
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.qt_message_router import QtMessageRouter
 
 
+# Executor states.
+
+#: Executor is currently running (this is the initial state).
+RUNNING = "running"
+
+#: Executor has been requested to stop. In this state, no new
+#: jobs can be submitted, and we're waiting for old ones to complete.
+STOPPING = "stopping"
+
+#: Executor is stopped.
+STOPPED = "stopped"
+
+#: Trait type representing the executor state.
+ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
+
+
 class TraitsExecutor(HasStrictTraits):
     """
     Executor to initiate and manage background tasks.
     """
+    #: Current state of this executor.
+    state = ExecutorState
+
     #: concurrent.futures.Executor instance providing the thread pool.
     thread_pool = Instance(concurrent.futures.Executor)
 

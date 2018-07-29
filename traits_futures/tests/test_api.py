@@ -7,6 +7,10 @@ class TestApi(unittest.TestCase):
     def test_imports(self):
         from traits_futures.api import (  # noqa: F401
             TraitsExecutor,
+            RUNNING,
+            STOPPING,
+            STOPPED,
+            ExecutorState,
 
             BackgroundCall,
             CallFuture,

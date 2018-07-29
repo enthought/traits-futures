@@ -17,11 +17,21 @@ from traits_futures.future_states import (
     WAITING,
     FutureState,
 )
-
-from traits_futures.traits_executor import TraitsExecutor
+from traits_futures.traits_executor import (
+    TraitsExecutor,
+    RUNNING,
+    STOPPING,
+    STOPPED,
+    ExecutorState,
+)
 
 __all__ = [
+    # Executor
     "TraitsExecutor",
+    "RUNNING",
+    "STOPPING",
+    "STOPPED",
+    "ExecutorState",
 
     # Background calls
     "BackgroundCall",
