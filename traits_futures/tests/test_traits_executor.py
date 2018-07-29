@@ -74,7 +74,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
     def test_stop_method_raises_unless_running(self):
         executor = TraitsExecutor(thread_pool=self.thread_pool)
-        listener = Listener(executor=executor)
 
         with self.long_running_task(executor):
             self.assertEqual(executor.state, RUNNING)
