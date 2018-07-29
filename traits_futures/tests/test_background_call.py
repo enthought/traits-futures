@@ -18,7 +18,7 @@ from traits_futures.api import (
 from traits_futures.tests.lazy_message_router import LazyMessageRouter
 
 
-#: Number of workers for the test executors.
+#: Number of workers for the thread pool.
 WORKERS = 4
 
 #: Timeout for queue.get operations, in seconds.
@@ -44,16 +44,16 @@ class Listener(HasStrictTraits):
 class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.executor = concurrent.futures.ThreadPoolExecutor(
+        self.thread_pool = concurrent.futures.ThreadPoolExecutor(
             max_workers=WORKERS)
-        self.controller = TraitsExecutor(executor=self.executor)
+        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
 
     def tearDown(self):
-        self.executor.shutdown()
+        self.thread_pool.shutdown()
         GuiTestAssistant.tearDown(self)
 
     def test_successful_call(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -66,7 +66,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_failed_call(self):
-        future = self.controller.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(operator.floordiv, 1, 0)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -79,7 +79,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_cancellation_before_execution(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.assertTrue(future.cancellable)
@@ -119,18 +119,18 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 class TestBackgroundCallNoUI(unittest.TestCase):
     def setUp(self):
         self.router = LazyMessageRouter()
-        self.executor = concurrent.futures.ThreadPoolExecutor(
+        self.thread_pool = concurrent.futures.ThreadPoolExecutor(
             max_workers=WORKERS)
-        self.controller = TraitsExecutor(
-            executor=self.executor,
+        self.executor = TraitsExecutor(
+            thread_pool=self.thread_pool,
             _message_router=self.router
         )
 
     def tearDown(self):
-        self.executor.shutdown()
+        self.thread_pool.shutdown()
 
     def test_successful_call(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -143,7 +143,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_failed_call(self):
-        future = self.controller.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(operator.floordiv, 1, 0)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -165,7 +165,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         # process that message.
         event = threading.Event()
 
-        future = self.controller.submit_call(event.set)
+        future = self.executor.submit_call(event.set)
         listener = Listener(future=future)
 
         event.wait()
@@ -185,8 +185,8 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         # job start executing, but cancels before we receive any messages from
         # it. This test cancels before the background job begins execution at
         # all, so exercises a different code path in the background job code.
-        with self.blocked_executor():
-            future = self.controller.submit_call(pow, 2, 3)
+        with self.blocked_thread_pool():
+            future = self.executor.submit_call(pow, 2, 3)
             listener = Listener(future=future)
             self.assertTrue(future.cancellable)
             future.cancel()
@@ -201,7 +201,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_cancellation_before_success(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.wait_for_state(future, EXECUTING)
@@ -217,7 +217,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_cancellation_before_failure(self):
-        future = self.controller.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(operator.floordiv, 1, 0)
         listener = Listener(future=future)
 
         self.wait_for_state(future, EXECUTING)
@@ -233,7 +233,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_cancel_after_success(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -249,7 +249,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_cancel_after_failure(self):
-        future = self.controller.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(operator.floordiv, 1, 0)
         listener = Listener(future=future)
 
         self.wait_for_completion(future)
@@ -265,7 +265,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_double_cancel(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.assertTrue(future.cancellable)
@@ -284,7 +284,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_double_cancel_variant(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
         listener = Listener(future=future)
 
         self.assertTrue(future.cancellable)
@@ -303,28 +303,28 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def test_background_call_keyword_arguments(self):
-        future = self.controller.submit_call(int, "10101", base=2)
+        future = self.executor.submit_call(int, "10101", base=2)
 
         self.wait_for_completion(future)
 
         self.assertResult(future, 21)
 
     def test_completed_success(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
 
         self.assertFalse(future.done)
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
     def test_completed_failure(self):
-        future = self.controller.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(operator.floordiv, 1, 0)
 
         self.assertFalse(future.done)
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
     def test_completed_cancelled(self):
-        future = self.controller.submit_call(pow, 2, 3)
+        future = self.executor.submit_call(pow, 2, 3)
 
         self.assertFalse(future.done)
         future.cancel()
@@ -344,13 +344,13 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         self.router.route_until(lambda: future.done, timeout=TIMEOUT)
 
     @contextlib.contextmanager
-    def blocked_executor(self):
+    def blocked_thread_pool(self):
         """
-        Context manager to temporarily block the executor.
+        Context manager to temporarily block the threads in the thread pool.
         """
         event = threading.Event()
         for _ in range(WORKERS):
-            self.executor.submit(event.wait)
+            self.thread_pool.submit(event.wait)
         try:
             yield
         finally:

@@ -16,8 +16,8 @@ class TraitsExecutor(HasStrictTraits):
     """
     Executor to initiate and manage background tasks.
     """
-    #: Executor instance backing this object.
-    executor = Instance(concurrent.futures.Executor)
+    #: concurrent.futures.Executor instance providing the thread pool.
+    thread_pool = Instance(concurrent.futures.Executor)
 
     #: Endpoint for receiving messages.
     _message_router = Any
@@ -92,10 +92,10 @@ class TraitsExecutor(HasStrictTraits):
             message_sender=sender,
             message_receiver=receiver,
         )
-        self.executor.submit(runner)
+        self.thread_pool.submit(runner)
         return future
 
-    def _executor_default(self):
+    def _thread_pool_default(self):
         return concurrent.futures.ThreadPoolExecutor(max_workers=4)
 
     def __message_router_default(self):
