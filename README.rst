@@ -30,9 +30,10 @@ And there are some further ease-of-development requirements:
 
 Getting started
 ---------------
-The ``ci`` helper package in the source repository aids in setting up
-a development environment. It requires EDM, and it requires a Python bootstrap
-environment equipped with ``click``, ``pyyaml`` and ``setuptools``.
+The ``ci`` helper package in the source repository aids in setting up a
+development environment and running tests and examples. It requires EDM, along
+with a Python bootstrap environment equipped with ``click``, ``pyyaml`` and
+``setuptools``.
 
 To create a development environment, run::
 
@@ -52,7 +53,16 @@ To run a style check::
 
     python -m ci flake8
 
-Finally, ``python -m ci example`` runs one of the example scripts.
+There are two example scripts, that can be run with::
+
+    python -m ci squares
+
+and::
+
+    python -m ci pi
+
+respectively. The second script requires that Chaco and its dependencies
+be installed in the development environment.
 
 All of the above commands take two options. The ``--python-version`` option
 lets you specify the Python version to use for the development environment. The
