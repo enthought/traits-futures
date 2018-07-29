@@ -54,6 +54,12 @@ ENVIRONMENT_TEMPLATE = "{prefix}-{python_version}-{toolkit}"
 EDM_CONFIGURATION = os.path.join(DATA, 'edm.yml')
 EDM_BUNDLEGEN_CONFIGURATION = os.path.join(DATA, 'bundle_edm.yml')
 
+# Mapping from example names to script filenames.
+EXAMPLES = {
+    'squares': 'slow_squares.py',
+    'pi': 'pi_iterations.py',
+}
+
 # Python runtime versions.
 RUNTIME_VERSION = {
     PYTHON27: "2.7.13",

@@ -3,10 +3,9 @@ from __future__ import absolute_import, print_function, unicode_literals
 import random
 import time
 
-import concurrent.futures
-
-from traits.api import Button, HasStrictTraits, Instance, List, Property, Range
-from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
+from traits.api import Button, Instance, List, Property, Range
+from traitsui.api import (
+    Handler, HGroup, Item, TabularEditor, UItem, VGroup, View)
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
@@ -71,12 +70,9 @@ class JobTabularAdapter(TabularAdapter):
         return state_text
 
 
-class SquaringHelper(HasStrictTraits):
-    #: The executor backing the controller.
-    executor = Instance(concurrent.futures.Executor)
-
+class SquaringHelper(Handler):
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor)
+    traits_executor = Instance(TraitsExecutor, ())
 
     #: List of the submitted jobs, for display purposes.
     current_futures = List(CallFuture)
@@ -93,6 +89,11 @@ class SquaringHelper(HasStrictTraits):
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
+    def closed(self, info, is_ok):
+        # Cancel all jobs at shutdown.
+        self.cancel_all = True
+        super(SquaringHelper, self).closed(info, is_ok)
+
     def _square_fired(self):
         future = self.traits_executor.submit_call(slow_square, self.input)
         self.current_futures.append(future)
@@ -106,9 +107,6 @@ class SquaringHelper(HasStrictTraits):
         for future in list(self.current_futures):
             if future.done:
                 self.current_futures.remove(future)
-
-    def _traits_executor_default(self):
-        return TraitsExecutor(executor=self.executor)
 
     def default_traits_view(self):
         return View(
@@ -136,6 +134,5 @@ class SquaringHelper(HasStrictTraits):
 
 
 if __name__ == '__main__':
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        view = SquaringHelper(executor=executor)
-        view.configure_traits()
+    view = SquaringHelper()
+    view.configure_traits()

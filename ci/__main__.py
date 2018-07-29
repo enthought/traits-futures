@@ -180,12 +180,14 @@ def coverage(python_version, toolkit, branch, html, report):
 @cli.command()
 @python_version_option
 @toolkit_option
-def example(python_version, toolkit):
+@click.argument('example', type=click.Choice(cfg.EXAMPLES))
+def example(python_version, toolkit, example):
     """
-    Run the example application.
+    Run one of the examples.
     """
     pyenv = _get_devenv(python_version, toolkit)
-    pyenv.python(["examples/background_call.py"])
+    example_script = os.path.join('examples', cfg.EXAMPLES[example])
+    pyenv.python([example_script])
 
 
 @cli.command(name='regenerate-bundles')

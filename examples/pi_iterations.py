@@ -8,16 +8,14 @@ Note: this example requires NumPy and Chaco.
 from __future__ import (
     absolute_import, division, print_function, unicode_literals)
 
-import concurrent.futures
 import numpy as np
 
 from chaco.api import ArrayPlotData, Plot
 from chaco.overlays.coordinate_line_overlay import CoordinateLineOverlay
 from enable.component_editor import ComponentEditor
 from traits.api import (
-    Bool, Button, Float, HasStrictTraits, Instance, Int, List,
-    on_trait_change, Property, Tuple)
-from traitsui.api import HGroup, Item, UItem, VGroup, View
+    Bool, Button, Float, Instance, Int, List, on_trait_change, Property, Tuple)
+from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
 from traits_futures.api import (
     IterationFuture,
@@ -65,15 +63,12 @@ def pi_iterations(chunk_size):
         yield nsamples, approximation, error
 
 
-class PiIterator(HasStrictTraits):
+class PiIterator(Handler):
     """
     View and plot of pi approximation running in the background.
     """
-    #: The executor backing the controller.
-    executor = Instance(concurrent.futures.Executor)
-
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor)
+    traits_executor = Instance(TraitsExecutor, ())
 
     #: Chunk size to use for the approximations.
     chunk_size = Int(1000000)
@@ -104,6 +99,12 @@ class PiIterator(HasStrictTraits):
 
     #: The plot.
     plot = Instance(Plot)
+
+    def closed(self, info, is_ok):
+        # At shutdown, cancel the infinite iteration if it's still running.
+        if self.cancel_enabled:
+            self.cancel = True
+        super(PiIterator, self).closed(info, is_ok)
 
     def _approximate_fired(self):
         self.future = self.traits_executor.submit_iteration(
@@ -161,15 +162,13 @@ class PiIterator(HasStrictTraits):
 
         return plot
 
-    def _traits_executor_default(self):
-        return TraitsExecutor(executor=self.executor)
-
     def default_traits_view(self):
         return View(
             HGroup(
                 UItem('plot', editor=ComponentEditor()),
                 VGroup(
                     Item('chunk_size'),
+                    Item('max_points'),
                     UItem(
                         'approximate',
                         enabled_when='approximate_enabled',
@@ -185,6 +184,5 @@ class PiIterator(HasStrictTraits):
 
 
 if __name__ == '__main__':
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        view = PiIterator(executor=executor)
-        view.configure_traits()
+    view = PiIterator()
+    view.configure_traits()
