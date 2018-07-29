@@ -98,10 +98,9 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
     def halt_executor(self, executor):
         """
-        Stop the executor if necessary, and wait for all futures to complete.
+        Stop the executor, and wait until it reaches STOPPED state.
         """
-        if executor.running:
-            executor.stop()
+        executor.stop()
         with self.event_loop_until_condition(lambda: executor.stopped):
             pass
 
@@ -356,11 +355,9 @@ class TestBackgroundCallNoUI(unittest.TestCase):
 
     def halt_executor(self, executor):
         """
-        Stop the executor if necessary, and wait for it to
-        reach stopped state.
+        Stop the executor, and wait until it reaches STOPPED state.
         """
-        if executor.running:
-            executor.stop()
+        executor.stop()
         self.router.route_until(lambda: executor.stopped, timeout=TIMEOUT)
 
     @contextlib.contextmanager
