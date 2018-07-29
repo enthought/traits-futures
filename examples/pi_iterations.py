@@ -178,6 +178,7 @@ class PiIterator(Handler):
                 UItem('plot', editor=ComponentEditor()),
                 VGroup(
                     Item('chunk_size'),
+                    Item('max_points'),
                     UItem(
                         'approximate',
                         enabled_when='approximate_enabled',
