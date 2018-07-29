@@ -87,7 +87,7 @@ class TraitsExecutor(HasStrictTraits):
             Future for this task.
         """
         sender, receiver = self._message_router.pipe()
-        future, runner = task.prepare(
+        future, runner = task.future_and_callable(
             cancel_event=threading.Event(),
             message_sender=sender,
             message_receiver=receiver,

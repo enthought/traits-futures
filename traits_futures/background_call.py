@@ -60,7 +60,19 @@ class CallBackgroundTask(object):
 
     def send(self, message_type, message_args=None):
         """
-        Send a message to the foreground controller.
+        Send a message to the linked CallFuture.
+
+        Sends a pair consisting of a string giving the message type
+        along with an object providing any relevant arguments. The
+        interpretation of the arguments depends on the message type.
+
+        Parameters
+        ----------
+        message_type : string
+            Type of the message to be sent.
+        message_args : object, optional
+            Any arguments relevant to the message.  Ideally, should be
+            pickleable and immutable. If not provided, ``None`` is sent.
         """
         self.message_sender.send((message_type, message_args))
 
@@ -205,14 +217,32 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str, Any)
 
-    def prepare(self, cancel_event, message_sender, message_receiver):
+    def future_and_callable(
+            self, cancel_event, message_sender, message_receiver):
         """
-        Prepare the task for running.
+        Return a future and a linked background callable.
 
-        Returns a pair (future, background_call), where
-        the future acts as a handle for task cancellation, etc.,
-        and the background_call is a callable to be executed
-        in the background.
+        Parameters
+        ----------
+        cancel_event : threading.Event
+            Event used to request cancellation of the background job.
+        message_sender : QtMessageSender (for example)
+            Object used by the background job to send messages to the
+            UI. Supports the context manager protocol, and provides a
+            'send' method.
+        message_receiver : QtMessageReceiver (for example)
+            Object that remains in the main thread and receives messages sent
+            by the message sender. This is a HasTraits subclass with
+            a 'message' Event trait that can be listened to for arriving
+            messages.
+
+        Returns
+        -------
+        future : CallFuture
+            Foreground object representing the state of the running
+            calculation.
+        runner : CallBackgroundTask
+            Callable to be executed in the background.
         """
         future = CallFuture(
             _cancel_event=cancel_event,
