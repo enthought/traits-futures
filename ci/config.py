@@ -15,12 +15,6 @@ PACKAGE_NAME = 'traits_futures'
 # Prefix used for generated bundle files and EDM environments.
 PREFIX = PACKAGE_NAME.lower().replace("_", "-")
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-DEPLOY_ROOT = os.path.join(ROOT, 'deploy')
-CONFIGURATION = os.path.join(DEPLOY_ROOT, 'config.yaml')
-REQUIREMENTS_ROOT = os.path.abspath(os.path.join(DEPLOY_ROOT, 'requirements'))
-SOURCE_BUILD_FILE = os.path.join(DEPLOY_ROOT, 'source_builds.yaml')
-
 # Platforms
 MACOS = "osx-x86_64"
 LINUX = "rh6-x86_64"
