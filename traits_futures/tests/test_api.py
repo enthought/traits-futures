@@ -8,11 +8,9 @@ class TestApi(unittest.TestCase):
         from traits_futures.api import (  # noqa: F401
             TraitsExecutor,
 
-            background_call,
             BackgroundCall,
             CallFuture,
 
-            background_iteration,
             BackgroundIteration,
             IterationFuture,
 

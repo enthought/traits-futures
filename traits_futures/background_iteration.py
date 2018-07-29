@@ -252,10 +252,3 @@ class BackgroundIteration(HasStrictTraits):
             cancel_event=cancel_event,
         )
         return future, runner
-
-
-def background_iteration(callable, *args, **kwargs):
-    """
-    Convenience function for creating BackgroundIteration objects.
-    """
-    return BackgroundIteration(callable=callable, args=args, kwargs=kwargs)
