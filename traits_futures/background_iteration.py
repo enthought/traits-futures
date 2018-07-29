@@ -180,7 +180,15 @@ class IterationFuture(HasStrictTraits):
     #: Object that receives messages from the background task.
     _message_receiver = Instance(HasStrictTraits)
 
+    #: Event fired when the background task is on the point of exiting.
+    #: This is mostly used for internal bookkeeping.
+    _exiting = Event
+
     # Private methods #########################################################
+
+    @on_trait_change('_message_receiver:done')
+    def _send_exiting_event(self):
+        self._exiting = True
 
     @on_trait_change('_message_receiver:message')
     def _process_message(self, message):

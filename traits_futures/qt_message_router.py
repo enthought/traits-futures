@@ -77,6 +77,9 @@ class QtMessageReceiver(HasStrictTraits):
     #: Event fired when a message is received from the paired sender.
     message = Event(Any)
 
+    #: Event fired to indicate that the sender has sent its last message.
+    done = Event
+
 
 class QtMessageRouter(HasStrictTraits):
     """
@@ -130,7 +133,8 @@ class QtMessageRouter(HasStrictTraits):
         else:
             assert wrapped_message[0] == "done"
             _, connection_id = wrapped_message
-            del self._receivers[connection_id]
+            receiver = self._receivers.pop(connection_id)
+            receiver.done = True
 
     def __message_queue_default(self):
         return queue.Queue()
