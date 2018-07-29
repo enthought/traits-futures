@@ -44,8 +44,16 @@ class TraitsExecutor(HasStrictTraits):
     #: to dispose of related resources (like the thread pool).
     stopped = Property(Bool, depends_on='state')
 
-    #: concurrent.futures.Executor instance providing the thread pool.
-    thread_pool = Instance(concurrent.futures.Executor)
+    def __init__(self, thread_pool=None, **traits):
+        super(TraitsExecutor, self).__init__(**traits)
+
+        if thread_pool is None:
+            self._thread_pool = concurrent.futures.ThreadPoolExecutor(
+                max_workers=4)
+            self._own_thread_pool = True
+        else:
+            self._thread_pool = thread_pool
+            self._own_thread_pool = False
 
     def submit_call(self, callable, *args, **kwargs):
         """
@@ -111,7 +119,7 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture or IterationFuture
             Future for this task.
         """
-        if self.state != RUNNING:
+        if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
         sender, receiver = self._message_router.pipe()
@@ -120,7 +128,7 @@ class TraitsExecutor(HasStrictTraits):
             message_sender=sender,
             message_receiver=receiver,
         )
-        self.thread_pool.submit(runner)
+        self._thread_pool.submit(runner)
         self._futures.add(future)
         return future
 
@@ -128,7 +136,7 @@ class TraitsExecutor(HasStrictTraits):
         """
         Initiate stop: cancel existing jobs and prevent new ones.
         """
-        if self.state != RUNNING:
+        if not self.running:
             raise RuntimeError("Executor is not currently running.")
 
         # For consistency, we always go through the STOPPING state,
@@ -141,9 +149,16 @@ class TraitsExecutor(HasStrictTraits):
                 future.cancel()
 
         if not self._futures:
-            self.state = STOPPED
+            self._stop()
 
     # Private traits #########################################################
+
+    #: concurrent.futures.Executor instance providing the thread pool.
+    _thread_pool = Instance(concurrent.futures.Executor)
+
+    #: True if we own this thread pool (and are therefore responsible
+    #: for shutting it down), else False.
+    _own_thread_pool = Bool()
 
     #: Router providing message connections between background tasks
     #: and foreground futures.
@@ -158,9 +173,6 @@ class TraitsExecutor(HasStrictTraits):
     def _get_stopped(self):
         return self.state == STOPPED
 
-    def _thread_pool_default(self):
-        return concurrent.futures.ThreadPoolExecutor(max_workers=4)
-
     def __message_router_default(self):
         return QtMessageRouter()
 
@@ -170,4 +182,14 @@ class TraitsExecutor(HasStrictTraits):
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
         if self.state == STOPPING and not self._futures:
-            self.state = STOPPED
+            self._stop()
+
+    def _stop(self):
+        """
+        Go to STOPPED state, and shut down thread pool if we own it.
+        """
+        assert self.state == STOPPING
+        if self._own_thread_pool:
+            self._thread_pool.shutdown()
+        self._thread_pool = None
+        self.state = STOPPED

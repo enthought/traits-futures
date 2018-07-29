@@ -140,6 +140,26 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.wait_for_stop(executor)
         self.assertTrue(executor.stopped)
 
+    def test_owned_thread_pool(self):
+        executor = TraitsExecutor()
+        thread_pool = executor._thread_pool
+
+        executor.stop()
+        self.wait_for_stop(executor)
+
+        # Check that the internally-created thread pool has been shut down.
+        with self.assertRaises(RuntimeError):
+            thread_pool.submit(int)
+
+    def test_shared_thread_pool(self):
+        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor.stop()
+        self.wait_for_stop(executor)
+
+        # Check that the the shared thread pool is still available.
+        future = self.thread_pool.submit(int)
+        self.assertEqual(future.result(), 0)
+
     # Helper methods and assertions ###########################################
 
     def wait_for_stop(self, executor):
