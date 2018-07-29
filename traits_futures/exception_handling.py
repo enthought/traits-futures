@@ -12,5 +12,5 @@ def marshal_exception(e):
     """
     exc_type = six.text_type(type(e))
     exc_value = six.text_type(e)
-    formatted_traceback = traceback.format_exc()
+    formatted_traceback = six.text_type(traceback.format_exc())
     return exc_type, exc_value, formatted_traceback
