@@ -12,6 +12,7 @@ Submodules
    traits_futures.future_states
    traits_futures.qt_message_router
    traits_futures.traits_executor
+   traits_futures.version
 
 Module contents
 ---------------
