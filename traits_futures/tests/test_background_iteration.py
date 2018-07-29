@@ -86,6 +86,7 @@ class TestIterationNoUI(unittest.TestCase):
         )
 
     def tearDown(self):
+        self.halt_executor(self.executor)
         self.thread_pool.shutdown()
 
     def test_successful_iteration(self):
@@ -297,6 +298,15 @@ class TestIterationNoUI(unittest.TestCase):
 
     def wait_for_completion(self, future):
         self.router.route_until(lambda: future.done, timeout=TIMEOUT)
+
+    def halt_executor(self, executor):
+        """
+        Stop the executor if necessary, and wait for it to
+        reach stopped state.
+        """
+        if executor.running:
+            executor.stop()
+        self.router.route_until(lambda: executor.stopped, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_thread_pool(self):

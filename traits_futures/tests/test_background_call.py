@@ -49,6 +49,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.executor = TraitsExecutor(thread_pool=self.thread_pool)
 
     def tearDown(self):
+        self.halt_executor(self.executor)
         self.thread_pool.shutdown()
         GuiTestAssistant.tearDown(self)
 
@@ -95,6 +96,15 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
     # Helpers
 
+    def halt_executor(self, executor):
+        """
+        Stop the executor if necessary, and wait for all futures to complete.
+        """
+        if executor.running:
+            executor.stop()
+        with self.event_loop_until_condition(lambda: executor.stopped):
+            pass
+
     def wait_for_completion(self, future):
         with self.event_loop_until_condition(lambda: future.done):
             pass
@@ -127,6 +137,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         )
 
     def tearDown(self):
+        self.halt_executor(self.executor)
         self.thread_pool.shutdown()
 
     def test_successful_call(self):
@@ -342,6 +353,15 @@ class TestBackgroundCallNoUI(unittest.TestCase):
 
     def wait_for_completion(self, future):
         self.router.route_until(lambda: future.done, timeout=TIMEOUT)
+
+    def halt_executor(self, executor):
+        """
+        Stop the executor if necessary, and wait for it to
+        reach stopped state.
+        """
+        if executor.running:
+            executor.stop()
+        self.router.route_until(lambda: executor.stopped, timeout=TIMEOUT)
 
     @contextlib.contextmanager
     def blocked_thread_pool(self):
