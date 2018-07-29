@@ -1,9 +1,23 @@
+import os
 from setuptools import find_packages, setup
+
+
+def get_version_info():
+    """ Extract version information as a dictionary from version.py. """
+    version_info = {}
+    version_filename = os.path.join("traits_futures", "version.py")
+    with open(version_filename, 'r') as version_module:
+        version_code = compile(version_module.read(), "version.py", 'exec')
+        exec(version_code, version_info)
+    return version_info
+
+
+version = get_version_info()['version']
 
 
 setup(
     name='traits-futures',
-    version=0.1,
+    version=version,
     author="Enthought",
     description="Patterns for reactive background tasks",
     install_requires=['traits', 'six'],
