@@ -1,11 +1,11 @@
 # Main-thread controller for background tasks.
 from __future__ import absolute_import, print_function, unicode_literals
 
+import concurrent.futures
 import threading
 
-import concurrent.futures
-
-from traits.api import Any, Enum, HasStrictTraits, Instance
+from traits.api import (
+    Enum, HasStrictTraits, HasTraits, Instance, on_trait_change, Set)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
@@ -37,9 +37,6 @@ class TraitsExecutor(HasStrictTraits):
 
     #: concurrent.futures.Executor instance providing the thread pool.
     thread_pool = Instance(concurrent.futures.Executor)
-
-    #: Endpoint for receiving messages.
-    _message_router = Any
 
     def submit_call(self, callable, *args, **kwargs):
         """
@@ -105,6 +102,9 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture or IterationFuture
             Future for this task.
         """
+        if self.state != RUNNING:
+            raise RuntimeError("Can't submit task unless executor is running.")
+
         sender, receiver = self._message_router.pipe()
         future, runner = task.future_and_callable(
             cancel_event=threading.Event(),
@@ -112,10 +112,39 @@ class TraitsExecutor(HasStrictTraits):
             message_receiver=receiver,
         )
         self.thread_pool.submit(runner)
+        self._futures.add(future)
         return future
+
+    def stop(self):
+        """
+        Initiate stop: cancel existing jobs and prevent new ones.
+        """
+        if self.state != RUNNING:
+            raise RuntimeError("Executor is not currently running.")
+
+        # For consistency, we always go through the STOPPING state,
+        # even if there are no jobs.
+        self.state = STOPPING
+        if not self._futures:
+            self.state = STOPPED
+
+    # Private traits #########################################################
+
+    #: Router providing message connections between background tasks
+    #: and foreground futures.
+    _message_router = Instance(HasTraits)
+
+    #: Currently executing futures.
+    _futures = Set()
 
     def _thread_pool_default(self):
         return concurrent.futures.ThreadPoolExecutor(max_workers=4)
 
     def __message_router_default(self):
         return QtMessageRouter()
+
+    @on_trait_change('_futures:_exiting')
+    def _remove_future(self, future, name, new):
+        self._futures.remove(future)
+        if self.state == STOPPING and not self._futures:
+            self.state = STOPPED
