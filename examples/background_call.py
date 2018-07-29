@@ -10,7 +10,6 @@ from traitsui.api import HGroup, Item, TabularEditor, UItem, VGroup, View
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
-    background_call,
     TraitsExecutor,
     CallFuture,
     CANCELLED,
@@ -95,9 +94,7 @@ class SquaringHelper(HasStrictTraits):
     input = Range(low=0, high=100)
 
     def _square_fired(self):
-        future = self.traits_executor.submit(
-            background_call(slow_square, self.input)
-        )
+        future = self.traits_executor.submit_call(slow_square, self.input)
         self.current_futures.append(future)
 
     def _cancel_all_fired(self):
