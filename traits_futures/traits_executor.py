@@ -191,4 +191,5 @@ class TraitsExecutor(HasStrictTraits):
         assert self.state == STOPPING
         if self._own_thread_pool:
             self._thread_pool.shutdown()
+        self._thread_pool = None
         self.state = STOPPED
