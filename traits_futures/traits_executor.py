@@ -5,7 +5,8 @@ import concurrent.futures
 import threading
 
 from traits.api import (
-    Enum, HasStrictTraits, HasTraits, Instance, on_trait_change, Set)
+    Bool, Enum, HasStrictTraits, HasTraits, Instance, on_trait_change,
+    Property, Set)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
@@ -34,6 +35,14 @@ class TraitsExecutor(HasStrictTraits):
     """
     #: Current state of this executor.
     state = ExecutorState
+
+    #: Derived state: true if this executor is running; False if it's
+    #: stopped or stopping.
+    running = Property(Bool, depends_on='state')
+
+    #: Derived state: true if this executor is stopped and it's safe
+    #: to dispose of related resources (like the thread pool).
+    stopped = Property(Bool, depends_on='state')
 
     #: concurrent.futures.Executor instance providing the thread pool.
     thread_pool = Instance(concurrent.futures.Executor)
@@ -142,6 +151,12 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Currently executing futures.
     _futures = Set()
+
+    def _get_running(self):
+        return self.state == RUNNING
+
+    def _get_stopped(self):
+        return self.state == STOPPED
 
     def _thread_pool_default(self):
         return concurrent.futures.ThreadPoolExecutor(max_workers=4)

@@ -58,7 +58,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             executor.stop()
             self.assertEqual(executor.state, STOPPING)
 
-        self.waitForStop(executor)
+        self.wait_for_stop(executor)
         self.assertEqual(executor.state, STOPPED)
         self.assertEqual(listener.states, [RUNNING, STOPPING, STOPPED])
 
@@ -68,7 +68,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         self.assertEqual(executor.state, RUNNING)
         executor.stop()
-        self.waitForStop(executor)
+        self.wait_for_stop(executor)
         self.assertEqual(executor.state, STOPPED)
         self.assertEqual(listener.states, [RUNNING, STOPPING, STOPPED])
 
@@ -84,7 +84,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 executor.stop()
 
-        self.waitForStop(executor)
+        self.wait_for_stop(executor)
         # Raises if in STOPPED mode.
         self.assertEqual(executor.state, STOPPED)
         with self.assertRaises(RuntimeError):
@@ -99,7 +99,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 executor.submit_call(len, (1, 2, 3))
 
-        self.waitForStop(executor)
+        self.wait_for_stop(executor)
         self.assertEqual(executor.state, STOPPED)
         with self.assertRaises(RuntimeError):
             executor.submit_call(int)
@@ -107,28 +107,49 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_stop_cancels_running_futures(self):
         executor = TraitsExecutor(thread_pool=self.thread_pool)
         with self.long_running_task(executor) as future:
-            self.waitUntilExecuting(future)
+            self.wait_until_executing(future)
 
             self.assertEqual(future.state, EXECUTING)
             executor.stop()
             self.assertEqual(future.state, CANCELLING)
 
-        self.waitForFuture(future)
+        self.wait_for_future(future)
         self.assertEqual(future.state, CANCELLED)
+
+    def test_running(self):
+        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        self.assertTrue(executor.running)
+
+        with self.long_running_task(executor):
+            self.assertTrue(executor.running)
+            executor.stop()
+            self.assertFalse(executor.running)
+
+        self.wait_for_stop(executor)
+        self.assertFalse(executor.running)
+
+    def test_stopped(self):
+        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        self.assertFalse(executor.stopped)
+
+        with self.long_running_task(executor):
+            self.assertFalse(executor.stopped)
+            executor.stop()
+            self.assertFalse(executor.stopped)
+
+        self.wait_for_stop(executor)
+        self.assertTrue(executor.stopped)
 
     # Helper methods and assertions ###########################################
 
-    def waitForStop(self, executor):
+    def wait_for_stop(self, executor):
         """"
         Wait for the executor to reach STOPPED state.
         """
-        def executor_stopped():
-            return executor.state == STOPPED
-
-        with self.event_loop_until_condition(executor_stopped):
+        with self.event_loop_until_condition(lambda: executor.stopped):
             pass
 
-    def waitUntilExecuting(self, future):
+    def wait_until_executing(self, future):
         """
         Wait until the given future is executing.
         """
@@ -138,7 +159,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         with self.event_loop_until_condition(future_executing):
             pass
 
-    def waitForFuture(self, future):
+    def wait_for_future(self, future):
         """
         Wait until the given future completes.
         """
