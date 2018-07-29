@@ -1,7 +1,27 @@
 {
     "mark": [
         {
+            "name": "alabaster",
+            "state": "auto"
+        },
+        {
             "name": "appdirs",
+            "state": "auto"
+        },
+        {
+            "name": "babel",
+            "state": "auto"
+        },
+        {
+            "name": "certifi",
+            "state": "auto"
+        },
+        {
+            "name": "chardet",
+            "state": "auto"
+        },
+        {
+            "name": "colorama",
             "state": "auto"
         },
         {
@@ -14,6 +34,10 @@
         },
         {
             "name": "distribute_remove",
+            "state": "auto"
+        },
+        {
+            "name": "docutils",
             "state": "auto"
         },
         {
@@ -31,6 +55,22 @@
         {
             "name": "futures",
             "state": "manual"
+        },
+        {
+            "name": "idna",
+            "state": "auto"
+        },
+        {
+            "name": "imagesize",
+            "state": "auto"
+        },
+        {
+            "name": "jinja2",
+            "state": "auto"
+        },
+        {
+            "name": "markupsafe",
+            "state": "auto"
         },
         {
             "name": "mccabe",
@@ -77,6 +117,14 @@
             "state": "manual"
         },
         {
+            "name": "pytz",
+            "state": "auto"
+        },
+        {
+            "name": "requests",
+            "state": "auto"
+        },
+        {
             "name": "setuptools",
             "state": "manual"
         },
@@ -89,12 +137,28 @@
             "state": "manual"
         },
         {
+            "name": "snowballstemmer",
+            "state": "auto"
+        },
+        {
+            "name": "sphinx",
+            "state": "manual"
+        },
+        {
+            "name": "sphinx_rtd_theme",
+            "state": "auto"
+        },
+        {
             "name": "traits",
             "state": "manual"
         },
         {
             "name": "traitsui",
             "state": "manual"
+        },
+        {
+            "name": "urllib3",
+            "state": "auto"
         }
     ],
     "metadata_version": "2.0",
@@ -113,10 +177,40 @@
     },
     "requirements": [
         {
+            "name": "alabaster",
+            "repository": "enthought/free",
+            "sha256": "526a9f7fcbff51d6e4437b53a2cd70a707527ad1c2865268f8f35f0b32ef6d17",
+            "version": "0.7.10-1"
+        },
+        {
             "name": "appdirs",
             "repository": "enthought/free",
             "sha256": "895e2936269710e5ee1cef9937f2331c0f22e46c2f9a2da4256bb0002b30dc0a",
             "version": "1.4.3-1"
+        },
+        {
+            "name": "babel",
+            "repository": "enthought/free",
+            "sha256": "6a1ca058da6995e54ca8849baa2391e12ad0c9d79ce3647e93eb92314954ca53",
+            "version": "2.4.0-2"
+        },
+        {
+            "name": "certifi",
+            "repository": "enthought/free",
+            "sha256": "3c23d1885992b2fcccac61651bda0addede0cb64cf26efcc55c8826744dd65aa",
+            "version": "2017.7.27.1-1"
+        },
+        {
+            "name": "chardet",
+            "repository": "enthought/free",
+            "sha256": "1b0da2df2107936a9373acde232c6e2663c0e9d6c1c003c36477334899747dd6",
+            "version": "3.0.4-1"
+        },
+        {
+            "name": "colorama",
+            "repository": "enthought/free",
+            "sha256": "bf341d0c8d9d669caa78673eff65b881e2e9ffa398fad01652b2c8386b069120",
+            "version": "0.3.7-1"
         },
         {
             "name": "configparser",
@@ -135,6 +229,12 @@
             "repository": "enthought/free",
             "sha256": "db7dee5172f00d0a57c2f3e9e2a3d2712044a28f30395b4d3d68b45506516299",
             "version": "1.0.0-4"
+        },
+        {
+            "name": "docutils",
+            "repository": "enthought/free",
+            "sha256": "d053a82d7c450c56531d9bdc9502515ca6de1352488c8e17a8c074eede32e00e",
+            "version": "0.13.1-1"
         },
         {
             "name": "enum34",
@@ -159,6 +259,30 @@
             "repository": "enthought/free",
             "sha256": "a64f320ffb56ad7fe690c107fab0e6d6a989a3907ec4f9d9df63d092f518673f",
             "version": "3.0.3-1"
+        },
+        {
+            "name": "idna",
+            "repository": "enthought/free",
+            "sha256": "a31971063f7457d38d5dd27952219b7e505d05c2f475dd3891bbf9c6917a043b",
+            "version": "2.5-1"
+        },
+        {
+            "name": "imagesize",
+            "repository": "enthought/free",
+            "sha256": "da578dbc4c7084f2eec5e6498cdc25b6f03ce644e1ef6fc5eb615dfa3a490f2b",
+            "version": "0.7.1-1"
+        },
+        {
+            "name": "jinja2",
+            "repository": "enthought/free",
+            "sha256": "700be786ec36f621ffc622af83d0b2094029c6f68b50c5d0bbb8155005eeb161",
+            "version": "2.9.6-1"
+        },
+        {
+            "name": "markupsafe",
+            "repository": "enthought/free",
+            "sha256": "5ccc5d825f95e52945c34f84cf65151918c360a61ec687c10b744ecfddf240cf",
+            "version": "0.23-2"
         },
         {
             "name": "mccabe",
@@ -227,6 +351,18 @@
             "version": "1.2.2-14"
         },
         {
+            "name": "pytz",
+            "repository": "enthought/free",
+            "sha256": "d987bd3d6bc32f441a67224a34f9d5103a5621a9b013a1ee8a0e59d8c3ed268d",
+            "version": "2017.3-1"
+        },
+        {
+            "name": "requests",
+            "repository": "enthought/free",
+            "sha256": "0dd22945e959833fa24df510b56d2258388ffe152f6142b81857abc3af654a33",
+            "version": "2.18.4-1"
+        },
+        {
             "name": "setuptools",
             "repository": "enthought/free",
             "sha256": "14d8d2884b775c1d0cdc2aacb50266c7277cca8bc6de7284ffeb491ad720fcbe",
@@ -245,6 +381,24 @@
             "version": "1.10.0-1"
         },
         {
+            "name": "snowballstemmer",
+            "repository": "enthought/free",
+            "sha256": "b12750403514de12adddf40589a6809bd017a19017e8abdafe3433e5bf563fdc",
+            "version": "1.2.1-1"
+        },
+        {
+            "name": "sphinx",
+            "repository": "enthought/free",
+            "sha256": "04186ea1aed8e396d1fd26ae00709edaf197f2c28aaabed34fd709b0669dcfe5",
+            "version": "1.5.5-5"
+        },
+        {
+            "name": "sphinx_rtd_theme",
+            "repository": "enthought/free",
+            "sha256": "480c8be0157e33b6b1c8e097190c62671854bcf22186bfe779ba2057f8de995d",
+            "version": "0.2.4-1"
+        },
+        {
             "name": "traits",
             "repository": "enthought/free",
             "sha256": "9a9bcfb14b3b05d9c5688db9e6986eb46173ad570c7aad1b10fc469b8e07dda2",
@@ -255,6 +409,12 @@
             "repository": "enthought/free",
             "sha256": "76b9034d38b57e5c210e5fbcad8bddca2bd8e00c37aaa8d800cfb0f7af5cd6ac",
             "version": "6.0.0-1"
+        },
+        {
+            "name": "urllib3",
+            "repository": "enthought/free",
+            "sha256": "e84f9651abbb0f6f3848b5fbd27c19500a64ce48e5675cc1252ee85ce38bfbf3",
+            "version": "1.22-1"
         }
     ],
     "runtime": {
