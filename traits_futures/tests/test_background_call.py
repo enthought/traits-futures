@@ -1,11 +1,11 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
+import concurrent.futures
 import contextlib
 import operator
 import threading
 import unittest
 
-import concurrent.futures
 import six
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant

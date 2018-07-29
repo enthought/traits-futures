@@ -4,11 +4,11 @@ Tests for the background iteration functionality.
 from __future__ import (
     absolute_import, division, print_function, unicode_literals)
 
+import concurrent.futures
 import contextlib
 import threading
 import unittest
 
-import concurrent.futures
 import six
 
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
