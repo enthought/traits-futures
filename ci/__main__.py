@@ -20,7 +20,6 @@ import yaml
 import ci.config as cfg
 from ci.python_environment import (
     current_platform,
-    edm_is_embedded,
     PythonEnvironment,
 )
 
@@ -51,7 +50,7 @@ toolkit_option = click.option(
 )
 
 
-@cli.command(name='build')
+@cli.command()
 @python_version_option
 @toolkit_option
 def build(python_version, toolkit):
@@ -63,12 +62,9 @@ def build(python_version, toolkit):
     if pyenv.exists():
         pyenv.destroy()
 
+    # Create new environment from bundle.
     bundle_file = _bundle_path(current_platform(), python_version, toolkit)
     pyenv.create_from_bundle(bundle_file)
-
-    # Print a summary of EDM config info; this can be useful when debugging CI
-    # configuration issues.
-    pyenv.edm_info()
 
     # Install the local packages using pip.
     pyenv.python(['-m', 'pip', 'install', '--no-deps', '--editable', '.'])
@@ -220,8 +216,8 @@ def regenerate_bundles():
 
 def _get_devenv(python_version, toolkit):
     """
-    Return a PythonEnvironment corresponding to the development
-    environment for the appropriate version of Python.
+    Return a PythonEnvironment corresponding to the development environment for
+    a given Python version and UI toolkit.
     """
     runtime_version = cfg.RUNTIME_VERSION[python_version]
     environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
@@ -229,20 +225,12 @@ def _get_devenv(python_version, toolkit):
         python_version=python_version,
         toolkit=toolkit,
     )
-    return _get_python_environment(environment_name, runtime_version)
 
-
-def _core_dependencies(platform, python_version, toolkit):
-    """
-    Compute core dependencies for the given platform, Python version and
-    toolkit.
-    """
-    # Make a copy to avoid accidentally mutating the cfg.CORE_DEPS global.
-    dependencies = list(cfg.CORE_DEPS)
-    dependencies.extend(cfg.VERSION_CORE_DEPS.get(python_version, []))
-    dependencies.extend(cfg.PLATFORM_CORE_DEPS.get(platform, []))
-    dependencies.extend(cfg.TOOLKIT_CORE_DEPS.get(toolkit, []))
-    return dependencies
+    return PythonEnvironment(
+        edm_config=cfg.EDM_CONFIGURATION,
+        name=environment_name,
+        runtime_version=runtime_version,
+    )
 
 
 def _bundle_path(platform, python_version, toolkit):
@@ -256,6 +244,21 @@ def _bundle_path(platform, python_version, toolkit):
         toolkit=toolkit,
     )
     return os.path.join(cfg.BUNDLE, bundle_filename)
+
+
+# Support for bundle-generation ###############################################
+
+def _core_dependencies(platform, python_version, toolkit):
+    """
+    Compute core dependencies for the given platform, Python version and
+    toolkit.
+    """
+    # Make a copy to avoid accidentally mutating the cfg.CORE_DEPS global.
+    dependencies = list(cfg.CORE_DEPS)
+    dependencies.extend(cfg.VERSION_CORE_DEPS.get(python_version, []))
+    dependencies.extend(cfg.PLATFORM_CORE_DEPS.get(platform, []))
+    dependencies.extend(cfg.TOOLKIT_CORE_DEPS.get(toolkit, []))
+    return dependencies
 
 
 def _get_api_token():
@@ -284,61 +287,6 @@ def _get_api_token():
     )
 
 
-def _get_python_environment(name, runtime_version,
-                            edm_config=cfg.EDM_CONFIGURATION):
-    """
-    Get a Python environment for a given configuration.
-    """
-    api_token = _get_api_token()
-
-    kwargs = dict(
-        name=name,
-        runtime_version=runtime_version,
-        api_token=api_token,
-    )
-
-    # An embedded EDM doesn't accept the `--config` argument.
-    if not edm_is_embedded():
-        kwargs.update(dict(edm_config=edm_config))
-    return PythonEnvironment(**kwargs)
-
-
-# Support for bundle-generation ###############################################
-
-@contextlib.contextmanager
-def _temporary_edm_environment(name, runtime_version):
-    """
-    Context manager to create a temporary EDM environment.  The environment is
-    removed on leaving the corresponding with block.
-
-    If the environment already exists, it will be removed first.
-
-    Parameters
-    ----------
-    name : string
-        Name of the environment to be created.
-    runtime_version : string
-        Python runtime version. (e.g., "2.7.13")
-
-    Yields
-    ------
-    pyenv : PythonEnvironment
-        The created environment object.
-    """
-    pyenv = _get_python_environment(
-        name, runtime_version,
-        edm_config=cfg.EDM_BUNDLEGEN_CONFIGURATION,
-    )
-    if pyenv.exists():
-        pyenv.destroy()
-
-    pyenv.create()
-    try:
-        yield pyenv
-    finally:
-        pyenv.destroy()
-
-
 @contextlib.contextmanager
 def _bundle_generation_environment():
     """
@@ -351,7 +299,19 @@ def _bundle_generation_environment():
     pyenv : PythonEnvironment
         The created environment object.
     """
-    with _temporary_edm_environment("bundle-generation", "3.6.0") as pyenv:
+    api_token = _get_api_token()
+
+    pyenv = PythonEnvironment(
+        api_token=api_token,
+        edm_config=cfg.EDM_BUNDLEGEN_CONFIGURATION,
+        name="bundle-generation",
+        runtime_version="3.6.0",
+    )
+    if pyenv.exists():
+        pyenv.destroy()
+
+    pyenv.create()
+    try:
         pyenv.edm([
             'install',
             '-e', pyenv.environment_name,
@@ -361,6 +321,8 @@ def _bundle_generation_environment():
                                 #      enthought/edm#1725
         ])
         yield pyenv
+    finally:
+        pyenv.destroy()
 
 
 if __name__ == '__main__':
