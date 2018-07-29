@@ -28,7 +28,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        callable : callable
+        callable : an arbitrary callable
             Function to execute in the background.
         *args
             Positional arguments to pass to that function.
@@ -53,7 +53,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        callable : callable
+        callable : an arbitrary callable
             Function executed in the background to provide the iterable.
         *args
             Positional arguments to pass to that function.
