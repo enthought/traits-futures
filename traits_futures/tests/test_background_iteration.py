@@ -47,18 +47,18 @@ def squares(start, stop):
         yield i*i
 
 
-def generator_with_cleanup(started, finalised, waiter):
+def generator_with_cleanup(resource_acquired, resource_released, test_ready):
     """
     Generator function that needs to do cleanup
     on exit.
     """
-    started.set()
+    resource_acquired.set()
     try:
         yield 1
-        waiter.wait()
+        test_ready.wait()
         yield 2
     finally:
-        finalised.set()
+        resource_released.set()
 
 
 class Listener(HasStrictTraits):
@@ -304,22 +304,23 @@ class TestIterationNoUI(unittest.TestCase):
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
-    def test_generator_cleanup(self):
-        started = threading.Event()
-        waiter = threading.Event()
-        finalised = threading.Event()
+    def test_generator_closed_on_cancellation(self):
+        resource_acquired = threading.Event()
+        test_ready = threading.Event()
+        resource_released = threading.Event()
 
         future = self.executor.submit_iteration(
-            generator_with_cleanup, started, finalised, waiter)
+            generator_with_cleanup,
+            resource_acquired, resource_released, test_ready)
 
-        self.router.route_until(started.is_set, timeout=TIMEOUT)
+        self.router.route_until(resource_acquired.is_set, timeout=TIMEOUT)
 
         future.cancel()
-        waiter.set()
+        test_ready.set()
 
         self.wait_for_completion(future)
         # Check that the finally clause executed.
-        self.assertTrue(finalised.is_set())
+        self.assertTrue(resource_released.is_set())
 
     # Helper functions
 
