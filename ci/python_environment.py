@@ -117,14 +117,27 @@ class PythonEnvironment(object):
         ]
         self.edm(cmd)
 
-    def create_from_bundle(self, bundle):
+    def create_from_bundle(self, bundle, force=True):
         """
         Create a Python environment from a given bundle.
+
+        Parameters
+        ----------
+        bundle : string
+            Path to the bundle file.
+        force : bool
+            If True (the default), remove any environment with the
+            same name. If False, and there's an existing directory
+            matching the name of the environment, this command
+            will fail.
         """
         cmd = [
             'environments', 'import', self.environment_name,
             '--filename', bundle,
         ]
+        if force:
+            cmd.append('--force')
+
         self.edm(cmd)
 
     def destroy(self):
