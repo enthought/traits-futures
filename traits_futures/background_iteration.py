@@ -93,8 +93,10 @@ class IterationBackgroundTask(object):
                     # arbitrary time in the future.
                     del result
 
-            # If the iterable is a generator, close it before we send
-            # the final message.
+            # If the iterable is a generator, close it before we send the final
+            # message. This ensures that any cleanup in the generator function
+            # (e.g., as a result of leaving a with block, or executing a
+            # finally clause) occurs promptly.
             if isinstance(iterable, types.GeneratorType):
                 iterable.close()
             # Belt and braces: also delete the reference to the iterable.

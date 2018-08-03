@@ -344,7 +344,6 @@ class TestIterationNoUI(unittest.TestCase):
             test_ready.wait()
             yield {4, 5, 6}
 
-        result_sent = threading.Event()
         test_ready = threading.Event()
 
         future = self.executor.submit_iteration(waiting_iteration, test_ready)
@@ -352,7 +351,10 @@ class TestIterationNoUI(unittest.TestCase):
         try:
             # Capture just one result.
             results = []
-            result_handler = lambda new: results.append(new)
+
+            def result_handler(new):
+                results.append(new)
+
             future.on_trait_change(result_handler, "result")
             self.router.route_until(lambda: results, timeout=TIMEOUT)
             future.on_trait_change(result_handler, "result", remove=True)
