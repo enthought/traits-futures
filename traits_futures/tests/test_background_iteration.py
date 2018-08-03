@@ -7,7 +7,9 @@ from __future__ import (
 import concurrent.futures
 import contextlib
 import threading
+import time
 import unittest
+import weakref
 
 import six
 
@@ -45,6 +47,20 @@ def squares(start, stop):
     """
     for i in range(start, stop):
         yield i*i
+
+
+def generator_with_cleanup(resource_acquired, resource_released, test_ready):
+    """
+    Generator function that needs to do cleanup
+    on exit.
+    """
+    resource_acquired.set()
+    try:
+        yield 1
+        test_ready.wait()
+        yield 2
+    finally:
+        resource_released.set()
 
 
 class Listener(HasStrictTraits):
@@ -98,6 +114,17 @@ class TestIterationNoUI(unittest.TestCase):
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [1.0, 0.5, 1/3.0])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+
+    def test_general_iterable(self):
+        # Any call that returns an iterable should be accepted
+        future = self.executor.submit_iteration(range, 0, 10, 2)
+        listener = Listener(future=future)
+
+        self.wait_for_completion(future)
+
+        self.assertNoException(future)
+        self.assertEqual(listener.results, [0, 2, 4, 6, 8])
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
 
     def test_bad_iteration_setup(self):
@@ -290,6 +317,63 @@ class TestIterationNoUI(unittest.TestCase):
         self.wait_for_completion(future)
         self.assertTrue(future.done)
 
+    def test_generator_closed_on_cancellation(self):
+        resource_acquired = threading.Event()
+        test_ready = threading.Event()
+        resource_released = threading.Event()
+
+        future = self.executor.submit_iteration(
+            generator_with_cleanup,
+            resource_acquired, resource_released, test_ready)
+
+        self.router.route_until(resource_acquired.is_set, timeout=TIMEOUT)
+
+        future.cancel()
+        test_ready.set()
+
+        self.wait_for_completion(future)
+        # Check that the finally clause executed.
+        self.assertTrue(resource_released.is_set())
+
+    def test_prompt_result_deletion(self):
+        # Check that we're not hanging onto result references needlessly in the
+        # background task.
+        def waiting_iteration(test_ready):
+            # Using sets because we need something weakref'able.
+            yield {1, 2, 3}
+            test_ready.wait()
+            yield {4, 5, 6}
+
+        test_ready = threading.Event()
+
+        future = self.executor.submit_iteration(waiting_iteration, test_ready)
+
+        try:
+            # Capture just one result.
+            results = []
+
+            def result_handler(new):
+                results.append(new)
+
+            future.on_trait_change(result_handler, "result")
+            self.router.route_until(lambda: results, timeout=TIMEOUT)
+            future.on_trait_change(result_handler, "result", remove=True)
+
+            # Check that there are no other references to this result besides
+            # the one in this test.
+            result = results.pop()
+            ref = weakref.ref(result)
+            del result
+
+            # The background task should have released its reference to result
+            # immediately after sending it, but we can't rely on that having
+            # happened already. We expect ref to become dead within a
+            # reasonable timeout.
+            self.assertEventuallyTrue(lambda: ref() is None)
+        finally:
+            # Let the background task complete.
+            test_ready.set()
+
     # Helper functions
 
     def wait_for_state(self, future, state):
@@ -327,3 +411,15 @@ class TestIterationNoUI(unittest.TestCase):
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
             future.exception
+
+    def assertEventuallyTrue(self, condition):
+        """
+        Assert that the condition becomes true within TIMEOUT seconds.
+        """
+        end_time = time.time() + TIMEOUT
+        while not condition() and time.time() < end_time:
+            time.sleep(0.1)
+
+        if not condition():
+            self.fail(
+                "Condition did not become true within the given timeout.")
