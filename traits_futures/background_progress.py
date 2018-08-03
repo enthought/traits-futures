@@ -21,6 +21,9 @@ from traits_futures.future_states import (
     FINAL_STATES, CANCELLABLE_STATES, FutureState)
 
 
+# Message types for messages from ProgressBackgroundTask
+# to ProgressFuture.
+
 #: Task was cancelled before it started. No arguments.
 INTERRUPTED = "interrupted"
 
@@ -53,7 +56,19 @@ class ProgressReporter(object):
         self.message_sender = message_sender
         self.cancel_event = cancel_event
 
-    def send(self, progress_info):
+    def report(self, progress_info):
+        """
+        Send progress information to the linked future.
+
+        The ``progress_info`` object will eventually be sent to the
+        corresponding future's ``progress`` event trait.
+
+        Parameters
+        ----------
+        progress_info : object
+            An arbitrary object representing progress. Ideally, this
+            should be immutable and pickleable.
+        """
         if self.cancel_event.is_set():
             raise _ProgressCancelled("Task was cancelled")
         self.message_sender.send((PROGRESS, progress_info))
@@ -78,7 +93,7 @@ class ProgressBackgroundTask(object):
             message_sender=self.message_sender,
             cancel_event=self.cancel_event,
         )
-        self.kwargs["progress"] = progress.send
+        self.kwargs["progress"] = progress.report
 
         with self.message_sender:
             if self.cancel_event.is_set():

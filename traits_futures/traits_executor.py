@@ -112,14 +112,14 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        callable : callable accepting a "progress" keyword argument
+        callable : callable accepting a "progress" named argument
             Function executed in the background to provide the iterable. This
-            should accept a "progress" keyword argument. The callable can then
-            call the object passed in send progress reports.
+            should accept a "progress" named argument. The callable can then
+            call the "progress" object to report progress.
         *args
             Positional arguments to pass to that function.
         **kwargs
-            Named arguments to pass to that function. This should not include
+            Named arguments to pass to that function. These should not include
             "progress".
 
         Returns
