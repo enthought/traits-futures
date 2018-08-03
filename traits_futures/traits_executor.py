@@ -10,6 +10,7 @@ from traits.api import (
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
+from traits_futures.background_progress import BackgroundProgress
 from traits_futures.qt_message_router import QtMessageRouter
 
 
@@ -99,6 +100,34 @@ class TraitsExecutor(HasStrictTraits):
             Object representing the state of the background iteration.
         """
         task = BackgroundIteration(
+            callable=callable,
+            args=args,
+            kwargs=kwargs,
+        )
+        return self.submit(task)
+
+    def submit_progress(self, callable, *args, **kwargs):
+        """
+        Convenience function to submit a background progress call.
+
+        Parameters
+        ----------
+        callable : callable accepting a "progress" keyword argument
+            Function executed in the background to provide the iterable. This
+            should accept a "progress" keyword argument. The callable can then
+            call the object passed in send progress reports.
+        *args
+            Positional arguments to pass to that function.
+        **kwargs
+            Named arguments to pass to that function. This should not include
+            "progress".
+
+        Returns
+        -------
+        future : ProgressFuture
+            Object representing the state of the background task.
+        """
+        task = BackgroundProgress(
             callable=callable,
             args=args,
             kwargs=kwargs,

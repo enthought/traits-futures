@@ -18,6 +18,9 @@ class TestApi(unittest.TestCase):
             BackgroundIteration,
             IterationFuture,
 
+            BackgroundProgress,
+            ProgressFuture,
+
             CANCELLED,
             CANCELLING,
             EXECUTING,
