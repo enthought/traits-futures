@@ -7,7 +7,9 @@ from __future__ import (
 import concurrent.futures
 import contextlib
 import threading
+import time
 import unittest
+import weakref
 
 import six
 
@@ -333,6 +335,43 @@ class TestIterationNoUI(unittest.TestCase):
         # Check that the finally clause executed.
         self.assertTrue(resource_released.is_set())
 
+    def test_prompt_result_deletion(self):
+        # Check that we're not hanging onto result references needlessly in the
+        # background task.
+        def waiting_iteration(test_ready):
+            # Using sets because we need something weakref'able.
+            yield {1, 2, 3}
+            test_ready.wait()
+            yield {4, 5, 6}
+
+        result_sent = threading.Event()
+        test_ready = threading.Event()
+
+        future = self.executor.submit_iteration(waiting_iteration, test_ready)
+
+        try:
+            # Capture just one result.
+            results = []
+            result_handler = lambda new: results.append(new)
+            future.on_trait_change(result_handler, "result")
+            self.router.route_until(lambda: results, timeout=TIMEOUT)
+            future.on_trait_change(result_handler, "result", remove=True)
+
+            # Check that there are no other references to this result besides
+            # the one in this test.
+            result = results.pop()
+            ref = weakref.ref(result)
+            del result
+
+            # The background task should have released its reference to result
+            # immediately after sending it, but we can't rely on that having
+            # happened already. We expect ref to become dead within a
+            # reasonable timeout.
+            self.assertEventuallyTrue(lambda: ref() is None)
+        finally:
+            # Let the background task complete.
+            test_ready.set()
+
     # Helper functions
 
     def wait_for_state(self, future, state):
@@ -370,3 +409,15 @@ class TestIterationNoUI(unittest.TestCase):
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
             future.exception
+
+    def assertEventuallyTrue(self, condition):
+        """
+        Assert that the condition becomes true within TIMEOUT seconds.
+        """
+        end_time = time.time() + TIMEOUT
+        while not condition() and time.time() < end_time:
+            time.sleep(0.1)
+
+        if not condition():
+            self.fail(
+                "Condition did not become true within the given timeout.")
