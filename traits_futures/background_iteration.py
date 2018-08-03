@@ -3,6 +3,8 @@ Background task that sends results from an iteration.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
+import types
+
 from traits.api import (
     Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
     on_trait_change, Property, Str, Tuple)
@@ -70,19 +72,35 @@ class IterationBackgroundTask(object):
 
             while True:
                 if self.cancel_event.is_set():
-                    self.send(INTERRUPTED)
+                    message, message_args = INTERRUPTED, None
                     break
 
                 try:
                     result = next(iterable)
                 except StopIteration:
-                    self.send(EXHAUSTED)
+                    message, message_args = EXHAUSTED, None
                     break
                 except BaseException as e:
-                    self.send(RAISED, marshal_exception(e))
+                    message, message_args = RAISED, marshal_exception(e)
+                    # Make sure we're not keeping references to anything
+                    # in the exception details. Not needed on Python 3.
+                    del e
                     break
                 else:
                     self.send(GENERATED, result)
+                    # Delete now, else we'll hang on to the reference to this
+                    # result until the next iteration, which could be some
+                    # arbitrary time in the future.
+                    del result
+
+            # If the iterable is a generator, close it before we send
+            # the final message.
+            if isinstance(iterable, types.GeneratorType):
+                iterable.close()
+            # Belt and braces: also delete the reference to the iterable.
+            del iterable
+
+            self.send(message, message_args)
 
     def send(self, message_type, message_args=None):
         """

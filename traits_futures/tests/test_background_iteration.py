@@ -114,6 +114,17 @@ class TestIterationNoUI(unittest.TestCase):
         self.assertEqual(listener.results, [1.0, 0.5, 1/3.0])
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
 
+    def test_general_iterable(self):
+        # Any call that returns an iterable should be accepted
+        future = self.executor.submit_iteration(range, 0, 10, 2)
+        listener = Listener(future=future)
+
+        self.wait_for_completion(future)
+
+        self.assertNoException(future)
+        self.assertEqual(listener.results, [0, 2, 4, 6, 8])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+
     def test_bad_iteration_setup(self):
         # Deliberately passing a callable that returns
         # something non-iterable.
