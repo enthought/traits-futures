@@ -26,7 +26,6 @@ install_requires = [
 if sys.version_info < (3,):
     install_requires.append('futures')
 
-
 setup(
     name='traits-futures',
     version=version,
@@ -51,5 +50,4 @@ setup(
             'qt = traits_futures.qt.message_router:MessageRouter',
         ],
     },
-
 )
