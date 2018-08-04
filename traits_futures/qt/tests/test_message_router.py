@@ -23,7 +23,8 @@ def send_messages(sender, messages):
 
 class Listener(HasStrictTraits):
     """
-    Test helper that records all messages from a MessageReceiver.
+    Test helper that listens to and records all messages from a
+    MessageReceiver.
     """
     #: The receiver that we're listening to.
     receiver = Instance(MessageReceiver)
