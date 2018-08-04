@@ -258,6 +258,17 @@ def _get_devenv(python_version, toolkit):
     Return a PythonEnvironment corresponding to the development environment for
     a given Python version and UI toolkit.
     """
+    platform = current_platform()
+    if (platform, python_version, toolkit) not in cfg.PLATFORMS:
+        raise click.ClickException(
+            "Unsupported configuration: platform={platform}, "
+            "python_version={python_version}, toolkit={toolkit}".format(
+                platform=platform,
+                python_version=python_version,
+                toolkit=toolkit,
+            )
+        )
+
     runtime_version = cfg.RUNTIME_VERSION[python_version]
     environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
         prefix=cfg.PREFIX,
