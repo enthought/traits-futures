@@ -7,7 +7,7 @@ import types
 
 from traits.api import (
     Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
-    on_trait_change, Property, Str, Tuple)
+    on_trait_change, Property, Str, Tuple, Unicode)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
@@ -150,14 +150,14 @@ class IterationFuture(HasStrictTraits):
     #: True if we've received the final message from the background iteration,
     #: else False. `True` indicates either that the background iteration
     #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool, depends_on='state')
+    done = Property(Bool(), depends_on='state')
 
     #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool, depends_on='state')
+    cancellable = Property(Bool(), depends_on='state')
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
-    result = Event(Any)
+    result = Event(Any())
 
     @property
     def exception(self):
@@ -192,17 +192,17 @@ class IterationFuture(HasStrictTraits):
 
     #: Private event used to request cancellation of this task. Users
     #: should call the cancel() method instead of using this event.
-    _cancel_event = Any
+    _cancel_event = Any()
 
     #: Exception information from the background task.
-    _exception = Tuple(Str, Str, Str)
+    _exception = Tuple(Unicode(), Unicode(), Unicode())
 
     #: Object that receives messages from the background task.
     _message_receiver = Instance(HasTraits)
 
     #: Event fired when the background task is on the point of exiting.
     #: This is mostly used for internal bookkeeping.
-    _exiting = Event
+    _exiting = Event()
 
     # Private methods #########################################################
 
@@ -262,13 +262,13 @@ class BackgroundIteration(HasStrictTraits):
     Object representing the background iteration to be executed.
     """
     #: The callable to be executed. This should return something iterable.
-    callable = Callable
+    callable = Callable()
 
     #: Positional arguments to be passed to the callable.
-    args = Tuple
+    args = Tuple()
 
     #: Named arguments to be passed to the callable.
-    kwargs = Dict(Str, Any)
+    kwargs = Dict(Str(), Any())
 
     def future_and_callable(
             self, cancel_event, message_sender, message_receiver):

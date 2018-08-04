@@ -71,7 +71,7 @@ class Listener(HasStrictTraits):
     states = List(FutureState)
 
     #: List of results from the future.
-    results = List(Any)
+    results = List(Any())
 
     @on_trait_change("future:state")
     def record_state_change(self, obj, name, old_state, new_state):

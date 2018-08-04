@@ -4,7 +4,7 @@ import threading
 import unittest
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
-from traits.api import HasStrictTraits, Instance, List, on_trait_change
+from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.qt_message_router import (
     QtMessageReceiver,
@@ -30,7 +30,7 @@ class Listener(HasStrictTraits):
     receiver = Instance(QtMessageReceiver)
 
     #: Messages received.
-    messages = List
+    messages = List(Any())
 
     @on_trait_change('receiver:message')
     def _record_message(self, message):
