@@ -33,7 +33,7 @@ class _MessageSignallee(QObject):
         self.on_message_sent()
 
 
-class QtMessageSender(object):
+class MessageSender(object):
     """
     Object allowing the worker to send messages.
 
@@ -70,9 +70,9 @@ class QtMessageSender(object):
         self.signaller.message_sent.emit()
 
 
-class QtMessageReceiver(HasStrictTraits):
+class MessageReceiver(HasStrictTraits):
     """
-    Main-thread object that receives messages from a QtMessageSender.
+    Main-thread object that receives messages from a MessageSender.
     """
     #: Event fired when a message is received from the paired sender.
     message = Event(Any())
@@ -81,7 +81,7 @@ class QtMessageReceiver(HasStrictTraits):
     done = Event()
 
 
-class QtMessageRouter(HasStrictTraits):
+class MessageRouter(HasStrictTraits):
     """
     Router for messages, sent by means of Qt signals and slots.
 
@@ -93,18 +93,18 @@ class QtMessageRouter(HasStrictTraits):
 
         Returns
         -------
-        sender : QtMessageSender
+        sender : MessageSender
             Object to be passed to the background task to send messages.
-        receiver : QtMessageReceiver
+        receiver : MessageReceiver
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        sender = QtMessageSender(
+        sender = MessageSender(
             connection_id=connection_id,
             signallee=self._signallee,
             message_queue=self._message_queue,
         )
-        receiver = QtMessageReceiver()
+        receiver = MessageReceiver()
         self._receivers[connection_id] = receiver
         return sender, receiver
 
