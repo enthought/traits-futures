@@ -218,7 +218,9 @@ class TraitsExecutor(HasStrictTraits):
         return router_entry_point.load()
 
     def __message_router_default(self):
-        return self._router_class()
+        message_router = self._router_class()
+        message_router.connect()
+        return message_router
 
     @on_trait_change('_futures:_exiting')
     def _remove_future(self, future, name, new):
@@ -236,4 +238,8 @@ class TraitsExecutor(HasStrictTraits):
         if self._own_thread_pool:
             self._thread_pool.shutdown()
         self._thread_pool = None
+
+        # No workers left, so it should be safe to stop listening to them.
+        self._message_router.disconnect()
+
         self.state = STOPPED

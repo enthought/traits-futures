@@ -111,6 +111,18 @@ class MessageRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
+    def connect(self):
+        """
+        Connect to the message stream.
+        """
+        self._signallee = _MessageSignallee(on_message_sent=self._route_message)
+
+    def disconnect(self):
+        """
+        Disconnect from the message stream.
+        """
+        self._signallee = None
+
     # Private traits ##########################################################
 
     #: Internal queue for messages from all senders.
@@ -144,6 +156,3 @@ class MessageRouter(HasStrictTraits):
 
     def __connection_ids_default(self):
         return itertools.count()
-
-    def __signallee_default(self):
-        return _MessageSignallee(on_message_sent=self._route_message)

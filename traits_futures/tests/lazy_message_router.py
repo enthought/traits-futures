@@ -55,6 +55,18 @@ class LazyMessageRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
+    def connect(self):
+        """
+        Connect to the message stream.
+        """
+        pass
+
+    def disconnect(self):
+        """
+        Disconnect from the message stream.
+        """
+        pass
+
     def route_until(self, condition, timeout):
         """
         Route messages until the given condition evaluates to true.

@@ -25,15 +25,19 @@ class _MessageSignallee(wx.EvtHandler):
 
     This object stays in the main thread.
     """
-    def __init__(self, on_message_sent):
-        self.on_message_sent = on_message_sent
-        wx.EvtHandler.__init__(self)
-
+    def bind_to_callback(self, callback):
+        """
+        Bind the MESSAGE_SENT_EVENT_TYPE event to the given callback.
+        """
         self.binder = wx.PyEventBinder(MESSAGE_SENT_EVENT_TYPE, 1)
-        self.Bind(self.binder, self.on_message)
+        self.Bind(self.binder, callback)
 
-    def on_message(self, event):
-        self.on_message_sent()
+    def unbind(self):
+        """
+        Undo the binding made in ``bind_to_callback``.
+        """
+        self.Unbind(self.binder)
+        self.binder = None
 
 
 class MessageSender(object):
@@ -57,16 +61,15 @@ class MessageSender(object):
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        event = MessageSentEvent(-1)
-        wx.PostEvent(self.signallee, event)
+        wx.PostEvent(self.signallee, MessageSentEvent(-1))
+        del self.signallee
 
     def send(self, message):
         """
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        event = MessageSentEvent(-1)
-        wx.PostEvent(self.signallee, event)
+        wx.PostEvent(self.signallee, MessageSentEvent(-1))
 
 
 class MessageReceiver(HasStrictTraits):
@@ -107,6 +110,20 @@ class MessageRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
+    def connect(self):
+        """
+        Connect to the message stream.
+        """
+        self._signallee = _MessageSignallee()
+        self._signallee.bind_to_callback(self._route_message)
+
+    def disconnect(self):
+        """
+        Disconnect from the message stream.
+        """
+        self._signallee.unbind()
+        self._signallee = None
+
     # Private traits ##########################################################
 
     #: Internal queue for messages from all senders.
@@ -123,7 +140,7 @@ class MessageRouter(HasStrictTraits):
 
     # Private methods #########################################################
 
-    def _route_message(self):
+    def _route_message(self, event):
         wrapped_message = self._message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message
@@ -140,6 +157,3 @@ class MessageRouter(HasStrictTraits):
 
     def __connection_ids_default(self):
         return itertools.count()
-
-    def __signallee_default(self):
-        return _MessageSignallee(on_message_sent=self._route_message)
