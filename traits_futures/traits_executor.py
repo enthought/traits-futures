@@ -4,17 +4,14 @@ from __future__ import absolute_import, print_function, unicode_literals
 import concurrent.futures
 import threading
 
-import pkg_resources
-
 from traits.api import (
-    Any, Bool, Enum, HasStrictTraits, HasTraits, Instance, on_trait_change,
+    Bool, Enum, HasStrictTraits, HasTraits, Instance, on_trait_change,
     Property, Set)
-from traits.etsconfig.api import ETSConfig
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
-
+from traits_futures.toolkit_support import message_router_class
 
 # Executor states.
 
@@ -191,9 +188,6 @@ class TraitsExecutor(HasStrictTraits):
     #: for shutting it down), else False.
     _own_thread_pool = Bool()
 
-    #: Class providing the message router.
-    _router_class = Any()
-
     #: Router providing message connections between background tasks
     #: and foreground futures.
     _message_router = Instance(HasTraits)
@@ -207,18 +201,9 @@ class TraitsExecutor(HasStrictTraits):
     def _get_stopped(self):
         return self.state == STOPPED
 
-    def __router_class_default(self):
-        toolkit_name = ETSConfig.toolkit
-        entry_points = pkg_resources.iter_entry_points(
-            'traits_futures.routers')
-        router_entry_point, = [
-             entry_point for entry_point in entry_points
-             if entry_point.name == toolkit_name
-         ]
-        return router_entry_point.load()
-
     def __message_router_default(self):
-        return self._router_class()
+        class_ = message_router_class()
+        return class_()
 
     @on_trait_change('_futures:_exiting')
     def _remove_future(self, future, name, new):
