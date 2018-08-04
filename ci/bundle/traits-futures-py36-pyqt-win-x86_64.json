@@ -263,8 +263,8 @@
         {
             "name": "mock",
             "repository": "enthought/free",
-            "sha256": "df9cceeddb66883a48527cb60c034605961627cb0fd0d06a88bd4a4fbb7b6ef2",
-            "version": "2.0.0-1"
+            "sha256": "ec120da56f452d562fbdbf344bc3089da8e91971b31d16aa3bbab6100378c146",
+            "version": "2.0.0-2"
         },
         {
             "name": "packaging",
@@ -275,8 +275,8 @@
         {
             "name": "pbr",
             "repository": "enthought/free",
-            "sha256": "aa037012942129d045d7a8690e27ce6b23208e205dc663590a266ce9bd50e0f4",
-            "version": "1.8.1-13"
+            "sha256": "92001c518182b9669bdb086da9823dae74e4640848800cab10c5bb00b7f9d032",
+            "version": "4.2.0-1"
         },
         {
             "name": "pip",
