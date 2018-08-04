@@ -55,6 +55,7 @@ class CallBackgroundTask(object):
                     result = self.callable(*self.args, **self.kwargs)
                 except BaseException as e:
                     self.send(RAISED, marshal_exception(e))
+                    del e
                 else:
                     self.send(RETURNED, result)
 
@@ -180,27 +181,27 @@ class CallFuture(HasStrictTraits):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_interrupted(self, arg):
+    def _process_interrupted(self, none):
         assert self.state in (CANCELLING,)
         self.state = CANCELLED
 
-    def _process_started(self, arg):
+    def _process_started(self, none):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
             self.state = EXECUTING
 
-    def _process_raised(self, arg):
+    def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
-            self._exception = arg
+            self._exception = exception_info
             self.state = FAILED
         else:
             self.state = CANCELLED
 
-    def _process_returned(self, arg):
+    def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
-            self._result = arg
+            self._result = result
             self.state = COMPLETED
         else:
             self.state = CANCELLED
