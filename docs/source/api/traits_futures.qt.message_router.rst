@@ -1,7 +1,7 @@
-traits\_futures\.qt\_message\_router module
+traits\_futures\.qt\.message\_router module
 ===========================================
 
-.. automodule:: traits_futures.qt_message_router
+.. automodule:: traits_futures.qt.message_router
     :members:
     :undoc-members:
     :show-inheritance:
