@@ -7,7 +7,7 @@ import types
 
 from traits.api import (
     Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
-    on_trait_change, Property, Str, Tuple)
+    on_trait_change, Property, Str, Tuple, Unicode)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
@@ -66,6 +66,7 @@ class IterationBackgroundTask(object):
                 iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
                 self.send(RAISED, marshal_exception(e))
+                del e
                 return
 
             self.send(STARTED)
@@ -150,14 +151,14 @@ class IterationFuture(HasStrictTraits):
     #: True if we've received the final message from the background iteration,
     #: else False. `True` indicates either that the background iteration
     #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool, depends_on='state')
+    done = Property(Bool(), depends_on='state')
 
     #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool, depends_on='state')
+    cancellable = Property(Bool(), depends_on='state')
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
-    result = Event(Any)
+    result = Event(Any())
 
     @property
     def exception(self):
@@ -192,17 +193,17 @@ class IterationFuture(HasStrictTraits):
 
     #: Private event used to request cancellation of this task. Users
     #: should call the cancel() method instead of using this event.
-    _cancel_event = Any
+    _cancel_event = Any()
 
     #: Exception information from the background task.
-    _exception = Tuple(Str, Str, Str)
+    _exception = Tuple(Unicode(), Unicode(), Unicode())
 
     #: Object that receives messages from the background task.
     _message_receiver = Instance(HasTraits)
 
     #: Event fired when the background task is on the point of exiting.
     #: This is mostly used for internal bookkeeping.
-    _exiting = Event
+    _exiting = Event()
 
     # Private methods #########################################################
 
@@ -216,39 +217,36 @@ class IterationFuture(HasStrictTraits):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_interrupted(self, arg):
+    def _process_interrupted(self, none):
         assert self.state in (CANCELLING,)
         self.state = CANCELLED
 
-    def _process_started(self, arg):
+    def _process_started(self, none):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
             self.state = EXECUTING
 
-    def _process_raised(self, arg):
+    def _process_raised(self, exception_info):
         assert self.state in (WAITING, EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._exception = arg
-            self.state = FAILED
-        elif self.state == WAITING:
-            self._exception = arg
+        if self.state in (EXECUTING, WAITING):
+            self._exception = exception_info
             self.state = FAILED
         else:
             # Don't record the exception if the job was already cancelled.
             self.state = CANCELLED
 
-    def _process_exhausted(self, arg):
+    def _process_exhausted(self, none):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self.state = COMPLETED
         else:
             self.state = CANCELLED
 
-    def _process_generated(self, arg):
+    def _process_generated(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         # Any results arriving after a cancellation request are ignored.
         if self.state == EXECUTING:
-            self.result = arg
+            self.result = result
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
@@ -262,13 +260,13 @@ class BackgroundIteration(HasStrictTraits):
     Object representing the background iteration to be executed.
     """
     #: The callable to be executed. This should return something iterable.
-    callable = Callable
+    callable = Callable()
 
     #: Positional arguments to be passed to the callable.
-    args = Tuple
+    args = Tuple()
 
     #: Named arguments to be passed to the callable.
-    kwargs = Dict(Str, Any)
+    kwargs = Dict(Str(), Any())
 
     def future_and_callable(
             self, cancel_event, message_sender, message_receiver):

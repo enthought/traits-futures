@@ -8,6 +8,7 @@ Submodules
 
    traits_futures.background_call
    traits_futures.background_iteration
+   traits_futures.background_progress
    traits_futures.exception_handling
    traits_futures.future_states
    traits_futures.qt_message_router

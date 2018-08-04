@@ -21,7 +21,7 @@ from traits_futures.tests.lazy_message_router import LazyMessageRouter
 #: Number of workers for the thread pool.
 WORKERS = 4
 
-#: Timeout for queue.get operations, in seconds.
+#: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
 
 
@@ -178,7 +178,7 @@ class TestBackgroundCallNoUI(unittest.TestCase):
         future = self.executor.submit_call(event.set)
         listener = Listener(future=future)
 
-        event.wait()
+        self.assertTrue(event.wait(timeout=TIMEOUT))
         self.assertTrue(future.cancellable)
         future.cancel()
         self.wait_for_completion(future)

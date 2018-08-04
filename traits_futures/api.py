@@ -1,52 +1,46 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-from traits_futures.background_call import (
-    BackgroundCall,
-    CallFuture,
-)
-from traits_futures.background_iteration import (
-    BackgroundIteration,
-    IterationFuture,
-)
+from traits_futures.background_call import CallFuture
+from traits_futures.background_iteration import IterationFuture
+from traits_futures.background_progress import ProgressFuture
 from traits_futures.future_states import (
+    FutureState,
     CANCELLED,
     CANCELLING,
     EXECUTING,
     FAILED,
     COMPLETED,
     WAITING,
-    FutureState,
 )
 from traits_futures.traits_executor import (
     TraitsExecutor,
+    ExecutorState,
     RUNNING,
     STOPPING,
     STOPPED,
-    ExecutorState,
 )
 
 __all__ = [
-    # Executor
-    "TraitsExecutor",
-    "RUNNING",
-    "STOPPING",
-    "STOPPED",
-    "ExecutorState",
-
-    # Background calls
-    "BackgroundCall",
+    # Different types of Future
     "CallFuture",
-
-    # Background iterations
-    "BackgroundIteration",
     "IterationFuture",
+    "ProgressFuture",
 
-    # Common execution states (shared by background calls and iterations).
+    # Future states
+    "FutureState",
     "CANCELLED",
     "CANCELLING",
     "EXECUTING",
     "FAILED",
     "COMPLETED",
     "WAITING",
-    "FutureState",
+
+    # Executor
+    "TraitsExecutor",
+
+    # Executor states
+    "ExecutorState",
+    "RUNNING",
+    "STOPPING",
+    "STOPPED",
 ]

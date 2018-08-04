@@ -25,7 +25,7 @@ from traits_futures.tests.lazy_message_router import LazyMessageRouter
 #: Number of workers for the thread pool.
 WORKERS = 4
 
-#: Timeout for queue.get operations, in seconds.
+#: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
 
 
@@ -57,7 +57,7 @@ def generator_with_cleanup(resource_acquired, resource_released, test_ready):
     resource_acquired.set()
     try:
         yield 1
-        test_ready.wait()
+        test_ready.wait(timeout=TIMEOUT)
         yield 2
     finally:
         resource_released.set()
@@ -71,7 +71,7 @@ class Listener(HasStrictTraits):
     states = List(FutureState)
 
     #: List of results from the future.
-    results = List(Any)
+    results = List(Any())
 
     @on_trait_change("future:state")
     def record_state_change(self, obj, name, old_state, new_state):
@@ -165,7 +165,7 @@ class TestIterationNoUI(unittest.TestCase):
         future = self.executor.submit_iteration(set_then_yield)
         listener = Listener(future=future)
 
-        event.wait()
+        self.assertTrue(event.wait(timeout=TIMEOUT))
         self.assertTrue(future.cancellable)
         future.cancel()
         self.wait_for_completion(future)
@@ -182,7 +182,7 @@ class TestIterationNoUI(unittest.TestCase):
 
         def wait_midway():
             yield 1
-            blocker.wait()
+            blocker.wait(timeout=TIMEOUT)
             yield 2
 
         future = self.executor.submit_iteration(wait_midway)
@@ -341,7 +341,7 @@ class TestIterationNoUI(unittest.TestCase):
         def waiting_iteration(test_ready):
             # Using sets because we need something weakref'able.
             yield {1, 2, 3}
-            test_ready.wait()
+            test_ready.wait(timeout=TIMEOUT)
             yield {4, 5, 6}
 
         test_ready = threading.Event()
