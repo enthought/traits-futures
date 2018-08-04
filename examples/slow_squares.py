@@ -75,7 +75,7 @@ class SquaringHelper(Handler):
     traits_executor = Instance(TraitsExecutor, ())
 
     #: List of the submitted jobs, for display purposes.
-    current_futures = List(CallFuture)
+    current_futures = List(Instance(CallFuture))
 
     #: Start a new squaring operation.
     square = Button()
