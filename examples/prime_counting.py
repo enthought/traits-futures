@@ -17,9 +17,9 @@ from traits_futures.api import COMPLETED, ProgressFuture, TraitsExecutor
 
 
 class ProgressDialog(Dialog, HasStrictTraits):
-    #: Label for the cancel button.
-    cancel_label = u'Cancel'
-
+    """
+    Dialog showing progress of the prime-counting operation.
+    """
     #: The future that we're listening to.
     future = Instance(ProgressFuture)
 
@@ -37,13 +37,16 @@ class ProgressDialog(Dialog, HasStrictTraits):
         Cancel the running future when the cancel button is pressed.
         """
         self.future.cancel()
+        self._cancel_button.setEnabled(False)
         self.message = "Cancelling\N{HORIZONTAL ELLIPSIS}"
 
     # Private traits ##########################################################
 
-    _progress_bar = Any()
+    _cancel_button = Any()
 
     _message_control = Any()
+
+    _progress_bar = Any()
 
     # Private methods #########################################################
 
@@ -56,10 +59,9 @@ class ProgressDialog(Dialog, HasStrictTraits):
 
     def _create_cancel_button(self, parent):
         buttons = QtGui.QDialogButtonBox()
-        btn = buttons.addButton(
-            self.cancel_label,
-            QtGui.QDialogButtonBox.RejectRole)
-        btn.setDefault(True)
+        self._cancel_button = buttons.addButton(
+            "Cancel", QtGui.QDialogButtonBox.RejectRole)
+        self._cancel_button.setDefault(True)
         buttons.rejected.connect(self.cancel)
         return buttons
 
@@ -196,9 +198,12 @@ class PrimeCounter(Handler):
             VGroup(
                 HGroup(
                     Item('limit', label="Count primes up to"),
-                    UItem('count'),
+                    Item('chunk_size'),
                 ),
-                UItem('result_message', style="readonly"),
+                HGroup(
+                    UItem('count'),
+                    UItem('result_message', style="readonly"),
+                ),
             ),
             resizable=True,
         )
