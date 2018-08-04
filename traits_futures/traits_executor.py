@@ -39,11 +39,11 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Derived state: true if this executor is running; False if it's
     #: stopped or stopping.
-    running = Property(Bool, depends_on='state')
+    running = Property(Bool(), depends_on='state')
 
     #: Derived state: true if this executor is stopped and it's safe
     #: to dispose of related resources (like the thread pool).
-    stopped = Property(Bool, depends_on='state')
+    stopped = Property(Bool(), depends_on='state')
 
     def __init__(self, thread_pool=None, **traits):
         super(TraitsExecutor, self).__init__(**traits)

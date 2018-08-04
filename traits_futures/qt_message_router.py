@@ -75,10 +75,10 @@ class QtMessageReceiver(HasStrictTraits):
     Main-thread object that receives messages from a QtMessageSender.
     """
     #: Event fired when a message is received from the paired sender.
-    message = Event(Any)
+    message = Event(Any())
 
     #: Event fired to indicate that the sender has sent its last message.
-    done = Event
+    done = Event()
 
 
 class QtMessageRouter(HasStrictTraits):
@@ -111,13 +111,13 @@ class QtMessageRouter(HasStrictTraits):
     # Private traits ##########################################################
 
     #: Internal queue for messages from all senders.
-    _message_queue = Any
+    _message_queue = Any()
 
     #: Source of new connection ids.
     _connection_ids = Instance(collections.Iterator)
 
     #: Receivers, keyed by connection_id.
-    _receivers = Dict(Int, Any)
+    _receivers = Dict(Int(), Any())
 
     #: QObject providing slot for the "message_sent" signal.
     _signallee = Instance(_MessageSignallee)

@@ -25,10 +25,10 @@ class LazyMessageSender(object):
 
 class LazyMessageReceiver(HasStrictTraits):
     #: Event fired when a message is received from the paired sender.
-    message = Event(Any)
+    message = Event(Any())
 
     #: Event fired to indicate that the sender has sent its last message.
-    done = Event
+    done = Event()
 
 
 class LazyMessageRouter(HasStrictTraits):
@@ -65,13 +65,13 @@ class LazyMessageRouter(HasStrictTraits):
     # Private traits ##########################################################
 
     #: Internal queue for messages from workers.
-    _message_queue = Any
+    _message_queue = Any()
 
     #: Source of new connection ids.
     _connection_ids = Instance(collections.Iterator)
 
     #: Receivers, keyed by connection_id.
-    _receivers = Dict(Int, Any)
+    _receivers = Dict(Int(), Any())
 
     # Private methods #########################################################
 
