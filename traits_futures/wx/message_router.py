@@ -9,8 +9,9 @@ import wx
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
-myEVT_COUNT = wx.NewEventType()
-EVT_COUNT = wx.PyEventBinder(myEVT_COUNT, 1)
+MESSAGE_SENT_EVENT_TYPE = wx.NewEventType()
+
+MESSAGE_SENT_BINDER = wx.PyEventBinder(MESSAGE_SENT_EVENT_TYPE, 1)
 
 
 class CountEvent(wx.PyCommandEvent):
@@ -32,13 +33,13 @@ class _MessageSignallee(wx.EvtHandler):
     def __init__(self, on_message_sent):
         self.on_message_sent = on_message_sent
         wx.EvtHandler.__init__(self)
-        self.Bind(EVT_COUNT, self.OnCount)
+        self.Bind(MESSAGE_SENT_BINDER, self.OnCount)
 
     def OnCount(self, evt):
         self.on_message_sent()
 
 
-class WxMessageSender(object):
+class MessageSender(object):
     """
     Object allowing the worker to send messages.
 
@@ -59,7 +60,7 @@ class WxMessageSender(object):
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        event = CountEvent(myEVT_COUNT, -1, 99)
+        event = CountEvent(MESSAGE_SENT_EVENT_TYPE, -1, 99)
         wx.PostEvent(self.signallee, event)
 
     def send(self, message):
@@ -67,13 +68,13 @@ class WxMessageSender(object):
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        event = CountEvent(myEVT_COUNT, -1, 99)
+        event = CountEvent(MESSAGE_SENT_EVENT_TYPE, -1, 99)
         wx.PostEvent(self.signallee, event)
 
 
-class WxMessageReceiver(HasStrictTraits):
+class MessageReceiver(HasStrictTraits):
     """
-    Main-thread object that receives messages from a WxMessageSender.
+    Main-thread object that receives messages from a MessageSender.
     """
     #: Event fired when a message is received from the paired sender.
     message = Event(Any)
@@ -82,7 +83,7 @@ class WxMessageReceiver(HasStrictTraits):
     done = Event
 
 
-class WxMessageRouter(HasStrictTraits):
+class MessageRouter(HasStrictTraits):
     """
     Router for messages, sent by means of Wx events.
 
@@ -94,18 +95,18 @@ class WxMessageRouter(HasStrictTraits):
 
         Returns
         -------
-        sender : WxMessageSender
+        sender : MessageSender
             Object to be passed to the background task to send messages.
-        receiver : WxMessageReceiver
+        receiver : MessageReceiver
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        sender = WxMessageSender(
+        sender = MessageSender(
             connection_id=connection_id,
             signallee=self._signallee,
             message_queue=self._message_queue,
         )
-        receiver = WxMessageReceiver()
+        receiver = MessageReceiver()
         self._receivers[connection_id] = receiver
         return sender, receiver
 

@@ -49,6 +49,7 @@ setup(
         'traits_futures.routers': [
             'qt4 = traits_futures.qt.message_router:MessageRouter',
             'qt = traits_futures.qt.message_router:MessageRouter',
+            'wx = traits_futures.wx.message_router:MessageRouter',
         ],
     },
 )

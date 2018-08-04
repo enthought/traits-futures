@@ -14,12 +14,6 @@ from traits.etsconfig.api import ETSConfig
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
-<<<<<<< HEAD
-from traits_futures.wx_message_router import WxMessageRouter
-||||||| merged common ancestors
-from traits_futures.qt_message_router import QtMessageRouter
-=======
->>>>>>> router-entry-point
 
 
 # Executor states.
