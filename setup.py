@@ -1,4 +1,6 @@
 import os
+import sys
+
 from setuptools import find_packages, setup
 
 
@@ -14,13 +16,22 @@ def get_version_info():
 
 version = get_version_info()['version']
 
+install_requires = [
+    'pyface',
+    'six',
+    'traits',
+    'traitsui',
+]
+if sys.version_info < (3,):
+    install_requires.append('futures')
+
 
 setup(
     name='traits-futures',
     version=version,
     author="Enthought",
     description="Patterns for reactive background tasks",
-    install_requires=['traits', 'six'],
+    install_requires=install_requires,
     packages=find_packages(exclude=["ci"]),
     classifiers=[
         "Development Status :: 3 - Alpha",
