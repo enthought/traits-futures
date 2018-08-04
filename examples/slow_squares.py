@@ -45,12 +45,12 @@ class JobTabularAdapter(TabularAdapter):
 
     #: Row colors for the table.
     colors = {
-        CANCELLED: 0xff0000,
-        CANCELLING: 0xff8000,
-        EXECUTING: 0x8080ff,
-        FAILED: 0xffc0ff,
-        COMPLETED: 0x80ff80,
-        WAITING: 0xffffff,
+        CANCELLED: (255, 0, 0),
+        CANCELLING: (255, 128, 0),
+        EXECUTING: (128, 128, 255),
+        FAILED: (255, 192, 255),
+        COMPLETED: (128, 255, 128),
+        WAITING: (255, 255, 255),
     }
 
     #: Text to be displayed for the state column.
