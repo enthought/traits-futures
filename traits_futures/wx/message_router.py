@@ -9,33 +9,30 @@ import wx
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
+#: Event type that's unique to this message. (It's just an integer.)
 MESSAGE_SENT_EVENT_TYPE = wx.NewEventType()
 
-MESSAGE_SENT_BINDER = wx.PyEventBinder(MESSAGE_SENT_EVENT_TYPE, 1)
 
-
-class CountEvent(wx.PyCommandEvent):
-    """Event to signal that a count value is ready"""
-    def __init__(self, etype, eid, value=None):
-        """Creates the event object"""
-        wx.PyCommandEvent.__init__(self, etype, eid)
-        self._value = value
-
-    def GetValue(self):
-        """Returns the value from the event.
-        @return: the value of this event
-
-        """
-        return self._value
+class MessageSentEvent(wx.PyCommandEvent):
+    """ wx event used to signal that a message has been sent """
+    def __init__(self, event_id):
+        wx.PyCommandEvent.__init__(self, MESSAGE_SENT_EVENT_TYPE, event_id)
 
 
 class _MessageSignallee(wx.EvtHandler):
+    """
+    Event handler object for messages to be sent to.
+
+    This object stays in the main thread.
+    """
     def __init__(self, on_message_sent):
         self.on_message_sent = on_message_sent
         wx.EvtHandler.__init__(self)
-        self.Bind(MESSAGE_SENT_BINDER, self.OnCount)
 
-    def OnCount(self, evt):
+        self.binder = wx.PyEventBinder(MESSAGE_SENT_EVENT_TYPE, 1)
+        self.Bind(self.binder, self.on_message)
+
+    def on_message(self, event):
         self.on_message_sent()
 
 
@@ -60,7 +57,7 @@ class MessageSender(object):
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        event = CountEvent(MESSAGE_SENT_EVENT_TYPE, -1, 99)
+        event = MessageSentEvent(-1)
         wx.PostEvent(self.signallee, event)
 
     def send(self, message):
@@ -68,7 +65,7 @@ class MessageSender(object):
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        event = CountEvent(MESSAGE_SENT_EVENT_TYPE, -1, 99)
+        event = MessageSentEvent(-1)
         wx.PostEvent(self.signallee, event)
 
 
