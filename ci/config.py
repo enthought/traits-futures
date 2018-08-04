@@ -63,6 +63,7 @@ EDM_BUNDLEGEN_CONFIGURATION = os.path.join(DATA, 'bundle_edm.yml')
 EXAMPLES = {
     'squares': 'slow_squares.py',
     'pi': 'pi_iterations.py',
+    'primes': 'prime_counting.py',
 }
 
 # Python runtime versions.
