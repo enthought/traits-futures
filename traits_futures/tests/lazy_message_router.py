@@ -14,7 +14,7 @@ class LazyMessageSender(object):
         self.message_queue = message_queue
 
     def __enter__(self):
-        pass
+        return self
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))

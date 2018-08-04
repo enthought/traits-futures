@@ -8,6 +8,10 @@ from traits_futures.background_iteration import (
     BackgroundIteration,
     IterationFuture,
 )
+from traits_futures.background_progress import (
+    BackgroundProgress,
+    ProgressFuture,
+)
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
@@ -40,6 +44,10 @@ __all__ = [
     # Background iterations
     "BackgroundIteration",
     "IterationFuture",
+
+    # Background progress
+    "BackgroundProgress",
+    "ProgressFuture",
 
     # Common execution states (shared by background calls and iterations).
     "CANCELLED",
