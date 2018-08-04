@@ -10,7 +10,7 @@ from traits.api import (
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
-from traits_futures.qt_message_router import QtMessageRouter
+from traits_futures.wx_message_router import WxMessageRouter
 
 
 # Executor states.
@@ -174,7 +174,7 @@ class TraitsExecutor(HasStrictTraits):
         return self.state == STOPPED
 
     def __message_router_default(self):
-        return QtMessageRouter()
+        return WxMessageRouter()
 
     @on_trait_change('_futures:_exiting')
     def _remove_future(self, future, name, new):
