@@ -29,7 +29,8 @@ PYTHON_VERSIONS = [PYTHON27, PYTHON35, PYTHON36]
 # Toolkits
 PYSIDE = "pyside"  # Qt 4, PySide 1; only available for Python 2.x.
 PYQT = "pyqt"  # Qt 4, PyQt, available for Python 2 and Python 3.
-TOOLKITS = [PYSIDE, PYQT]
+WX = "wx"  # wxpython, available for Python 2 only
+TOOLKITS = [PYSIDE, PYQT, WX]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
@@ -83,6 +84,9 @@ FLAKE8_TARGETS = [
 # Platforms and Python versions that we support.
 # Triples (edm-platform-string, Python major.minor version, GUI toolkit)
 PLATFORMS = [
+    (MACOS, PYTHON27, WX),
+    (LINUX, PYTHON27, WX),
+    (WINDOWS, PYTHON27, WX),
     (MACOS, PYTHON27, PYSIDE),
     (LINUX, PYTHON27, PYSIDE),
     (WINDOWS, PYTHON27, PYSIDE),
@@ -125,6 +129,7 @@ VERSION_CORE_DEPS = {
 TOOLKIT_CORE_DEPS = {
     PYQT: ["pyqt"],
     PYSIDE: ["pyside"],
+    WX: ["wxpython"],
 }
 
 # Additional platform-specific core dependencies.
