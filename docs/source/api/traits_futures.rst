@@ -1,6 +1,13 @@
 traits\_futures package
 =======================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    traits_futures.qt
+
 Submodules
 ----------
 
@@ -11,7 +18,6 @@ Submodules
    traits_futures.background_progress
    traits_futures.exception_handling
    traits_futures.future_states
-   traits_futures.qt_message_router
    traits_futures.traits_executor
    traits_futures.version
 

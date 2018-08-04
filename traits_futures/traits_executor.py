@@ -13,6 +13,7 @@ from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
 from traits_futures.toolkit_support import message_router_class
 
+
 # Executor states.
 
 #: Executor is currently running (this is the initial state).
