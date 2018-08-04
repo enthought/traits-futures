@@ -115,7 +115,8 @@ class MessageRouter(HasStrictTraits):
         """
         Connect to the message stream.
         """
-        self._signallee = _MessageSignallee(on_message_sent=self._route_message)
+        self._signallee = _MessageSignallee(
+            on_message_sent=self._route_message)
 
     def disconnect(self):
         """
