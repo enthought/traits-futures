@@ -66,6 +66,7 @@ class IterationBackgroundTask(object):
                 iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
                 self.send(RAISED, marshal_exception(e))
+                del e
                 return
 
             self.send(STARTED)
@@ -216,39 +217,36 @@ class IterationFuture(HasStrictTraits):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_interrupted(self, arg):
+    def _process_interrupted(self, none):
         assert self.state in (CANCELLING,)
         self.state = CANCELLED
 
-    def _process_started(self, arg):
+    def _process_started(self, none):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
             self.state = EXECUTING
 
-    def _process_raised(self, arg):
+    def _process_raised(self, exception_info):
         assert self.state in (WAITING, EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._exception = arg
-            self.state = FAILED
-        elif self.state == WAITING:
-            self._exception = arg
+        if self.state in (EXECUTING, WAITING):
+            self._exception = exception_info
             self.state = FAILED
         else:
             # Don't record the exception if the job was already cancelled.
             self.state = CANCELLED
 
-    def _process_exhausted(self, arg):
+    def _process_exhausted(self, none):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self.state = COMPLETED
         else:
             self.state = CANCELLED
 
-    def _process_generated(self, arg):
+    def _process_generated(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         # Any results arriving after a cancellation request are ignored.
         if self.state == EXECUTING:
-            self.result = arg
+            self.result = result
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES

@@ -25,7 +25,7 @@ from traits_futures.api import (
 #: Number of workers for the thread pool.
 WORKERS = 4
 
-#: Timeout for blocking wait operations, in seconds.
+#: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
 
 
