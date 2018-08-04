@@ -39,15 +39,18 @@ class Listener(HasStrictTraits):
 class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
+        self.router = MessageRouter()
+        self.router.connect()
 
     def tearDown(self):
+        self.router.disconnect()
+        del self.router
         GuiTestAssistant.tearDown(self)
 
     def test_message_sending_from_background_thread(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
-        router = MessageRouter()
-        sender, receiver = router.pipe()
+        sender, receiver = self.router.pipe()
         listener = Listener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6)]
@@ -71,7 +74,6 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
     def test_multiple_senders(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
-        router = MessageRouter()
         worker_count = 64
         message_count = 64
 
@@ -84,7 +86,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         workers = []
         listeners = []
         for messages in worker_messages:
-            sender, receiver = router.pipe()
+            sender, receiver = self.router.pipe()
             listeners.append(Listener(receiver=receiver))
             workers.append(
                 threading.Thread(
@@ -117,8 +119,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
 
     def test_synchronous_message_sending(self):
         # Sending from the same thread is synchronous; no event loop needed.
-        router = MessageRouter()
-        sender, receiver = router.pipe()
+        sender, receiver = self.router.pipe()
         listener = Listener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6)]
