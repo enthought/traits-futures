@@ -46,10 +46,10 @@ setup(
         "Programming Language :: Python :: 3.6",
     ],
     entry_points={
-        'traits_futures.routers': [
-            'qt4 = traits_futures.qt.message_router:MessageRouter',
-            'qt = traits_futures.qt.message_router:MessageRouter',
-            'wx = traits_futures.wx.message_router:MessageRouter',
+        'traits_futures.toolkits': [
+            'qt4 = traits_futures.qt.init:toolkit_object',
+            'qt = traits_futures.qt.init:toolkit_object',
+            'wx = traits_futures.wx.init:toolkit_object',
         ],
     },
 )
