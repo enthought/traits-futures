@@ -227,8 +227,8 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         listener = ProgressListener(future=future)
 
         # Wait until we get the first progress message.
-        with self.event_loop_until_condition(lambda: listener.progress):
-            pass
+        self.run_until_condition(
+            listener, "progress", lambda listener: listener.progress)
 
         # Cancel, then allow the background task to continue.
         future.cancel()
@@ -306,20 +306,19 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
     # Helper functions
 
     def wait_for_completion(self, future):
-        with self.event_loop_until_condition(lambda: future.done):
-            pass
+        self.run_until_condition(future, "done", lambda future: future.done)
 
     def wait_for_state(self, future, state):
-        with self.event_loop_until_condition(lambda: future.state == state):
-            pass
+        self.run_until_condition(
+            future, "state", lambda future: future.state == state)
 
     def halt_executor(self, executor):
         """
         Stop the executor, and wait until it reaches STOPPED state.
         """
         executor.stop()
-        with self.event_loop_until_condition(lambda: executor.stopped):
-            pass
+        self.run_until_condition(
+            executor, "stopped", lambda executor: executor.stopped)
 
     @contextlib.contextmanager
     def blocked_thread_pool(self):
