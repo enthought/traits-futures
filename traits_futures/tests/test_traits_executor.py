@@ -46,6 +46,10 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             max_workers=4)
 
     def tearDown(self):
+        if hasattr(self, "executor"):
+            self.executor.stop()
+            self.wait_for_stop(self.executor)
+            del self.executor
         self.thread_pool.shutdown()
         GuiTestAssistant.tearDown(self)
 
@@ -159,6 +163,60 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         # Check that the the shared thread pool is still available.
         future = self.thread_pool.submit(int)
         self.assertEqual(future.result(), 0)
+
+    def test_submit_call(self):
+        def test_call(*args, **kwds):
+            return args, kwds
+
+        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        future = self.executor.submit_call(
+            test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
+
+        self.wait_for_future(future)
+
+        self.assertEqual(
+            future.result,
+            (
+                ("arg1", "arg2"),
+                {"kwd1": "kwd1", "kwd2": "kwd2"},
+            ),
+        )
+
+    def test_submit_iteration(self):
+        def test_iteration(*args, **kwargs):
+            yield args
+            yield kwargs
+
+        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        future = self.executor.submit_iteration(
+            test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
+
+        results = []
+        future.on_trait_change(lambda result: results.append(result), 'result')
+
+        self.wait_for_future(future)
+        self.assertEqual(
+            results,
+            [
+                ("arg1", "arg2"),
+                {"kwd1": "kwd1", "kwd2": "kwd2"},
+            ],
+        )
+
+    def test_submit_progress(self):
+        def test_progress(arg1, arg2, kwd1, kwd2, progress):
+            return arg1, arg2, kwd1, kwd2
+
+        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        future = self.executor.submit_progress(
+            test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
+
+        self.wait_for_future(future)
+
+        self.assertEqual(
+            future.result,
+            ("arg1", "arg2", "kwd1", "kwd2"),
+        )
 
     # Helper methods and assertions ###########################################
 
