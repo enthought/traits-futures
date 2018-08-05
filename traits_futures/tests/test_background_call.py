@@ -102,12 +102,11 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         Stop the executor, and wait until it reaches STOPPED state.
         """
         executor.stop()
-        with self.event_loop_until_condition(lambda: executor.stopped):
-            pass
+        self.run_until_condition(
+            executor, "stopped", lambda executor: executor.stopped)
 
     def wait_for_completion(self, future):
-        with self.event_loop_until_condition(lambda: future.done):
-            pass
+        self.run_until_condition(future, "done", lambda future: future.done)
 
     # Assertions
 

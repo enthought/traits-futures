@@ -226,25 +226,21 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         """"
         Wait for the executor to reach STOPPED state.
         """
-        with self.event_loop_until_condition(lambda: executor.stopped):
-            pass
+        self.run_until_condition(
+            executor, "stopped", lambda executor: executor.stopped)
 
     def wait_until_executing(self, future):
         """
         Wait until the given future is executing.
         """
-        def future_executing():
-            return future.state == EXECUTING
-
-        with self.event_loop_until_condition(future_executing):
-            pass
+        self.run_until_condition(
+            future, "state", lambda future: future.state == EXECUTING)
 
     def wait_for_future(self, future):
         """
         Wait until the given future completes.
         """
-        with self.event_loop_until_condition(lambda: future.done):
-            pass
+        self.run_until_condition(future, "done", lambda future: future.done)
 
     @contextlib.contextmanager
     def long_running_task(self, executor):

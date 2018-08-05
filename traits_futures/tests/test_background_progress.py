@@ -228,7 +228,7 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
 
         # Wait until we get the first progress message.
         self.run_until_condition(
-            listener, "progress", lambda listener: listener.progress)
+            listener, "progress_items", lambda listener: listener.progress)
 
         # Cancel, then allow the background task to continue.
         future.cancel()

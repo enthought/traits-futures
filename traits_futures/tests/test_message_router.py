@@ -3,15 +3,19 @@ from __future__ import absolute_import, print_function, unicode_literals
 import threading
 import unittest
 
-from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
+from traits.api import (
+    Any, Event, HasStrictTraits, Instance, List, on_trait_change)
 
-from traits_futures.qt.message_router import (
-    MessageReceiver,
-    MessageRouter,
+from traits_futures.toolkit_support import (
+    gui_test_assistant_class,
+    message_receiver_class,
+    message_router_class,
 )
-from traits_futures.toolkit_support import gui_test_assistant_class
+
 
 GuiTestAssistant = gui_test_assistant_class()
+MessageReceiver = message_receiver_class()
+MessageRouter = message_router_class()
 
 
 def send_messages(sender, messages):
@@ -34,9 +38,27 @@ class Listener(HasStrictTraits):
     #: Messages received.
     messages = List(Any())
 
+    #: Event fired whenever a message arrives.
+    message_received = Event()
+
     @on_trait_change('receiver:message')
     def _record_message(self, message):
         self.messages.append(message)
+        self.message_received = True
+
+
+class MultiListener(HasStrictTraits):
+    """
+    Monitor a collection of listeners and fire an event whenever any
+    one of them receives a message.
+    """
+    listeners = List(Instance(Listener))
+
+    message_received = Event()
+
+    @on_trait_change('listeners:message_received')
+    def _fire_message_received(self):
+        self.message_received = True
 
 
 class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
@@ -66,12 +88,10 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         worker.start()
         worker.join()
 
-        def got_all_messages():
+        def got_all_messages(listener):
             return len(listener.messages) >= len(messages)
 
-        with self.event_loop_until_condition(got_all_messages):
-            pass
-
+        self.run_until_condition(listener, "messages_items", got_all_messages)
         self.assertEqual(listener.messages, messages)
 
     def test_multiple_senders(self):
@@ -98,19 +118,21 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
                 )
             )
 
+        monitor = MultiListener(listeners=listeners)
+
         # Run the workers.
         for worker in workers:
             worker.start()
 
         # Wait until we receive the expected number of messages.
-        def received_all_messages():
+        def received_all_messages(monitor):
             return all(
                 len(listener.messages) >= message_count
                 for listener in listeners
             )
 
-        with self.event_loop_until_condition(received_all_messages):
-            pass
+        self.run_until_condition(
+            monitor, "message_received", received_all_messages)
 
         # Workers should all be ready to join.
         for worker in workers:
@@ -119,15 +141,3 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         # Check we got the expected messages.
         received_messages = [listener.messages for listener in listeners]
         self.assertEqual(received_messages, worker_messages)
-
-    def test_synchronous_message_sending(self):
-        # Sending from the same thread is synchronous; no event loop needed.
-        sender, receiver = self.router.pipe()
-        listener = Listener(receiver=receiver)
-
-        messages = ["inconceivable", 15206, (23, 5.6)]
-        with sender:
-            for message in messages:
-                sender.send(message)
-
-        self.assertEqual(listener.messages, messages)
