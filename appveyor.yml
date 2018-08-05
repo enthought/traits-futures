@@ -26,7 +26,7 @@ init:
 
 install:
   - install-edm-windows.cmd
-  - edm install -y -e bootstrap click pyyaml setuptools
+  - edm install -y -e bootstrap click setuptools
   - edm run -e bootstrap -- python -m ci build
 
 test_script:

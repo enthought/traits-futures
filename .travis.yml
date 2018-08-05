@@ -35,7 +35,7 @@ before_install:
   - if [[ ${TRAVIS_OS_NAME} == "linux" ]] ; then sh -e /etc/init.d/xvfb start; fi
   - if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then sh -e install-edm-linux.sh; export PATH="${HOME}/edm/bin:${PATH}"; fi
   - if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then sh -e install-edm-osx.sh; export PATH="${PATH}:/usr/local/bin"; fi
-  - edm install -y -e bootstrap click pyyaml setuptools
+  - edm install -y -e bootstrap click setuptools
 install:
   - edm run -e bootstrap -- python -m ci build
 script:
