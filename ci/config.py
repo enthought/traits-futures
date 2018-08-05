@@ -3,6 +3,7 @@
 #
 # The code in the ci/ package is proprietary and should not be redistributed
 # without explicit approval.
+from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 
@@ -10,7 +11,7 @@ import pkg_resources
 
 # Main package name, used for installing development sources
 # and as a flake8 target.
-PACKAGE_NAME = 'traits_futures'
+PACKAGE_NAME = "traits_futures"
 
 # Prefix used for generated bundle files and EDM environments.
 PREFIX = PACKAGE_NAME.lower().replace("_", "-")
@@ -29,8 +30,8 @@ PYTHON_VERSIONS = [PYTHON27, PYTHON35, PYTHON36]
 # Toolkits
 PYSIDE = "pyside"  # Qt 4, PySide 1; only available for Python 2.x.
 PYQT = "pyqt"  # Qt 4, PyQt, available for Python 2 and Python 3.
-WX = "wx"  # wxpython, available for Python 2 only
-TOOLKITS = [PYSIDE, PYQT, WX]
+WXPYTHON = "wxpython"  # available for Python 2 only.
+TOOLKITS = [PYSIDE, PYQT, WXPYTHON]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
@@ -38,33 +39,34 @@ DEFAULT_TOOLKIT = PYQT
 
 # Location of repository root. Assumes that the ci script is being
 # run from the root of the repository.
-ROOT_DIR = os.path.abspath('.')
+ROOT_DIR = os.path.abspath(".")
 PACKAGE_DIR = os.path.join(ROOT_DIR, PACKAGE_NAME)
+COVERAGE_DIR = os.path.join(ROOT_DIR, "coverage")
 
 # Locations of data directories for the ci package.
-BUNDLE = pkg_resources.resource_filename('ci', 'bundle')
-DATA = pkg_resources.resource_filename('ci', 'data')
-SCRIPTS = pkg_resources.resource_filename('ci', 'scripts')
+BUNDLE = pkg_resources.resource_filename("ci", "bundle")
+DATA = pkg_resources.resource_filename("ci", "data")
+SCRIPTS = pkg_resources.resource_filename("ci", "scripts")
 
 # Locations of documentation directories.
-DOCS_DIR = os.path.join(ROOT_DIR, 'docs')
-DOCS_SOURCE_DIR = os.path.join(DOCS_DIR, 'source')
-DOCS_API_SOURCE_DIR = os.path.join(DOCS_SOURCE_DIR, 'api')
-DOCS_BUILD_DIR = os.path.join(DOCS_DIR, 'build')
+DOCS_DIR = os.path.join(ROOT_DIR, "docs")
+DOCS_SOURCE_DIR = os.path.join(DOCS_DIR, "source")
+DOCS_API_SOURCE_DIR = os.path.join(DOCS_SOURCE_DIR, "api")
+DOCS_BUILD_DIR = os.path.join(DOCS_DIR, "build")
 
 # Templates for bundle and environment names.
 BUNDLE_TEMPLATE = "{prefix}-{python_version}-{toolkit}-{platform}.json"
 ENVIRONMENT_TEMPLATE = "{prefix}-{python_version}-{toolkit}"
 
 # EDM configuration file.
-EDM_CONFIGURATION = os.path.join(DATA, 'edm.yml')
-EDM_BUNDLEGEN_CONFIGURATION = os.path.join(DATA, 'bundle_edm.yml')
+EDM_CONFIGURATION = os.path.join(DATA, "edm.yml")
+EDM_BUNDLEGEN_CONFIGURATION = os.path.join(DATA, "bundle_edm.yml")
 
 # Mapping from example names to script filenames.
 EXAMPLES = {
-    'squares': 'slow_squares.py',
-    'pi': 'pi_iterations.py',
-    'primes': 'prime_counting.py',
+    "squares": "slow_squares.py",
+    "pi": "pi_iterations.py",
+    "primes": "prime_counting.py",
 }
 
 # Python runtime versions.
@@ -76,18 +78,19 @@ RUNTIME_VERSION = {
 
 # Directories and files that should be checked for flake8-cleanness.
 FLAKE8_TARGETS = [
-    'ci',
-    'setup.py',
+    "ci",
+    "docs",
+    "setup.py",
     PACKAGE_NAME,
-    'examples',
+    "examples",
 ]
 
 # Platforms and Python versions that we support.
 # Triples (edm-platform-string, Python major.minor version, GUI toolkit)
 PLATFORMS = [
-    (MACOS, PYTHON27, WX),
-    (LINUX, PYTHON27, WX),
-    (WINDOWS, PYTHON27, WX),
+    (MACOS, PYTHON27, WXPYTHON),
+    (LINUX, PYTHON27, WXPYTHON),
+    (WINDOWS, PYTHON27, WXPYTHON),
     (MACOS, PYTHON27, PYSIDE),
     (LINUX, PYTHON27, PYSIDE),
     (WINDOWS, PYTHON27, PYSIDE),
@@ -108,21 +111,21 @@ PLATFORMS = [
 
 # Common dependencies.
 CORE_DEPS = [
-    'coverage',
-    'flake8',
-    'mock',  # used by the pyface GuiTestAssistant
-    'pip',
-    'setuptools',
-    'six',
-    'sphinx',
-    'traits',
-    'traitsui',
+    "coverage",
+    "flake8",
+    "mock",  # used by the pyface GuiTestAssistant
+    "pip",
+    "setuptools",
+    "six",
+    "sphinx",
+    "traits",
+    "traitsui",
 ]
 
 # Python-version-specific core dependencies. Dictionary mapping Python version
 # to list of requirements.
 VERSION_CORE_DEPS = {
-    PYTHON27: ['futures'],
+    PYTHON27: ["futures"],
 }
 
 # Toolkit-specific core dependencies. Dictionary mapping toolkit to
@@ -130,7 +133,7 @@ VERSION_CORE_DEPS = {
 TOOLKIT_CORE_DEPS = {
     PYQT: ["pyqt"],
     PYSIDE: ["pyside"],
-    WX: ["wxpython"],
+    WXPYTHON: ["wxpython"],
 }
 
 # Additional platform-specific core dependencies.

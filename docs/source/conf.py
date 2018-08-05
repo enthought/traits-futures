@@ -21,6 +21,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import traits_futures.version
 
 # -- General configuration ------------------------------------------------
 
@@ -60,7 +61,6 @@ author = 'Enthought'
 # built documents.
 #
 # The short X.Y version.
-import traits_futures.version
 version = traits_futures.version.version
 # The full version, including alpha/beta/rc tags.
 release = traits_futures.version.version
@@ -158,6 +158,3 @@ texinfo_documents = [
      author, 'TraitsFutures', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
