@@ -13,6 +13,8 @@ cache:
 matrix:
   include:
   - os: linux
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="wxpython"
+  - os: linux
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyside"
   - os: linux
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyqt"
@@ -20,6 +22,8 @@ matrix:
     env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="pyqt"
   - os: linux
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT=pyqt
+  - os: osx
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="wxpython"
   - os: osx
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyside"
   - os: osx
