@@ -1,10 +1,3 @@
-# XXX Verbose option for testing?
-# XXX Consider a separate command for the regenerate-bundles operation?
-#
-#     All the other commands need the same stuff (python version, toolkit,
-#     python environment), so could factor it out into the top-level command,
-#     and the top-level command could make the python environment.
-
 # (C) Copyright 2018 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
