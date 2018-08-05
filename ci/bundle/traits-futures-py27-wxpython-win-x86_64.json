@@ -113,10 +113,6 @@
             "state": "auto"
         },
         {
-            "name": "pyside",
-            "state": "manual"
-        },
-        {
             "name": "pytz",
             "state": "auto"
         },
@@ -127,10 +123,6 @@
         {
             "name": "setuptools",
             "state": "manual"
-        },
-        {
-            "name": "shiboken",
-            "state": "auto"
         },
         {
             "name": "six",
@@ -159,6 +151,10 @@
         {
             "name": "urllib3",
             "state": "auto"
+        },
+        {
+            "name": "wxpython",
+            "state": "manual"
         }
     ],
     "metadata_version": "2.0",
@@ -345,12 +341,6 @@
             "version": "2.2.0-1"
         },
         {
-            "name": "pyside",
-            "repository": "enthought/free",
-            "sha256": "a250db4b976b5d8eddebea85f383db1dc7110c97399917940bd67d46a8f4d56b",
-            "version": "1.2.2-14"
-        },
-        {
             "name": "pytz",
             "repository": "enthought/free",
             "sha256": "d987bd3d6bc32f441a67224a34f9d5103a5621a9b013a1ee8a0e59d8c3ed268d",
@@ -367,12 +357,6 @@
             "repository": "enthought/free",
             "sha256": "14d8d2884b775c1d0cdc2aacb50266c7277cca8bc6de7284ffeb491ad720fcbe",
             "version": "38.2.5-1"
-        },
-        {
-            "name": "shiboken",
-            "repository": "enthought/free",
-            "sha256": "0d005af193fcc9077c8b1f5a343f4d91518e7664c92ecb4d5dccebe733b41354",
-            "version": "1.2.2-12"
         },
         {
             "name": "six",
@@ -415,6 +399,12 @@
             "repository": "enthought/free",
             "sha256": "e84f9651abbb0f6f3848b5fbd27c19500a64ce48e5675cc1252ee85ce38bfbf3",
             "version": "1.22-1"
+        },
+        {
+            "name": "wxpython",
+            "repository": "enthought/free",
+            "sha256": "7151ddc81ee06b6a4e32c447038c33906928dac28fa7e318cdf7f2bc77745b9b",
+            "version": "3.0.2.0-5"
         }
     ],
     "runtime": {
