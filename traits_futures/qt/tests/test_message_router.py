@@ -3,13 +3,15 @@ from __future__ import absolute_import, print_function, unicode_literals
 import threading
 import unittest
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.qt.message_router import (
     MessageReceiver,
     MessageRouter,
 )
+from traits_futures.toolkit_support import gui_test_assistant_class
+
+GuiTestAssistant = gui_test_assistant_class()
 
 
 def send_messages(sender, messages):

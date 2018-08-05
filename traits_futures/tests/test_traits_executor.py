@@ -8,7 +8,6 @@ import contextlib
 import threading
 import unittest
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
@@ -21,6 +20,9 @@ from traits_futures.api import (
     STOPPING,
     STOPPED,
 )
+from traits_futures.toolkit_support import gui_test_assistant_class
+
+GuiTestAssistant = gui_test_assistant_class()
 
 
 class Listener(HasStrictTraits):

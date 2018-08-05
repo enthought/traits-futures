@@ -8,7 +8,6 @@ import unittest
 
 import six
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
@@ -16,7 +15,9 @@ from traits_futures.api import (
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
 from traits_futures.tests.lazy_message_router import LazyMessageRouter
+from traits_futures.toolkit_support import gui_test_assistant_class
 
+GuiTestAssistant = gui_test_assistant_class()
 
 #: Number of workers for the thread pool.
 WORKERS = 4
