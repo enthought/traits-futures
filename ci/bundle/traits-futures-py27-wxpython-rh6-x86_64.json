@@ -21,10 +21,6 @@
             "state": "auto"
         },
         {
-            "name": "colorama",
-            "state": "auto"
-        },
-        {
             "name": "configparser",
             "state": "auto"
         },
@@ -66,6 +62,10 @@
         },
         {
             "name": "jinja2",
+            "state": "auto"
+        },
+        {
+            "name": "libpng",
             "state": "auto"
         },
         {
@@ -113,10 +113,6 @@
             "state": "auto"
         },
         {
-            "name": "pyside",
-            "state": "manual"
-        },
-        {
             "name": "pytz",
             "state": "auto"
         },
@@ -127,10 +123,6 @@
         {
             "name": "setuptools",
             "state": "manual"
-        },
-        {
-            "name": "shiboken",
-            "state": "auto"
         },
         {
             "name": "six",
@@ -159,6 +151,10 @@
         {
             "name": "urllib3",
             "state": "auto"
+        },
+        {
+            "name": "wxpython",
+            "state": "manual"
         }
     ],
     "metadata_version": "2.0",
@@ -179,250 +175,244 @@
         {
             "name": "alabaster",
             "repository": "enthought/free",
-            "sha256": "526a9f7fcbff51d6e4437b53a2cd70a707527ad1c2865268f8f35f0b32ef6d17",
+            "sha256": "2e4259b313035ae69394853e31d08e5f856229c08a6a0d4177d154fb4bb3ae07",
             "version": "0.7.10-1"
         },
         {
             "name": "appdirs",
             "repository": "enthought/free",
-            "sha256": "895e2936269710e5ee1cef9937f2331c0f22e46c2f9a2da4256bb0002b30dc0a",
+            "sha256": "a0d36dfc583184afead19c69fe8b794e22700fd4280e62e8b38097e09b8fcfce",
             "version": "1.4.3-1"
         },
         {
             "name": "babel",
             "repository": "enthought/free",
-            "sha256": "6a1ca058da6995e54ca8849baa2391e12ad0c9d79ce3647e93eb92314954ca53",
+            "sha256": "cab39c9f2f2d546e35548f6aba1f7141cfd840716704672cbd72f56cf0332d21",
             "version": "2.4.0-2"
         },
         {
             "name": "certifi",
             "repository": "enthought/free",
-            "sha256": "3c23d1885992b2fcccac61651bda0addede0cb64cf26efcc55c8826744dd65aa",
+            "sha256": "fef62d08f19866e136081414aac7e190d37ee3cbddf259c1fa13211409e7a2a3",
             "version": "2017.7.27.1-1"
         },
         {
             "name": "chardet",
             "repository": "enthought/free",
-            "sha256": "1b0da2df2107936a9373acde232c6e2663c0e9d6c1c003c36477334899747dd6",
+            "sha256": "540d4175b9bba39734f3c9dbe0b1cd37f6c3d520a60ccadd811574b36b0a979e",
             "version": "3.0.4-1"
-        },
-        {
-            "name": "colorama",
-            "repository": "enthought/free",
-            "sha256": "bf341d0c8d9d669caa78673eff65b881e2e9ffa398fad01652b2c8386b069120",
-            "version": "0.3.7-1"
         },
         {
             "name": "configparser",
             "repository": "enthought/free",
-            "sha256": "5a9e148bee53acfbc391ccf4a0bed436d665d369b2d020f37cc351721292d540",
+            "sha256": "dbdb2961106d2e9fe83c05dd3b8b214b0627bdb3fa1b71907650291c25e49537",
             "version": "3.5.0-1"
         },
         {
             "name": "coverage",
             "repository": "enthought/free",
-            "sha256": "2d9cf6cc974e6cf962e924b37925b8d0be95624ae8fd7f9ba7326bfe71d705e2",
+            "sha256": "c4b492bd9a10e3673439b908d03e574650f9c8dfc973cfe9ef5c5f9e34eace4d",
             "version": "4.3.4-1"
         },
         {
             "name": "distribute_remove",
             "repository": "enthought/free",
-            "sha256": "db7dee5172f00d0a57c2f3e9e2a3d2712044a28f30395b4d3d68b45506516299",
+            "sha256": "a4776bde237dfc5eab75691e57610996042c47f2a8ab020bf6d1e642b722e26f",
             "version": "1.0.0-4"
         },
         {
             "name": "docutils",
             "repository": "enthought/free",
-            "sha256": "d053a82d7c450c56531d9bdc9502515ca6de1352488c8e17a8c074eede32e00e",
+            "sha256": "21788c9c21b0b41dbe973abc6492e238444db8e3dc7302e642254755f40820b7",
             "version": "0.13.1-1"
         },
         {
             "name": "enum34",
             "repository": "enthought/free",
-            "sha256": "1161d533af801a84ba0060dd5bcb3d1d0b049f768ba496d66bb66c65ecd57954",
+            "sha256": "5af58a9765b018c24b863c4c03ead778f92dae31391bba29cb7b0cb3283ed53b",
             "version": "1.1.6-1"
         },
         {
             "name": "flake8",
             "repository": "enthought/free",
-            "sha256": "a80a1e8a923af01c47c08e9d0e75945be08e46d6c3b54159a346701247ba7997",
+            "sha256": "b0224814e795b9e90cb3f9b1e5b9d2aa70c7a78b3b925150225320f902be0dcd",
             "version": "3.3.0-2"
         },
         {
             "name": "funcsigs",
             "repository": "enthought/free",
-            "sha256": "6a92149f70f40a7b2ef02f789592b6a34f05b58aa4cfe29ef5aa617f0f107082",
+            "sha256": "68c34c87f4387b15ff2cbd7e1519894cdc983e5a271d4959ffd0a2435b06f4b9",
             "version": "1.0.2-1"
         },
         {
             "name": "futures",
             "repository": "enthought/free",
-            "sha256": "a64f320ffb56ad7fe690c107fab0e6d6a989a3907ec4f9d9df63d092f518673f",
+            "sha256": "55ea5a0910d36b20770f4cfd628fb8cd2c613d830a710c4926507f00746b857d",
             "version": "3.0.3-1"
         },
         {
             "name": "idna",
             "repository": "enthought/free",
-            "sha256": "a31971063f7457d38d5dd27952219b7e505d05c2f475dd3891bbf9c6917a043b",
+            "sha256": "01e11bd2e0a44e09305fceb0f80b722fa6c41700bff148835b441796771b8e8c",
             "version": "2.5-1"
         },
         {
             "name": "imagesize",
             "repository": "enthought/free",
-            "sha256": "da578dbc4c7084f2eec5e6498cdc25b6f03ce644e1ef6fc5eb615dfa3a490f2b",
+            "sha256": "e5ddcc9ef145502574d1d95f9810ae0309185b283224130b016ff8ab1e6e765a",
             "version": "0.7.1-1"
         },
         {
             "name": "jinja2",
             "repository": "enthought/free",
-            "sha256": "700be786ec36f621ffc622af83d0b2094029c6f68b50c5d0bbb8155005eeb161",
+            "sha256": "89b58cd120f124e9c242d6e0aa64dc4ec89b746b9882d16706ac2363c841f2df",
             "version": "2.9.6-1"
+        },
+        {
+            "name": "libpng",
+            "repository": "enthought/free",
+            "sha256": "72402221f70eadf881d7d4c6db115720daa277941e32b5d806c32db1072f4f4d",
+            "version": "1.6.12-6"
         },
         {
             "name": "markupsafe",
             "repository": "enthought/free",
-            "sha256": "5ccc5d825f95e52945c34f84cf65151918c360a61ec687c10b744ecfddf240cf",
+            "sha256": "197de85c82977578df0806caac5318da3920223fd763f2706f3c9acc35339894",
             "version": "0.23-2"
         },
         {
             "name": "mccabe",
             "repository": "enthought/free",
-            "sha256": "288df851eac6ae8a7a75e65f8bf886890ddc8c0880fa4de2c7439c22cedf63a3",
+            "sha256": "169581abf6466d1f17d43e9581b145daed8533d6bf518f912b5c416540665ea3",
             "version": "0.6.1-1"
         },
         {
             "name": "mock",
             "repository": "enthought/free",
-            "sha256": "56f9a97232104302ffc2950c9d7b5c278d47120e0a8df7804cb783277fe9d2b3",
+            "sha256": "6cd6898d985b56d780b486f6204034655cad02e5ec5cfa743d8f5773864f397c",
             "version": "2.0.0-2"
         },
         {
             "name": "packaging",
             "repository": "enthought/free",
-            "sha256": "b8666928bada876c88909ea73795182d769d39074f16159a194b378db6907dcb",
+            "sha256": "490c576cd0325b04bff3d13306ac26610b19df7b06dccebfa4ff83c9b56c431b",
             "version": "16.8-2"
         },
         {
             "name": "pbr",
             "repository": "enthought/free",
-            "sha256": "8406644ef68bfdde09ab9f3f6a8a50da73da3da96d673ede89639b1c07cbeb3c",
+            "sha256": "be8a18bc4691cf326037e098c95a15864c9838b4bccc204cf5a1bf8e0874b2d3",
             "version": "4.2.0-1"
         },
         {
             "name": "pip",
             "repository": "enthought/free",
-            "sha256": "6ca7eaac9117271f6ab8e246d0f00e57156949104915dfd2b187f2d937b07ab7",
+            "sha256": "cc53b6c280df89130fdba36dca53e27aedffcac49d4ed9793da1240c9739642e",
             "version": "10.0.1-1"
         },
         {
             "name": "pycodestyle",
             "repository": "enthought/free",
-            "sha256": "d94bc2bee9ae49344f24e0f0d3ef7f1a513b9df68572e81359bbb23fa0d3da4f",
+            "sha256": "3e8f99923b350e1819fc4a39488e1e99614be5dead76619d9b9ad542a3bfc2b4",
             "version": "2.3.1-1"
         },
         {
             "name": "pyface",
             "repository": "enthought/free",
-            "sha256": "97160dd648ee8678e355375edf452e787de5026edfa253a01a76d652b82080ac",
+            "sha256": "7fd9724d5c0e175f1e86b3131833cd48f7a70b2b7cba2761ad1f6e6e777a8508",
             "version": "6.0.0-1"
         },
         {
             "name": "pyflakes",
             "repository": "enthought/free",
-            "sha256": "88e1f95702e60feea8f614d6015a071b0ed7c5c904424d1f7719689321bf9ee6",
+            "sha256": "c23a9b7c9d9bee2db113bf69fd91e0a7d69e882cec5b9fc96f6d4fcffe9cc3bd",
             "version": "1.5.0-1"
         },
         {
             "name": "pygments",
             "repository": "enthought/free",
-            "sha256": "1222be7b585ecff72a3f11e639ae56ef6eba6e247811290332432e9a267685c5",
+            "sha256": "097c3a82905c453fab59dfd920fa2d5d44a643d97c6be5e787d8b2a2397b72fb",
             "version": "2.2.0-1"
         },
         {
             "name": "pyparsing",
             "repository": "enthought/free",
-            "sha256": "bd8f8043b66686f0db578bcbba535272eb7d54bf0d01c61cd8399cd9a17419d0",
+            "sha256": "42447159bfb1facd0853536af146215585ae3fa44c2d395cef29923cdf829394",
             "version": "2.2.0-1"
-        },
-        {
-            "name": "pyside",
-            "repository": "enthought/free",
-            "sha256": "a250db4b976b5d8eddebea85f383db1dc7110c97399917940bd67d46a8f4d56b",
-            "version": "1.2.2-14"
         },
         {
             "name": "pytz",
             "repository": "enthought/free",
-            "sha256": "d987bd3d6bc32f441a67224a34f9d5103a5621a9b013a1ee8a0e59d8c3ed268d",
+            "sha256": "712d7ca0bc167b79d561f2a1126c675e7532206f471db9b57344de7182eabf89",
             "version": "2017.3-1"
         },
         {
             "name": "requests",
             "repository": "enthought/free",
-            "sha256": "0dd22945e959833fa24df510b56d2258388ffe152f6142b81857abc3af654a33",
+            "sha256": "25e6b9c29da6dc7291e2ae1e3892480d4ff21c8f140d23a7800d800cede29afb",
             "version": "2.18.4-1"
         },
         {
             "name": "setuptools",
             "repository": "enthought/free",
-            "sha256": "14d8d2884b775c1d0cdc2aacb50266c7277cca8bc6de7284ffeb491ad720fcbe",
+            "sha256": "88aca6e62fb9b22f6aa3e048eb156c3495a92bd010510cd5ec0db979b383e9fc",
             "version": "38.2.5-1"
-        },
-        {
-            "name": "shiboken",
-            "repository": "enthought/free",
-            "sha256": "0d005af193fcc9077c8b1f5a343f4d91518e7664c92ecb4d5dccebe733b41354",
-            "version": "1.2.2-12"
         },
         {
             "name": "six",
             "repository": "enthought/free",
-            "sha256": "059837fe59783153b2b608593fe0b4de69b04b608a44005caf2bdcb1cdf29db5",
+            "sha256": "bf7986393579bb0a94d2983d03b9a190a8ae62489af67d53731fab063c3ab8eb",
             "version": "1.10.0-1"
         },
         {
             "name": "snowballstemmer",
             "repository": "enthought/free",
-            "sha256": "b12750403514de12adddf40589a6809bd017a19017e8abdafe3433e5bf563fdc",
+            "sha256": "a5f82df026afcba7fc319022d9841e08f70526f9dc06058f7a23707fc9176783",
             "version": "1.2.1-1"
         },
         {
             "name": "sphinx",
             "repository": "enthought/free",
-            "sha256": "04186ea1aed8e396d1fd26ae00709edaf197f2c28aaabed34fd709b0669dcfe5",
+            "sha256": "e542447015f9377a488d13da1be76d4b57a5641ca018121ea3dd08d5143df757",
             "version": "1.5.5-5"
         },
         {
             "name": "sphinx_rtd_theme",
             "repository": "enthought/free",
-            "sha256": "480c8be0157e33b6b1c8e097190c62671854bcf22186bfe779ba2057f8de995d",
+            "sha256": "e67179aaea979469511c017d3b335d5b1e91760072814ff3de7b349f1fdc6732",
             "version": "0.2.4-1"
         },
         {
             "name": "traits",
             "repository": "enthought/free",
-            "sha256": "9a9bcfb14b3b05d9c5688db9e6986eb46173ad570c7aad1b10fc469b8e07dda2",
+            "sha256": "da7217e397a7de2c73671f7ea4cc3acb8bae075dc91a248f7028a9ede06d59e7",
             "version": "4.6.0-1"
         },
         {
             "name": "traitsui",
             "repository": "enthought/free",
-            "sha256": "76b9034d38b57e5c210e5fbcad8bddca2bd8e00c37aaa8d800cfb0f7af5cd6ac",
+            "sha256": "1815cdad3faa6b4b6abcb807c7e5a106de738e338b97587f1617fa6c73cacc24",
             "version": "6.0.0-1"
         },
         {
             "name": "urllib3",
             "repository": "enthought/free",
-            "sha256": "e84f9651abbb0f6f3848b5fbd27c19500a64ce48e5675cc1252ee85ce38bfbf3",
+            "sha256": "ca8f9dbeb2afe522d654c8718d5ff3c8cfd460cb47da5d2449bc89990d30f173",
             "version": "1.22-1"
+        },
+        {
+            "name": "wxpython",
+            "repository": "enthought/free",
+            "sha256": "9363c7bf7071482bee26d96461ed6a7065a341141fe939b7fe01831bea13ce91",
+            "version": "3.0.2.0-5"
         }
     ],
     "runtime": {
         "implementation": "cpython",
-        "platform": "win_x86_64",
-        "platform_abi": "msvc2008",
+        "platform": "rh6_x86_64",
+        "platform_abi": "gnu",
         "repository": "enthought/free",
-        "sha256": "7d6a1cde8b5892978d1fa74a6e9d11cce0aa7c37414e6ddd7477ab19faaa624c",
+        "sha256": "ce9d8b06f42518f4a47e1d24f8c0ffea05511569ddff69e2930e2f3943c05397",
         "version": "2.7.13+3"
     }
 }

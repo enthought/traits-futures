@@ -3,7 +3,9 @@
 #
 # The code in the ci/ package is proprietary and should not be redistributed
 # without explicit approval.
+from __future__ import absolute_import, print_function, unicode_literals
 
+import os
 import re
 import subprocess
 import sys
@@ -26,14 +28,14 @@ class PythonEnvironment(object):
             raise RuntimeError(
                 "ci-tools requires EDM version >= {minimum_version}. "
                 "Found version: {edm_version}".format(
-                    minimum_version='.'.join(map(str, MINIMUM_EDM_VERSION)),
-                    edm_version='.'.join(map(str, edm_version)),
+                    minimum_version=".".join(map(str, MINIMUM_EDM_VERSION)),
+                    edm_version=".".join(map(str, edm_version)),
                 )
             )
 
         self.environment_name = name
         self.runtime_version = runtime_version
-        self.edm_config = edm_config
+        self.edm_config = os.path.abspath(edm_config)
         self.api_token = api_token
 
         if edm_platform is None:
@@ -110,10 +112,10 @@ class PythonEnvironment(object):
         Create a new Python environment.
         """
         cmd = [
-            'environments', 'create', self.environment_name,
-            '--version', self.runtime_version,
-            '--platform', self.edm_platform,
-            '--force',
+            "environments", "create", self.environment_name,
+            "--version", self.runtime_version,
+            "--platform", self.edm_platform,
+            "--force",
         ]
         self.edm(cmd)
 
@@ -132,11 +134,11 @@ class PythonEnvironment(object):
             will fail.
         """
         cmd = [
-            'environments', 'import', self.environment_name,
-            '--filename', bundle,
+            "environments", "import", self.environment_name,
+            "--filename", bundle,
         ]
         if force:
-            cmd.append('--force')
+            cmd.append("--force")
 
         self.edm(cmd)
 
@@ -145,8 +147,8 @@ class PythonEnvironment(object):
         Remove an existing environment, completely.
         """
         cmd = [
-            'environments', 'remove',
-            '--purge', '--yes',
+            "environments", "remove",
+            "--purge", "--yes",
             self.environment_name,
         ]
         self.edm(cmd)
@@ -267,6 +269,6 @@ def _edm_version():
     """
     edm_version_info = subprocess.check_output(["edm", "--version"]).decode(
         "utf-8")
-    m = re.match(r'(?:EDM|edm) (?P<version>\d+\.\d+\.\d+)', edm_version_info)
-    version = m.group('version')
-    return tuple(int(piece) for piece in version.split('.'))
+    m = re.match(r"(?:EDM|edm) (?P<version>\d+\.\d+\.\d+)", edm_version_info)
+    version = m.group("version")
+    return tuple(int(piece) for piece in version.split("."))
