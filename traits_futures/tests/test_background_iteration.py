@@ -7,7 +7,6 @@ from __future__ import (
 import concurrent.futures
 import contextlib
 import threading
-import time
 import unittest
 import weakref
 
@@ -338,15 +337,18 @@ class TestIterationNoUI(unittest.TestCase):
     def test_prompt_result_deletion(self):
         # Check that we're not hanging onto result references needlessly in the
         # background task.
-        def waiting_iteration(test_ready):
+        def waiting_iteration(test_ready, midpoint):
             # Using sets because we need something weakref'able.
             yield {1, 2, 3}
+            midpoint.set()
             test_ready.wait(timeout=TIMEOUT)
             yield {4, 5, 6}
 
         test_ready = threading.Event()
+        midpoint = threading.Event()
 
-        future = self.executor.submit_iteration(waiting_iteration, test_ready)
+        future = self.executor.submit_iteration(
+            waiting_iteration, test_ready, midpoint)
 
         try:
             # Capture just one result.
@@ -365,11 +367,11 @@ class TestIterationNoUI(unittest.TestCase):
             ref = weakref.ref(result)
             del result
 
-            # The background task should have released its reference to result
-            # immediately after sending it, but we can't rely on that having
-            # happened already. We expect ref to become dead within a
-            # reasonable timeout.
-            self.assertEventuallyTrue(lambda: ref() is None)
+            # midpoint won't be set until we next invoke "next(iterable)",
+            # by which time the IterationBackgroundTask's reference should
+            # have been deleted.
+            self.assertTrue(midpoint.wait(timeout=TIMEOUT))
+            self.assertIsNone(ref())
         finally:
             # Let the background task complete.
             test_ready.set()
@@ -377,8 +379,7 @@ class TestIterationNoUI(unittest.TestCase):
     # Helper functions
 
     def wait_for_state(self, future, state):
-        self.router.route_until(
-            lambda: future.state == state, timeout=TIMEOUT)
+        self.router.route_until(lambda: future.state == state, timeout=TIMEOUT)
 
     def wait_for_completion(self, future):
         self.router.route_until(lambda: future.done, timeout=TIMEOUT)
@@ -411,15 +412,3 @@ class TestIterationNoUI(unittest.TestCase):
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
             future.exception
-
-    def assertEventuallyTrue(self, condition):
-        """
-        Assert that the condition becomes true within TIMEOUT seconds.
-        """
-        end_time = time.time() + TIMEOUT
-        while not condition() and time.time() < end_time:
-            time.sleep(0.1)
-
-        if not condition():
-            self.fail(
-                "Condition did not become true within the given timeout.")
