@@ -17,6 +17,10 @@
             "state": "auto"
         },
         {
+            "name": "chaco",
+            "state": "manual"
+        },
+        {
             "name": "chardet",
             "state": "auto"
         },
@@ -33,8 +37,20 @@
             "state": "auto"
         },
         {
+            "name": "enable",
+            "state": "manual"
+        },
+        {
             "name": "flake8",
             "state": "manual"
+        },
+        {
+            "name": "fonttools",
+            "state": "auto"
+        },
+        {
+            "name": "freetype",
+            "state": "auto"
         },
         {
             "name": "funcsigs",
@@ -53,6 +69,18 @@
             "state": "auto"
         },
         {
+            "name": "libjpeg",
+            "state": "auto"
+        },
+        {
+            "name": "libopenjpeg",
+            "state": "auto"
+        },
+        {
+            "name": "libpng",
+            "state": "auto"
+        },
+        {
             "name": "markupsafe",
             "state": "auto"
         },
@@ -61,7 +89,15 @@
             "state": "auto"
         },
         {
+            "name": "mkl",
+            "state": "auto"
+        },
+        {
             "name": "mock",
+            "state": "manual"
+        },
+        {
+            "name": "numpy",
             "state": "manual"
         },
         {
@@ -70,6 +106,10 @@
         },
         {
             "name": "pbr",
+            "state": "auto"
+        },
+        {
+            "name": "pillow",
             "state": "auto"
         },
         {
@@ -82,7 +122,7 @@
         },
         {
             "name": "pyface",
-            "state": "auto"
+            "state": "manual"
         },
         {
             "name": "pyflakes",
@@ -189,6 +229,12 @@
             "version": "2017.7.27.1-1"
         },
         {
+            "name": "chaco",
+            "repository": "enthought/free",
+            "sha256": "795eaa2c5689afa124eac49625a9a358a88b447d1589ab9654be992c72f05d4b",
+            "version": "4.7.2-1"
+        },
+        {
             "name": "chardet",
             "repository": "enthought/free",
             "sha256": "75e73a4307db96c5e8c587439c2b1114d3912a8d2a4b457f83cbb28450cc9c38",
@@ -213,10 +259,28 @@
             "version": "0.13.1-1"
         },
         {
+            "name": "enable",
+            "repository": "enthought/free",
+            "sha256": "1c3214e16f2b834cc291c305f3a75506644ccb80e6229969ea9d1984a07fc703",
+            "version": "4.7.2-2"
+        },
+        {
             "name": "flake8",
             "repository": "enthought/free",
             "sha256": "0dea2ac6e14a75280d28cc32ae9caa2b931855ca44f3bd66d5f6b3766175ef37",
             "version": "3.3.0-2"
+        },
+        {
+            "name": "fonttools",
+            "repository": "enthought/free",
+            "sha256": "b7b481a38c030932c9a59694bed3c8e6e3c8deb4a078c6d6d33d96ab37775a08",
+            "version": "3.28.0-1"
+        },
+        {
+            "name": "freetype",
+            "repository": "enthought/free",
+            "sha256": "4b21ae05d1100b63f6cedfa91c81acf9b400b4b8191fb1e7c1af7bfc1dbfd293",
+            "version": "2.5.3-7"
         },
         {
             "name": "funcsigs",
@@ -243,6 +307,24 @@
             "version": "2.9.6-1"
         },
         {
+            "name": "libjpeg",
+            "repository": "enthought/free",
+            "sha256": "b69ca620369eca2a11abedd9792069539d20904f5e7e10edf300bb76c8b78c43",
+            "version": "7.0-5"
+        },
+        {
+            "name": "libopenjpeg",
+            "repository": "enthought/free",
+            "sha256": "ce239287a67589213fec6b8c36e58f9fef18eb39f3a20bb23101ac6278c6918c",
+            "version": "2.1.1-1"
+        },
+        {
+            "name": "libpng",
+            "repository": "enthought/free",
+            "sha256": "932051612134ce792a3866f626a441f50d9d3743da3224c748c8eaf1c8325e07",
+            "version": "1.6.12-6"
+        },
+        {
             "name": "markupsafe",
             "repository": "enthought/free",
             "sha256": "baf4cf1d5c9297a51de38baf3e77565652fab1df2acead1c6fbe05e411b43bf3",
@@ -255,10 +337,22 @@
             "version": "0.6.1-1"
         },
         {
+            "name": "mkl",
+            "repository": "enthought/free",
+            "sha256": "1b6a1f55a7d69ba896681e871456481720858fb9eb9ae4813db72b2c7ec9695b",
+            "version": "2018.0.3-1"
+        },
+        {
             "name": "mock",
             "repository": "enthought/free",
             "sha256": "840e6b432ce35df866d7327b425050341a091d597e5643b4284b15ae6bf9f906",
             "version": "2.0.0-2"
+        },
+        {
+            "name": "numpy",
+            "repository": "enthought/free",
+            "sha256": "45ee53b5df7d98d6776ae96ceed3a6b3a630e714407456028ac9e40a509cc106",
+            "version": "1.13.3-4"
         },
         {
             "name": "packaging",
@@ -271,6 +365,12 @@
             "repository": "enthought/free",
             "sha256": "75c12a228a3455d864ce1928953958d71904519f5b3dd6f8aacfbe3c24cbbdaa",
             "version": "4.2.0-1"
+        },
+        {
+            "name": "pillow",
+            "repository": "enthought/free",
+            "sha256": "5248e71284b351d7d85ca13a6388e5a05a9bc32530eded8b5a694401b5aac55b",
+            "version": "5.2.0-2"
         },
         {
             "name": "pip",
