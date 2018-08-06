@@ -27,7 +27,7 @@ if sys.version_info < (3,):
 
 
 setup(
-    name="traits-futures",
+    name="traits_futures",
     version=version,
     author="Enthought",
     description="Patterns for reactive background tasks",

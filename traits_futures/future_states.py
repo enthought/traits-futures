@@ -1,5 +1,5 @@
 """
-Future states, used by both the background calls and background iterations.
+Future states, used by the various future classes.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
