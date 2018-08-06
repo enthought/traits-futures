@@ -109,16 +109,23 @@ PLATFORMS = [
 # that a package directly imports from should be listed here (even if it's
 # already a dependency of something else listed).
 
-# Common dependencies.
+# Dependencies needed for all platforms, toolkits and Python versions.
 CORE_DEPS = [
-    "coverage",
-    "flake8",
-    "mock",  # used by the pyface GuiTestAssistant
-    "pip",
+    # Actual library runtime dependencies. Also need "futures" on Python 2.7.
+    "pyface",
     "setuptools",
     "six",
-    "sphinx",
     "traits",
+
+    # Packages used for testing, documentation building, examples, etc.
+    "chaco",
+    "coverage",
+    "enable",
+    "flake8",
+    "mock",
+    "numpy",
+    "pip",
+    "sphinx",
     "traitsui",
 ]
 
