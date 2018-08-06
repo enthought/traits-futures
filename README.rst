@@ -1,4 +1,4 @@
-traits_futures
+Traits Futures
 --------------
 
 The **traits_futures** package demonstrates robust design patterns for reactive
