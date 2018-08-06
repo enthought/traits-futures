@@ -21,7 +21,6 @@ install_requires = [
     'setuptools',
     'six',
     'traits',
-    'traitsui',
 ]
 if sys.version_info < (3,):
     install_requires.append('futures')
