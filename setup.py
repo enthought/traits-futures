@@ -8,26 +8,26 @@ def get_version_info():
     """ Extract version information as a dictionary from version.py. """
     version_info = {}
     version_filename = os.path.join("traits_futures", "version.py")
-    with open(version_filename, 'r') as version_module:
-        version_code = compile(version_module.read(), "version.py", 'exec')
+    with open(version_filename, "r") as version_module:
+        version_code = compile(version_module.read(), "version.py", "exec")
         exec(version_code, version_info)
     return version_info
 
 
-version = get_version_info()['version']
+version = get_version_info()["version"]
 
 install_requires = [
-    'pyface',
-    'setuptools',
-    'six',
-    'traits',
+    "pyface",
+    "setuptools",
+    "six",
+    "traits",
 ]
 if sys.version_info < (3,):
-    install_requires.append('futures')
+    install_requires.append("futures")
 
 
 setup(
-    name='traits-futures',
+    name="traits-futures",
     version=version,
     author="Enthought",
     description="Patterns for reactive background tasks",
@@ -45,9 +45,9 @@ setup(
         "Programming Language :: Python :: 3.6",
     ],
     entry_points={
-        'traits_futures.toolkits': [
-            'qt4 = traits_futures.qt.init:toolkit_object',
-            'qt = traits_futures.qt.init:toolkit_object',
+        "traits_futures.toolkits": [
+            "qt4 = traits_futures.qt.init:toolkit_object",
+            "qt = traits_futures.qt.init:toolkit_object",
         ],
     },
 )
