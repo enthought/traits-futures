@@ -83,6 +83,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# Don't include parentheses after function and method names.
+add_function_parentheses = False
 
 # -- Options for HTML output ----------------------------------------------
 
