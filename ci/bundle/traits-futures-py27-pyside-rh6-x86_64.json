@@ -17,6 +17,10 @@
             "state": "auto"
         },
         {
+            "name": "chaco",
+            "state": "manual"
+        },
+        {
             "name": "chardet",
             "state": "auto"
         },
@@ -37,12 +41,24 @@
             "state": "auto"
         },
         {
+            "name": "enable",
+            "state": "manual"
+        },
+        {
             "name": "enum34",
             "state": "auto"
         },
         {
             "name": "flake8",
             "state": "manual"
+        },
+        {
+            "name": "fonttools",
+            "state": "auto"
+        },
+        {
+            "name": "freetype",
+            "state": "auto"
         },
         {
             "name": "funcsigs",
@@ -62,6 +78,18 @@
         },
         {
             "name": "jinja2",
+            "state": "auto"
+        },
+        {
+            "name": "kiwisolver",
+            "state": "auto"
+        },
+        {
+            "name": "libjpeg",
+            "state": "auto"
+        },
+        {
+            "name": "libopenjpeg",
             "state": "auto"
         },
         {
@@ -85,7 +113,15 @@
             "state": "auto"
         },
         {
+            "name": "mkl",
+            "state": "auto"
+        },
+        {
             "name": "mock",
+            "state": "manual"
+        },
+        {
+            "name": "numpy",
             "state": "manual"
         },
         {
@@ -94,6 +130,14 @@
         },
         {
             "name": "pbr",
+            "state": "auto"
+        },
+        {
+            "name": "pil_remove",
+            "state": "auto"
+        },
+        {
+            "name": "pillow",
             "state": "auto"
         },
         {
@@ -106,7 +150,7 @@
         },
         {
             "name": "pyface",
-            "state": "auto"
+            "state": "manual"
         },
         {
             "name": "pyflakes",
@@ -213,6 +257,12 @@
             "version": "2017.7.27.1-1"
         },
         {
+            "name": "chaco",
+            "repository": "enthought/free",
+            "sha256": "6c12c5838df5585a1b9477f3af7663f4dc780446b32b960b6460f8fbc80a02bf",
+            "version": "4.7.2-1"
+        },
+        {
             "name": "chardet",
             "repository": "enthought/free",
             "sha256": "540d4175b9bba39734f3c9dbe0b1cd37f6c3d520a60ccadd811574b36b0a979e",
@@ -243,6 +293,12 @@
             "version": "0.13.1-1"
         },
         {
+            "name": "enable",
+            "repository": "enthought/free",
+            "sha256": "002c268d584418834b196f1a0b3950b1d4632cf140a5a8e5464d8ce1798ff7b7",
+            "version": "4.7.2-2"
+        },
+        {
             "name": "enum34",
             "repository": "enthought/free",
             "sha256": "5af58a9765b018c24b863c4c03ead778f92dae31391bba29cb7b0cb3283ed53b",
@@ -253,6 +309,18 @@
             "repository": "enthought/free",
             "sha256": "b0224814e795b9e90cb3f9b1e5b9d2aa70c7a78b3b925150225320f902be0dcd",
             "version": "3.3.0-2"
+        },
+        {
+            "name": "fonttools",
+            "repository": "enthought/free",
+            "sha256": "25ce32c1040b427f6e748d00ddfa69644bab3eb0b177afd2c35c571cf8ec0b4c",
+            "version": "3.28.0-1"
+        },
+        {
+            "name": "freetype",
+            "repository": "enthought/free",
+            "sha256": "813d1225c8468e737101d0743d424ad517feec9776c74ec925c6d6e3fbcec824",
+            "version": "2.5.3-7"
         },
         {
             "name": "funcsigs",
@@ -285,6 +353,24 @@
             "version": "2.9.6-1"
         },
         {
+            "name": "kiwisolver",
+            "repository": "enthought/free",
+            "sha256": "1a2411300a2fda1ff5a8e92de7a2068236c66d530e266cee442a88435170b86c",
+            "version": "0.1.3-3"
+        },
+        {
+            "name": "libjpeg",
+            "repository": "enthought/free",
+            "sha256": "c8532ec55348f76d60b316406b8c70cb6d7d2b3f022ac957c0905e8ff43c6471",
+            "version": "7.0-5"
+        },
+        {
+            "name": "libopenjpeg",
+            "repository": "enthought/free",
+            "sha256": "ced9ab8bfe930c37c97e403a195d6dadcb843e6af1d133c9c0ae217f2329f382",
+            "version": "2.1.1-1"
+        },
+        {
             "name": "libpng",
             "repository": "enthought/free",
             "sha256": "72402221f70eadf881d7d4c6db115720daa277941e32b5d806c32db1072f4f4d",
@@ -315,10 +401,22 @@
             "version": "0.6.1-1"
         },
         {
+            "name": "mkl",
+            "repository": "enthought/free",
+            "sha256": "c2dd66208ed057ad15b3352d9cf5ef50eac8f806fec0bfb146e2a527cb6a2994",
+            "version": "2018.0.3-1"
+        },
+        {
             "name": "mock",
             "repository": "enthought/free",
             "sha256": "6cd6898d985b56d780b486f6204034655cad02e5ec5cfa743d8f5773864f397c",
             "version": "2.0.0-2"
+        },
+        {
+            "name": "numpy",
+            "repository": "enthought/free",
+            "sha256": "e69d4d11e34a73bf821fd74335fe1220bb110286cbd9b4a6b911c1c861b96efd",
+            "version": "1.13.3-4"
         },
         {
             "name": "packaging",
@@ -331,6 +429,18 @@
             "repository": "enthought/free",
             "sha256": "be8a18bc4691cf326037e098c95a15864c9838b4bccc204cf5a1bf8e0874b2d3",
             "version": "4.2.0-1"
+        },
+        {
+            "name": "pil_remove",
+            "repository": "enthought/free",
+            "sha256": "88806ae0ecc538c1416d29a16e31de840e6d616b5f27232421e38a65fcaa9a47",
+            "version": "1.0.0-3"
+        },
+        {
+            "name": "pillow",
+            "repository": "enthought/free",
+            "sha256": "1d2ee6fdfe1b9a209fb467d0cb8d825ac64f41e3a4df9a24e9428151796e261a",
+            "version": "5.2.0-2"
         },
         {
             "name": "pip",
