@@ -216,7 +216,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def _stop(self):
         """
-        Go to STOPPED state, and shut down thread pool if we own it.
+        Go to STOPPED state, and shut down the thread pool if we own it.
         """
         assert self.state == STOPPING
         if self._own_thread_pool:

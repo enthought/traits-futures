@@ -31,7 +31,7 @@ class QuickStartExample(HasTraits):
 
     @on_trait_change("calculate")
     def _submit_background_call(self):
-        # Returns immedately.
+        # Returns immediately.
         self.future = self.executor.submit_call(slow_square, self.input)
 
     @on_trait_change("future:done")

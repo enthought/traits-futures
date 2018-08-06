@@ -5,8 +5,8 @@ Here we'll introduce the main players in the |traits_futures| package. All
 classes and data mentioned here can be imported from the ``traits_futures.api``
 module.
 
-TraitsExecutor
---------------
+Submitting background tasks
+---------------------------
 
 The |TraitsExecutor| is the main point-of-entry to |traits_futures|. Its job is
 to accept one or more task submissions. For each task submitted, it submits the
@@ -76,6 +76,7 @@ The returned "future" has three purposes:
 
 In this section we describe these three topics in more detail.
 
+
 Future states
 ~~~~~~~~~~~~~
 
@@ -108,7 +109,7 @@ underlying computation. That state has one of six possible different values:
    task has not yet acknowledged that request.
 
 |CANCELLED|
-   The task has stopped, following a cancellation request.
+   The task has stopped following a cancellation request.
 
 In addition, there are two traits whose values are derived from the ``state``
 trait: the ``done`` trait is ``True`` when ``state`` is one of |COMPLETED|,
@@ -222,7 +223,7 @@ trait, of type |ExecutorState|. This state is one of the following:
 |STOPPING|
    The user has requested that the executor stop, but there are still
    running futures associated with this executor. An executor in |STOPPING|
-   state cannot accept task submissions.
+   state will not accept new task submissions.
 |STOPPED|
    The executor has stopped, and all futures associated with this
    executor have finished. An executor in this state cannot be
