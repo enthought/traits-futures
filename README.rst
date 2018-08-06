@@ -1,7 +1,7 @@
-traits-futures
+Traits Futures
 --------------
 
-The traits-futures library demonstrates robust design patterns for reactive
+The **traits_futures** package demonstrates robust design patterns for reactive
 background jobs triggered from a TraitsUI application.
 
 Motivating example
@@ -9,12 +9,12 @@ Motivating example
 A customer has asked you to wrap their black-box optimization code in a GUI.
 
 You build a simple TraitsUI GUI that allows the user to set inputs and options
-and then press the big green "Calculate" button. The requirements look something
-like this:
+and then press the big green "Calculate" button. The requirements look
+something like this:
 
 - The UI should remain usable and responsive while the background calculation
   is running.
-- The UI should update (e.g., show a plot, or show results) in response to the 
+- The UI should update (e.g., show a plot, or show results) in response to the
   background calculation completing normally.
 - The background job should be cancellable.
 - The UI should react appropriately if the background job raises an exception.
@@ -40,7 +40,7 @@ To create a development environment, run::
 
 from the top-level of the repository, within the Python bootstrap environment.
 
-To run tests for the traits-futures EDM environment, do::
+To run tests for the traits_futures EDM environment, do::
 
     python -m ci test
 

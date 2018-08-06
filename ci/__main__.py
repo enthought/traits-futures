@@ -58,7 +58,7 @@ verbose_option = click.option(
 @click.group()
 def cli():
     """
-    Development and continuous integration helpers for traits-futures.
+    Development and continuous integration helpers for Traits Futures.
     """
     pass
 
@@ -68,7 +68,7 @@ def cli():
 @toolkit_option
 @click.option(
     "--editable/--not-editable", default=False,
-    help="Install traits-futures in editable mode?  [default: --not-editable]"
+    help="Install traits_futures in editable mode?  [default: --not-editable]"
 )
 def build(python_version, toolkit, editable):
     """
@@ -163,28 +163,6 @@ def doc(python_version, toolkit):
     build_cmd.extend(sphinx_options)
     build_cmd.extend([cfg.DOCS_SOURCE_DIR, cfg.DOCS_BUILD_DIR])
     pyenv.python(build_cmd)
-
-
-@cli.command()
-@python_version_option
-@toolkit_option
-def docgen(python_version, toolkit):
-    """
-    Autogenerate API documentation.
-    """
-    pyenv = _get_devenv(python_version, toolkit)
-
-    cmd = [
-        "-m", "sphinx.apidoc",
-        "--separate",
-        "--output-dir", cfg.DOCS_API_SOURCE_DIR,
-        cfg.PACKAGE_DIR,
-        # paths to exclude
-        os.path.join(cfg.PACKAGE_DIR, "tests"),
-        os.path.join(cfg.PACKAGE_DIR, "qt", "tests"),
-        os.path.join(cfg.PACKAGE_DIR, "api.py"),
-    ]
-    pyenv.python(cmd)
 
 
 @cli.command()
