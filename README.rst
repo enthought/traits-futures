@@ -52,6 +52,10 @@ To run a style check::
 
     python -m ci flake8
 
+To build the documentation::
+
+    python -m ci doc
+
 The example scripts can be run with::
 
     python -m ci example <example-name>
