@@ -54,7 +54,7 @@ Detailed Documentation
    :maxdepth: 2
    :caption: Contents:
 
-   tutorial/intro.rst
+   guide/intro.rst
    api/modules.rst
 
 
