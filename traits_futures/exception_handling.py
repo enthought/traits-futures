@@ -1,3 +1,6 @@
+"""
+Support for transferring exception information from a background task.
+"""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import traceback

@@ -1,16 +1,16 @@
 User guide
 ==========
 
-Here we'll introduce the main players in the |traits_futures| package. All
-classes and data mentioned here can be imported from the ``traits_futures.api``
-module.
+In this guide we'll introduce the key players in the |traits_futures|
+package. All classes and data items mentioned here can be imported directly
+from the |traits_futures.api| module.
 
 Submitting background tasks
 ---------------------------
 
-The |TraitsExecutor| is the main point-of-entry to |traits_futures|. Its job is
-to accept one or more task submissions. For each task submitted, it submits the
-computation to run in the background in a thread pool, and returns a
+The |TraitsExecutor| is the main point of entry to |traits_futures|. Its job is
+to accept one or more task submissions. For each task submitted, it sends the
+computation to run in the background on a thread pool worker, and returns a
 corresponding "future" object that allows monitoring of the state of the
 background computation and retrieval of its results.
 
@@ -24,9 +24,10 @@ To submit a task, use one of the |TraitsExecutor| top-level methods:
 
     my_executor.submit_call(int, "10101", base=2)
 
-  will run the call ``int("10101", base=2)`` in the background. This method
-  call doesn't wait for the background task to finish; instead, it immediately
-  returns a |CallFuture| object. More on this below.
+  will execute ``int("10101", base=2)`` in the background. |submit_call|
+  doesn't wait for the background task to finish; instead, it immediately
+  returns a |CallFuture| object. See the next section for more details on
+  the |CallFuture| and related objects.
 
 - The |submit_iteration| method allows submission of an arbitrary iterable. The
   user provides a callable which, when called, returns an iterable object. For
@@ -37,12 +38,11 @@ To submit a task, use one of the |TraitsExecutor| top-level methods:
   It returns a |IterationFuture| object.
 
 - The |submit_progress| method allows submission of a progress-reporting
-  callable, and returns a |ProgressFuture| object.
-
-  Here, the callable submitted *must* have a parameter called "progress".
-  A value for this parameter will be passed (by name) by the executor
-  machinery. The value passed for the "progress" parameter can then be
-  called to send progress reports to the associated |ProgressFuture| object.
+  callable, and returns a |ProgressFuture| object. The callable submitted
+  *must* have a parameter called "progress".  A value for this parameter will
+  be passed (by name) by the executor machinery. The value passed for the
+  "progress" parameter can then be called to send progress reports to the
+  associated |ProgressFuture| object.
 
   For example, your callable might look like this::
 
@@ -50,24 +50,26 @@ To submit a task, use one of the |TraitsExecutor| top-level methods:
         """ Compute the sum of squares of integers smaller than n."""
         total = 0
         for i in range(n):
-            progress(i)
+            # Send a pair of the form (steps_completed, total_steps)
+            progress((i, n))
             total += i*i
-        progress(n)
+        progress((n, n))
 
-  The computation consists of ``n`` steps: a progress report is sent
-  before each step, and after the end of the computation. It's up to
-  you what objects you want to send via the ``progress`` callable, and
-  how to interpret those objects when they arrive in the |ProgressFuture|.
+  The computation consists of ``n`` steps: a progress report is sent before
+  each step, and after the end of the computation. The ``progress`` callable
+  accepts a single Python object, but of course that Python object can be a
+  compound object like a ``tuple`` or a ``dict``. It's up to you to choose the
+  format of the objects you want to send. They'll arrive in exactly the same
+  format in the |ProgressFuture|, and then your application can choose how to
+  interpret them.
 
 
 Working with future objects
 ---------------------------
 
 The various submission methods described above are asynchronous: they return a
-"future" object immediately without waiting for the background task to complete
-first.
-
-The returned "future" has three purposes:
+"future" object immediately without waiting for the background task to
+complete. The returned "future" has three purposes:
 
 - it provides information about the current state of the background task
 - it provides results from the background task (or exception information in the
@@ -121,8 +123,8 @@ the background task *to the best of knowledge* of the main thread. For example,
 when the background task starts executing, it sends a message to the
 corresponding future telling it to change its state from |WAITING| to
 |EXECUTING|. However, that message won't necessarily get processed immediately,
-so there will be a brief interval in which the background task has started
-executing, but the state of the future still says |WAITING|.
+so there will be a brief interval during which the background task has, in
+fact, started executing, but the state of the future is still |WAITING|.
 
 
 Getting task results
@@ -150,7 +152,8 @@ the background task was cancelled, or failed with an exception, as well
 as the cases where the task is still executing or has yet to start running.
 
 A |ProgressFuture| object also receives progress information send by the
-background task via its ``progress`` event trait::
+background task via its ``progress`` event trait. You might use that
+trait like this::
 
     @on_trait_change('future:progress')
     def _report_progress(self, progress_info):
@@ -166,7 +169,7 @@ results. For example::
     @on_trait_change('future:result')
     def _record_result(self, result):
         self.results.append(result)
-        self._update_plot_data()
+        self.update_plot_data()
 
 If a background task fails with an exception, then the corresponding
 future ``future`` eventually reaches |FAILED| state. In that case,
@@ -183,40 +186,38 @@ Cancelling the background task
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The |CallFuture|, |IterationFuture| and |ProgressFuture| classes all have a
-``cancel`` method that allows the user to request cancellation of the
+|cancel| method that allows the user to request cancellation of the
 corresponding background task. That request gets interpreted a little
 differently depending on the type of task.
 
-For |CallFuture|, the ``cancel`` method either tells a waiting task
+For |CallFuture|, the |cancel| method either tells a waiting task
 not to execute, or tells an already executing task that the user
 is no longer interested in the result. It doesn't interrupt an
 already executing background task.
 
-For |IterationFuture|, the ``cancel`` method causes a running
+For |IterationFuture|, the |cancel| method causes a running
 background task to abort on the next iteration. No further results
-are received after calling ``cancel``.
+are received after calling |cancel|.
 
-For |ProgressFuture|, the ``cancel`` method causes a running
-task to abort the next time that it calls ``progress``. No further
-progress results are received after calling ``cancel``.
+For |ProgressFuture|, the |cancel| method causes a running
+task to abort the next time that task calls ``progress``. No further
+progress results are received after calling |cancel|.
 
-In all cases, a ``future`` may only be cancelled if its state is
-one of |WAITING| or |EXECUTING|. Attempting to cancel a ``future``
-in another state will raise a ``RuntimeError``. Calling ``cancel``
-immediately puts the future into |CANCELLING| state, and the
-state is updated to |CANCELLED| once the future has finished
-executing. No results or exception information are received
-from a future in |CANCELLING| state. A cancelled future will
-never reach |FAILED| state, and will never record information
-from a background task exception that occurs after the ``cancel``
-call.
+In all cases, a future may only be cancelled if its state is one of |WAITING|
+or |EXECUTING|. Attempting to cancel a future in another state will raise a
+``RuntimeError``. Calling |cancel| immediately puts the future into
+|CANCELLING| state, and the state is updated to |CANCELLED| once the future has
+finished executing. No results or exception information are received from a
+future in |CANCELLING| state. A cancelled future will never reach |FAILED|
+state, and will never record information from a background task exception that
+occurs after the |cancel| call.
 
 
 Stopping the executor
 ---------------------
 
-Just like the various future classes, a |TraitsExecutor| also has a state
-trait, of type |ExecutorState|. This state is one of the following:
+Like the various future classes, a |TraitsExecutor| also has a state trait, of
+type |ExecutorState|. This state is one of the following:
 
 |RUNNING|
    The executor is running and accepting task submissions.
@@ -246,10 +247,11 @@ Using a shared thread pool
 --------------------------
 
 By default, the |TraitsExecutor| creates its own thread pool, and shuts that
-thread pool down when its ``stop`` method is called. In a large multithreaded
+thread pool down when its |stop| method is called. In a large multithreaded
 application, you might want to use a shared thread pool for multiple different
 application components. In that case, you can instantiate the |TraitsExecutor|
-with an existing thread pool::
+with an existing thread pool, which should be an instance of
+``concurrent.futures.ThreadPoolExecutor``::
 
     thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=24)
     executor = TraitsExecutor(thread_pool=thread_pool)
@@ -258,9 +260,10 @@ It's then your responsibility to shut down the thread pool once it's no longer
 needed.
 
 ..
-   subsitutions
+   substitutions
 
 .. |traits_futures| replace:: :mod:`traits_futures`
+.. |traits_futures.api| replace:: :mod:`traits_futures.api`
 
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
 .. |submit_call| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_call`
@@ -276,6 +279,8 @@ needed.
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
 .. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
+
+.. |cancel| replace:: :class:`~traits_futures.background_call.CallFuture.cancel`
 
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
 .. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`
