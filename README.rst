@@ -2,13 +2,13 @@ traits-futures
 --------------
 
 The traits-futures library demonstrates robust design patterns for reactive
-background jobs triggered from a Traits UI application.
+background jobs triggered from a TraitsUI application.
 
 Motivating example
 ------------------
 A customer has asked you to wrap their black-box optimization code in a GUI.
 
-You build a simple Traits UI GUI that allows the user to set inputs and options
+You build a simple TraitsUI GUI that allows the user to set inputs and options
 and then press the big green "Calculate" button. The requirements look something
 like this:
 
