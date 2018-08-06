@@ -181,6 +181,7 @@ def docgen(python_version, toolkit):
         cfg.PACKAGE_DIR,
         # paths to exclude
         os.path.join(cfg.PACKAGE_DIR, "tests"),
+        os.path.join(cfg.PACKAGE_DIR, "qt", "tests"),
         os.path.join(cfg.PACKAGE_DIR, "api.py"),
     ]
     pyenv.python(cmd)
