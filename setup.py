@@ -18,6 +18,7 @@ version = get_version_info()['version']
 
 install_requires = [
     'pyface',
+    'setuptools',
     'six',
     'traits',
     'traitsui',
@@ -44,4 +45,10 @@ setup(
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
     ],
+    entry_points={
+        'traits_futures.toolkits': [
+            'qt4 = traits_futures.qt.init:toolkit_object',
+            'qt = traits_futures.qt.init:toolkit_object',
+        ],
+    },
 )

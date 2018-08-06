@@ -11,7 +11,7 @@ from traits.api import (
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
-from traits_futures.qt.message_router import MessageRouter
+from traits_futures.toolkit_support import message_router_class
 
 
 # Executor states.
@@ -203,7 +203,8 @@ class TraitsExecutor(HasStrictTraits):
         return self.state == STOPPED
 
     def __message_router_default(self):
-        return MessageRouter()
+        class_ = message_router_class()
+        return class_()
 
     @on_trait_change('_futures:_exiting')
     def _remove_future(self, future, name, new):

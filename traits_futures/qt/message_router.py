@@ -1,3 +1,6 @@
+"""
+Message routing for the Qt toolkit.
+"""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
