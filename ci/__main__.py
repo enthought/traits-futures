@@ -156,8 +156,8 @@ def doc(python_version, toolkit):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    # Turn warnings into errors.
-    sphinx_options = ["-W"]
+    # Be nitpicky. This detects missing class references.
+    sphinx_options = ["-n"]
 
     build_cmd = ["-m", "sphinx"]
     build_cmd.extend(sphinx_options)

@@ -47,13 +47,14 @@ result when it arrives.
 .. literalinclude:: examples/quick_start.py
 
 
-API Documentation
-=================
+Detailed Documentation
+======================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   tutorial/intro.rst
    api/modules.rst
 
 
