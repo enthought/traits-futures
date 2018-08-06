@@ -56,9 +56,7 @@ The example scripts can be run with::
 
     python -m ci example <example-name>
 
-Note that the ``pi`` example requires that Chaco and its dependencies be
-installed in the development environment.  See the command help for a list of
-available examples.
+Run ``python -m ci example`` to see the list of available examples.
 
 All of the above commands take two options. The ``--python-version`` option
 lets you specify the Python version to use for the development environment. The
