@@ -10,5 +10,5 @@ from pyface.ui.qt4.init import (  # noqa: F401
     toolkit_object as pyface_toolkit_object)
 from pyface.base_toolkit import Toolkit
 
-# Create the toolkit object.
+#: The toolkit object used to find toolkit-specific reources.
 toolkit_object = Toolkit("traits_futures", "qt", "traits_futures.qt")

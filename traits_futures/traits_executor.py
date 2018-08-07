@@ -1,4 +1,7 @@
-# Main-thread controller for background tasks.
+"""
+Main-thread executor for submission of background tasks.
+"""
+
 from __future__ import absolute_import, print_function, unicode_literals
 
 import concurrent.futures
@@ -140,12 +143,12 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        task : BackgroundCall or BackgroundIteration
+        task : BackgroundCall, BackgroundIteration or BackgroundProgress
             The task to be executed.
 
         Returns
         -------
-        future : CallFuture or IterationFuture
+        future : CallFuture, IterationFuture or ProgressFuture
             Future for this task.
         """
         if not self.running:
@@ -218,7 +221,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def _stop(self):
         """
-        Go to STOPPED state, and shut down thread pool if we own it.
+        Go to STOPPED state, and shut down the thread pool if we own it.
         """
         assert self.state == STOPPING
         if self._own_thread_pool:

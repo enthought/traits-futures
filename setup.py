@@ -8,27 +8,39 @@ def get_version_info():
     """ Extract version information as a dictionary from version.py. """
     version_info = {}
     version_filename = os.path.join("traits_futures", "version.py")
-    with open(version_filename, 'r') as version_module:
-        version_code = compile(version_module.read(), "version.py", 'exec')
+    with open(version_filename, "r") as version_module:
+        version_code = compile(version_module.read(), "version.py", "exec")
         exec(version_code, version_info)
     return version_info
 
 
-version = get_version_info()['version']
+version = get_version_info()["version"]
 
 install_requires = [
-    'pyface',
-    'setuptools',
-    'six',
-    'traits',
-    'traitsui',
+    "pyface",
+    "setuptools",
+    "six",
+    "traits",
 ]
 if sys.version_info < (3,):
-    install_requires.append('futures')
+    # concurrent.futures is part of the std. lib. on Python 3.
+    install_requires.append("futures")
+
+
+# Toolkit support entry points for the traits_futures.toolkit group.
+toolkits_entry_points = [
+    "qt4 = traits_futures.qt.init:toolkit_object",
+    "qt = traits_futures.qt.init:toolkit_object",
+]
+if sys.version_info < (3,):
+    # wx not currently supported on Python 3.
+    toolkits_entry_points.append(
+        "wx = traits_futures.wx.init:toolkit_object"
+    )
 
 
 setup(
-    name='traits-futures',
+    name="traits_futures",
     version=version,
     author="Enthought",
     description="Patterns for reactive background tasks",
@@ -46,10 +58,6 @@ setup(
         "Programming Language :: Python :: 3.6",
     ],
     entry_points={
-        'traits_futures.toolkits': [
-            'qt4 = traits_futures.qt.init:toolkit_object',
-            'qt = traits_futures.qt.init:toolkit_object',
-            'wx = traits_futures.wx.init:toolkit_object',
-        ],
+        "traits_futures.toolkits": toolkits_entry_points,
     },
 )

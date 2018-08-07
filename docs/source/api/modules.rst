@@ -1,5 +1,5 @@
-traits_futures
-==============
+API documentation
+=================
 
 .. toctree::
    :maxdepth: 4
