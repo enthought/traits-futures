@@ -136,7 +136,7 @@ class TestIterationNoUI(unittest.TestCase):
 
         self.assertException(future, TypeError)
         self.assertEqual(listener.results, [])
-        self.assertEqual(listener.states, [WAITING, FAILED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
 
     def test_failing_iteration(self):
         # Iteration that eventually fails.

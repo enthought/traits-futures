@@ -62,14 +62,13 @@ class IterationBackgroundTask(object):
                 self.send(INTERRUPTED)
                 return
 
+            self.send(STARTED)
             try:
                 iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
                 self.send(RAISED, marshal_exception(e))
                 del e
                 return
-
-            self.send(STARTED)
 
             while True:
                 if self.cancel_event.is_set():
@@ -129,7 +128,6 @@ class IterationBackgroundTask(object):
 # state and ends with one of COMPLETED, FAILED or CANCELLED. The possible
 # progressions of states are:
 #
-# WAITING -> FAILED
 # WAITING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> FAILED
