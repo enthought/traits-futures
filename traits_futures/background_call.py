@@ -10,7 +10,7 @@ from traits.api import (
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
-    FINAL_STATES, CANCELLABLE_STATES, FutureState)
+    DONE_STATES, CANCELLABLE_STATES, FutureState)
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following
@@ -210,7 +210,7 @@ class CallFuture(HasStrictTraits):
         return self.state in CANCELLABLE_STATES
 
     def _get_done(self):
-        return self.state in FINAL_STATES
+        return self.state in DONE_STATES
 
 
 class BackgroundCall(HasStrictTraits):
