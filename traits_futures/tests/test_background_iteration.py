@@ -35,7 +35,7 @@ def reciprocals(start, stop):
     Possibly failing iterable used in testing.
     """
     for i in range(start, stop):
-        yield 1/i
+        yield 1 / i
 
 
 def squares(start, stop):
@@ -45,7 +45,7 @@ def squares(start, stop):
     Simple iterable used in testing.
     """
     for i in range(start, stop):
-        yield i*i
+        yield i * i
 
 
 def generator_with_cleanup(resource_acquired, resource_released, test_ready):
@@ -112,7 +112,7 @@ class TestIterationNoUI(unittest.TestCase):
         self.wait_for_completion(future)
 
         self.assertNoException(future)
-        self.assertEqual(listener.results, [1.0, 0.5, 1/3.0])
+        self.assertEqual(listener.results, [1.0, 0.5, 1 / 3.0])
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
 
     def test_general_iterable(self):
