@@ -151,10 +151,10 @@ class IterationFuture(HasStrictTraits):
     #: True if we've received the final message from the background iteration,
     #: else False. `True` indicates either that the background iteration
     #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool(), depends_on='state')
+    done = Property(Bool())
 
     #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool(), depends_on='state')
+    cancellable = Property(Bool())
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
@@ -253,6 +253,12 @@ class IterationFuture(HasStrictTraits):
 
     def _get_done(self):
         return self.state in FINAL_STATES
+
+    def _state_changed(self, new_state):
+        if new_state in FINAL_STATES:
+            self.trait_property_changed("done", False, True)
+        if new_state in (CANCELLING, COMPLETED, FAILED):
+            self.trait_property_changed("cancellable", True, False)
 
 
 class BackgroundIteration(HasStrictTraits):

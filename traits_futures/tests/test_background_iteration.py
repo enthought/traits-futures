@@ -18,6 +18,7 @@ from traits_futures.api import (
     IterationFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
+from traits_futures.tests.common_future_tests import CommonFutureTests
 from traits_futures.tests.lazy_message_router import LazyMessageRouter
 
 
@@ -83,6 +84,11 @@ class Listener(HasStrictTraits):
     @on_trait_change('future:result')
     def record_iteration_result(self, result):
         self.results.append(result)
+
+
+class TestIterationFuture(CommonFutureTests, unittest.TestCase):
+    def setUp(self):
+        self.future_class = IterationFuture
 
 
 class TestIterationNoUI(unittest.TestCase):
