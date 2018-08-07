@@ -42,11 +42,11 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Derived state: true if this executor is running; False if it's
     #: stopped or stopping.
-    running = Property(Bool(), depends_on='state')
+    running = Property(Bool())
 
     #: Derived state: true if this executor is stopped and it's safe
     #: to dispose of related resources (like the thread pool).
-    stopped = Property(Bool(), depends_on='state')
+    stopped = Property(Bool())
 
     def __init__(self, thread_pool=None, **traits):
         super(TraitsExecutor, self).__init__(**traits)
@@ -204,6 +204,12 @@ class TraitsExecutor(HasStrictTraits):
 
     def _get_stopped(self):
         return self.state == STOPPED
+
+    def _state_changed(self, new_state):
+        if new_state == STOPPING:
+            self.trait_property_changed("running", True, False)
+        if new_state == STOPPED:
+            self.trait_property_changed("stopped", False, True)
 
     def __message_router_default(self):
         class_ = message_router_class()

@@ -218,6 +218,67 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             ("arg1", "arg2", "kwd1", "kwd2"),
         )
 
+    def test_states_consistent(self):
+        # Triples of state, running, stopped.
+        states = []
+
+        def record_states():
+            states.append((executor.state, executor.running, executor.stopped))
+
+        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor.on_trait_change(record_states, 'running')
+        executor.on_trait_change(record_states, 'stopped')
+        executor.submit_call(int)
+
+        record_states()
+        executor.stop()
+        self.wait_for_stop(executor)
+
+        for state, running, stopped in states:
+            self.assertEqual(running, state == RUNNING)
+            self.assertEqual(stopped, state == STOPPED)
+
+    def test_running_and_stopped_fired_only_once(self):
+        running = []
+        stopped = []
+
+        def record_running(object, name, old, new):
+            running.append((old, new))
+
+        def record_stopped(object, name, old, new):
+            stopped.append((old, new))
+
+        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor.on_trait_change(record_running, 'running')
+        executor.on_trait_change(record_stopped, 'stopped')
+        executor.submit_call(int)
+        executor.stop()
+        self.wait_for_stop(executor)
+
+        self.assertEqual(running, [(True, False)])
+        self.assertEqual(stopped, [(False, True)])
+
+    def test_running_and_stopped_fired_only_once_no_futures(self):
+        # Same as above but tests the case where the executor goes to STOPPED
+        # state the moment that stop is called.
+        running = []
+        stopped = []
+
+        def record_running(object, name, old, new):
+            running.append((old, new))
+
+        def record_stopped(object, name, old, new):
+            stopped.append((old, new))
+
+        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor.on_trait_change(record_running, 'running')
+        executor.on_trait_change(record_stopped, 'stopped')
+        executor.stop()
+        self.wait_for_stop(executor)
+
+        self.assertEqual(running, [(True, False)])
+        self.assertEqual(stopped, [(False, True)])
+
     # Helper methods and assertions ###########################################
 
     def wait_for_stop(self, executor):
