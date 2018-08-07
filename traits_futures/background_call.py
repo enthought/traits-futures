@@ -213,10 +213,10 @@ class CallFuture(HasStrictTraits):
         return self.state in FINAL_STATES
 
     def _state_changed(self, new_state):
-        if new_state in FINAL_STATES:
-            self.trait_property_changed("done", False, True)
         if new_state in (CANCELLING, COMPLETED, FAILED):
             self.trait_property_changed("cancellable", True, False)
+        if new_state in FINAL_STATES:
+            self.trait_property_changed("done", False, True)
 
 
 class BackgroundCall(HasStrictTraits):
