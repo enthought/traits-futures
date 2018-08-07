@@ -228,6 +228,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         executor = TraitsExecutor(thread_pool=self.thread_pool)
         executor.on_trait_change(record_states, 'running')
         executor.on_trait_change(record_states, 'stopped')
+        executor.on_trait_change(record_states, 'state')
         executor.submit_call(int)
 
         record_states()
