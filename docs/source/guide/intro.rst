@@ -141,10 +141,7 @@ you might use this as follows::
 
     @on_trait_change('future:done')
     def _update_result(self, future, name, done):
-        # Extra check is necessary, since the done trait gets fired on each
-        # state change.
-        if done:
-            self.my_results.append(future.result)
+        self.my_results.append(future.result)
 
 Any attempt to access ``future.result`` before the future completes
 successfully raises an ``AttributeError``. This includes the cases where

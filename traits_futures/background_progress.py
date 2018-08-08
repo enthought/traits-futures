@@ -138,13 +138,13 @@ class ProgressFuture(HasStrictTraits):
     #: this future.
     state = FutureState
 
+    #: True if this task can be cancelled, else False.
+    cancellable = Property(Bool())
+
     #: True if we've received the final message from the background task,
     #: else False. `True` indicates either that the background task
     #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool(), depends_on='state')
-
-    #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool(), depends_on='state')
+    done = Property(Bool())
 
     #: Event fired whenever a progress message arrives from the background.
     progress = Event(Any())
@@ -262,6 +262,18 @@ class ProgressFuture(HasStrictTraits):
 
     def _get_done(self):
         return self.state in FINAL_STATES
+
+    def _state_changed(self, old_state, new_state):
+        old_cancellable = old_state in CANCELLABLE_STATES
+        new_cancellable = new_state in CANCELLABLE_STATES
+        if old_cancellable != new_cancellable:
+            self.trait_property_changed(
+                "cancellable", old_cancellable, new_cancellable)
+
+        old_done = old_state in FINAL_STATES
+        new_done = new_state in FINAL_STATES
+        if old_done != new_done:
+            self.trait_property_changed("done", old_done, new_done)
 
 
 class BackgroundProgress(HasStrictTraits):

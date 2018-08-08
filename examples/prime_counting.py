@@ -99,10 +99,9 @@ class ProgressDialog(Dialog, HasStrictTraits):
             current_step, max_steps, count_so_far)
 
     @on_trait_change('future:done')
-    def _respond_to_completion(self, done):
-        if done:
-            self.future = None
-            self.close()
+    def _respond_to_completion(self):
+        self.future = None
+        self.close()
 
 
 def isqrt(n):
@@ -111,17 +110,17 @@ def isqrt(n):
     """
     s = n
     while True:
-        d = n//s
+        d = n // s
         if s <= d:
             return s
-        s = (s + d)//2
+        s = (s + d) // 2
 
 
 def is_prime(n):
     """
     Determine whether a nonnegative integer is prime.
     """
-    return n >= 2 and all(n % d for d in range(2, isqrt(n)+1))
+    return n >= 2 and all(n % d for d in range(2, isqrt(n) + 1))
 
 
 def count_primes_less_than(n, chunk_size, progress=None):
@@ -131,7 +130,10 @@ def count_primes_less_than(n, chunk_size, progress=None):
     Uses a deliberately inefficient algorithm.
     """
     nchunks = -(-n // chunk_size)
-    chunks = [(i*chunk_size, min((i+1)*chunk_size, n)) for i in range(nchunks)]
+    chunks = [
+        (i * chunk_size, min((i + 1) * chunk_size, n))
+        for i in range(nchunks)
+    ]
 
     prime_count = 0
     for chunk_index, (start, end) in enumerate(chunks):

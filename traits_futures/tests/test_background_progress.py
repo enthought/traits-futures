@@ -21,6 +21,7 @@ from traits_futures.api import (
     FAILED,
     WAITING,
 )
+from traits_futures.tests.common_future_tests import CommonFutureTests
 
 #: Number of workers for the thread pool.
 WORKERS = 4
@@ -130,6 +131,11 @@ class ProgressListener(HasStrictTraits):
     @on_trait_change("future:progress")
     def record_progress(self, progress_info):
         self.progress.append(progress_info)
+
+
+class TestProgressFuture(CommonFutureTests, unittest.TestCase):
+    def setUp(self):
+        self.future_class = ProgressFuture
 
 
 class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):

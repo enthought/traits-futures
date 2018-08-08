@@ -42,11 +42,11 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Derived state: true if this executor is running; False if it's
     #: stopped or stopping.
-    running = Property(Bool(), depends_on='state')
+    running = Property(Bool())
 
     #: Derived state: true if this executor is stopped and it's safe
     #: to dispose of related resources (like the thread pool).
-    stopped = Property(Bool(), depends_on='state')
+    stopped = Property(Bool())
 
     def __init__(self, thread_pool=None, **traits):
         super(TraitsExecutor, self).__init__(**traits)
@@ -183,7 +183,7 @@ class TraitsExecutor(HasStrictTraits):
         if not self._futures:
             self._stop()
 
-    # Private traits #########################################################
+    # Private traits ##########################################################
 
     #: concurrent.futures.Executor instance providing the thread pool.
     _thread_pool = Instance(concurrent.futures.Executor)
@@ -199,11 +199,24 @@ class TraitsExecutor(HasStrictTraits):
     #: Currently executing futures.
     _futures = Set()
 
+    # Private methods #########################################################
+
     def _get_running(self):
         return self.state == RUNNING
 
     def _get_stopped(self):
         return self.state == STOPPED
+
+    def _state_changed(self, old_state, new_state):
+        old_running = old_state == RUNNING
+        new_running = new_state == RUNNING
+        if old_running != new_running:
+            self.trait_property_changed("running", old_running, new_running)
+
+        old_stopped = old_state == STOPPED
+        new_stopped = new_state == STOPPED
+        if old_stopped != new_stopped:
+            self.trait_property_changed("stopped", old_stopped, new_stopped)
 
     def __message_router_default(self):
         class_ = message_router_class()
