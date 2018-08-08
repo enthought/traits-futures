@@ -156,7 +156,7 @@ class IterationFuture(HasStrictTraits):
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
-    result = Event(Any())
+    result_event = Event(Any())
 
     @property
     def exception(self):
@@ -244,7 +244,7 @@ class IterationFuture(HasStrictTraits):
         assert self.state in (EXECUTING, CANCELLING)
         # Any results arriving after a cancellation request are ignored.
         if self.state == EXECUTING:
-            self.result = result
+            self.result_event = result
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES

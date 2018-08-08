@@ -116,7 +116,7 @@ class PiIterator(Handler):
     def _reset_results(self):
         self.results = []
 
-    @on_trait_change('future:result')
+    @on_trait_change('future:result_event')
     def _record_result(self, result):
         self.results.append(result)
         self._update_plot_data()

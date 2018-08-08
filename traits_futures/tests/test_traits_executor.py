@@ -177,8 +177,11 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.wait_for_stop(executor)
 
         # Check that the the shared thread pool is still available.
-        future = self.thread_pool.submit(int)
-        self.assertEqual(future.result(), 0)
+
+        # Careful: this is a concurrent.futures Future instance, not
+        # one of our traits_futures Futures.
+        cf_future = self.thread_pool.submit(int)
+        self.assertEqual(cf_future.result(), 0)
 
     def test_submit_call(self):
         def test_call(*args, **kwds):
@@ -208,7 +211,8 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
 
         results = []
-        future.on_trait_change(lambda result: results.append(result), 'result')
+        future.on_trait_change(
+            lambda result: results.append(result), 'result_event')
 
         self.wait_for_future(future)
         self.assertEqual(

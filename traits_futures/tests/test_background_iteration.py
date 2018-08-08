@@ -81,7 +81,7 @@ class Listener(HasStrictTraits):
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change('future:result')
+    @on_trait_change('future:result_event')
     def record_iteration_result(self, result):
         self.results.append(result)
 
@@ -363,9 +363,9 @@ class TestIterationNoUI(unittest.TestCase):
             def result_handler(new):
                 results.append(new)
 
-            future.on_trait_change(result_handler, "result")
+            future.on_trait_change(result_handler, "result_event")
             self.router.route_until(lambda: results, timeout=TIMEOUT)
-            future.on_trait_change(result_handler, "result", remove=True)
+            future.on_trait_change(result_handler, "result_event", remove=True)
 
             # Check that there are no other references to this result besides
             # the one in this test.
