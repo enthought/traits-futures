@@ -10,7 +10,7 @@ from traits.api import (
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
-    FINAL_STATES, CANCELLABLE_STATES, FutureState)
+    CANCELLABLE_STATES, DONE_STATES, FutureState)
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following
@@ -211,7 +211,7 @@ class CallFuture(HasStrictTraits):
         return self.state in CANCELLABLE_STATES
 
     def _get_done(self):
-        return self.state in FINAL_STATES
+        return self.state in DONE_STATES
 
     def _state_changed(self, old_state, new_state):
         old_cancellable = old_state in CANCELLABLE_STATES
@@ -220,8 +220,8 @@ class CallFuture(HasStrictTraits):
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable)
 
-        old_done = old_state in FINAL_STATES
-        new_done = new_state in FINAL_STATES
+        old_done = old_state in DONE_STATES
+        new_done = new_state in DONE_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
 
