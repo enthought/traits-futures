@@ -10,10 +10,12 @@ from six.moves import range
 from pyface.qt import QtCore, QtGui
 from pyface.ui.qt4.dialog import Dialog
 from traits.api import (
-    Any, Button, HasStrictTraits, Instance, Int, on_trait_change, Unicode)
+    Any, Bool, Button, HasStrictTraits, Instance, Int, on_trait_change,
+    Property, Unicode)
 from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
-from traits_futures.api import COMPLETED, ProgressFuture, TraitsExecutor
+from traits_futures.api import (
+    CANCELLED, COMPLETED, ProgressFuture, TraitsExecutor)
 
 
 class ProgressDialog(Dialog, HasStrictTraits):
@@ -98,6 +100,11 @@ class ProgressDialog(Dialog, HasStrictTraits):
         self.message = "{} of {} chunks processed. {} primes found".format(
             current_step, max_steps, count_so_far)
 
+    @on_trait_change('closing')
+    def _cancel_future_if_necessary(self):
+        if self.future is not None and self.future.cancellable:
+            self.future.cancel()
+
     @on_trait_change('future:done')
     def _respond_to_completion(self):
         self.future = None
@@ -163,6 +170,9 @@ class PrimeCounter(Handler):
     #: Button to start the calculation.
     count = Button()
 
+    #: Bool indicating when the count should be enabled.
+    count_enabled = Property(Bool, depends_on='future.done')
+
     #: Result from the previous run.
     result_message = Unicode("No previous result")
 
@@ -178,12 +188,16 @@ class PrimeCounter(Handler):
         self._last_limit = self.limit
         self.future = self.traits_executor.submit_progress(
             count_primes_less_than, self.limit, chunk_size=self.chunk_size)
+        self.result_message = "Counting ..."
 
         dialog = ProgressDialog(
             title="Counting primes\N{HORIZONTAL ELLIPSIS}",
             future=self.future,
         )
         dialog.open()
+
+    def _get_count_enabled(self):
+        return self.future is None or self.future.done
 
     @on_trait_change('future:done')
     def _report_result(self, future, name, done):
@@ -194,6 +208,8 @@ class PrimeCounter(Handler):
                     self._last_limit,
                 )
             )
+        elif future.state == CANCELLED:
+            self.result_message = "Run cancelled"
 
     def default_traits_view(self):
         return View(
@@ -203,7 +219,7 @@ class PrimeCounter(Handler):
                     Item('chunk_size'),
                 ),
                 HGroup(
-                    UItem('count'),
+                    UItem('count', enabled_when='count_enabled'),
                     UItem('result_message', style="readonly"),
                 ),
             ),
