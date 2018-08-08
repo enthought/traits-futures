@@ -1,0 +1,6 @@
+include CHANGES.rst
+include LICENSE
+include MANIFEST.in
+include README.rst
+graft docs
+graft examples
