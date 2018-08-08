@@ -270,8 +270,8 @@ class ProgressFuture(HasStrictTraits):
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable)
 
-        old_done = old_state in FINAL_STATES
-        new_done = new_state in FINAL_STATES
+        old_done = old_state in DONE_STATES
+        new_done = new_state in DONE_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
 
