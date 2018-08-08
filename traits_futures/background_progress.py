@@ -263,11 +263,17 @@ class ProgressFuture(HasStrictTraits):
     def _get_done(self):
         return self.state in FINAL_STATES
 
-    def _state_changed(self, new_state):
-        if new_state in (CANCELLING, COMPLETED, FAILED):
-            self.trait_property_changed("cancellable", True, False)
-        if new_state in FINAL_STATES:
-            self.trait_property_changed("done", False, True)
+    def _state_changed(self, old_state, new_state):
+        old_cancellable = old_state in CANCELLABLE_STATES
+        new_cancellable = new_state in CANCELLABLE_STATES
+        if old_cancellable != new_cancellable:
+            self.trait_property_changed(
+                "cancellable", old_cancellable, new_cancellable)
+
+        old_done = old_state in FINAL_STATES
+        new_done = new_state in FINAL_STATES
+        if old_done != new_done:
+            self.trait_property_changed("done", old_done, new_done)
 
 
 class BackgroundProgress(HasStrictTraits):
