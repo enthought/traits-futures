@@ -235,7 +235,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_states_consistent(self):
-        # Triples of state, running, stopped.
+        # Triples (state, running, stopped).
         states = []
 
         def record_states():
@@ -247,9 +247,11 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         executor.on_trait_change(record_states, 'state')
         executor.submit_call(int)
 
+        # Record states before, during, and after stopping.
         record_states()
         executor.stop()
         self.wait_for_stop(executor)
+        record_states()
 
         for state, running, stopped in states:
             self.assertEqual(running, state == RUNNING)
