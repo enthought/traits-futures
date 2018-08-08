@@ -9,7 +9,8 @@ import threading
 import unittest
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
-from traits.api import HasStrictTraits, Instance, List, on_trait_change
+from traits.api import (
+    Bool, HasStrictTraits, Instance, List, on_trait_change, Tuple)
 
 from traits_futures.api import (
     CANCELLED,
@@ -23,20 +24,35 @@ from traits_futures.api import (
 )
 
 
-class Listener(HasStrictTraits):
+class ExecutorListener(HasStrictTraits):
+    """ Listener for executor state changes. """
     #: Executor that we're listening to.
     executor = Instance(TraitsExecutor)
 
     #: List of states of that executor.
     states = List(ExecutorState)
 
+    #: Changes to the 'running' trait value.
+    running_changes = List(Tuple(Bool(), Bool()))
+
+    #: Changes to the 'stopped' trait value.
+    stopped_changes = List(Tuple(Bool(), Bool()))
+
     @on_trait_change('executor:state')
-    def record_state_change(self, obj, name, old_state, new_state):
+    def _record_state_change(self, obj, name, old_state, new_state):
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
+
+    @on_trait_change('executor:running')
+    def _record_running_change(self, object, name, old, new):
+        self.running_changes.append((old, new))
+
+    @on_trait_change('executor:stopped')
+    def _record_stopped_change(self, object, name, old, new):
+        self.stopped_changes.append((old, new))
 
 
 class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
@@ -55,7 +71,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
     def test_stop_method(self):
         executor = TraitsExecutor(thread_pool=self.thread_pool)
-        listener = Listener(executor=executor)
+        listener = ExecutorListener(executor=executor)
 
         with self.long_running_task(executor):
             self.assertEqual(executor.state, RUNNING)
@@ -68,7 +84,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
     def test_stop_method_with_no_jobs(self):
         executor = TraitsExecutor(thread_pool=self.thread_pool)
-        listener = Listener(executor=executor)
+        listener = ExecutorListener(executor=executor)
 
         self.assertEqual(executor.state, RUNNING)
         executor.stop()
@@ -240,45 +256,27 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(stopped, state == STOPPED)
 
     def test_running_and_stopped_fired_only_once(self):
-        running = []
-        stopped = []
-
-        def record_running(object, name, old, new):
-            running.append((old, new))
-
-        def record_stopped(object, name, old, new):
-            stopped.append((old, new))
-
         executor = TraitsExecutor(thread_pool=self.thread_pool)
-        executor.on_trait_change(record_running, 'running')
-        executor.on_trait_change(record_stopped, 'stopped')
+        listener = ExecutorListener(executor=executor)
+
         executor.submit_call(int)
         executor.stop()
         self.wait_for_stop(executor)
 
-        self.assertEqual(running, [(True, False)])
-        self.assertEqual(stopped, [(False, True)])
+        self.assertEqual(listener.running_changes, [(True, False)])
+        self.assertEqual(listener.stopped_changes, [(False, True)])
 
     def test_running_and_stopped_fired_only_once_no_futures(self):
         # Same as above but tests the case where the executor goes to STOPPED
         # state the moment that stop is called.
-        running = []
-        stopped = []
-
-        def record_running(object, name, old, new):
-            running.append((old, new))
-
-        def record_stopped(object, name, old, new):
-            stopped.append((old, new))
-
         executor = TraitsExecutor(thread_pool=self.thread_pool)
-        executor.on_trait_change(record_running, 'running')
-        executor.on_trait_change(record_stopped, 'stopped')
+        listener = ExecutorListener(executor=executor)
+
         executor.stop()
         self.wait_for_stop(executor)
 
-        self.assertEqual(running, [(True, False)])
-        self.assertEqual(stopped, [(False, True)])
+        self.assertEqual(listener.running_changes, [(True, False)])
+        self.assertEqual(listener.stopped_changes, [(False, True)])
 
     # Helper methods and assertions ###########################################
 
