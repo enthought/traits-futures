@@ -18,6 +18,7 @@ from traits_futures.api import (
     IterationFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
+from traits_futures.tests.common_future_tests import CommonFutureTests
 from traits_futures.tests.lazy_message_router import LazyMessageRouter
 
 
@@ -35,7 +36,7 @@ def reciprocals(start, stop):
     Possibly failing iterable used in testing.
     """
     for i in range(start, stop):
-        yield 1/i
+        yield 1 / i
 
 
 def squares(start, stop):
@@ -45,7 +46,7 @@ def squares(start, stop):
     Simple iterable used in testing.
     """
     for i in range(start, stop):
-        yield i*i
+        yield i * i
 
 
 def generator_with_cleanup(resource_acquired, resource_released, test_ready):
@@ -85,6 +86,11 @@ class Listener(HasStrictTraits):
         self.results.append(result)
 
 
+class TestIterationFuture(CommonFutureTests, unittest.TestCase):
+    def setUp(self):
+        self.future_class = IterationFuture
+
+
 class TestIterationNoUI(unittest.TestCase):
     """
     Run tests without using any Qt infrastructure.
@@ -112,7 +118,7 @@ class TestIterationNoUI(unittest.TestCase):
         self.wait_for_completion(future)
 
         self.assertNoException(future)
-        self.assertEqual(listener.results, [1.0, 0.5, 1/3.0])
+        self.assertEqual(listener.results, [1.0, 0.5, 1 / 3.0])
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
 
     def test_general_iterable(self):
@@ -136,7 +142,7 @@ class TestIterationNoUI(unittest.TestCase):
 
         self.assertException(future, TypeError)
         self.assertEqual(listener.results, [])
-        self.assertEqual(listener.states, [WAITING, FAILED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
 
     def test_failing_iteration(self):
         # Iteration that eventually fails.

@@ -62,14 +62,13 @@ class IterationBackgroundTask(object):
                 self.send(INTERRUPTED)
                 return
 
+            self.send(STARTED)
             try:
                 iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
                 self.send(RAISED, marshal_exception(e))
                 del e
                 return
-
-            self.send(STARTED)
 
             while True:
                 if self.cancel_event.is_set():
@@ -129,7 +128,6 @@ class IterationBackgroundTask(object):
 # state and ends with one of COMPLETED, FAILED or CANCELLED. The possible
 # progressions of states are:
 #
-# WAITING -> FAILED
 # WAITING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> FAILED
@@ -148,13 +146,13 @@ class IterationFuture(HasStrictTraits):
     #: this future.
     state = FutureState
 
+    #: True if this task can be cancelled, else False.
+    cancellable = Property(Bool())
+
     #: True if we've received the final message from the background iteration,
     #: else False. `True` indicates either that the background iteration
     #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool(), depends_on='state')
-
-    #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool(), depends_on='state')
+    done = Property(Bool())
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
@@ -253,6 +251,18 @@ class IterationFuture(HasStrictTraits):
 
     def _get_done(self):
         return self.state in DONE_STATES
+
+    def _state_changed(self, old_state, new_state):
+        old_cancellable = old_state in CANCELLABLE_STATES
+        new_cancellable = new_state in CANCELLABLE_STATES
+        if old_cancellable != new_cancellable:
+            self.trait_property_changed(
+                "cancellable", old_cancellable, new_cancellable)
+
+        old_done = old_state in FINAL_STATES
+        new_done = new_state in FINAL_STATES
+        if old_done != new_done:
+            self.trait_property_changed("done", old_done, new_done)
 
 
 class BackgroundIteration(HasStrictTraits):

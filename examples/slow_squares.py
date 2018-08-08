@@ -35,7 +35,7 @@ def slow_square(n, timeout=5.0):
         raise RuntimeError("Calculation took too long.")
     else:
         time.sleep(sleep_time)
-        return n*n
+        return n * n
 
 
 class JobTabularAdapter(TabularAdapter):
