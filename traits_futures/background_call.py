@@ -49,15 +49,16 @@ class CallBackgroundTask(object):
         with self.message_sender:
             if self.cancel_event.is_set():
                 self.send(INTERRUPTED)
+                return
+
+            self.send(STARTED)
+            try:
+                result = self.callable(*self.args, **self.kwargs)
+            except BaseException as e:
+                self.send(RAISED, marshal_exception(e))
+                del e
             else:
-                self.send(STARTED)
-                try:
-                    result = self.callable(*self.args, **self.kwargs)
-                except BaseException as e:
-                    self.send(RAISED, marshal_exception(e))
-                    del e
-                else:
-                    self.send(RETURNED, result)
+                self.send(RETURNED, result)
 
     def send(self, message_type, message_args=None):
         """
