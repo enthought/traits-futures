@@ -36,8 +36,7 @@ class QuickStartExample(HasTraits):
 
     @on_trait_change("future:done")
     def _report_result(self, future, name, done):
-        if done:
-            self.result = "Square is {}".format(future.result)
+        self.result = "Square is {}".format(future.result)
 
     traits_view = View(
         Item("input"),

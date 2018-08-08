@@ -99,10 +99,9 @@ class ProgressDialog(Dialog, HasStrictTraits):
             current_step, max_steps, count_so_far)
 
     @on_trait_change('future:done')
-    def _respond_to_completion(self, done):
-        if done:
-            self.future = None
-            self.close()
+    def _respond_to_completion(self):
+        self.future = None
+        self.close()
 
 
 def isqrt(n):
