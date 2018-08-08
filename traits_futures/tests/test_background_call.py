@@ -15,6 +15,7 @@ from traits_futures.api import (
     CallFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
+from traits_futures.tests.common_future_tests import CommonFutureTests
 from traits_futures.tests.lazy_message_router import LazyMessageRouter
 
 
@@ -39,6 +40,11 @@ class Listener(HasStrictTraits):
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
+
+
+class TestCallFuture(CommonFutureTests, unittest.TestCase):
+    def setUp(self):
+        self.future_class = CallFuture
 
 
 class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
