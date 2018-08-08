@@ -10,7 +10,7 @@ from traits.api import (
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
-    DONE_STATES, CANCELLABLE_STATES, FutureState)
+    CANCELLABLE_STATES, DONE_STATES, FutureState)
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following

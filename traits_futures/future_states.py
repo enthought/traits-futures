@@ -23,12 +23,12 @@ FAILED = "failed"
 #: Task cancelled.
 CANCELLED = "cancelled"
 
+#: States in which we're permitted to cancel.
+CANCELLABLE_STATES = EXECUTING, WAITING
+
 #: Final states. If the future is in one of these states,
 #: no more messages will be received from the background job.
 DONE_STATES = CANCELLED, FAILED, COMPLETED
-
-#: States in which we're permitted to cancel.
-CANCELLABLE_STATES = EXECUTING, WAITING
 
 #: Trait type representing a future state.
 FutureState = Enum(
