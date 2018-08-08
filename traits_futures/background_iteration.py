@@ -148,13 +148,13 @@ class IterationFuture(HasStrictTraits):
     #: this future.
     state = FutureState
 
+    #: True if this task can be cancelled, else False.
+    cancellable = Property(Bool())
+
     #: True if we've received the final message from the background iteration,
     #: else False. `True` indicates either that the background iteration
     #: succeeded, or that it raised, or that it was cancelled.
     done = Property(Bool())
-
-    #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool())
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
