@@ -188,6 +188,35 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
             [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
+    def test_cancel_before_exhausted(self):
+        event = threading.Event()
+
+        def yield_then_wait(blocker):
+            yield 1
+            blocker.wait(timeout=TIMEOUT)
+
+        blocker = threading.Event()
+        future = self.executor.submit_iteration(yield_then_wait, blocker)
+        listener = IterationFutureListener(future=future)
+
+        # Make sure we've got the single result.
+        self.run_until(
+            listener, "results_items",
+            lambda listener: len(listener.results) > 0,
+        )
+
+        self.assertTrue(future.cancellable)
+        future.cancel()
+        blocker.set()
+        self.wait_until_done(future)
+
+        self.assertNoException(future)
+        self.assertEqual(listener.results, [1])
+        self.assertEqual(
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+        )
+
     def test_cancel_before_start(self):
         with self.blocked_thread_pool():
             future = self.executor.submit_iteration(squares, 0, 10)
