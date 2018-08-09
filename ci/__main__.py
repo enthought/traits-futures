@@ -71,17 +71,20 @@ def build(python_version, toolkit, editable):
     """
     Create an EDM-based development environment.
     """
-    # Destroy any existing devenv.
     pyenv = _get_devenv(python_version, toolkit)
+    platform = current_platform()
+    dependencies = _core_dependencies(platform, python_version, toolkit)
+
+    # Destroy any existing environment.
     if pyenv.exists():
         pyenv.destroy()
 
-    # Create new environment from bundle.
-    bundle_file = _bundle_path(current_platform(), python_version, toolkit)
-    pyenv.create_from_bundle(bundle_file)
+    # Create new environment and populate with dependent packages.
+    pyenv.create()
+    pyenv.install(dependencies)
 
-    # Install the local package using pip. Don't install declared dependencies,
-    # since we should already have those from the bundle.
+    # Install the local package, ignoring dependencies declared in its
+    # setup.py.
     pip_cmd = ["-m", "pip", "install", "--no-deps"]
     if editable:
         pip_cmd.append("--editable")
@@ -195,37 +198,6 @@ def flake8(python_version, toolkit):
         click.echo("Flake8 check succeeded.")
 
 
-@cli.command(name="regenerate-bundles")
-@click.argument("api-token", envvar="API_TOKEN")
-def regenerate_bundles(api_token):
-    """
-    Regenerate bundles for supported platforms.
-
-    To run this command, you'll need read access to the enthought/platform EDS
-    repository, and you'll need to supply your api token as a second
-    argument. The api token can also be provided through the API_TOKEN
-    environment variable.
-    """
-    bundle_script = os.path.join(cfg.SCRIPTS, "generate_bundle.py")
-
-    with _bundle_generation_environment(api_token) as pyenv:
-        for platform, python_version, toolkit in cfg.PLATFORMS:
-            bundle_file = _bundle_path(platform, python_version, toolkit)
-            requirements = _core_dependencies(
-                platform, python_version, toolkit)
-            pyenv.python(
-                [
-                    bundle_script,
-                    "--config", cfg.EDM_CONFIGURATION,
-                    "--api-token", api_token,
-                    "--platform", platform,
-                    "--bundle-format", "2.0",
-                    "--version", cfg.RUNTIME_VERSION[python_version],
-                    "--output-file", bundle_file,
-                ] + requirements
-            )
-
-
 @cli.command()
 @python_version_option
 @toolkit_option
@@ -325,21 +297,6 @@ def in_coverage_directory():
         os.chdir(old_cwd)
 
 
-def _bundle_path(platform, python_version, toolkit):
-    """
-    Path to the appropriate bundle file for the given platform and version.
-    """
-    bundle_filename = cfg.BUNDLE_TEMPLATE.format(
-        prefix=cfg.PREFIX,
-        platform=platform,
-        python_version=python_version,
-        toolkit=toolkit,
-    )
-    return os.path.join(cfg.BUNDLE, bundle_filename)
-
-
-# Support for bundle-generation ###############################################
-
 def _core_dependencies(platform, python_version, toolkit):
     """
     Compute core dependencies for the given platform, Python version and
@@ -348,46 +305,9 @@ def _core_dependencies(platform, python_version, toolkit):
     # Make a copy to avoid accidentally mutating the cfg.CORE_DEPS global.
     dependencies = list(cfg.CORE_DEPS)
     dependencies.extend(cfg.VERSION_CORE_DEPS.get(python_version, []))
-    dependencies.extend(cfg.PLATFORM_CORE_DEPS.get(platform, []))
     dependencies.extend(cfg.TOOLKIT_CORE_DEPS.get(toolkit, []))
     return dependencies
 
 
-@contextlib.contextmanager
-def _bundle_generation_environment(api_token):
-    """
-    Create a temporary EDM environment with EDM and its dependencies
-    installed (via pip). This environment is needed for running the
-    deploy/generate_dependencies.py script.
-
-    Yields
-    ------
-    pyenv : PythonEnvironment
-        The created environment object.
-    """
-    pyenv = PythonEnvironment(
-        api_token=api_token,
-        edm_config=cfg.EDM_BUNDLEGEN_CONFIGURATION,
-        name="bundle-generation",
-        runtime_version="3.6.0",
-    )
-    if pyenv.exists():
-        pyenv.destroy()
-
-    pyenv.create()
-    try:
-        pyenv.edm([
-            "install",
-            "-e", pyenv.environment_name,
-            "-y",
-            "edm",
-            "hatcher < 0.11.0"  # See: enthought/buildsystem#1524,
-                                #      enthought/edm#1725
-        ])
-        yield pyenv
-    finally:
-        pyenv.destroy()
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     cli()
