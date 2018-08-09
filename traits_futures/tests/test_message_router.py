@@ -3,9 +3,10 @@ from __future__ import absolute_import, print_function, unicode_literals
 import threading
 import unittest
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
-from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
+from traits.api import (
+    Any, Event, HasStrictTraits, Instance, List, on_trait_change)
 
+from traits_futures.qt.gui_test_assistant import GuiTestAssistant
 from traits_futures.qt.message_router import (
     MessageReceiver,
     MessageRouter,
@@ -32,6 +33,9 @@ class ReceiverListener(HasStrictTraits):
     #: Messages received.
     messages = List(Any())
 
+    #: Event fired whenever a message arrives.
+    message_received = Event()
+
     #: List of threads that messages arrived on.
     threads = List(Any)
 
@@ -39,6 +43,23 @@ class ReceiverListener(HasStrictTraits):
     def _record_message(self, message):
         self.messages.append(message)
         self.threads.append(threading.current_thread())
+        self.message_received = True
+
+
+class MultiListener(HasStrictTraits):
+    """
+    Monitor a collection of listeners and fire an event whenever any
+    one of them receives a message.
+    """
+    # Listeners we'll listen to.
+    listeners = List(Instance(ReceiverListener))
+
+    # Event fired whenever a message is received by any of the listeners.
+    message_received = Event()
+
+    @on_trait_change('listeners:message_received')
+    def _fire_message_received(self):
+        self.message_received = True
 
 
 class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
@@ -65,12 +86,10 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         worker.start()
         worker.join()
 
-        def got_all_messages():
+        def got_all_messages(listener):
             return len(listener.messages) >= len(messages)
 
-        with self.event_loop_until_condition(got_all_messages):
-            pass
-
+        self.run_until(listener, "messages_items", got_all_messages)
         self.assertEqual(listener.messages, messages)
 
         # Check that all the messages arrived on the main thread
@@ -104,19 +123,20 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
                 )
             )
 
+        monitor = MultiListener(listeners=listeners)
+
         # Run the workers.
         for worker in workers:
             worker.start()
 
         # Wait until we receive the expected number of messages.
-        def received_all_messages():
+        def received_all_messages(monitor):
             return all(
                 len(listener.messages) >= message_count
-                for listener in listeners
+                for listener in monitor.listeners
             )
 
-        with self.event_loop_until_condition(received_all_messages):
-            pass
+        self.run_until(monitor, "message_received", received_all_messages)
 
         # Workers should all be ready to join.
         for worker in workers:
