@@ -3,7 +3,7 @@ import time
 from traits.api import (
     Bool, Button, HasStrictTraits, Instance, Int,
     on_trait_change, Property, Unicode)
-from traitsui.api import Item, View
+from traitsui.api import Item, UItem, View
 
 from traits_futures.api import CallFuture, TraitsExecutor
 
@@ -27,8 +27,8 @@ class QuickStartExample(HasStrictTraits):
     #: Copy of the input for the last-run / currently-running calculation.
     input_for_calculation = Int()
 
-    #: Result, in string form.
-    result = Unicode("No previous calculation runs")
+    #: Message about state of calculation.
+    message = Unicode("No previous calculation runs")
 
     #: Button to start the calculation.
     calculate = Button()
@@ -41,14 +41,14 @@ class QuickStartExample(HasStrictTraits):
         # Returns immediately.
         input = self.input
         self.input_for_calculation = self.input
-        self.result = "Calculating square of {} ...".format(input)
+        self.message = "Calculating square of {} ...".format(input)
         self.future = self.executor.submit_call(slow_square, input)
-        # Keep a record so that we can present results accurately.
+        # Keep a record so that we can present messages accurately.
         self.input_for_calculation = input
 
     @on_trait_change("future:done")
     def _report_result(self, future, name, done):
-        self.result = "The square of {} is {}.".format(
+        self.message = "The square of {} is {}.".format(
             self.input_for_calculation, future.result)
 
     def _get_no_running_future(self):
@@ -56,8 +56,8 @@ class QuickStartExample(HasStrictTraits):
 
     traits_view = View(
         Item("input"),
-        Item("result", style="readonly"),
-        Item("calculate", enabled_when="no_running_future"),
+        UItem("message", style="readonly"),
+        UItem("calculate", enabled_when="no_running_future"),
         resizable=True,
     )
 
