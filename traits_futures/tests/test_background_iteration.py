@@ -23,9 +23,6 @@ from traits_futures.api import (
 from traits_futures.tests.common_future_tests import CommonFutureTests
 
 
-#: Number of workers for the thread pool.
-WORKERS = 4
-
 #: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
 
@@ -189,8 +186,6 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_cancel_before_exhausted(self):
-        event = threading.Event()
-
         def yield_then_wait(blocker):
             yield 1
             blocker.wait(timeout=TIMEOUT)
