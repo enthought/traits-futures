@@ -115,16 +115,3 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         # Check we got the expected messages.
         received_messages = [listener.messages for listener in listeners]
         self.assertEqual(received_messages, worker_messages)
-
-    def test_synchronous_message_sending(self):
-        # Sending from the same thread is synchronous; no event loop needed.
-        router = MessageRouter()
-        sender, receiver = router.pipe()
-        listener = Listener(receiver=receiver)
-
-        messages = ["inconceivable", 15206, (23, 5.6)]
-        with sender:
-            for message in messages:
-                sender.send(message)
-
-        self.assertEqual(listener.messages, messages)
