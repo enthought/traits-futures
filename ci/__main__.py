@@ -309,5 +309,5 @@ def _core_dependencies(platform, python_version, toolkit):
     return dependencies
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
