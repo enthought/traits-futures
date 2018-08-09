@@ -100,45 +100,31 @@ class PythonEnvironment(object):
         output = subprocess.check_output(self._edm_base_command + command)
         return output.decode("utf-8")
 
-    def exists(self):
-        """
-        Return True if an EDM environment has already been created, else False.
-        """
-        cmd = ["environments", "exists", self.environment_name]
-        return not self.edm_nocheck(cmd)
-
-    def create(self):
+    def create(self, force=True, bare=True):
         """
         Create a new Python environment.
-        """
-        cmd = [
-            "environments", "create", self.environment_name,
-            "--version", self.runtime_version,
-            "--platform", self.edm_platform,
-            "--force",
-        ]
-        self.edm(cmd)
-
-    def create_from_bundle(self, bundle, force=True):
-        """
-        Create a Python environment from a given bundle.
 
         Parameters
         ----------
-        bundle : string
-            Path to the bundle file.
         force : bool
             If True (the default), remove any environment with the
             same name. If False, and there's an existing directory
             matching the name of the environment, this command
             will fail.
+        bare : bool
+            If True (the default), don't install any packages at all
+            into the new environment. If False, standard packages
+            like setuptools and pip get installed.
         """
         cmd = [
-            "environments", "import", self.environment_name,
-            "--filename", bundle,
+            "environments", "create", self.environment_name,
+            "--version", self.runtime_version,
+            "--platform", self.edm_platform,
         ]
         if force:
             cmd.append("--force")
+        if bare:
+            cmd.append("--bare")
 
         self.edm(cmd)
 
@@ -152,6 +138,26 @@ class PythonEnvironment(object):
             self.environment_name,
         ]
         self.edm(cmd)
+
+    def exists(self):
+        """
+        Return True if an EDM environment has already been created, else False.
+        """
+        cmd = ["environments", "exists", self.environment_name]
+        return not self.edm_nocheck(cmd)
+
+    def install(self, requirements):
+        """
+        Install requirements into the environment.
+        """
+        install_cmd = [
+            "install",
+            "--environment", self.environment_name,
+            "--yes",
+        ]
+        install_cmd.extend(requirements)
+
+        self.edm(install_cmd)
 
     def run(self, command, capture=False):
         """

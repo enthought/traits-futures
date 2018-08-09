@@ -13,7 +13,7 @@ import pkg_resources
 # and as a flake8 target.
 PACKAGE_NAME = "traits_futures"
 
-# Prefix used for generated bundle files and EDM environments.
+# Prefix used for generated EDM environments.
 PREFIX = PACKAGE_NAME.lower().replace("_", "-")
 
 # Platforms
@@ -44,9 +44,7 @@ PACKAGE_DIR = os.path.join(ROOT_DIR, PACKAGE_NAME)
 COVERAGE_DIR = os.path.join(ROOT_DIR, "coverage")
 
 # Locations of data directories for the ci package.
-BUNDLE = pkg_resources.resource_filename("ci", "bundle")
 DATA = pkg_resources.resource_filename("ci", "data")
-SCRIPTS = pkg_resources.resource_filename("ci", "scripts")
 
 # Locations of documentation directories.
 DOCS_DIR = os.path.join(ROOT_DIR, "docs")
@@ -54,13 +52,11 @@ DOCS_SOURCE_DIR = os.path.join(DOCS_DIR, "source")
 DOCS_API_SOURCE_DIR = os.path.join(DOCS_SOURCE_DIR, "api")
 DOCS_BUILD_DIR = os.path.join(DOCS_DIR, "build")
 
-# Templates for bundle and environment names.
-BUNDLE_TEMPLATE = "{prefix}-{python_version}-{toolkit}-{platform}.json"
+# Templates for environment names.
 ENVIRONMENT_TEMPLATE = "{prefix}-{python_version}-{toolkit}"
 
 # EDM configuration file.
 EDM_CONFIGURATION = os.path.join(DATA, "edm.yml")
-EDM_BUNDLEGEN_CONFIGURATION = os.path.join(DATA, "bundle_edm.yml")
 
 # Mapping from example names to script filenames.
 EXAMPLES = {
@@ -105,10 +101,6 @@ PLATFORMS = [
     (WINDOWS, PYTHON36, PYQT),
 ]
 
-# Dependencies used for bundle generation. As a general rule, anything
-# that a package directly imports from should be listed here (even if it's
-# already a dependency of something else listed).
-
 # Dependencies needed for all platforms, toolkits and Python versions.
 CORE_DEPS = [
     # Actual library runtime dependencies. Also need "futures" on Python 2.7.
@@ -142,6 +134,3 @@ TOOLKIT_CORE_DEPS = {
     PYSIDE: ["pyside"],
     WXPYTHON: ["wxpython"],
 }
-
-# Additional platform-specific core dependencies.
-PLATFORM_CORE_DEPS = {}
