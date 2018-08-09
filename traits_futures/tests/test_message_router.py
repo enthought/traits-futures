@@ -21,7 +21,7 @@ def send_messages(sender, messages):
             sender.send(message)
 
 
-class Listener(HasStrictTraits):
+class ReceiverListener(HasStrictTraits):
     """
     Test helper that listens to and records all messages from a
     MessageReceiver.
@@ -32,9 +32,13 @@ class Listener(HasStrictTraits):
     #: Messages received.
     messages = List(Any())
 
+    #: List of threads that messages arrived on.
+    threads = List(Any)
+
     @on_trait_change('receiver:message')
     def _record_message(self, message):
         self.messages.append(message)
+        self.threads.append(threading.current_thread())
 
 
 class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
@@ -49,7 +53,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         # be synchronous: no need to run the event loop.
         router = MessageRouter()
         sender, receiver = router.pipe()
-        listener = Listener(receiver=receiver)
+        listener = ReceiverListener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6)]
 
@@ -69,6 +73,12 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
 
         self.assertEqual(listener.messages, messages)
 
+        # Check that all the messages arrived on the main thread
+        # as expected.
+        main_thread = threading.current_thread()
+        for thread in listener.threads:
+            self.assertEqual(thread, main_thread)
+
     def test_multiple_senders(self):
         # Sending from the same thread should work, and should
         # be synchronous: no need to run the event loop.
@@ -86,7 +96,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         listeners = []
         for messages in worker_messages:
             sender, receiver = router.pipe()
-            listeners.append(Listener(receiver=receiver))
+            listeners.append(ReceiverListener(receiver=receiver))
             workers.append(
                 threading.Thread(
                     target=send_messages,
