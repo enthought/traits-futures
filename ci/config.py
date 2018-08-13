@@ -108,17 +108,6 @@ CORE_DEPS = [
     "setuptools",
     "six",
     "traits",
-
-    # Packages used for testing, documentation building, examples, etc.
-    "chaco",
-    "coverage",
-    "enable",
-    "flake8",
-    "mock",
-    "numpy",
-    "pip",
-    "sphinx",
-    "traitsui",
 ]
 
 # Python-version-specific core dependencies. Dictionary mapping Python version
@@ -127,10 +116,55 @@ VERSION_CORE_DEPS = {
     PYTHON27: ["futures"],
 }
 
-# Toolkit-specific core dependencies. Dictionary mapping toolkit to
+# Additional packages needed for running tests under CI.
+ADDITIONAL_CI_DEPS = [
+    "flake8",
+    "pip",
+]
+
+# Toolkit-specific ci dependencies. Dictionary mapping toolkit to
 # list of requirements.
-TOOLKIT_CORE_DEPS = {
-    PYQT: ["pyqt"],
-    PYSIDE: ["pyside"],
+TOOLKIT_CI_DEPS = {
+    PYQT: ["mock", "pyqt", "traitsui"],
+    PYSIDE: ["mock", "pyside", "traitsui"],
     WXPYTHON: ["wxpython"],
 }
+
+# Additional packages needed for local development, examples.
+ADDITIONAL_DEVELOP_DEPS = [
+    "chaco",
+    "coverage",
+    "enable",
+    "numpy",
+    "sphinx",
+    "traitsui",
+]
+
+
+def core_dependencies(python_version, toolkit):
+    """
+    Compute core dependencies for the Python version and toolkit.
+    """
+    # Make a copy to avoid accidentally mutating the CORE_DEPS global.
+    dependencies = list(CORE_DEPS)
+    dependencies.extend(VERSION_CORE_DEPS.get(python_version, []))
+    return dependencies
+
+
+def ci_dependencies(python_version, toolkit):
+    """
+    Return dependencies for CI
+    """
+    dependencies = core_dependencies(python_version, toolkit)
+    dependencies.extend(ADDITIONAL_CI_DEPS)
+    dependencies.extend(TOOLKIT_CI_DEPS.get(toolkit, []))
+    return dependencies
+
+
+def develop_dependencies(python_version, toolkit):
+    """
+    Return dependencies for development.
+    """
+    dependencies = ci_dependencies(python_version, toolkit)
+    dependencies.extend(ADDITIONAL_DEVELOP_DEPS)
+    return dependencies
