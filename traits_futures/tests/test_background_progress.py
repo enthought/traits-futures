@@ -1,6 +1,5 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
-import concurrent.futures
 import contextlib
 import threading
 import unittest
@@ -9,6 +8,8 @@ import six
 
 from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
+from traits.testing.unittest_tools import _TraitsChangeCollector as \
+    TraitsChangeCollector
 
 from traits_futures.api import (
     FutureState,
@@ -23,8 +24,6 @@ from traits_futures.api import (
 )
 from traits_futures.tests.common_future_tests import CommonFutureTests
 
-#: Number of workers for the thread pool.
-WORKERS = 4
 
 #: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
@@ -107,7 +106,7 @@ def resource_acquirer(acquired, ready, checkpoint, progress):
         acquired.clear()
 
 
-class ProgressListener(HasStrictTraits):
+class ProgressFutureListener(HasStrictTraits):
     """
     Listener for a ProgressFuture. Records state changes and progress messages.
     """
@@ -141,22 +140,19 @@ class TestProgressFuture(CommonFutureTests, unittest.TestCase):
 class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.thread_pool = concurrent.futures.ThreadPoolExecutor(
-            max_workers=WORKERS)
-        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        self.executor = TraitsExecutor()
 
     def tearDown(self):
-        self.halt_executor(self.executor)
-        self.thread_pool.shutdown()
+        self.halt_executor()
         GuiTestAssistant.tearDown(self)
 
     def test_progress(self):
         # Straightforward case.
         future = self.executor.submit_progress(
             progress_reporting_sum, [1, 2, 3])
-        listener = ProgressListener(future=future)
+        listener = ProgressFutureListener(future=future)
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertResult(future, 6)
         self.assertNoException(future)
@@ -173,9 +169,9 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
     def test_failed_progress(self):
         # Callable that raises.
         future = self.executor.submit_progress(bad_progress_reporting_function)
-        listener = ProgressListener(future=future)
+        listener = ProgressFutureListener(future=future)
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
@@ -188,12 +184,12 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         event = threading.Event()
 
         future = self.executor.submit_progress(event_set_with_progress, event)
-        listener = ProgressListener(future=future)
+        listener = ProgressFutureListener(future=future)
 
         self.assertTrue(event.wait(timeout=TIMEOUT))
         self.assertTrue(future.cancellable)
         future.cancel()
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -210,10 +206,10 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         with self.blocked_thread_pool():
             future = self.executor.submit_progress(
                 event_set_with_progress, event)
-            listener = ProgressListener(future=future)
+            listener = ProgressFutureListener(future=future)
             future.cancel()
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertFalse(event.is_set())
 
@@ -227,17 +223,17 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
 
         future = self.executor.submit_progress(
             syncing_progress, test_ready, raised)
-        listener = ProgressListener(future=future)
+        listener = ProgressFutureListener(future=future)
 
         # Wait until we get the first progress message.
-        with self.event_loop_until_condition(lambda: listener.progress):
-            pass
+        self.run_until(
+            listener, "progress", lambda listener: len(listener.progress) > 0)
 
         # Cancel, then allow the background task to continue.
         future.cancel()
         test_ready.set()
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertTrue(raised.is_set())
         self.assertNoResult(future)
@@ -264,7 +260,7 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         future.cancel()
         signal.set()
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -272,7 +268,7 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
     def test_progress_messages_after_cancellation(self):
         signal = threading.Event()
         future = self.executor.submit_progress(progress_then_signal, signal)
-        listener = ProgressListener(future=future)
+        listener = ProgressFutureListener(future=future)
 
         # Let the background task run to completion; it will have already sent
         # progress messages.
@@ -280,7 +276,7 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
 
         future.cancel()
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
 
         self.assertNoResult(future)
         self.assertNoException(future)
@@ -303,39 +299,42 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         finally:
             ready.set()
 
-        self.wait_for_completion(future)
+        self.wait_until_done(future)
         self.assertFalse(acquired.is_set())
 
     # Helper functions
-
-    def wait_for_completion(self, future):
-        with self.event_loop_until_condition(lambda: future.done):
-            pass
-
-    def wait_for_state(self, future, state):
-        with self.event_loop_until_condition(lambda: future.state == state):
-            pass
-
-    def halt_executor(self, executor):
-        """
-        Stop the executor, and wait until it reaches STOPPED state.
-        """
-        executor.stop()
-        with self.event_loop_until_condition(lambda: executor.stopped):
-            pass
 
     @contextlib.contextmanager
     def blocked_thread_pool(self):
         """
         Context manager to temporarily block the threads in the thread pool.
         """
+        thread_pool = self.executor._thread_pool
+        max_workers = thread_pool._max_workers
+
         event = threading.Event()
-        for _ in range(WORKERS):
-            self.thread_pool.submit(event.wait)
+
+        for _ in range(max_workers):
+            thread_pool.submit(event.wait)
         try:
             yield
         finally:
             event.set()
+
+    def halt_executor(self):
+        """
+        Wait for the executor to stop.
+        """
+        executor = self.executor
+        executor.stop()
+        self.run_until(executor, "stopped", lambda executor: executor.stopped)
+        del self.executor
+
+    def wait_until_done(self, future):
+        self.run_until(future, "done", lambda future: future.done)
+
+    def wait_for_state(self, future, state):
+        self.run_until(future, "state", lambda future: future.state == state)
 
     # Assertions
 
@@ -352,3 +351,18 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
 
     def assertException(self, future, exc_type):
         self.assertEqual(future.exception[0], six.text_type(exc_type))
+
+    def run_until(self, object, trait, condition, timeout=10.0):
+        """
+        Run the event loop until the given condition is true. The condition is
+        re-evaluated whenever object.trait changes, and takes the object as a
+        parameter.
+        """
+        collector = TraitsChangeCollector(obj=object, trait=trait)
+
+        collector.start_collecting()
+        try:
+            self.event_loop_helper.event_loop_until_condition(
+                lambda: condition(object), timeout=timeout)
+        finally:
+            collector.stop_collecting()
