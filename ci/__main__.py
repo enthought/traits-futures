@@ -66,21 +66,28 @@ def cli():
 @cli.command()
 @python_version_option
 @toolkit_option
-@click.option(
-    "--editable/--not-editable", default=False,
-    help="Install traits_futures in editable mode?  [default: --not-editable]"
+@click.argument(
+    "mode",
+    type=click.Choice(["ci", "develop"]),
+    default="develop",
 )
-def build(python_version, toolkit, editable):
+def build(python_version, toolkit, mode):
     """
     Create an EDM-based development environment.
+
+    The mode argument should be one of "ci" (for continuous integration)
+    or "develop" (for local development). The default is "develop".
     """
     pyenv = _get_devenv(python_version, toolkit)
-    platform = current_platform()
-    dependencies = _core_dependencies(platform, python_version, toolkit)
 
     # Destroy any existing environment.
     if pyenv.exists():
         pyenv.destroy()
+
+    if mode == "ci":
+        dependencies = cfg.ci_dependencies(python_version, toolkit)
+    else:
+        dependencies = cfg.develop_dependencies(python_version, toolkit)
 
     # Create new environment and populate with dependent packages.
     pyenv.create()
@@ -89,7 +96,7 @@ def build(python_version, toolkit, editable):
     # Install the local package, ignoring dependencies declared in its
     # setup.py.
     pip_cmd = ["-m", "pip", "install", "--no-deps"]
-    if editable:
+    if mode == "develop":
         pip_cmd.append("--editable")
     pip_cmd.append(".")
     pyenv.python(pip_cmd)
@@ -298,18 +305,6 @@ def in_coverage_directory():
         yield
     finally:
         os.chdir(old_cwd)
-
-
-def _core_dependencies(platform, python_version, toolkit):
-    """
-    Compute core dependencies for the given platform, Python version and
-    toolkit.
-    """
-    # Make a copy to avoid accidentally mutating the cfg.CORE_DEPS global.
-    dependencies = list(cfg.CORE_DEPS)
-    dependencies.extend(cfg.VERSION_CORE_DEPS.get(python_version, []))
-    dependencies.extend(cfg.TOOLKIT_CORE_DEPS.get(toolkit, []))
-    return dependencies
 
 
 if __name__ == "__main__":
