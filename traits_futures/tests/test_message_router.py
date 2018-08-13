@@ -6,15 +6,9 @@ import unittest
 from traits.api import (
     Any, Event, HasStrictTraits, Instance, List, on_trait_change)
 
-from traits_futures.toolkit_support import (
-    gui_test_assistant,
-    message_receiver,
-    message_router,
-)
+from traits_futures.toolkit_support import toolkit
 
-GuiTestAssistant = gui_test_assistant()
-MessageReceiver = message_receiver()
-MessageRouter = message_router()
+GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 
 def send_messages(sender, messages):
@@ -32,7 +26,7 @@ class ReceiverListener(HasStrictTraits):
     MessageReceiver.
     """
     #: The receiver that we're listening to.
-    receiver = Instance(MessageReceiver)
+    receiver = Any()
 
     #: Messages received.
     messages = List(Any())
@@ -74,8 +68,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         GuiTestAssistant.tearDown(self)
 
     def test_message_sending_from_background_thread(self):
-        # Sending from the same thread should work, and should
-        # be synchronous: no need to run the event loop.
+        MessageRouter = toolkit("message_router:MessageRouter")
         router = MessageRouter()
         sender, receiver = router.pipe()
         listener = ReceiverListener(receiver=receiver)
@@ -103,8 +96,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(thread, main_thread)
 
     def test_multiple_senders(self):
-        # Sending from the same thread should work, and should
-        # be synchronous: no need to run the event loop.
+        MessageRouter = toolkit('message_router:MessageRouter')
         router = MessageRouter()
         worker_count = 64
         message_count = 64

@@ -14,7 +14,7 @@ from traits.api import (
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
-from traits_futures.toolkit_support import message_router
+from traits_futures.toolkit_support import toolkit
 
 
 # Executor states.
@@ -220,7 +220,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        MessageRouter = message_router()
+        MessageRouter = toolkit('message_router:MessageRouter')
         return MessageRouter()
 
     @on_trait_change('_futures:_exiting')
