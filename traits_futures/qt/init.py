@@ -7,9 +7,5 @@ from pyface.base_toolkit import Toolkit
 # Force an ImportError if Qt is not installed.
 from pyface.qt import QtCore  # noqa: F401
 
-# Force failure if Qt is not available.
-# XXX Find better way to do this. Load the PyFace toolkit object?
-from pyface.qt import QtGui
-
 #: The toolkit object used to find toolkit-specific reources.
 toolkit_object = Toolkit("traits_futures", "qt", "traits_futures.qt")
