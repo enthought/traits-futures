@@ -111,6 +111,18 @@ class MessageRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
+    def connect(self):
+        """
+        Prepare router for routing.
+        """
+        pass
+
+    def disconnect(self):
+        """
+        Undo any connections made by the ``connect`` call.
+        """
+        pass
+
     # Private traits ##########################################################
 
     #: Internal queue for messages from all senders.
