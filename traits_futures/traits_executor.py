@@ -221,7 +221,9 @@ class TraitsExecutor(HasStrictTraits):
     def __message_router_default(self):
         # Toolkit-specific message router.
         MessageRouter = toolkit('message_router:MessageRouter')
-        return MessageRouter()
+        router = MessageRouter()
+        router.connect()
+        return router
 
     @on_trait_change('_futures:_exiting')
     def _remove_future(self, future, name, new):
@@ -236,6 +238,9 @@ class TraitsExecutor(HasStrictTraits):
         Go to STOPPED state, and shut down the thread pool if we own it.
         """
         assert self.state == STOPPING
+        self._message_router.disconnect()
+        self._message_router = None
+
         if self._own_thread_pool:
             self._thread_pool.shutdown()
         self._thread_pool = None
