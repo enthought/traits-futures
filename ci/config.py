@@ -28,14 +28,15 @@ PYTHON36 = "py36"
 PYTHON_VERSIONS = [PYTHON27, PYTHON35, PYTHON36]
 
 # Toolkits
+NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
 PYSIDE = "pyside"  # Qt 4, PySide 1; only available for Python 2.x.
 PYQT = "pyqt"  # Qt 4, PyQt, available for Python 2 and Python 3.
 WXPYTHON = "wxpython"  # available for Python 2 only.
-TOOLKITS = [PYSIDE, PYQT, WXPYTHON]
+TOOLKITS = [NULL, PYSIDE, PYQT, WXPYTHON]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
-DEFAULT_TOOLKIT = PYQT
+DEFAULT_TOOLKIT = NULL
 
 # Location of repository root. Assumes that the ci script is being
 # run from the root of the repository.
@@ -84,6 +85,9 @@ FLAKE8_TARGETS = [
 # Platforms and Python versions that we support.
 # Triples (edm-platform-string, Python major.minor version, GUI toolkit)
 PLATFORMS = [
+    (MACOS, PYTHON27, NULL),
+    (LINUX, PYTHON27, NULL),
+    (WINDOWS, PYTHON27, NULL),
     (MACOS, PYTHON27, WXPYTHON),
     (LINUX, PYTHON27, WXPYTHON),
     (WINDOWS, PYTHON27, WXPYTHON),
@@ -93,9 +97,15 @@ PLATFORMS = [
     (MACOS, PYTHON27, PYQT),
     (LINUX, PYTHON27, PYQT),
     (WINDOWS, PYTHON27, PYQT),
+    (MACOS, PYTHON35, NULL),
+    (LINUX, PYTHON35, NULL),
+    (WINDOWS, PYTHON35, NULL),
     (MACOS, PYTHON35, PYQT),
     (LINUX, PYTHON35, PYQT),
     (WINDOWS, PYTHON35, PYQT),
+    (MACOS, PYTHON36, NULL),
+    (LINUX, PYTHON36, NULL),
+    (WINDOWS, PYTHON36, NULL),
     (MACOS, PYTHON36, PYQT),
     (LINUX, PYTHON36, PYQT),
     (WINDOWS, PYTHON36, PYQT),

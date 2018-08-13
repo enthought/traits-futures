@@ -63,14 +63,16 @@ class MultiListener(HasStrictTraits):
 class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
+        self.router = toolkit("message_router:MessageRouter")()
+        self.router.connect()
 
     def tearDown(self):
+        self.router.disconnect()
+        del self.router
         GuiTestAssistant.tearDown(self)
 
     def test_message_sending_from_background_thread(self):
-        MessageRouter = toolkit("message_router:MessageRouter")
-        router = MessageRouter()
-        sender, receiver = router.pipe()
+        sender, receiver = self.router.pipe()
         listener = ReceiverListener(receiver=receiver)
 
         messages = ["inconceivable", 15206, (23, 5.6)]
@@ -96,8 +98,6 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(thread, main_thread)
 
     def test_multiple_senders(self):
-        MessageRouter = toolkit('message_router:MessageRouter')
-        router = MessageRouter()
         worker_count = 64
         message_count = 64
 
@@ -110,7 +110,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         workers = []
         listeners = []
         for messages in worker_messages:
-            sender, receiver = router.pipe()
+            sender, receiver = self.router.pipe()
             listeners.append(ReceiverListener(receiver=receiver))
             workers.append(
                 threading.Thread(
