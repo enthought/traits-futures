@@ -312,8 +312,6 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         with self.assertRaises(AttributeError):
             future.exception
 
-    # XXX Move me to the GuiTestAssistant!
-
     def run_until(self, object, trait, condition, timeout=10.0):
         """
         Run the event loop until the given condition is true. The condition is
