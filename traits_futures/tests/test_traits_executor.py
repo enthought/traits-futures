@@ -8,11 +8,8 @@ import contextlib
 import threading
 import unittest
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import (
     Bool, HasStrictTraits, Instance, List, on_trait_change, Tuple)
-from traits.testing.unittest_tools import _TraitsChangeCollector as \
-    TraitsChangeCollector
 
 from traits_futures.api import (
     CANCELLED,
@@ -24,6 +21,9 @@ from traits_futures.api import (
     STOPPING,
     STOPPED,
 )
+from traits_futures.toolkit_support import toolkit
+
+GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 
 class ExecutorListener(HasStrictTraits):
@@ -312,18 +312,3 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             yield executor.submit_call(event.wait)
         finally:
             event.set()
-
-    def run_until(self, object, trait, condition, timeout=10.0):
-        """
-        Run the event loop until the given condition is true. The condition is
-        re-evaluated whenever object.trait changes, and takes the object as a
-        parameter.
-        """
-        collector = TraitsChangeCollector(obj=object, trait=trait)
-
-        collector.start_collecting()
-        try:
-            self.event_loop_helper.event_loop_until_condition(
-                lambda: condition(object), timeout=timeout)
-        finally:
-            collector.stop_collecting()

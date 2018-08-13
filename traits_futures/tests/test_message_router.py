@@ -3,16 +3,12 @@ from __future__ import absolute_import, print_function, unicode_literals
 import threading
 import unittest
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import (
     Any, Event, HasStrictTraits, Instance, List, on_trait_change)
-from traits.testing.unittest_tools import _TraitsChangeCollector as \
-    TraitsChangeCollector
 
-from traits_futures.qt.message_router import (
-    MessageReceiver,
-    MessageRouter,
-)
+from traits_futures.toolkit_support import toolkit
+
+GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 
 def send_messages(sender, messages):
@@ -30,7 +26,7 @@ class ReceiverListener(HasStrictTraits):
     MessageReceiver.
     """
     #: The receiver that we're listening to.
-    receiver = Instance(MessageReceiver)
+    receiver = Any()
 
     #: Messages received.
     messages = List(Any())
@@ -72,8 +68,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         GuiTestAssistant.tearDown(self)
 
     def test_message_sending_from_background_thread(self):
-        # Sending from the same thread should work, and should
-        # be synchronous: no need to run the event loop.
+        MessageRouter = toolkit("message_router:MessageRouter")
         router = MessageRouter()
         sender, receiver = router.pipe()
         listener = ReceiverListener(receiver=receiver)
@@ -101,8 +96,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(thread, main_thread)
 
     def test_multiple_senders(self):
-        # Sending from the same thread should work, and should
-        # be synchronous: no need to run the event loop.
+        MessageRouter = toolkit('message_router:MessageRouter')
         router = MessageRouter()
         worker_count = 64
         message_count = 64
@@ -147,18 +141,3 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
         # Check we got the expected messages.
         received_messages = [listener.messages for listener in listeners]
         self.assertEqual(received_messages, worker_messages)
-
-    def run_until(self, object, trait, condition, timeout=10.0):
-        """
-        Run the event loop until the given condition is true. The condition is
-        re-evaluated whenever object.trait changes, and takes the object as a
-        parameter.
-        """
-        collector = TraitsChangeCollector(obj=object, trait=trait)
-
-        collector.start_collecting()
-        try:
-            self.event_loop_helper.event_loop_until_condition(
-                lambda: condition(object), timeout=timeout)
-        finally:
-            collector.stop_collecting()

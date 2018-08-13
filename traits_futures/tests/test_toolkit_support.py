@@ -4,13 +4,16 @@ import unittest
 
 from traits.api import HasTraits
 
-from traits_futures.toolkit_support import (
-    message_router_class,
-)
+from traits_futures.toolkit_support import toolkit
 
 
 class TestToolkitSupport(unittest.TestCase):
+    def test_gui_test_assistant(self):
+        GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
+        test_assistant = GuiTestAssistant()
+        self.assertTrue(hasattr(test_assistant, "run_until"))
+
     def test_message_router_class(self):
-        router_class = message_router_class()
-        message_router = router_class()
-        self.assertIsInstance(message_router, HasTraits)
+        MessageRouter = toolkit("message_router:MessageRouter")
+        router = MessageRouter()
+        self.assertIsInstance(router, HasTraits)

@@ -11,16 +11,16 @@ import weakref
 
 import six
 
-from pyface.ui.qt4.util.gui_test_assistant import GuiTestAssistant
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
-from traits.testing.unittest_tools import _TraitsChangeCollector as \
-    TraitsChangeCollector
 
 from traits_futures.api import (
     IterationFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
 from traits_futures.tests.common_future_tests import CommonFutureTests
+from traits_futures.toolkit_support import toolkit
+
+GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 
 #: Timeout for blocking operations, in seconds.
@@ -422,18 +422,3 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
             future.exception
-
-    def run_until(self, object, trait, condition, timeout=10.0):
-        """
-        Run the event loop until the given condition is true. The condition is
-        re-evaluated whenever object.trait changes, and takes the object as a
-        parameter.
-        """
-        collector = TraitsChangeCollector(obj=object, trait=trait)
-
-        collector.start_collecting()
-        try:
-            self.event_loop_helper.event_loop_until_condition(
-                lambda: condition(object), timeout=timeout)
-        finally:
-            collector.stop_collecting()
