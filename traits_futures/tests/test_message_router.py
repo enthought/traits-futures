@@ -6,11 +6,15 @@ import unittest
 from traits.api import (
     Any, Event, HasStrictTraits, Instance, List, on_trait_change)
 
-from traits_futures.qt.gui_test_assistant import GuiTestAssistant
-from traits_futures.qt.message_router import (
-    MessageReceiver,
-    MessageRouter,
+from traits_futures.toolkit_support import (
+    gui_test_assistant,
+    message_receiver,
+    message_router,
 )
+
+GuiTestAssistant = gui_test_assistant()
+MessageReceiver = message_receiver()
+MessageRouter = message_router()
 
 
 def send_messages(sender, messages):

@@ -21,7 +21,9 @@ from traits_futures.api import (
     STOPPING,
     STOPPED,
 )
-from traits_futures.qt.gui_test_assistant import GuiTestAssistant
+from traits_futures.toolkit_support import gui_test_assistant
+
+GuiTestAssistant = gui_test_assistant()
 
 
 class ExecutorListener(HasStrictTraits):

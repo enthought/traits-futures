@@ -17,8 +17,10 @@ from traits_futures.api import (
     IterationFuture, FutureState, TraitsExecutor,
     CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
 )
-from traits_futures.qt.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.common_future_tests import CommonFutureTests
+from traits_futures.toolkit_support import gui_test_assistant
+
+GuiTestAssistant = gui_test_assistant()
 
 
 #: Timeout for blocking operations, in seconds.
