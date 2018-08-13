@@ -37,7 +37,7 @@ before_install:
   - if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then sh -e install-edm-osx.sh; export PATH="${PATH}:/usr/local/bin"; fi
   - edm install -y -e bootstrap click setuptools
 install:
-  - edm run -e bootstrap -- python -m ci build
+  - edm run -e bootstrap -- python -m ci build ci
 script:
   - edm run -e bootstrap -- python -m ci flake8
   - edm run -e bootstrap -- python -m ci test
