@@ -4,6 +4,8 @@ Entry point for finding toolkit-specific classes.
 from __future__ import absolute_import, print_function, unicode_literals
 
 from pyface.base_toolkit import Toolkit
+# Force an ImportError if Qt is not installed.
+from pyface.qt import QtCore  # noqa: F401
 
 # Force failure if Qt is not available.
 # XXX Find better way to do this. Load the PyFace toolkit object?
