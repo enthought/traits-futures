@@ -135,7 +135,6 @@ ADDITIONAL_DEVELOP_DEPS = [
     "chaco",
     "coverage",
     "enable",
-    "mock",
     "numpy",
     "sphinx",
     "traitsui",
