@@ -12,7 +12,7 @@ class Toolkit(object):
     """
     def __init__(self):
         self._toolkit_object = None
-    
+
     @property
     def toolkit_object(self):
         if self._toolkit_object is None:
@@ -32,7 +32,7 @@ class Toolkit(object):
         Main-thread end of a (message_sender, message_receiver) pair.
         """
         return self.toolkit_object("message_router:MessageReceiver")
-    
+
     @property
     def MessageRouter(self):
         """
