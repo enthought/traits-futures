@@ -1,8 +1,6 @@
 """
 Support for emulating running of the event loop during testing.
 """
-# XXX React only on the appropriate message in the router.
-
 from __future__ import absolute_import, print_function, unicode_literals
 
 from traits_futures.null.event_loop import (

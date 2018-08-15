@@ -95,7 +95,9 @@ class MessageRouter(HasStrictTraits):
 
     # Private methods #########################################################
 
-    def _route_message(self):
+    def _route_message(self, event):
+        if event != MESSAGE_SENT:
+            return
         wrapped_message = self._message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message

@@ -56,6 +56,8 @@ class EventLoop(HasStrictTraits):
             except queue.Empty:
                 break
 
+        # This assumes that stop will only ever be called on the main
+        # thread, in reaction to a posted event.
         self._stop_event_loop = None
         return stop_event_loop.is_set()
 
