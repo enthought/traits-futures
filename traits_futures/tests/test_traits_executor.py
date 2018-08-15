@@ -9,9 +9,10 @@ import threading
 import unittest
 
 from traits.api import (
-    Bool, HasStrictTraits, Instance, List, on_trait_change, Tuple)
+    Bool, HasStrictTraits, Instance, List, on_trait_change, Property, Tuple)
 
 from traits_futures.api import (
+    CallFuture,
     CANCELLED,
     CANCELLING,
     EXECUTING,
@@ -57,22 +58,33 @@ class ExecutorListener(HasStrictTraits):
         self.stopped_changes.append((old, new))
 
 
+class FuturesListener(HasStrictTraits):
+    """
+    Listener for multiple futures.
+    """
+    #: List of futures that we're listening to.
+    futures = List(Instance(CallFuture))
+
+    #: True when all futures have completed.
+    all_done = Property(Bool(), depends_on="futures:done")
+
+    def _get_all_done(self):
+        return all(future.done for future in self.futures)
+
+
 class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.thread_pool = concurrent.futures.ThreadPoolExecutor(
-            max_workers=4)
 
     def tearDown(self):
         if hasattr(self, "executor"):
             self.executor.stop()
             self.wait_until_stopped(self.executor)
             del self.executor
-        self.thread_pool.shutdown()
         GuiTestAssistant.tearDown(self)
 
     def test_stop_method(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         listener = ExecutorListener(executor=executor)
 
         with self.long_running_task(executor):
@@ -85,7 +97,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.assertEqual(listener.states, [RUNNING, STOPPING, STOPPED])
 
     def test_stop_method_with_no_jobs(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         listener = ExecutorListener(executor=executor)
 
         self.assertEqual(executor.state, RUNNING)
@@ -95,7 +107,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.assertEqual(listener.states, [RUNNING, STOPPING, STOPPED])
 
     def test_stop_method_raises_unless_running(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
 
         with self.long_running_task(executor):
             self.assertEqual(executor.state, RUNNING)
@@ -113,7 +125,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             executor.stop()
 
     def test_cant_submit_new_unless_running(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         with self.long_running_task(executor):
             executor.stop()
             self.assertEqual(executor.state, STOPPING)
@@ -127,7 +139,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             executor.submit_call(int)
 
     def test_stop_cancels_running_futures(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         with self.long_running_task(executor) as future:
             self.wait_for_state(future, EXECUTING)
 
@@ -139,7 +151,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.assertEqual(future.state, CANCELLED)
 
     def test_running(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         self.assertTrue(executor.running)
 
         with self.long_running_task(executor):
@@ -151,7 +163,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.assertFalse(executor.running)
 
     def test_stopped(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         self.assertFalse(executor.stopped)
 
         with self.long_running_task(executor):
@@ -174,22 +186,20 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             thread_pool.submit(int)
 
     def test_shared_thread_pool(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
-        executor.stop()
-        self.wait_until_stopped(executor)
+        with self.temporary_thread_pool() as thread_pool:
+            executor = TraitsExecutor(thread_pool=thread_pool)
+            executor.stop()
+            self.wait_until_stopped(executor)
 
-        # Check that the the shared thread pool is still available.
-
-        # Careful: this is a concurrent.futures Future instance, not
-        # one of our traits_futures Futures.
-        cf_future = self.thread_pool.submit(int)
-        self.assertEqual(cf_future.result(), 0)
+            # Check that the the shared thread pool is still usable.
+            cf_future = thread_pool.submit(int)
+            self.assertEqual(cf_future.result(), 0)
 
     def test_submit_call(self):
         def test_call(*args, **kwds):
             return args, kwds
 
-        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        self.executor = TraitsExecutor()
         future = self.executor.submit_call(
             test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
 
@@ -208,7 +218,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             yield args
             yield kwargs
 
-        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        self.executor = TraitsExecutor()
         future = self.executor.submit_iteration(
             test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
 
@@ -229,7 +239,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         def test_progress(arg1, arg2, kwd1, kwd2, progress):
             return arg1, arg2, kwd1, kwd2
 
-        self.executor = TraitsExecutor(thread_pool=self.thread_pool)
+        self.executor = TraitsExecutor()
         future = self.executor.submit_progress(
             test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
 
@@ -247,7 +257,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         def record_states():
             states.append((executor.state, executor.running, executor.stopped))
 
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         executor.on_trait_change(record_states, 'running')
         executor.on_trait_change(record_states, 'stopped')
         executor.on_trait_change(record_states, 'state')
@@ -264,7 +274,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(stopped, state == STOPPED)
 
     def test_running_and_stopped_fired_only_once(self):
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         listener = ExecutorListener(executor=executor)
 
         executor.submit_call(int)
@@ -277,7 +287,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_running_and_stopped_fired_only_once_no_futures(self):
         # Same as above but tests the case where the executor goes to STOPPED
         # state the moment that stop is called.
-        executor = TraitsExecutor(thread_pool=self.thread_pool)
+        executor = TraitsExecutor()
         listener = ExecutorListener(executor=executor)
 
         executor.stop()
@@ -285,6 +295,35 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         self.assertEqual(listener.running_changes, [(True, False)])
         self.assertEqual(listener.stopped_changes, [(False, True)])
+
+    def test_multiple_futures(self):
+        self.executor = TraitsExecutor()
+
+        futures = []
+        for i in range(100):
+            futures.append(self.executor.submit_call(str, i))
+
+        listener = FuturesListener(futures=futures)
+
+        # Wait for all futures to complete.
+        self.run_until(
+            listener, "all_done", lambda listener: listener.all_done)
+
+        for i, future in enumerate(futures):
+            self.assertEqual(future.result, str(i))
+
+    def test_stop_with_multiple_futures(self):
+        executor = TraitsExecutor()
+
+        futures = []
+        for i in range(100):
+            futures.append(executor.submit_call(str, i))
+
+        executor.stop()
+        self.wait_until_stopped(executor)
+
+        for future in futures:
+            self.assertEqual(future.state, CANCELLED)
 
     # Helper methods and assertions ###########################################
 
@@ -312,3 +351,14 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             yield executor.submit_call(event.wait)
         finally:
             event.set()
+
+    @contextlib.contextmanager
+    def temporary_thread_pool(self):
+        """
+        Create a thread pool that's shut down at the end of the with block.
+        """
+        thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+        try:
+            yield thread_pool
+        finally:
+            thread_pool.shutdown()
