@@ -9,9 +9,6 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.null.event_loop import get_event_loop
 
-#: Message put on the event loop to tell the router to process.
-MESSAGE_SENT = "message_sent"
-
 
 class MessageReceiver(HasStrictTraits):
     """
@@ -35,34 +32,36 @@ class MessageSender(object):
     Only the worker thread should use the send method, and only
     inside a "with sender:" block.
     """
-    def __init__(self, connection_id, message_queue, event_loop):
+    def __init__(self, connection_id, message_queue, event_poster):
         self.connection_id = connection_id
         self.message_queue = message_queue
-        self.event_loop = event_loop
+        self.event_poster = event_poster
 
     def __enter__(self):
         return self
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        self.event_loop.post_event(MESSAGE_SENT)
+        self.event_poster.post_event()
 
     def send(self, message):
         """
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        self.event_loop.post_event(MESSAGE_SENT)
+        self.event_poster.post_event()
 
 
 class MessageRouter(HasStrictTraits):
     def connect(self):
-        self._event_loop = get_event_loop()
-        self._event_loop.on_trait_change(self._route_message, "event")
+        self._event_loop = event_loop = get_event_loop()
+        self._event_poster, self._event_receiver = event_loop.event_pair()
+        self._event_receiver.on_trait_change(self._route_message, "event")
 
     def disconnect(self):
-        self._event_loop.on_trait_change(
+        self._event_receiver.on_trait_change(
             self._route_message, "event", remove=True)
+        self._event_receiver = self._event_poster = None
         self._event_loop = None
 
     def pipe(self):
@@ -73,7 +72,7 @@ class MessageRouter(HasStrictTraits):
         sender = MessageSender(
             connection_id=connection_id,
             message_queue=self._message_queue,
-            event_loop=self._event_loop,
+            event_poster=self._event_poster,
         )
         receiver = MessageReceiver()
         self._receivers[connection_id] = receiver
@@ -90,14 +89,18 @@ class MessageRouter(HasStrictTraits):
     #: Source of new connection ids.
     _connection_ids = Instance(collections.Iterator)
 
+    #: Receiver for the "message posted" event.
+    _event_receiver = Any()
+
+    #: Poster for the "message posted" event.
+    _event_poster = Any()
+
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
     # Private methods #########################################################
 
     def _route_message(self, event):
-        if event != MESSAGE_SENT:
-            return
         wrapped_message = self._message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message
