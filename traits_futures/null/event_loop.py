@@ -1,5 +1,5 @@
 """
-A bare bones event loop that doesn't need any UI framework.
+A bare-bones event loop that doesn't need any UI framework.
 """
 
 from __future__ import absolute_import, print_function, unicode_literals
@@ -9,7 +9,7 @@ import time
 
 from six.moves import queue
 
-from traits.api import Any, Event, HasStrictTraits, Unicode
+from traits.api import Any, Event, HasStrictTraits, Instance
 
 
 class EventLoop(HasStrictTraits):
@@ -17,15 +17,14 @@ class EventLoop(HasStrictTraits):
     A simple event loop that doesn't require any UI framework.
 
     Events may be posted from any thread using the ``post_event`` method, and
-    as each ``event`` is processed by the event loop the ``event`` trait will
+    as each event is processed by the event loop the ``event`` trait will
     be fired.
 
     It's left to listeners to the ``event`` trait to filter the events
     intended for them and ignore the rest.
     """
-    #: Event fired for each event put on the queue. Right now, all
-    #: it carries is a string giving the event type.
-    event = Event(Unicode)
+    #: Event fired for each event put on the queue.
+    event = Event(Any())
 
     def start(self, timeout):
         """
@@ -47,12 +46,11 @@ class EventLoop(HasStrictTraits):
         stop_time = time.time() + timeout
 
         while not stop_event_loop.is_set():
-            current_time = time.time()
-            if current_time >= stop_time:
+            time_left = stop_time - time.time()
+            if time_left <= 0.0:
                 break
             try:
-                self.event = self._event_queue.get(
-                    timeout=stop_time - current_time)
+                self.event = self._event_queue.get(timeout=time_left)
             except queue.Empty:
                 break
 
@@ -64,6 +62,8 @@ class EventLoop(HasStrictTraits):
     def stop(self):
         """
         Stop a running event loop.
+
+        Not thread safe. This should only be called from the main thread.
         """
         self._stop_event_loop.set()
 
@@ -91,21 +91,15 @@ class EventLoop(HasStrictTraits):
 
     # Private traits ##########################################################
 
-    _event_queue = Any()
+    #: Events waiting to be processed.
+    _event_queue = Instance(queue.Queue)
 
+    #: Event used to indicate that the event loop should be stopped.
     _stop_event_loop = Any()
 
 
 #: Global event loop.
 _event_loop = None
-
-
-def set_event_loop(event_loop):
-    """
-    Set the global event loop to the given one.
-    """
-    global _event_loop
-    _event_loop = event_loop
 
 
 def get_event_loop():
@@ -115,6 +109,14 @@ def get_event_loop():
     if _event_loop is None:
         raise RuntimeError("No current event loop")
     return _event_loop
+
+
+def set_event_loop(event_loop):
+    """
+    Set the global event loop to the given one.
+    """
+    global _event_loop
+    _event_loop = event_loop
 
 
 def clear_event_loop():

@@ -1,5 +1,5 @@
 """
-Support for emulating running of the event loop during testing.
+Support for emulating an event loop for testing purposes.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -39,6 +39,11 @@ class GuiTestAssistant(object):
             the event loop.
         timeout : float
             Timeout, in seconds.
+
+        Raises
+        ------
+        RuntimeError
+            If the condition didn't become true before timeout.
         """
         if condition(object):
             return
@@ -51,6 +56,10 @@ class GuiTestAssistant(object):
 
         object.on_trait_change(stop_on_condition, trait)
         try:
-            event_loop.start(timeout=timeout)
+            stopped = event_loop.start(timeout=timeout)
         finally:
             object.on_trait_change(stop_on_condition, trait, remove=True)
+
+        if not stopped:
+            raise RuntimeError(
+                "Timeout occurred before the condition became true.")
