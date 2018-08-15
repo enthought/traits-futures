@@ -8,11 +8,17 @@ environment:
 
   matrix:
     - CI_PYTHON_VERSION: "py27"
+      CI_TOOLKIT: "null"
+    - CI_PYTHON_VERSION: "py27"
       CI_TOOLKIT: "pyside"
     - CI_PYTHON_VERSION: "py27"
       CI_TOOLKIT: "pyqt"
     - CI_PYTHON_VERSION: "py35"
+      CI_TOOLKIT: "null"
+    - CI_PYTHON_VERSION: "py35"
       CI_TOOLKIT: "pyqt"
+    - CI_PYTHON_VERSION: "py36"
+      CI_TOOLKIT: "null"
     - CI_PYTHON_VERSION: "py36"
       CI_TOOLKIT: "pyqt"
 

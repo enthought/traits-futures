@@ -13,21 +13,33 @@ cache:
 matrix:
   include:
   - os: linux
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="null"
+  - os: linux
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyside"
   - os: linux
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyqt"
   - os: linux
+    env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="null"
+  - os: linux
     env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="pyqt"
   - os: linux
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="null"
+  - os: linux
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT=pyqt
+  - os: osx
+    env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="null"
   - os: osx
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyside"
   - os: osx
     env: CI_PYTHON_VERSION="py27" CI_TOOLKIT="pyqt"
   - os: osx
+    env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="null"
+  - os: osx
     env: CI_PYTHON_VERSION="py35" CI_TOOLKIT="pyqt"
   - os: osx
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT=pyqt
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="null"
+  - os: osx
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt"
 
 before_install:
   - mkdir -p "${HOME}/.cache/download"
