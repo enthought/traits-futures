@@ -10,6 +10,9 @@ from traits_futures.null.event_loop import (
     set_event_loop,
 )
 
+#: The default timeout to use, in seconds.
+DEFAULT_TIMEOUT = 10.0
+
 
 class GuiTestAssistant(object):
     def setUp(self):
@@ -20,11 +23,13 @@ class GuiTestAssistant(object):
         clear_event_loop()
         del self.event_loop
 
-    def run_until(self, object, trait, condition, timeout=10.0):
+    def run_until(self, object, trait, condition, timeout=DEFAULT_TIMEOUT):
         """
         Run the event loop until the given condition holds true.
 
-        Rechecks the condition whenever the given trait changes.
+        Rechecks the condition whenever the given trait changes. If the
+        expected condition fails to become true within the given
+        timeout, raises a ``RuntimeError``.
 
         Parameters
         ----------
@@ -37,8 +42,8 @@ class GuiTestAssistant(object):
             given trait changes, with the object as its sole argument.
             It should return a bool-like indicating whether to stop
             the event loop.
-        timeout : float
-            Timeout, in seconds.
+        timeout : float, optional
+            Timeout, in seconds. If not given ``DEFAULT_TIMEOUT`` is used.
 
         Raises
         ------
