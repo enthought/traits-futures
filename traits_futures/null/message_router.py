@@ -3,11 +3,10 @@ from __future__ import absolute_import, print_function, unicode_literals
 import collections
 import itertools
 
-from six.moves import queue
-
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
-from traits_futures.null.event_loop import get_event_loop
+from traits_futures.null.event_loop import (
+    EventLoop, EventPoster, get_event_loop)
 
 
 class MessageReceiver(HasStrictTraits):
@@ -32,88 +31,90 @@ class MessageSender(object):
     Only the worker thread should use the send method, and only
     inside a "with sender:" block.
     """
-    def __init__(self, connection_id, message_queue, event_poster):
+    def __init__(self, connection_id, event_poster):
         self.connection_id = connection_id
-        self.message_queue = message_queue
         self.event_poster = event_poster
 
     def __enter__(self):
         return self
 
     def __exit__(self, *exc_info):
-        self.message_queue.put(("done", self.connection_id))
-        self.event_poster.post_event()
+        event_args = "done", self.connection_id, True
+        self.event_poster.post_event(event_args)
 
     def send(self, message):
         """
         Send a message to the router.
         """
-        self.message_queue.put(("message", self.connection_id, message))
-        self.event_poster.post_event()
+        event_args = "message", self.connection_id, message
+        self.event_poster.post_event(event_args)
 
 
 class MessageRouter(HasStrictTraits):
+    """
+    Router for messages from background jobs to their corresponding futures.
+    """
+    #: Traits event fired whenever an event is received.
+    message_sent = Event(Any())
+
     def connect(self):
-        self._event_loop = event_loop = get_event_loop()
-        self._event_poster, self._event_receiver = event_loop.event_pair()
-        self._event_receiver.on_trait_change(self._route_message, "event")
+        """
+        Connect to the current event loop.
+        """
+        self._event_loop = get_event_loop()
+        self._event_poster = self._event_loop.event_poster(
+            self, "message_sent")
 
     def disconnect(self):
-        self._event_receiver.on_trait_change(
-            self._route_message, "event", remove=True)
-        self._event_receiver = self._event_poster = None
+        """
+        Disconnect from the event loop.
+        """
+        self._event_loop.disconnect(self._event_poster)
+        self._event_poster = None
         self._event_loop = None
 
     def pipe(self):
         """
-        Create a (sender, receiver) pair for sending messages.
+        Create a (sender, receiver) pair for sending and receiving messages.
+
+        Returns
+        -------
+        sender : MessageSender
+            Object used by the background threads to send messages.
+        receiver : MessageReceiver
+            Object used to receive messages sent by the sender.
         """
         connection_id = next(self._connection_ids)
         sender = MessageSender(
             connection_id=connection_id,
-            message_queue=self._message_queue,
             event_poster=self._event_poster,
         )
-        receiver = MessageReceiver()
-        self._receivers[connection_id] = receiver
+        self._receivers[connection_id] = receiver = MessageReceiver()
         return sender, receiver
 
     # Private traits ##########################################################
 
-    #: Reference to the shared event loop.
-    _event_loop = Any()
+    #: The event loop that we're posting events to.
+    _event_loop = Instance(EventLoop)
 
-    #: Internal queue for messages from all senders.
-    _message_queue = Any()
+    #: Poster for the "message posted" event.
+    _event_poster = Instance(EventPoster)
 
     #: Source of new connection ids.
     _connection_ids = Instance(collections.Iterator)
-
-    #: Receiver for the "message posted" event.
-    _event_receiver = Any()
-
-    #: Poster for the "message posted" event.
-    _event_poster = Any()
 
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
     # Private methods #########################################################
 
-    def _route_message(self, event):
-        wrapped_message = self._message_queue.get()
-        if wrapped_message[0] == "message":
-            _, connection_id, message = wrapped_message
-            receiver = self._receivers[connection_id]
-            receiver.message = message
-        else:
-            assert wrapped_message[0] == "done"
-            _, connection_id = wrapped_message
+    def _message_sent_fired(self, event_args):
+        message_type, connection_id, message = event_args
+        if message_type == "done":
             receiver = self._receivers.pop(connection_id)
-            receiver.done = True
-
-    def __message_queue_default(self):
-        return queue.Queue()
+        else:
+            receiver = self._receivers[connection_id]
+        setattr(receiver, message_type, message)
 
     def __connection_ids_default(self):
         return itertools.count()

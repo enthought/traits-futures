@@ -11,7 +11,9 @@ import time
 
 from six.moves import queue
 
-from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
+from traits.api import (
+    Any, Dict, HasStrictTraits, HasTraits, Instance, Int, Str, Tuple,
+)
 
 
 class EventPoster(object):
@@ -22,23 +24,13 @@ class EventPoster(object):
         self._event_queue = event_queue
         self._event_type = event_type
 
-    def post_event(self):
+    def post_event(self, event_args):
         """
         Post an event to the event queue.
 
         This method is thread-safe.
-
-        Note: events don't currently take any arguments.
         """
-        self._event_queue.put(self._event_type)
-
-
-class EventReceiver(HasStrictTraits):
-    """
-    Object receiving events of a given event type.
-    """
-    #: Traits event fired whenever an event is received.
-    event = Event()
+        self._event_queue.put((self._event_type, event_args))
 
 
 class EventLoop(HasStrictTraits):
@@ -70,11 +62,13 @@ class EventLoop(HasStrictTraits):
                 break
 
             try:
-                event_type = self._event_queue.get(timeout=time_left)
+                event_type, event_args = self._event_queue.get(
+                    timeout=time_left)
             except queue.Empty:
                 break
 
-            self._event_receivers[event_type].event = True
+            object, event_name = self._event_receivers[event_type]
+            setattr(object, event_name, event_args)
 
         self._stop_event_loop = None
         return stop_event_loop.is_set()
@@ -87,17 +81,28 @@ class EventLoop(HasStrictTraits):
         """
         self._stop_event_loop.set()
 
-    def event_pair(self):
+    def event_poster(self, object, event_name):
         """
-        Return a pair (EventPoster, EventReceiver) for a new event type.
+        Create a new event type and a poster object for that event.
 
-        Creates a new event type, and returns a pair of objects that
-        allow sending and receiving events of that type.
+        Creates a new event type, and returns a poster for that event.
+        Whenever the event is processed, the given Event trait on the given
+        object will be fired.
         """
         event_type = next(self._event_types)
         poster = EventPoster(self._event_queue, event_type)
-        self._event_receivers[event_type] = receiver = EventReceiver()
-        return poster, receiver
+        self._event_receivers[event_type] = object, event_name
+        return poster
+
+    def disconnect(self, event_poster):
+        """
+        Disconnect the given event poster from the event loop.
+
+        Events posted using the event poster will no longer be handled by
+        the event loop.
+        """
+        event_type = event_poster._event_type
+        del self._event_receivers[event_type]
 
     # Initialiser.
 
@@ -113,7 +118,7 @@ class EventLoop(HasStrictTraits):
     _event_queue = Instance(queue.Queue)
 
     #: Registered receivers.
-    _event_receivers = Dict(Int(), Instance(EventReceiver))
+    _event_receivers = Dict(Int(), Tuple(Instance(HasTraits), Str))
 
     #: Source of event types.
     _event_types = Instance(collections.Iterator)
