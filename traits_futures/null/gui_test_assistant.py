@@ -1,11 +1,7 @@
 """
 Support for emulating running of the event loop during testing.
 """
-
-# XXX Add support for timeout.
-# XXX Add connect and disconnect support for Qt backend
 # XXX React only on the appropriate message in the router.
-# XXX Router teardown?
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -30,11 +26,21 @@ class GuiTestAssistant(object):
         """
         Run the event loop until the given condition holds true.
 
+        Rechecks the condition whenever the given trait changes.
+
         Parameters
         ----------
-        XXX to do
-
-        Rechecks the condition whenever the given trait changes.
+        object : HasTraits
+            Object whose trait we want to listen to.
+        trait : str
+            Name of the trait to listen to.
+        condition : callable
+            Callable of a single argument. This is called whenever the
+            given trait changes, with the object as its sole argument.
+            It should return a bool-like indicating whether to stop
+            the event loop.
+        timeout : float
+            Timeout, in seconds.
         """
         if condition(object):
             return
@@ -47,7 +53,6 @@ class GuiTestAssistant(object):
 
         object.on_trait_change(stop_on_condition, trait)
         try:
-            event_loop.run()
+            event_loop.start(timeout=timeout)
         finally:
             object.on_trait_change(stop_on_condition, trait, remove=True)
-

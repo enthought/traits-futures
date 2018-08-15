@@ -45,24 +45,24 @@ class MessageSender(object):
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        self.event_loop.post_message(MESSAGE_SENT)
+        self.event_loop.post_event(MESSAGE_SENT)
 
     def send(self, message):
         """
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        self.event_loop.post_message(MESSAGE_SENT)
+        self.event_loop.post_event(MESSAGE_SENT)
 
 
 class MessageRouter(HasStrictTraits):
     def connect(self):
         self._event_loop = get_event_loop()
-        self._event_loop.on_trait_change(self._route_message, "message")
+        self._event_loop.on_trait_change(self._route_message, "event")
 
     def disconnect(self):
         self._event_loop.on_trait_change(
-            self._route_message, "message", remove=True)
+            self._route_message, "event", remove=True)
         self._event_loop = None
 
     def pipe(self):
@@ -112,4 +112,3 @@ class MessageRouter(HasStrictTraits):
 
     def __connection_ids_default(self):
         return itertools.count()
-
