@@ -1,3 +1,7 @@
+"""
+Support for routing message streams from background processes to their
+corresponding foreground receivers.
+"""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import collections
