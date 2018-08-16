@@ -5,7 +5,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from traits_futures.null.event_loop import (
     EventLoop,
-    clear_event_loop,
     get_event_loop,
     set_event_loop,
 )
@@ -16,12 +15,15 @@ DEFAULT_TIMEOUT = 10.0
 
 class GuiTestAssistant(object):
     def setUp(self):
+        # Save the old event loop and create a fresh one for testing.
+        self._old_event_loop = get_event_loop()
         self.event_loop = EventLoop()
         set_event_loop(self.event_loop)
 
     def tearDown(self):
-        clear_event_loop()
         del self.event_loop
+        set_event_loop(self._old_event_loop)
+        del self._old_event_loop
 
     def run_until(self, object, trait, condition, timeout=DEFAULT_TIMEOUT):
         """

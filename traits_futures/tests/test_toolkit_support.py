@@ -2,8 +2,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import unittest
 
-from traits.api import HasTraits
-
 from traits_futures.toolkit_support import toolkit
 
 
@@ -16,4 +14,4 @@ class TestToolkitSupport(unittest.TestCase):
     def test_message_router_class(self):
         MessageRouter = toolkit("message_router:MessageRouter")
         router = MessageRouter()
-        self.assertIsInstance(router, HasTraits)
+        self.assertTrue(hasattr(router, "pipe"))
