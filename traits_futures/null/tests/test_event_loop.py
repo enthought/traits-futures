@@ -36,6 +36,7 @@ class TestEventLoop(unittest.TestCase):
         # Event loop should process the posted event and stop.
         stopped = event_loop.start(timeout=10.0)
         self.assertTrue(stopped)
+        event_loop.disconnect(poster)
 
     def test_stops_after_timeout(self):
         event_loop = EventLoop()
