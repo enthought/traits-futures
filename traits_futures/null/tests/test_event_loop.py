@@ -5,11 +5,11 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import unittest
 
-from traits_futures.null.event_loop import (
-    EventLoop,
-    get_event_loop,
-    set_event_loop,
-)
+from traits_futures.null.event_loop import AsyncCaller, EventLoop
+from traits_futures.null.package_globals import get_event_loop, set_event_loop
+
+#: The default timeout to use, in seconds.
+DEFAULT_TIMEOUT = 10.0
 
 
 class TestEventLoop(unittest.TestCase):
@@ -20,23 +20,24 @@ class TestEventLoop(unittest.TestCase):
         set_event_loop(self.event_loop)
 
     def tearDown(self):
+        closed = self.event_loop.run_until_no_handlers(timeout=DEFAULT_TIMEOUT)
+        if not closed:
+            raise RuntimeError("Not all event loop handlers were closed")
         del self.event_loop
         set_event_loop(self._old_event_loop)
         del self._old_event_loop
 
-    def test_stops_on_stop(self):
+    def test_stop_immediately(self):
         event_loop = self.event_loop
+        stop_event_loop = event_loop.async_caller(event_loop.stop)
+        self.assertIsInstance(stop_event_loop, AsyncCaller)
 
-        @event_loop.async_caller
-        def stop_event_loop(dummy):
-            event_loop.stop()
-
-        stop_event_loop(True)
+        stop_event_loop()
 
         # Event loop should process the posted event and stop.
         stopped = event_loop.start(timeout=10.0)
         self.assertTrue(stopped)
-        event_loop.disconnect(stop_event_loop)
+        stop_event_loop.close()
 
     def test_stops_after_timeout(self):
         event_loop = EventLoop()
@@ -48,8 +49,16 @@ class TestEventLoop(unittest.TestCase):
         stopped = event_loop.start(timeout=-10.0)
         self.assertFalse(stopped)
 
-    def test_get_event_loop(self):
-        event_loop = EventLoop()
-        self.assertNotEqual(get_event_loop(), event_loop)
-        set_event_loop(event_loop)
-        self.assertEqual(get_event_loop(), event_loop)
+    def test_fire_after_close(self):
+        event_loop = self.event_loop
+        stop_event_loop = event_loop.async_caller(event_loop.stop)
+
+        stop_event_loop()
+        # Safe to close even though events haven't been processed yet.
+        stop_event_loop.close()
+
+        stopped = event_loop.start(timeout=10.0)
+        self.assertTrue(stopped)
+
+        with self.assertRaises(RuntimeError):
+            stop_event_loop()

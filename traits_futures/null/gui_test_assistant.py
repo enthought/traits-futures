@@ -3,11 +3,8 @@ Support for emulating an event loop for testing purposes.
 """
 from __future__ import absolute_import, print_function, unicode_literals
 
-from traits_futures.null.event_loop import (
-    EventLoop,
-    get_event_loop,
-    set_event_loop,
-)
+from traits_futures.null.event_loop import EventLoop
+from traits_futures.null.package_globals import get_event_loop, set_event_loop
 
 #: The default timeout to use, in seconds.
 DEFAULT_TIMEOUT = 10.0
@@ -21,6 +18,10 @@ class GuiTestAssistant(object):
         set_event_loop(self.event_loop)
 
     def tearDown(self):
+        closed = self.event_loop.run_until_no_handlers(timeout=DEFAULT_TIMEOUT)
+        if not closed:
+            raise RuntimeError("Not all event loop handlers were closed")
+
         del self.event_loop
         set_event_loop(self._old_event_loop)
         del self._old_event_loop
