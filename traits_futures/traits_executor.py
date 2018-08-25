@@ -8,8 +8,7 @@ import concurrent.futures
 import threading
 
 from traits.api import (
-    Bool, Enum, HasStrictTraits, HasTraits, Instance, on_trait_change,
-    Property, Set)
+    Any, Bool, Enum, HasStrictTraits, Instance, on_trait_change, Property, Set)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
@@ -194,7 +193,7 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Router providing message connections between background tasks
     #: and foreground futures.
-    _message_router = Instance(HasTraits)
+    _message_router = Any()
 
     #: Currently executing futures.
     _futures = Set()
