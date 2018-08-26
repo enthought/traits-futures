@@ -15,26 +15,26 @@ _CALL_ACTION = "call"
 _CLOSE_ACTION = "close"
 
 #: Event loop state: not currently running.
-IDLE = "idle"
+_IDLE = "idle"
 
 #: Event loop state: running.
-RUNNING = "running"
+_RUNNING = "running"
 
 
 class AsyncCaller(object):
     """
     Object allowing asynchronous execution of a callable.
 
-    This object is created in the main thread by the event_loop. It may
-    then be passed to and used in a background thread if desired. The
-    ``__call__`` and ``close`` methods should all be called from the
-    same thread.
+    This object is created in the main thread by an ``EventLoop`` instance. It
+    may then be passed to and used in a background thread if desired. The
+    ``__call__`` and ``close`` methods should all be called from the same
+    thread.
     """
-    def __init__(self, event_queue, caller_id):
+    def __init__(self, event_queue, handler_id):
         #: The main event loop's queue.
         self._event_queue = event_queue
-        #: Integer identifying this caller.
-        self._caller_id = caller_id
+        #: Integer identifying the handler for this caller.
+        self._handler_id = handler_id
         #: Boolean indicating whether this connection has been closed yet.
         self._closed = False
 
@@ -42,13 +42,13 @@ class AsyncCaller(object):
         """
         Request a call with the given arguments.
 
-        The call returns immediately, and posts an event to the event
+        This method returns immediately, and posts an event to the event
         queue. When that event is processed, the corresponding callable will be
         called with the given arguments.
         """
         if self._closed:
             raise RuntimeError("This AsyncCaller is closed.")
-        self._event_queue.put((_CALL_ACTION, self._caller_id, args, kwargs))
+        self._event_queue.put((_CALL_ACTION, self._handler_id, args, kwargs))
 
     def close(self):
         """
@@ -58,7 +58,9 @@ class AsyncCaller(object):
         so that the corresponding entry can be removed from the EventLoop's
         table of event handlers.
         """
-        self._event_queue.put((_CLOSE_ACTION, self._caller_id))
+        if self._closed:
+            raise RuntimeError("This AsyncCaller is closed.")
+        self._event_queue.put((_CLOSE_ACTION, self._handler_id))
         self._closed = True
 
 
@@ -72,12 +74,13 @@ class EventLoop(object):
     def __init__(self):
         #: Action queue for the event loop.
         self._event_queue = queue.Queue()
-        #: Currently registered handlers, indexed by integer id.
+        #: Currently registered handlers, indexed by an integer id. Mapping
+        #: from handler id to the corresponding callable.
         self._event_handlers = {}
         #: Source of unique ids for handlers.
-        self._caller_ids = itertools.count()
-        #: Current state of this event loop; one of IDLE, RUNNING or STOPPING
-        self._state = IDLE
+        self._handler_ids = itertools.count()
+        #: Current state of this event loop; either _IDLE or _RUNNING
+        self._state = _IDLE
 
     def start(self, timeout):
         """
@@ -97,9 +100,9 @@ class EventLoop(object):
             ``True`` if the event loop was stopped as the resut of calling
             ``stop``, and ``False`` if it stopped as a result of timing out.
         """
-        self._state = RUNNING
-        stopped = self._run_until(lambda: self._state != RUNNING, timeout)
-        self._state = IDLE
+        self._state = _RUNNING
+        stopped = self._run_until(lambda: self._state != _RUNNING, timeout)
+        self._state = _IDLE
         return stopped
 
     def stop(self):
@@ -108,31 +111,30 @@ class EventLoop(object):
 
         Not thread safe. This should only be called from the main thread.
         """
-        self._state = IDLE
+        self._state = _IDLE
 
-    def async_caller(self, event_handler):
+    def async_caller(self, callable):
         """
         Create an asynchronous version of a callable.
 
-        Given a callable ``event_handler`` of a single argument,
-        return another callable of a single argument that, when called,
-        places an event on this event loops queue. When that event is
-        eventually processed, ``event_handler`` will be called with
-        the given arguments.
+        Given a callable ``callable``, return another callable of the same
+        signature that, when called with particular arguments, places an event
+        on this event loop's queue. When that event is eventually processed,
+        the original ``callable`` will be called with the given arguments.
 
         Parameters
         ----------
-        event_handler : callable of a single argument
+        callable : callable
             Callable to be executed asynchronously by the event loop.
 
         Returns
         -------
-        async_event_handler : callable of a single argument
-            Asynchronous version of ``event_handler``.
+        async_callable : callable of the same signature as ``callable``
+            Asynchronous version of ``callable``.
         """
-        caller_id = next(self._caller_ids)
-        self._event_handlers[caller_id] = event_handler
-        return AsyncCaller(self._event_queue, caller_id)
+        handler_id = next(self._handler_ids)
+        self._event_handlers[handler_id] = callable
+        return AsyncCaller(self._event_queue, handler_id)
 
     def run_until_no_handlers(self, timeout):
         """
@@ -200,13 +202,13 @@ class EventLoop(object):
             action_type, action_args = event[0], event[1:]
 
             if action_type == _CALL_ACTION:
-                caller_id, args, kwargs = action_args
-                event_handler = self._event_handlers[caller_id]
+                handler_id, args, kwargs = action_args
+                event_handler = self._event_handlers[handler_id]
                 event_handler(*args, **kwargs)
             else:  # action_type == CLOSE_ACTION
                 assert action_type == _CLOSE_ACTION
-                caller_id, = action_args
-                self._event_handlers.pop(caller_id)
+                handler_id, = action_args
+                self._event_handlers.pop(handler_id)
 
         # Condition became true.
         return True

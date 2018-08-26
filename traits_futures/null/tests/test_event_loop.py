@@ -48,18 +48,16 @@ class TestEventLoop(unittest.TestCase):
         self.assertFalse(stopped)
 
     def test_fire_after_close(self):
-        event_loop = self.event_loop
-        stop_event_loop = event_loop.async_caller(event_loop.stop)
-
-        stop_event_loop()
-        # Safe to close even though events haven't been processed yet.
-        stop_event_loop.close()
-
-        stopped = event_loop.start(timeout=10.0)
-        self.assertTrue(stopped)
-
+        async_int = self.event_loop.async_caller(int)
+        async_int.close()
         with self.assertRaises(RuntimeError):
-            stop_event_loop()
+            async_int()
+
+    def test_close_after_close(self):
+        async_int = self.event_loop.async_caller(int)
+        async_int.close()
+        with self.assertRaises(RuntimeError):
+            async_int.close()
 
     def test_run_until_no_handlers(self):
         accumulator = []
