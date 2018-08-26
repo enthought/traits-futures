@@ -154,12 +154,19 @@ class TraitsExecutor(HasStrictTraits):
             raise RuntimeError("Can't submit task unless executor is running.")
 
         sender, receiver = self._message_router.pipe()
-        future, runner = task.future_and_callable(
-            cancel_event=threading.Event(),
-            message_sender=sender,
-            message_receiver=receiver,
-        )
-        self._thread_pool.submit(runner)
+        try:
+            future, runner = task.future_and_callable(
+                cancel_event=threading.Event(),
+                message_sender=sender,
+                message_receiver=receiver,
+            )
+            self._thread_pool.submit(runner)
+        except Exception:
+            # Clean up the pipe.
+            with sender:
+                pass
+            raise
+
         self._futures.add(future)
         return future
 

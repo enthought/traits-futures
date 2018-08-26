@@ -46,6 +46,7 @@ setup(
     ],
     entry_points={
         "traits_futures.toolkits": [
+            "null = traits_futures.null.init:toolkit_object",
             "qt4 = traits_futures.qt.init:toolkit_object",
             "qt = traits_futures.qt.init:toolkit_object",
         ],
