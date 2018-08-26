@@ -20,9 +20,7 @@ class TestEventLoop(unittest.TestCase):
         set_event_loop(self.event_loop)
 
     def tearDown(self):
-        closed = self.event_loop.run_until_no_handlers(timeout=DEFAULT_TIMEOUT)
-        if not closed:
-            raise RuntimeError("Not all event loop handlers were closed")
+        self.event_loop.run_until_no_handlers(timeout=DEFAULT_TIMEOUT)
         del self.event_loop
         set_event_loop(self._old_event_loop)
         del self._old_event_loop
@@ -62,3 +60,24 @@ class TestEventLoop(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             stop_event_loop()
+
+    def test_run_until_no_handlers(self):
+        accumulator = []
+        async_append = self.event_loop.async_caller(accumulator.append)
+        async_append(4)
+        async_append(5)
+        async_append.close()
+
+        self.event_loop.run_until_no_handlers(timeout=DEFAULT_TIMEOUT)
+        self.assertEqual(accumulator, [4, 5])
+
+    def test_run_until_no_handlers_times_out(self):
+        accumulator = []
+        async_append = self.event_loop.async_caller(accumulator.append)
+        async_append(4)
+        async_append(5)
+
+        with self.assertRaises(RuntimeError):
+            self.event_loop.run_until_no_handlers(timeout=0.1)
+
+        async_append.close()

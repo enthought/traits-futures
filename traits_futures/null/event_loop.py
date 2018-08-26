@@ -20,9 +20,6 @@ IDLE = "idle"
 #: Event loop state: running.
 RUNNING = "running"
 
-#: Event loop state: asked to stop, but not yet stopped.
-STOPPING = "stopping"
-
 
 class AsyncCaller(object):
     """
@@ -80,7 +77,7 @@ class EventLoop(object):
         #: Source of unique ids for handlers.
         self._caller_ids = itertools.count()
         #: Current state of this event loop; one of IDLE, RUNNING or STOPPING
-        self.state = IDLE
+        self._state = IDLE
 
     def start(self, timeout):
         """
@@ -100,11 +97,9 @@ class EventLoop(object):
             ``True`` if the event loop was stopped as the resut of calling
             ``stop``, and ``False`` if it stopped as a result of timing out.
         """
-        if self.state != IDLE:
-            raise RuntimeError("Event loop is currently running")
-        self.state = RUNNING
-        stopped = self._run_until(lambda: self.state != RUNNING, timeout)
-        self.state = IDLE
+        self._state = RUNNING
+        stopped = self._run_until(lambda: self._state != RUNNING, timeout)
+        self._state = IDLE
         return stopped
 
     def stop(self):
@@ -113,9 +108,7 @@ class EventLoop(object):
 
         Not thread safe. This should only be called from the main thread.
         """
-        if self.state != RUNNING:
-            raise RuntimeError("Can't stop an event loop that isn't running.")
-        self.state = STOPPING
+        self._state = IDLE
 
     def async_caller(self, event_handler):
         """
@@ -144,8 +137,22 @@ class EventLoop(object):
     def run_until_no_handlers(self, timeout):
         """
         Run the event loop until all current event handlers have been closed.
+
+        Parameters
+        ----------
+        timeout : float
+            Maximum time to run the event loop for, in seconds.
+
+        Raises
+        ------
+        RuntimeError
+            If timeout occurs before all event handlers are closed.
         """
-        return self._run_until(lambda: not self._event_handlers, timeout)
+        stopped = self._run_until(lambda: not self._event_handlers, timeout)
+        if not stopped:
+            raise RuntimeError(
+                "There were unclosed event handlers after {} seconds".format(
+                    timeout))
 
     # Private methods #########################################################
 
@@ -168,6 +175,12 @@ class EventLoop(object):
             a boolean.
         timeout : float
             Maximum time to run the event loop for, in seconds.
+
+        Returns
+        -------
+        condition_true : bool
+            True if the loop exited due to the condition becoming true; False
+            if it exited due to timeout.
         """
         stop_time = time.time() + timeout
         while not condition():
