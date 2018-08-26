@@ -1,10 +1,6 @@
 """
 A bare-bones event loop that doesn't need any UI framework.
 """
-# XXX Need method that runs until all event handlers removed.
-# XXX Test coverage!
-
-
 from __future__ import absolute_import, print_function, unicode_literals
 
 import itertools
