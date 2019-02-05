@@ -1,3 +1,6 @@
+# (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 """
 Test support, providing the ability to run the event loop from tests.
 """

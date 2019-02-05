@@ -1,3 +1,6 @@
+# (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 """
 Example showing a background iteration that produces successive
 approximations to pi, with resulting values being used to update
