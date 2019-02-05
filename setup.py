@@ -12,7 +12,7 @@ def get_version_info():
     """ Extract version information as a dictionary from version.py. """
     version_info = {}
     version_filename = os.path.join("traits_futures", "version.py")
-    with open(version_filename, "r") as version_module:
+    with io.open(version_filename, "r", encoding="utf-8") as version_module:
         version_code = compile(version_module.read(), "version.py", "exec")
         exec(version_code, version_info)
     return version_info
