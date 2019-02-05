@@ -1,8 +1,6 @@
-# (C) Copyright 2018 Enthought, Inc., Austin, TX
+# (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
 # All rights reserved.
-#
-# The code in the ci/ package is proprietary and should not be redistributed
-# without explicit approval.
+
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os

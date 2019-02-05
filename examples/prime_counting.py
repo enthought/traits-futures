@@ -1,3 +1,6 @@
+# (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 """
 Example showing progress reporting from a background computation, with a
 modal progress dialog.

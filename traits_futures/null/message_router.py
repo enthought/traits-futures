@@ -1,3 +1,6 @@
+# (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 """
 Support for routing message streams from background processes to their
 corresponding foreground receivers.

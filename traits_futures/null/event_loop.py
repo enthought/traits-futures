@@ -1,3 +1,6 @@
+# (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 """
 A bare-bones event loop that doesn't need any UI framework.
 """
