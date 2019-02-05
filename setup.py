@@ -38,8 +38,12 @@ setup(
     name="traits_futures",
     version=get_version_info()["version"],
     author="Enthought",
+    author_email="info@enthought.com",
+    url="https://github.com/enthought/traits-futures",
     description="Patterns for reactive background tasks",
     long_description=get_long_description(),
+    long_description_content_type="text/x-rst",
+    keywords="background concurrency futures gui traits traitsui",
     install_requires=install_requires,
     packages=find_packages(exclude=["ci"]),
     classifiers=[
@@ -52,6 +56,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
     ],
     entry_points={
         "traits_futures.toolkits": [
