@@ -50,12 +50,12 @@ class TraitsExecutor(HasStrictTraits):
     #: to dispose of related resources (like the thread pool).
     stopped = Property(Bool())
 
-    def __init__(self, thread_pool=None, **traits):
+    def __init__(self, thread_pool=None, max_workers=4, **traits):
         super(TraitsExecutor, self).__init__(**traits)
 
         if thread_pool is None:
             self._thread_pool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=4)
+                max_workers=max_workers)
             self._own_thread_pool = True
         else:
             self._thread_pool = thread_pool
