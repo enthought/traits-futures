@@ -143,6 +143,7 @@ ADDITIONAL_DEVELOP_DEPS = [
     "chaco",
     "coverage",
     "enable",
+    "enthought_sphinx_theme",
     "numpy",
     "sphinx",
     "traitsui",
