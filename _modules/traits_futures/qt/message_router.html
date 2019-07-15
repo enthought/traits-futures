@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.qt.message_router &mdash; Traits Futures 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">Traits Futures 0.1.1 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body">
+            
+  <h1>Source code for traits_futures.qt.message_router</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2019 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Message routing for the Qt toolkit.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="n">queue</span>
+
+<span class="kn">from</span> <span class="nn">pyface.qt.QtCore</span> <span class="k">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">Slot</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span>
+
+
+<span class="k">class</span> <span class="nc">_MessageSignaller</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QObject used to tell the UI that a message is queued.</span>
+
+<span class="sd">    This class must be instantiated in the worker thread.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">message_sent</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">_MessageSignallee</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QObject providing a slot for the &quot;message_sent&quot; signal to connect to.</span>
+
+<span class="sd">    This object stays in the main thread.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_message_sent</span><span class="p">):</span>
+        <span class="n">QObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_message_sent</span> <span class="o">=</span> <span class="n">on_message_sent</span>
+
+    <span class="nd">@Slot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">message_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_message_sent</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="MessageSender"><a class="viewcode-back" href="../../../api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageSender">[docs]</a><span class="k">class</span> <span class="nc">MessageSender</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object allowing the worker to send messages.</span>
+
+<span class="sd">    This class will be instantiated in the main thread, but passed to the</span>
+<span class="sd">    worker thread to allow the worker to communicate back to the main</span>
+<span class="sd">    thread.</span>
+
+<span class="sd">    Only the worker thread should use the send method, and only</span>
+<span class="sd">    inside a &quot;with sender:&quot; block.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_id</span><span class="p">,</span> <span class="n">signallee</span><span class="p">,</span> <span class="n">message_queue</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span> <span class="o">=</span> <span class="n">connection_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signallee</span> <span class="o">=</span> <span class="n">signallee</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">message_queue</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span> <span class="o">=</span> <span class="n">_MessageSignaller</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span><span class="o">.</span><span class="n">message_sent</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signallee</span><span class="o">.</span><span class="n">message_sent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_info</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span><span class="o">.</span><span class="n">message_sent</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span><span class="o">.</span><span class="n">message_sent</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signallee</span><span class="o">.</span><span class="n">message_sent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MessageSender.send"><a class="viewcode-back" href="../../../api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageSender.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a message to the router.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signaller</span><span class="o">.</span><span class="n">message_sent</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="MessageReceiver"><a class="viewcode-back" href="../../../api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageReceiver">[docs]</a><span class="k">class</span> <span class="nc">MessageReceiver</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main-thread object that receives messages from a MessageSender.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#: Event fired when a message is received from the paired sender.</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Any</span><span class="p">())</span>
+
+    <span class="c1">#: Event fired to indicate that the sender has sent its last message.</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MessageRouter"><a class="viewcode-back" href="../../../api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter">[docs]</a><span class="k">class</span> <span class="nc">MessageRouter</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Router for messages, sent by means of Qt signals and slots.</span>
+
+<span class="sd">    Requires the event loop to be running in order for messages to arrive.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MessageRouter.pipe"><a class="viewcode-back" href="../../../api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.pipe">[docs]</a>    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a (sender, receiver) pair for sending messages.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sender : MessageSender</span>
+<span class="sd">            Object to be passed to the background task to send messages.</span>
+<span class="sd">        receiver : MessageReceiver</span>
+<span class="sd">            Object to be kept in the foreground which reacts to messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connection_ids</span><span class="p">)</span>
+        <span class="n">sender</span> <span class="o">=</span> <span class="n">MessageSender</span><span class="p">(</span>
+            <span class="n">connection_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
+            <span class="n">signallee</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_signallee</span><span class="p">,</span>
+            <span class="n">message_queue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">receiver</span> <span class="o">=</span> <span class="n">MessageReceiver</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">receiver</span>
+        <span class="k">return</span> <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span></div>
+
+    <span class="c1"># Private traits ##########################################################</span>
+
+    <span class="c1">#: Internal queue for messages from all senders.</span>
+    <span class="n">_message_queue</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="c1">#: Source of new connection ids.</span>
+    <span class="n">_connection_ids</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">Iterator</span><span class="p">)</span>
+
+    <span class="c1">#: Receivers, keyed by connection_id.</span>
+    <span class="n">_receivers</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Int</span><span class="p">(),</span> <span class="n">Any</span><span class="p">())</span>
+
+    <span class="c1">#: QObject providing slot for the &quot;message_sent&quot; signal.</span>
+    <span class="n">_signallee</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">_MessageSignallee</span><span class="p">)</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wrapped_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">wrapped_message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">wrapped_message</span>
+            <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span>
+            <span class="n">receiver</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">wrapped_message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;done&quot;</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">connection_id</span> <span class="o">=</span> <span class="n">wrapped_message</span>
+            <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
+            <span class="n">receiver</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__message_queue_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__connection_ids_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__signallee_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_MessageSignallee</span><span class="p">(</span><span class="n">on_message_sent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2019, Enthought
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
