@@ -21,6 +21,9 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+# We use the Enthought Sphinx Theme, which is available from PyPI.
+import enthought_sphinx_theme
+
 import traits_futures.version
 
 # -- General configuration ------------------------------------------------
@@ -34,13 +37,14 @@ import traits_futures.version
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'traits.util.trait_documenter',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = []
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -53,7 +57,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Traits Futures'
-copyright = '2018, Enthought'
+copyright = '2018-2019, Enthought'
 author = 'Enthought'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -91,7 +95,9 @@ add_function_parentheses = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme_path = [enthought_sphinx_theme.theme_path]
+
+html_theme = 'enthought'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -102,7 +108,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 
 # -- Options for HTMLHelp output ------------------------------------------
