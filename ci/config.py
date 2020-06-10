@@ -114,7 +114,6 @@ CORE_DEPS = [
     # Actual library runtime dependencies. Also need "futures" on Python 2.7.
     "pyface",
     "setuptools",
-    "six",
     "traits",
 ]
 

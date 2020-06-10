@@ -6,8 +6,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 import re
 import unittest
 
-import six
-
 import traits_futures.version
 
 # Regex matching a version number of one of the two forms
@@ -26,7 +24,7 @@ VERSION_MATCHER = re.compile(r"\A\d+\.\d+.\d+(?:\.dev\d+)?\Z")
 class TestVersion(unittest.TestCase):
     def test_version_string(self):
         version = traits_futures.version.version
-        self.assertIsInstance(version, six.text_type)
+        self.assertIsInstance(version, str)
         match = VERSION_MATCHER.match(version)
         self.assertIsNotNone(
             match, msg="{!r} appears to be an invalid version".format(version))

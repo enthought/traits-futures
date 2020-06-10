@@ -8,8 +8,6 @@ import operator
 import threading
 import unittest
 
-import six
-
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
@@ -309,7 +307,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
             future.result
 
     def assertException(self, future, exc_type):
-        self.assertEqual(future.exception[0], six.text_type(exc_type))
+        self.assertEqual(future.exception[0], str(exc_type))
 
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):

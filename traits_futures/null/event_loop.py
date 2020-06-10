@@ -7,9 +7,8 @@ A bare-bones event loop that doesn't need any UI framework.
 from __future__ import absolute_import, print_function, unicode_literals
 
 import itertools
+import queue
 import time
-
-from six.moves import queue
 
 #: Event loop action: call with given arguments.
 _CALL_ACTION = "call"

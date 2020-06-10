@@ -12,8 +12,6 @@ import threading
 import unittest
 import weakref
 
-import six
-
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
@@ -420,7 +418,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
     # Assertions
 
     def assertException(self, future, exc_type):
-        self.assertEqual(future.exception[0], six.text_type(exc_type))
+        self.assertEqual(future.exception[0], str(exc_type))
 
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
