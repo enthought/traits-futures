@@ -11,6 +11,8 @@ environment:
       CI_TOOLKIT: "null"
     - CI_PYTHON_VERSION: "py36"
       CI_TOOLKIT: "pyqt"
+    - CI_PYTHON_VERSION: "py36"
+      CI_TOOLKIT: "pyqt5"
 
 cache:
   - C:\Users\appveyor\.cache -> appveyor-clean-cache.txt
