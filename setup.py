@@ -62,4 +62,6 @@ setup(
             "qt = traits_futures.qt.init:toolkit_object",
         ],
     },
+    python_requires=">=3.5",
+    license="BSD",
 )
