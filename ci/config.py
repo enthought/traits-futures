@@ -14,7 +14,7 @@ PREFIX = PACKAGE_NAME.lower().replace("_", "-")
 
 # Platforms
 MACOS = "osx-x86_64"
-LINUX = "rh6-x86_64"
+LINUX = "rh7-x86_64"
 WINDOWS = "win-x86_64"
 
 # Python versions

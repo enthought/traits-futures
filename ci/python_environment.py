@@ -257,7 +257,7 @@ def current_platform():
     if platform.startswith("win32"):
         return "win-x86_64" if is_64bits else "win-x86"
     elif platform.startswith("linux"):
-        return "rh6-x86_64"
+        return "rh7-x86_64"
     elif platform == "darwin":
         return "osx-x86_64"
     else:
