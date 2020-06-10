@@ -18,10 +18,8 @@ LINUX = "rh6-x86_64"
 WINDOWS = "win-x86_64"
 
 # Python versions
-PYTHON27 = "py27"
-PYTHON35 = "py35"
 PYTHON36 = "py36"
-PYTHON_VERSIONS = [PYTHON27, PYTHON35, PYTHON36]
+PYTHON_VERSIONS = [PYTHON36]
 
 # Toolkits
 NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
@@ -64,8 +62,6 @@ EXAMPLES = {
 
 # Python runtime versions.
 RUNTIME_VERSION = {
-    PYTHON27: "2.7.13",
-    PYTHON35: "3.5.2",
     PYTHON36: "3.6.0",
 }
 
@@ -81,24 +77,6 @@ FLAKE8_TARGETS = [
 # Platforms and Python versions that we support.
 # Triples (edm-platform-string, Python major.minor version, GUI toolkit)
 PLATFORMS = [
-    (MACOS, PYTHON27, NULL),
-    (LINUX, PYTHON27, NULL),
-    (WINDOWS, PYTHON27, NULL),
-    (MACOS, PYTHON27, WXPYTHON),
-    (LINUX, PYTHON27, WXPYTHON),
-    (WINDOWS, PYTHON27, WXPYTHON),
-    (MACOS, PYTHON27, PYSIDE),
-    (LINUX, PYTHON27, PYSIDE),
-    (WINDOWS, PYTHON27, PYSIDE),
-    (MACOS, PYTHON27, PYQT),
-    (LINUX, PYTHON27, PYQT),
-    (WINDOWS, PYTHON27, PYQT),
-    (MACOS, PYTHON35, NULL),
-    (LINUX, PYTHON35, NULL),
-    (WINDOWS, PYTHON35, NULL),
-    (MACOS, PYTHON35, PYQT),
-    (LINUX, PYTHON35, PYQT),
-    (WINDOWS, PYTHON35, PYQT),
     (MACOS, PYTHON36, NULL),
     (LINUX, PYTHON36, NULL),
     (WINDOWS, PYTHON36, NULL),
@@ -109,7 +87,6 @@ PLATFORMS = [
 
 # Dependencies needed for all platforms, toolkits and Python versions.
 CORE_DEPS = [
-    # Actual library runtime dependencies. Also need "futures" on Python 2.7.
     "pyface",
     "setuptools",
     "traits",
@@ -117,9 +94,7 @@ CORE_DEPS = [
 
 # Python-version-specific core dependencies. Dictionary mapping Python version
 # to list of requirements.
-VERSION_CORE_DEPS = {
-    PYTHON27: ["futures"],
-}
+VERSION_CORE_DEPS = {}
 
 # Additional packages needed for running tests under CI.
 ADDITIONAL_CI_DEPS = [
