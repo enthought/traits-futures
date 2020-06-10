@@ -107,8 +107,8 @@ ADDITIONAL_CI_DEPS = [
 # Toolkit-specific ci dependencies. Dictionary mapping toolkit to
 # list of requirements.
 TOOLKIT_CI_DEPS = {
-    PYQT: ["mock", "pyqt", "traitsui"],
-    PYQT5: ["mock", "pyqt5", "traitsui"],
+    PYQT: ["pyqt", "traitsui"],
+    PYQT5: ["pyqt5", "traitsui"],
 }
 
 # Additional packages needed for local development, examples.
