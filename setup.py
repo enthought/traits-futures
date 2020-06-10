@@ -27,7 +27,6 @@ def get_long_description():
 install_requires = [
     "pyface",
     "setuptools",
-    "six",
     "traits",
 ]
 if sys.version_info < (3,):
