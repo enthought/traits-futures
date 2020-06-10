@@ -8,7 +8,7 @@ install_edm() {
     local EDM_INSTALLER_PATH="${HOME}/.cache/download/${EDM_PACKAGE}"
 
     if [ ! -e "$EDM_INSTALLER_PATH" ]; then
-        curl -o "$EDM_INSTALLER_PATH" -L "https://package-data.enthought.com/edm/rh7_x86_64/${EDM_MAJOR_MINOR}/${EDM_PACKAGE}"
+        curl -o "$EDM_INSTALLER_PATH" -L "https://package-data.enthought.com/edm/rh6_x86_64/${EDM_MAJOR_MINOR}/${EDM_PACKAGE}"
     fi
 
     bash "$EDM_INSTALLER_PATH" -b -p "${HOME}/edm"
