@@ -23,10 +23,8 @@ PYTHON_VERSIONS = [PYTHON36]
 
 # Toolkits
 NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
-PYSIDE = "pyside"  # Qt 4, PySide 1; only available for Python 2.x.
-PYQT = "pyqt"  # Qt 4, PyQt, available for Python 2 and Python 3.
-WXPYTHON = "wxpython"  # available for Python 2 only.
-TOOLKITS = [NULL, PYSIDE, PYQT, WXPYTHON]
+PYQT = "pyqt"  # Qt 4, PyQt
+TOOLKITS = [NULL, PYQT]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
@@ -106,8 +104,6 @@ ADDITIONAL_CI_DEPS = [
 # list of requirements.
 TOOLKIT_CI_DEPS = {
     PYQT: ["mock", "pyqt", "traitsui"],
-    PYSIDE: ["mock", "pyside", "traitsui"],
-    WXPYTHON: ["wxpython"],
 }
 
 # Additional packages needed for local development, examples.
