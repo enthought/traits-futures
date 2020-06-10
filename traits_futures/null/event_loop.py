@@ -198,9 +198,7 @@ class EventLoop(object):
                 # Timed out before the condition became true.
                 return False
 
-            # Python 2-compatible version of "action, *action_args = event".
-            action_type, action_args = event[0], event[1:]
-
+            action_type, *action_args = event
             if action_type == _CALL_ACTION:
                 handler_id, args, kwargs = action_args
                 event_handler = self._event_handlers[handler_id]

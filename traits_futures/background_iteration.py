@@ -83,9 +83,6 @@ class IterationBackgroundTask(object):
                     break
                 except BaseException as e:
                     message, message_args = RAISED, marshal_exception(e)
-                    # Make sure we're not keeping references to anything
-                    # in the exception details. Not needed on Python 3.
-                    del e
                     break
                 else:
                     self.send(GENERATED, result)

@@ -64,6 +64,5 @@ Run ``python -m ci example`` to see the list of available examples.
 
 All of the above commands take two options. The ``--python-version`` option
 lets you specify the Python version to use for the development environment. The
-``--toolkit`` option allows you to choose between using PyQt and PySide on
-Python 2. Run ``python -m ci <command> --help`` for more information on any
-of these commands.
+``--toolkit`` option allows you to specify a GUI backend. Run ``python -m ci
+<command> --help`` for more information on any of these commands.
