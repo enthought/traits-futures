@@ -38,6 +38,20 @@ ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
 class TraitsExecutor(HasStrictTraits):
     """
     Executor to initiate and manage background tasks.
+
+    Parameters
+    ----------
+    thread_pool : concurrent.futures.ThreadPoolExecutor, optional
+        If supplied, provides the underlying thread pool executor to use. In
+        this case, the creator of the TraitsExecutor is responsible for
+        shutting down the thread pool once it's no longer needed. If not
+        supplied, a new private thread pool will be created, and this object's
+        ``stop`` method will shut down that thread pool.
+    max_workers : int or None, optional
+        Maximum number of workers for the private thread pool. This parameter
+        is mutually exclusive with thread_pool. The default is ``None``, which
+        delegates the choice of number of workers to Python's
+        ``ThreadPoolExecutor``.
     """
     #: Current state of this executor.
     state = ExecutorState
@@ -50,7 +64,7 @@ class TraitsExecutor(HasStrictTraits):
     #: to dispose of related resources (like the thread pool).
     stopped = Property(Bool())
 
-    def __init__(self, thread_pool=None, max_workers=4, **traits):
+    def __init__(self, thread_pool=None, max_workers=None, **traits):
         super(TraitsExecutor, self).__init__(**traits)
 
         if thread_pool is None:
@@ -58,6 +72,10 @@ class TraitsExecutor(HasStrictTraits):
                 max_workers=max_workers)
             self._own_thread_pool = True
         else:
+            if max_workers is not None:
+                raise TypeError(
+                    "at most one of 'thread_pool' and 'max_workers' "
+                    "should be supplied")
             self._thread_pool = thread_pool
             self._own_thread_pool = False
 
