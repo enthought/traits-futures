@@ -5,8 +5,6 @@
 Main-thread executor for submission of background tasks.
 """
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 import concurrent.futures
 import threading
 

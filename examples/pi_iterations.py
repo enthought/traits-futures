@@ -8,9 +8,6 @@ a Chaco plot.
 
 Note: this example requires NumPy and Chaco.
 """
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
 import numpy as np
 
 from chaco.api import ArrayPlotData, Plot

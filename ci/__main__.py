@@ -6,8 +6,6 @@ Utilities for setting up a development environment and running tests.  See
 the top-level repository README for more detailed instructions on how to use
 these.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import contextlib
 import os
 import shutil

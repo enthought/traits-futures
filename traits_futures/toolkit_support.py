@@ -4,8 +4,6 @@
 """
 Support for toolkit-specific classes.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from pyface.base_toolkit import find_toolkit
 
 

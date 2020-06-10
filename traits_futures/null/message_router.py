@@ -5,8 +5,6 @@
 Support for routing message streams from background processes to their
 corresponding foreground receivers.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from traits.api import Any, Event, HasStrictTraits
 
 from traits_futures.null.package_globals import get_event_loop

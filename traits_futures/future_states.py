@@ -4,8 +4,6 @@
 """
 Future states, used by the various future classes.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from traits.api import Enum
 
 #: Task queued, waiting to be executed.

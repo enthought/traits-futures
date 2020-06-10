@@ -4,8 +4,6 @@
 """
 Tests for the null toolkit EventLoop
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import unittest
 
 from traits_futures.null.event_loop import AsyncCaller, EventLoop

@@ -4,8 +4,6 @@
 """
 Background task that sends results from an iteration.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import types
 
 from traits.api import (
