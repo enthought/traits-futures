@@ -20,10 +20,6 @@ from ci.python_environment import (
     PythonEnvironment,
 )
 
-# Click will complain about unicode_literals unless we disable the warning.
-# Ref: http://click.pocoo.org/5/python3/#unicode-literals
-click.disable_unicode_literals_warning = True
-
 
 # Common options for the commands.
 python_version_option = click.option(
