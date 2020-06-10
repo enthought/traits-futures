@@ -29,8 +29,6 @@ install_requires = [
     "setuptools",
     "traits",
 ]
-if sys.version_info < (3,):
-    install_requires.append("futures")
 
 
 setup(
