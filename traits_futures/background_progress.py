@@ -82,7 +82,7 @@ class ProgressBackgroundTask(object):
     This provides the callable that will be submitted to the thread pool, and
     sends messages to communicate with the ProgressFuture.
     """
-    def __init__(self, callable, args, kwargs, message_sender, cancel_event):
+    def __init__(self, callable, args, kwargs, cancel_event):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
@@ -329,7 +329,6 @@ class BackgroundProgress(HasStrictTraits):
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            message_sender=message_sender,
             cancel_event=cancel_event,
         )
         return future, runner

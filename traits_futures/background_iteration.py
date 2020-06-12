@@ -50,7 +50,7 @@ class IterationBackgroundTask(object):
     """
     Iteration to be executed in the background.
     """
-    def __init__(self, callable, args, kwargs, message_sender, cancel_event):
+    def __init__(self, callable, args, kwargs, cancel_event):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
@@ -312,7 +312,6 @@ class BackgroundIteration(HasStrictTraits):
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            message_sender=message_sender,
             cancel_event=cancel_event,
         )
         return future, runner
