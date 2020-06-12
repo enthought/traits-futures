@@ -61,7 +61,7 @@ EXAMPLES = {
 
 # Python runtime versions.
 RUNTIME_VERSION = {
-    PYTHON36: "3.6.0",
+    PYTHON36: "3.6",
 }
 
 # Directories and files that should be checked for flake8-cleanness.
