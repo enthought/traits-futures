@@ -4,12 +4,9 @@
 """
 A bare-bones event loop that doesn't need any UI framework.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import itertools
+import queue
 import time
-
-from six.moves import queue
 
 #: Event loop action: call with given arguments.
 _CALL_ACTION = "call"
@@ -201,9 +198,7 @@ class EventLoop(object):
                 # Timed out before the condition became true.
                 return False
 
-            # Python 2-compatible version of "action, *action_args = event".
-            action_type, action_args = event[0], event[1:]
-
+            action_type, *action_args = event
             if action_type == _CALL_ACTION:
                 handler_id, args, kwargs = action_args
                 event_handler = self._event_handlers[handler_id]

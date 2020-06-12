@@ -12,8 +12,6 @@ Every progress submission also marks a point where the callable can
 be cancelled.
 """
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 from traits.api import (
     Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
     on_trait_change, Property, Str, Tuple, Unicode)

@@ -4,8 +4,6 @@
 """
 Tests for the TraitsExecutor class.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import concurrent.futures
 import contextlib
 import threading

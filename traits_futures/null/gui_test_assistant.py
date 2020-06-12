@@ -4,8 +4,6 @@
 """
 Support for emulating an event loop for testing purposes.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from traits_futures.null.event_loop import EventLoop
 from traits_futures.null.package_globals import get_event_loop, set_event_loop
 

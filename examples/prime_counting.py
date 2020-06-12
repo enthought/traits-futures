@@ -5,11 +5,6 @@
 Example showing progress reporting from a background computation, with a
 modal progress dialog.
 """
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals)
-
-from six.moves import range
-
 from pyface.qt import QtCore, QtGui
 from pyface.ui.qt4.dialog import Dialog
 from traits.api import (

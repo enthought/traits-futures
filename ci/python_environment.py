@@ -1,8 +1,6 @@
 # (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
 # All rights reserved.
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 import os
 import re
 import subprocess
@@ -259,7 +257,7 @@ def current_platform():
     if platform.startswith("win32"):
         return "win-x86_64" if is_64bits else "win-x86"
     elif platform.startswith("linux"):
-        return "rh6-x86_64"
+        return "rh7-x86_64"
     elif platform == "darwin":
         return "osx-x86_64"
     else:

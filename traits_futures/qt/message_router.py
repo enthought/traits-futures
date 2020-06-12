@@ -4,12 +4,9 @@
 """
 Message routing for the Qt toolkit.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import collections
 import itertools
-
-from six.moves import queue
+import queue
 
 from pyface.qt.QtCore import QObject, Signal, Slot
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int

@@ -4,8 +4,6 @@
 """
 Background task that sends results from an iteration.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import types
 
 from traits.api import (
@@ -85,9 +83,6 @@ class IterationBackgroundTask(object):
                     break
                 except BaseException as e:
                     message, message_args = RAISED, marshal_exception(e)
-                    # Make sure we're not keeping references to anything
-                    # in the exception details. Not needed on Python 3.
-                    del e
                     break
                 else:
                     self.send(GENERATED, result)

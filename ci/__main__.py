@@ -6,8 +6,6 @@ Utilities for setting up a development environment and running tests.  See
 the top-level repository README for more detailed instructions on how to use
 these.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 import contextlib
 import os
 import shutil
@@ -21,10 +19,6 @@ from ci.python_environment import (
     current_platform,
     PythonEnvironment,
 )
-
-# Click will complain about unicode_literals unless we disable the warning.
-# Ref: http://click.pocoo.org/5/python3/#unicode-literals
-click.disable_unicode_literals_warning = True
 
 
 # Common options for the commands.
