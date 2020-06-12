@@ -4,8 +4,6 @@
 """
 Global shared state for this package.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 #: Global event loop.
 _event_loop = None
 

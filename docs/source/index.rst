@@ -30,7 +30,7 @@ Features
   the main thread. This eliminates a large class of potential issues with
   traditional thread-based solutions (race conditions, deadlocks, and UI
   updates off the main thread).
-- Cross-platform, and compatible with both Python 2 and Python 3.
+- Cross-platform.
 
 
 Limitations
@@ -41,6 +41,7 @@ Limitations
 - For the moment, |traits_futures| requires Qt. Support for wxPython
   may arrive in a future release.
 - No multiprocessing support yet. Maybe one day.
+- Requires Python 3.5 or later.
 
 
 Quick start

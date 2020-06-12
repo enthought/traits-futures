@@ -4,8 +4,6 @@
 """
 Test methods run for all future types.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
 
 from traits_futures.api import (

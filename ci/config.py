@@ -1,8 +1,6 @@
 # (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
 # All rights reserved.
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 import os
 
 import pkg_resources
@@ -16,25 +14,22 @@ PREFIX = PACKAGE_NAME.lower().replace("_", "-")
 
 # Platforms
 MACOS = "osx-x86_64"
-LINUX = "rh6-x86_64"
+LINUX = "rh7-x86_64"
 WINDOWS = "win-x86_64"
 
 # Python versions
-PYTHON27 = "py27"
-PYTHON35 = "py35"
 PYTHON36 = "py36"
-PYTHON_VERSIONS = [PYTHON27, PYTHON35, PYTHON36]
+PYTHON_VERSIONS = [PYTHON36]
 
 # Toolkits
 NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
-PYSIDE = "pyside"  # Qt 4, PySide 1; only available for Python 2.x.
-PYQT = "pyqt"  # Qt 4, PyQt, available for Python 2 and Python 3.
-WXPYTHON = "wxpython"  # available for Python 2 only.
-TOOLKITS = [NULL, PYSIDE, PYQT, WXPYTHON]
+PYQT = "pyqt"  # Qt 4, PyQt
+PYQT5 = "pyqt5"  # Qt 5, PyQt
+TOOLKITS = [NULL, PYQT, PYQT5]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
-DEFAULT_TOOLKIT = PYQT
+DEFAULT_TOOLKIT = PYQT5
 
 # Location of repository root. Assumes that the ci script is being
 # run from the root of the repository.
@@ -66,9 +61,7 @@ EXAMPLES = {
 
 # Python runtime versions.
 RUNTIME_VERSION = {
-    PYTHON27: "2.7.13",
-    PYTHON35: "3.5.2",
-    PYTHON36: "3.6.0",
+    PYTHON36: "3.6",
 }
 
 # Directories and files that should be checked for flake8-cleanness.
@@ -83,46 +76,27 @@ FLAKE8_TARGETS = [
 # Platforms and Python versions that we support.
 # Triples (edm-platform-string, Python major.minor version, GUI toolkit)
 PLATFORMS = [
-    (MACOS, PYTHON27, NULL),
-    (LINUX, PYTHON27, NULL),
-    (WINDOWS, PYTHON27, NULL),
-    (MACOS, PYTHON27, WXPYTHON),
-    (LINUX, PYTHON27, WXPYTHON),
-    (WINDOWS, PYTHON27, WXPYTHON),
-    (MACOS, PYTHON27, PYSIDE),
-    (LINUX, PYTHON27, PYSIDE),
-    (WINDOWS, PYTHON27, PYSIDE),
-    (MACOS, PYTHON27, PYQT),
-    (LINUX, PYTHON27, PYQT),
-    (WINDOWS, PYTHON27, PYQT),
-    (MACOS, PYTHON35, NULL),
-    (LINUX, PYTHON35, NULL),
-    (WINDOWS, PYTHON35, NULL),
-    (MACOS, PYTHON35, PYQT),
-    (LINUX, PYTHON35, PYQT),
-    (WINDOWS, PYTHON35, PYQT),
     (MACOS, PYTHON36, NULL),
     (LINUX, PYTHON36, NULL),
     (WINDOWS, PYTHON36, NULL),
     (MACOS, PYTHON36, PYQT),
     (LINUX, PYTHON36, PYQT),
     (WINDOWS, PYTHON36, PYQT),
+    (MACOS, PYTHON36, PYQT5),
+    (LINUX, PYTHON36, PYQT5),
+    (WINDOWS, PYTHON36, PYQT5),
 ]
 
 # Dependencies needed for all platforms, toolkits and Python versions.
 CORE_DEPS = [
-    # Actual library runtime dependencies. Also need "futures" on Python 2.7.
     "pyface",
     "setuptools",
-    "six",
     "traits",
 ]
 
 # Python-version-specific core dependencies. Dictionary mapping Python version
 # to list of requirements.
-VERSION_CORE_DEPS = {
-    PYTHON27: ["futures"],
-}
+VERSION_CORE_DEPS = {}
 
 # Additional packages needed for running tests under CI.
 ADDITIONAL_CI_DEPS = [
@@ -133,9 +107,8 @@ ADDITIONAL_CI_DEPS = [
 # Toolkit-specific ci dependencies. Dictionary mapping toolkit to
 # list of requirements.
 TOOLKIT_CI_DEPS = {
-    PYQT: ["mock", "pyqt", "traitsui"],
-    PYSIDE: ["mock", "pyside", "traitsui"],
-    WXPYTHON: ["wxpython"],
+    PYQT: ["pyqt", "traitsui"],
+    PYQT5: ["pyqt5", "traitsui"],
 }
 
 # Additional packages needed for local development, examples.

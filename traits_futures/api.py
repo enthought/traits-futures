@@ -4,8 +4,6 @@
 """
 Core API for the traits_futures package.
 """
-from __future__ import absolute_import, print_function, unicode_literals
-
 from traits_futures.background_call import CallFuture
 from traits_futures.background_iteration import IterationFuture
 from traits_futures.background_progress import ProgressFuture
