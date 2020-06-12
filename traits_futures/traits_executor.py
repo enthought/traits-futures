@@ -33,6 +33,18 @@ STOPPED = "stopped"
 ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
 
 
+def _background_job_wrapper(background_job, sender):
+    """
+    This is the callable that's actually submitted as a concurrent.futures
+    job.
+    """
+    def send(message_type, message_args=None):
+        sender.send((message_type, message_args))
+
+    with sender:
+        background_job(sender, send)
+
+
 class TraitsExecutor(HasStrictTraits):
     """
     Executor to initiate and manage background tasks.
@@ -160,7 +172,7 @@ class TraitsExecutor(HasStrictTraits):
                 cancel_event=threading.Event(),
                 message_receiver=receiver,
             )
-            self._thread_pool.submit(runner, sender)
+            self._thread_pool.submit(_background_job_wrapper, runner, sender)
         except Exception:
             # Clean up the pipe.
             with sender:

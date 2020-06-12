@@ -56,53 +56,49 @@ class IterationBackgroundTask(object):
         self.kwargs = kwargs
         self.cancel_event = cancel_event
 
-    def __call__(self, message_sender):
-        def send(message_type, message_args=None):
-            message_sender.send((message_type, message_args))
+    def __call__(self, message_sender, send):
+        if self.cancel_event.is_set():
+            send(INTERRUPTED)
+            return
 
-        with message_sender:
+        send(STARTED)
+        try:
+            iterable = iter(self.callable(*self.args, **self.kwargs))
+        except BaseException as e:
+            send(RAISED, marshal_exception(e))
+            del e
+            return
+
+        while True:
             if self.cancel_event.is_set():
-                send(INTERRUPTED)
-                return
+                message, message_args = INTERRUPTED, None
+                break
 
-            send(STARTED)
             try:
-                iterable = iter(self.callable(*self.args, **self.kwargs))
+                result = next(iterable)
+            except StopIteration:
+                message, message_args = EXHAUSTED, None
+                break
             except BaseException as e:
-                send(RAISED, marshal_exception(e))
-                del e
-                return
+                message, message_args = RAISED, marshal_exception(e)
+                break
+            else:
+                send(GENERATED, result)
+                # Delete now, else we'll hang on to the reference to this
+                # result until the next iteration, which could be some
+                # arbitrary time in the future.
+                del result
 
-            while True:
-                if self.cancel_event.is_set():
-                    message, message_args = INTERRUPTED, None
-                    break
+        # If the iterable is a generator, close it before we send the final
+        # message. This ensures that any cleanup in the generator function
+        # (e.g., as a result of leaving a with block, or executing a
+        # finally clause) occurs promptly.
+        if isinstance(iterable, types.GeneratorType):
+            iterable.close()
+        # Belt and braces: also delete the reference to the iterable.
+        del iterable
 
-                try:
-                    result = next(iterable)
-                except StopIteration:
-                    message, message_args = EXHAUSTED, None
-                    break
-                except BaseException as e:
-                    message, message_args = RAISED, marshal_exception(e)
-                    break
-                else:
-                    send(GENERATED, result)
-                    # Delete now, else we'll hang on to the reference to this
-                    # result until the next iteration, which could be some
-                    # arbitrary time in the future.
-                    del result
-
-            # If the iterable is a generator, close it before we send the final
-            # message. This ensures that any cleanup in the generator function
-            # (e.g., as a result of leaving a with block, or executing a
-            # finally clause) occurs promptly.
-            if isinstance(iterable, types.GeneratorType):
-                iterable.close()
-            # Belt and braces: also delete the reference to the iterable.
-            del iterable
-
-            send(message, message_args)
+        send(message, message_args)
 
 
 # IterationFuture states. These represent the futures' current state of

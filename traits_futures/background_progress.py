@@ -88,31 +88,27 @@ class ProgressBackgroundTask(object):
         self.kwargs = kwargs
         self.cancel_event = cancel_event
 
-    def __call__(self, message_sender):
-        def send(message_type, message_args=None):
-            message_sender.send((message_type, message_args))
-
+    def __call__(self, message_sender, send):
         progress = ProgressReporter(
             message_sender=message_sender,
             cancel_event=self.cancel_event,
         )
         self.kwargs["progress"] = progress.report
 
-        with message_sender:
-            if self.cancel_event.is_set():
-                send(INTERRUPTED)
-                return
+        if self.cancel_event.is_set():
+            send(INTERRUPTED)
+            return
 
-            send(STARTED)
-            try:
-                result = self.callable(*self.args, **self.kwargs)
-            except _ProgressCancelled:
-                send(INTERRUPTED)
-            except BaseException as e:
-                send(RAISED, marshal_exception(e))
-                del e
-            else:
-                send(RETURNED, result)
+        send(STARTED)
+        try:
+            result = self.callable(*self.args, **self.kwargs)
+        except _ProgressCancelled:
+            send(INTERRUPTED)
+        except BaseException as e:
+            send(RAISED, marshal_exception(e))
+            del e
+        else:
+            send(RETURNED, result)
 
 
 class ProgressFuture(HasStrictTraits):
