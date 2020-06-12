@@ -45,7 +45,7 @@ class CallBackgroundTask(object):
         self.kwargs = kwargs
         self.cancel_event = cancel_event
 
-    def __call__(self, message_sender, send):
+    def __call__(self, send):
         if self.cancel_event.is_set():
             send(INTERRUPTED)
             return

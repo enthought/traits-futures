@@ -42,7 +42,7 @@ def _background_job_wrapper(background_job, sender):
         sender.send((message_type, message_args))
 
     with sender:
-        background_job(sender, send)
+        background_job(send)
 
 
 class TraitsExecutor(HasStrictTraits):

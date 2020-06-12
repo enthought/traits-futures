@@ -53,8 +53,8 @@ class ProgressReporter(object):
     """
     Object used by the target callable to report progress.
     """
-    def __init__(self, message_sender, cancel_event):
-        self.message_sender = message_sender
+    def __init__(self, send, cancel_event):
+        self.send = send
         self.cancel_event = cancel_event
 
     def report(self, progress_info):
@@ -72,7 +72,7 @@ class ProgressReporter(object):
         """
         if self.cancel_event.is_set():
             raise _ProgressCancelled("Task was cancelled")
-        self.message_sender.send((PROGRESS, progress_info))
+        self.send(PROGRESS, progress_info)
 
 
 class ProgressBackgroundTask(object):
@@ -88,9 +88,9 @@ class ProgressBackgroundTask(object):
         self.kwargs = kwargs
         self.cancel_event = cancel_event
 
-    def __call__(self, message_sender, send):
+    def __call__(self, send):
         progress = ProgressReporter(
-            message_sender=message_sender,
+            send=send,
             cancel_event=self.cancel_event,
         )
         self.kwargs["progress"] = progress.report
