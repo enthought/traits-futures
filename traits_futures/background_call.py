@@ -240,8 +240,7 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def future_and_callable(
-            self, cancel_event, message_sender, message_receiver):
+    def future_and_callable(self, cancel_event, message_receiver):
         """
         Return a future and a linked background callable.
 
@@ -249,10 +248,6 @@ class BackgroundCall(HasStrictTraits):
         ----------
         cancel_event : threading.Event
             Event used to request cancellation of the background job.
-        message_sender : MessageSender
-            Object used by the background job to send messages to the
-            UI. Supports the context manager protocol, and provides a
-            'send' method.
         message_receiver : MessageReceiver
             Object that remains in the main thread and receives messages sent
             by the message sender. This is a HasTraits subclass with

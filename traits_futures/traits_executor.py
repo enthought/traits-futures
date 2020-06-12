@@ -158,7 +158,6 @@ class TraitsExecutor(HasStrictTraits):
         try:
             future, runner = task.future_and_callable(
                 cancel_event=threading.Event(),
-                message_sender=sender,
                 message_receiver=receiver,
             )
             self._thread_pool.submit(runner, sender)
