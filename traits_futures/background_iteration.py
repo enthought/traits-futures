@@ -57,17 +57,19 @@ class IterationBackgroundTask(object):
         self.cancel_event = cancel_event
 
     def __call__(self, message_sender):
-        self.message_sender = message_sender
+        def send(message_type, message_args=None):
+            message_sender.send((message_type, message_args))
+
         with message_sender:
             if self.cancel_event.is_set():
-                self.send(INTERRUPTED)
+                send(INTERRUPTED)
                 return
 
-            self.send(STARTED)
+            send(STARTED)
             try:
                 iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
-                self.send(RAISED, marshal_exception(e))
+                send(RAISED, marshal_exception(e))
                 del e
                 return
 
@@ -85,7 +87,7 @@ class IterationBackgroundTask(object):
                     message, message_args = RAISED, marshal_exception(e)
                     break
                 else:
-                    self.send(GENERATED, result)
+                    send(GENERATED, result)
                     # Delete now, else we'll hang on to the reference to this
                     # result until the next iteration, which could be some
                     # arbitrary time in the future.
@@ -100,25 +102,7 @@ class IterationBackgroundTask(object):
             # Belt and braces: also delete the reference to the iterable.
             del iterable
 
-            self.send(message, message_args)
-
-    def send(self, message_type, message_args=None):
-        """
-        Send a message to the linked IterationFuture.
-
-        Sends a pair consisting of a string giving the message type
-        along with an object providing any relevant arguments. The
-        interpretation of the arguments depends on the message type.
-
-        Parameters
-        ----------
-        message_type : string
-            Type of the message to be sent.
-        message_args : object, optional
-            Any arguments relevant to the message.  Ideally, should be
-            pickleable and immutable. If not provided, ``None`` is sent.
-        """
-        self.message_sender.send((message_type, message_args))
+            send(message, message_args)
 
 
 # IterationFuture states. These represent the futures' current state of

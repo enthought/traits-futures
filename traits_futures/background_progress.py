@@ -89,7 +89,9 @@ class ProgressBackgroundTask(object):
         self.cancel_event = cancel_event
 
     def __call__(self, message_sender):
-        self.message_sender = message_sender
+        def send(message_type, message_args=None):
+            message_sender.send((message_type, message_args))
+
         progress = ProgressReporter(
             message_sender=message_sender,
             cancel_event=self.cancel_event,
@@ -98,37 +100,19 @@ class ProgressBackgroundTask(object):
 
         with message_sender:
             if self.cancel_event.is_set():
-                self.send(INTERRUPTED)
+                send(INTERRUPTED)
                 return
 
-            self.send(STARTED)
+            send(STARTED)
             try:
                 result = self.callable(*self.args, **self.kwargs)
             except _ProgressCancelled:
-                self.send(INTERRUPTED)
+                send(INTERRUPTED)
             except BaseException as e:
-                self.send(RAISED, marshal_exception(e))
+                send(RAISED, marshal_exception(e))
                 del e
             else:
-                self.send(RETURNED, result)
-
-    def send(self, message_type, message_args=None):
-        """
-        Send a message to the linked future.
-
-        Sends a pair consisting of a string giving the message type along with
-        an object providing any relevant arguments. The interpretation of the
-        arguments depends on the message type.
-
-        Parameters
-        ----------
-        message_type : string
-            Type of the message to be sent.
-        message_args : object, optional
-            Any arguments relevant to the message.  Ideally, should be
-            pickleable and immutable. If not provided, ``None`` is sent.
-        """
-        self.message_sender.send((message_type, message_args))
+                send(RETURNED, result)
 
 
 class ProgressFuture(HasStrictTraits):
