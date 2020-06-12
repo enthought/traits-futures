@@ -161,7 +161,7 @@ class TraitsExecutor(HasStrictTraits):
                 message_sender=sender,
                 message_receiver=receiver,
             )
-            self._thread_pool.submit(runner)
+            self._thread_pool.submit(runner, sender)
         except Exception:
             # Clean up the pipe.
             with sender:

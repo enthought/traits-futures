@@ -89,7 +89,7 @@ class ProgressBackgroundTask(object):
         self.message_sender = message_sender
         self.cancel_event = cancel_event
 
-    def __call__(self):
+    def __call__(self, message_sender):
         progress = ProgressReporter(
             message_sender=self.message_sender,
             cancel_event=self.cancel_event,
