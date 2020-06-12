@@ -29,7 +29,7 @@ TOOLKITS = [NULL, PYQT, PYQT5]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
-DEFAULT_TOOLKIT = PYQT
+DEFAULT_TOOLKIT = PYQT5
 
 # Location of repository root. Assumes that the ci script is being
 # run from the root of the repository.
