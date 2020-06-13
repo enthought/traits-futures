@@ -55,7 +55,6 @@ class CallBackgroundTask(object):
             result = self.callable(*self.args, **self.kwargs)
         except BaseException as e:
             send(RAISED, marshal_exception(e))
-            del e
         else:
             send(RETURNED, result)
 

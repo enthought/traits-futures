@@ -106,7 +106,6 @@ class ProgressBackgroundTask(object):
             send(INTERRUPTED)
         except BaseException as e:
             send(RAISED, marshal_exception(e))
-            del e
         else:
             send(RETURNED, result)
 
