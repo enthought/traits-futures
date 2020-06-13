@@ -9,7 +9,8 @@ import concurrent.futures
 import threading
 
 from traits.api import (
-    Any, Bool, Enum, HasStrictTraits, Instance, on_trait_change, Property, Set)
+    Any, Bool, Dict, Enum, HasStrictTraits, Instance, on_trait_change,
+    Property)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
@@ -174,12 +175,13 @@ class TraitsExecutor(HasStrictTraits):
             )
             self._thread_pool.submit(_background_job_wrapper, runner, sender)
         except Exception:
-            # Clean up the pipe.
+            # Clean up the pipe. There's probably a better way to manage this.
+            self._futures[receiver] = None
             with sender:
                 pass
             raise
 
-        self._futures.add(future)
+        self._futures[receiver] = future
         return future
 
     def stop(self):
@@ -194,7 +196,7 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for future in self._futures:
+        for _, future in self._futures.items():
             if future.cancellable:
                 future.cancel()
 
@@ -214,8 +216,9 @@ class TraitsExecutor(HasStrictTraits):
     #: and foreground futures.
     _message_router = Any()
 
-    #: Currently executing futures.
-    _futures = Set()
+    #: Currently executing futures: mapping from message receivers to
+    #: futures.
+    _futures = Dict(Any(), Any())
 
     # Private methods #########################################################
 
@@ -243,9 +246,9 @@ class TraitsExecutor(HasStrictTraits):
         router.connect()
         return router
 
-    @on_trait_change('_futures:_exiting')
-    def _remove_future(self, future, name, new):
-        self._futures.remove(future)
+    @on_trait_change("_message_router:receiver_done")
+    def _remove_future(self, receiver):
+        self._futures.pop(receiver)
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
         if self.state == STOPPING and not self._futures:

@@ -90,6 +90,9 @@ class MessageRouter(HasStrictTraits):
 
     Requires the event loop to be running in order for messages to arrive.
     """
+    #: Event fired when a receiver is dropped from the routing table.
+    receiver_done = Event(Instance(MessageReceiver))
+
     def pipe(self):
         """
         Create a (sender, receiver) pair for sending messages.
@@ -150,6 +153,7 @@ class MessageRouter(HasStrictTraits):
             _, connection_id = wrapped_message
             receiver = self._receivers.pop(connection_id)
             receiver.done = True
+            self.receiver_done = receiver
 
     def __message_queue_default(self):
         return queue.Queue()
