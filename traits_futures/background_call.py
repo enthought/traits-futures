@@ -6,7 +6,7 @@ Background task consisting of a simple callable.
 """
 from traits.api import (
     Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
-    on_trait_change, Property, Str, Tuple, Unicode)
+    on_trait_change, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
@@ -162,7 +162,7 @@ class CallFuture(HasStrictTraits):
     _result = Any()
 
     #: Exception information from the background task.
-    _exception = Tuple(Unicode(), Unicode(), Unicode())
+    _exception = Tuple(Str(), Str(), Str())
 
     #: Object that receives messages from the background task.
     _message_receiver = Instance(HasTraits)
