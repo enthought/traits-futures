@@ -5,7 +5,7 @@
 Background task consisting of a simple callable.
 """
 from traits.api import (
-    Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
+    Any, Bool, Callable, Dict, HasStrictTraits, HasTraits, Instance,
     on_trait_change, Property, Str, Tuple)
 
 from traits_futures.exception_handling import marshal_exception
@@ -39,44 +39,24 @@ class CallBackgroundTask(object):
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor
     """
-    def __init__(self, callable, args, kwargs, message_sender, cancel_event):
+    def __init__(self, callable, args, kwargs, cancel_event):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
-        self.message_sender = message_sender
         self.cancel_event = cancel_event
 
-    def __call__(self):
-        with self.message_sender:
-            if self.cancel_event.is_set():
-                self.send(INTERRUPTED)
-                return
+    def __call__(self, send):
+        if self.cancel_event.is_set():
+            send(INTERRUPTED)
+            return
 
-            self.send(STARTED)
-            try:
-                result = self.callable(*self.args, **self.kwargs)
-            except BaseException as e:
-                self.send(RAISED, marshal_exception(e))
-            else:
-                self.send(RETURNED, result)
-
-    def send(self, message_type, message_args=None):
-        """
-        Send a message to the linked CallFuture.
-
-        Sends a pair consisting of a string giving the message type
-        along with an object providing any relevant arguments. The
-        interpretation of the arguments depends on the message type.
-
-        Parameters
-        ----------
-        message_type : string
-            Type of the message to be sent.
-        message_args : object, optional
-            Any arguments relevant to the message.  Ideally, should be
-            pickleable and immutable. If not provided, ``None`` is sent.
-        """
-        self.message_sender.send((message_type, message_args))
+        send(STARTED)
+        try:
+            result = self.callable(*self.args, **self.kwargs)
+        except BaseException as e:
+            send(RAISED, marshal_exception(e))
+        else:
+            send(RETURNED, result)
 
 
 # CallFuture states. These represent the future's current
@@ -166,15 +146,7 @@ class CallFuture(HasStrictTraits):
     #: Object that receives messages from the background task.
     _message_receiver = Instance(HasTraits)
 
-    #: Event fired when the background task is on the point of exiting.
-    #: This is mostly used for internal bookkeeping.
-    _exiting = Event()
-
     # Private methods #########################################################
-
-    @on_trait_change('_message_receiver:done')
-    def _send_exiting_event(self):
-        self._exiting = True
 
     @on_trait_change('_message_receiver:message')
     def _process_message(self, message):
@@ -239,8 +211,7 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def future_and_callable(
-            self, cancel_event, message_sender, message_receiver):
+    def future_and_callable(self, cancel_event, message_receiver):
         """
         Return a future and a linked background callable.
 
@@ -248,10 +219,6 @@ class BackgroundCall(HasStrictTraits):
         ----------
         cancel_event : threading.Event
             Event used to request cancellation of the background job.
-        message_sender : MessageSender
-            Object used by the background job to send messages to the
-            UI. Supports the context manager protocol, and provides a
-            'send' method.
         message_receiver : MessageReceiver
             Object that remains in the main thread and receives messages sent
             by the message sender. This is a HasTraits subclass with
@@ -275,7 +242,6 @@ class BackgroundCall(HasStrictTraits):
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            message_sender=message_sender,
             cancel_event=cancel_event,
         )
         return future, runner

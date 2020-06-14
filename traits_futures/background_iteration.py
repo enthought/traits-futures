@@ -50,74 +50,54 @@ class IterationBackgroundTask(object):
     """
     Iteration to be executed in the background.
     """
-    def __init__(self, callable, args, kwargs, message_sender, cancel_event):
+    def __init__(self, callable, args, kwargs, cancel_event):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
-        self.message_sender = message_sender
         self.cancel_event = cancel_event
 
-    def __call__(self):
-        with self.message_sender:
+    def __call__(self, send):
+        if self.cancel_event.is_set():
+            send(INTERRUPTED)
+            return
+
+        send(STARTED)
+        try:
+            iterable = iter(self.callable(*self.args, **self.kwargs))
+        except BaseException as e:
+            send(RAISED, marshal_exception(e))
+            return
+
+        while True:
             if self.cancel_event.is_set():
-                self.send(INTERRUPTED)
-                return
+                message, message_args = INTERRUPTED, None
+                break
 
-            self.send(STARTED)
             try:
-                iterable = iter(self.callable(*self.args, **self.kwargs))
+                result = next(iterable)
+            except StopIteration:
+                message, message_args = EXHAUSTED, None
+                break
             except BaseException as e:
-                self.send(RAISED, marshal_exception(e))
-                return
+                message, message_args = RAISED, marshal_exception(e)
+                break
+            else:
+                send(GENERATED, result)
+                # Delete now, else we'll hang on to the reference to this
+                # result until the next iteration, which could be some
+                # arbitrary time in the future.
+                del result
 
-            while True:
-                if self.cancel_event.is_set():
-                    message, message_args = INTERRUPTED, None
-                    break
+        # If the iterable is a generator, close it before we send the final
+        # message. This ensures that any cleanup in the generator function
+        # (e.g., as a result of leaving a with block, or executing a
+        # finally clause) occurs promptly.
+        if isinstance(iterable, types.GeneratorType):
+            iterable.close()
+        # Belt and braces: also delete the reference to the iterable.
+        del iterable
 
-                try:
-                    result = next(iterable)
-                except StopIteration:
-                    message, message_args = EXHAUSTED, None
-                    break
-                except BaseException as e:
-                    message, message_args = RAISED, marshal_exception(e)
-                    break
-                else:
-                    self.send(GENERATED, result)
-                    # Delete now, else we'll hang on to the reference to this
-                    # result until the next iteration, which could be some
-                    # arbitrary time in the future.
-                    del result
-
-            # If the iterable is a generator, close it before we send the final
-            # message. This ensures that any cleanup in the generator function
-            # (e.g., as a result of leaving a with block, or executing a
-            # finally clause) occurs promptly.
-            if isinstance(iterable, types.GeneratorType):
-                iterable.close()
-            # Belt and braces: also delete the reference to the iterable.
-            del iterable
-
-            self.send(message, message_args)
-
-    def send(self, message_type, message_args=None):
-        """
-        Send a message to the linked IterationFuture.
-
-        Sends a pair consisting of a string giving the message type
-        along with an object providing any relevant arguments. The
-        interpretation of the arguments depends on the message type.
-
-        Parameters
-        ----------
-        message_type : string
-            Type of the message to be sent.
-        message_args : object, optional
-            Any arguments relevant to the message.  Ideally, should be
-            pickleable and immutable. If not provided, ``None`` is sent.
-        """
-        self.message_sender.send((message_type, message_args))
+        send(message, message_args)
 
 
 # IterationFuture states. These represent the futures' current state of
@@ -196,15 +176,7 @@ class IterationFuture(HasStrictTraits):
     #: Object that receives messages from the background task.
     _message_receiver = Instance(HasTraits)
 
-    #: Event fired when the background task is on the point of exiting.
-    #: This is mostly used for internal bookkeeping.
-    _exiting = Event()
-
     # Private methods #########################################################
-
-    @on_trait_change('_message_receiver:done')
-    def _send_exiting_event(self):
-        self._exiting = True
 
     @on_trait_change('_message_receiver:message')
     def _process_message(self, message):
@@ -275,8 +247,7 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def future_and_callable(
-            self, cancel_event, message_sender, message_receiver):
+    def future_and_callable(self, cancel_event, message_receiver):
         """
         Return a future and a linked background callable.
 
@@ -284,10 +255,6 @@ class BackgroundIteration(HasStrictTraits):
         ----------
         cancel_event : threading.Event
             Event used to request cancellation of the background job.
-        message_sender : MessageSender
-            Object used by the background job to send messages to the
-            UI. Supports the context manager protocol, and provides a
-            'send' method.
         message_receiver : MessageReceiver
             Object that remains in the main thread and receives messages sent
             by the message sender. This is a HasTraits subclass with
@@ -311,7 +278,6 @@ class BackgroundIteration(HasStrictTraits):
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            message_sender=message_sender,
             cancel_event=cancel_event,
         )
         return future, runner
