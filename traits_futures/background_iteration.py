@@ -68,7 +68,6 @@ class IterationBackgroundTask(object):
                 iterable = iter(self.callable(*self.args, **self.kwargs))
             except BaseException as e:
                 self.send(RAISED, marshal_exception(e))
-                del e
                 return
 
             while True:
