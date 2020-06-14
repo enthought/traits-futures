@@ -20,6 +20,14 @@ class Dummy(HasStrictTraits):
     never_fired = Event()
 
 
+def slow_return():
+    """
+    Return after a delay.
+    """
+    time.sleep(0.1)
+    return 1729
+
+
 class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
@@ -69,14 +77,10 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
 
     def test_run_until_success(self):
         # Trait fired, condition starts false but becomes true.
-        def target():
-            time.sleep(0.1)
-            return 1729
-
         executor = TraitsExecutor()
 
         # Case 1: condition true on second trait change event.
-        future = executor.submit_call(target)
+        future = executor.submit_call(slow_return)
         self.run_until(
             future,
             "state",
