@@ -5,7 +5,7 @@ import time
 
 from traits.api import (
     Bool, Button, HasStrictTraits, Instance, Int,
-    on_trait_change, Property, Unicode)
+    on_trait_change, Property, Str)
 from traitsui.api import Item, UItem, View
 
 from traits_futures.api import CallFuture, TraitsExecutor
@@ -31,7 +31,7 @@ class QuickStartExample(HasStrictTraits):
     input_for_calculation = Int()
 
     #: Message about state of calculation.
-    message = Unicode("No previous calculation runs")
+    message = Str("No previous calculation runs")
 
     #: Button to start the calculation.
     calculate = Button()
