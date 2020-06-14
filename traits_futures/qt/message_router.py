@@ -4,7 +4,7 @@
 """
 Message routing for the Qt toolkit.
 """
-import collections
+import collections.abc
 import itertools
 import queue
 
@@ -129,7 +129,7 @@ class MessageRouter(HasStrictTraits):
     _message_queue = Any()
 
     #: Source of new connection ids.
-    _connection_ids = Instance(collections.Iterator)
+    _connection_ids = Instance(collections.abc.Iterator)
 
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
