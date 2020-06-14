@@ -46,18 +46,32 @@ class MessageSender(object):
         self.async_done()
         self.close()
 
-    def send(self, message):
-        """
-        Send a message to the router.
-        """
-        self.async_message(message)
-
     def close(self):
         """
         Close this sender.
         """
         self.async_message.close()
         self.async_done.close()
+
+    def send(self, message):
+        """
+        Send a message to the router.
+        """
+        self.async_message(message)
+
+    def send_message(self, message_type, message_args=None):
+        """
+        Send a message from the background task to the router.
+
+        Parameters
+        ----------
+        message_type : str
+            The type of the message
+        message_args : any, optional
+            Any arguments for the message; ideally, this should be an
+            immutable, pickleable object. If not given, ``None`` is used.
+        """
+        self.send((message_type, message_args))
 
 
 class MessageRouter(HasStrictTraits):

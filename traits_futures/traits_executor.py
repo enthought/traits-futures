@@ -39,11 +39,8 @@ def _background_job_wrapper(background_job, sender):
     This is the callable that's actually submitted as a concurrent.futures
     job.
     """
-    def send(message_type, message_args=None):
-        sender.send((message_type, message_args))
-
     with sender:
-        background_job(send)
+        background_job(sender.send_message)
 
 
 class TraitsExecutor(HasStrictTraits):

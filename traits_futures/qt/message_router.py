@@ -72,6 +72,20 @@ class MessageSender(object):
         self.message_queue.put(("message", self.connection_id, message))
         self.signaller.message_sent.emit()
 
+    def send_message(self, message_type, message_args=None):
+        """
+        Send a message from the background task to the router.
+
+        Parameters
+        ----------
+        message_type : str
+            The type of the message
+        message_args : any, optional
+            Any arguments for the message; ideally, this should be an
+            immutable, pickleable object. If not given, ``None`` is used.
+        """
+        self.send((message_type, message_args))
+
 
 class MessageReceiver(HasStrictTraits):
     """
