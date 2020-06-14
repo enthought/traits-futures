@@ -173,14 +173,11 @@ class TraitsExecutor(HasStrictTraits):
                 cancel_event=threading.Event(),
                 message_receiver=receiver,
             )
-            self._thread_pool.submit(_background_job_wrapper, runner, sender)
         except Exception:
-            # Clean up the pipe. There's probably a better way to manage this.
-            self._futures[receiver] = None
-            with sender:
-                pass
+            self._message_router.close_pipe(sender, receiver)
             raise
 
+        self._thread_pool.submit(_background_job_wrapper, runner, sender)
         self._futures[receiver] = future
         return future
 

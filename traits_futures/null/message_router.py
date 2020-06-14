@@ -5,7 +5,7 @@
 Support for routing message streams from background processes to their
 corresponding foreground receivers.
 """
-from traits.api import Any, Event, HasStrictTraits
+from traits.api import Any, Event, HasStrictTraits, Instance
 
 from traits_futures.null.package_globals import get_event_loop
 
@@ -17,20 +17,11 @@ class MessageReceiver(HasStrictTraits):
     #: Event fired when a message is received from the paired sender.
     message = Event(Any())
 
-    #: Event fired to indicate that the sender has sent its last message.
-    done = Event()
-
     def _on_message(self, message):
         """
         Callback fired by the event loop on each message arrival.
         """
         self.message = message
-
-    def _on_done(self):
-        """
-        Callback fired by the event loop indicating no more messages pending.
-        """
-        self.done = True
 
 
 class MessageSender(object):
@@ -53,8 +44,7 @@ class MessageSender(object):
 
     def __exit__(self, *exc_info):
         self.async_done()
-        self.async_message.close()
-        self.async_done.close()
+        self.close()
 
     def send(self, message):
         """
@@ -62,14 +52,23 @@ class MessageSender(object):
         """
         self.async_message(message)
 
+    def close(self):
+        """
+        Close this sender.
+        """
+        self.async_message.close()
+        self.async_done.close()
 
-class MessageRouter(object):
+
+class MessageRouter(HasStrictTraits):
     """
     Router for messages from background jobs to their corresponding futures.
     """
-    def __init__(self):
-        #: The event loop we'll use for message routing.
-        self._event_loop = None
+    #: Event fired when a receiver is dropped from the routing table.
+    receiver_done = Event(Instance(MessageReceiver))
+
+    #: The event loop used for message routing.
+    _event_loop = Any()
 
     def connect(self):
         """
@@ -98,6 +97,16 @@ class MessageRouter(object):
         receiver = MessageReceiver()
         sender = MessageSender(
             async_message=event_loop.async_caller(receiver._on_message),
-            async_done=event_loop.async_caller(receiver._on_done),
+            async_done=event_loop.async_caller(
+                lambda: self._on_done(receiver)),
         )
         return sender, receiver
+
+    def close_pipe(self, sender, receiver):
+        """
+        Discard an unused sender / receiver pair.
+        """
+        sender.close()
+
+    def _on_done(self, receiver):
+        self.receiver_done = receiver
