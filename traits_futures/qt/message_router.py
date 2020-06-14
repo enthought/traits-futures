@@ -4,7 +4,7 @@
 """
 Message routing for the Qt toolkit.
 """
-import collections
+import collections.abc
 import itertools
 import queue
 
@@ -72,6 +72,20 @@ class MessageSender(object):
         self.message_queue.put(("message", self.connection_id, message))
         self.signaller.message_sent.emit()
 
+    def send_message(self, message_type, message_args=None):
+        """
+        Send a message from the background task to the router.
+
+        Parameters
+        ----------
+        message_type : str
+            The type of the message
+        message_args : any, optional
+            Any arguments for the message; ideally, this should be an
+            immutable, pickleable object. If not given, ``None`` is used.
+        """
+        self.send((message_type, message_args))
+
 
 class MessageReceiver(HasStrictTraits):
     """
@@ -80,9 +94,6 @@ class MessageReceiver(HasStrictTraits):
     #: Event fired when a message is received from the paired sender.
     message = Event(Any())
 
-    #: Event fired to indicate that the sender has sent its last message.
-    done = Event()
-
 
 class MessageRouter(HasStrictTraits):
     """
@@ -90,6 +101,9 @@ class MessageRouter(HasStrictTraits):
 
     Requires the event loop to be running in order for messages to arrive.
     """
+    #: Event fired when a receiver is dropped from the routing table.
+    receiver_done = Event(Instance(MessageReceiver))
+
     def pipe(self):
         """
         Create a (sender, receiver) pair for sending messages.
@@ -111,6 +125,13 @@ class MessageRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
+    def close_pipe(self, sender, receiver):
+        """
+        Close an unused pipe.
+        """
+        connection_id = sender.connection_id
+        self._receivers.pop(connection_id)
+
     def connect(self):
         """
         Prepare router for routing.
@@ -129,7 +150,7 @@ class MessageRouter(HasStrictTraits):
     _message_queue = Any()
 
     #: Source of new connection ids.
-    _connection_ids = Instance(collections.Iterator)
+    _connection_ids = Instance(collections.abc.Iterator)
 
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
@@ -149,7 +170,7 @@ class MessageRouter(HasStrictTraits):
             assert wrapped_message[0] == "done"
             _, connection_id = wrapped_message
             receiver = self._receivers.pop(connection_id)
-            receiver.done = True
+            self.receiver_done = receiver
 
     def __message_queue_default(self):
         return queue.Queue()

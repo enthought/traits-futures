@@ -9,7 +9,7 @@ from pyface.qt import QtCore, QtGui
 from pyface.ui.qt4.dialog import Dialog
 from traits.api import (
     Any, Bool, Button, HasStrictTraits, Instance, Int, on_trait_change,
-    Property, Unicode)
+    Property, Str)
 from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
 from traits_futures.api import (
@@ -24,7 +24,7 @@ class ProgressDialog(Dialog, HasStrictTraits):
     future = Instance(ProgressFuture)
 
     #: The message to display.
-    message = Unicode()
+    message = Str()
 
     #: The maximum number of steps.
     maximum = Int(1)
@@ -172,7 +172,7 @@ class PrimeCounter(Handler):
     count_enabled = Property(Bool, depends_on='future.done')
 
     #: Result from the previous run.
-    result_message = Unicode("No previous result")
+    result_message = Str("No previous result")
 
     #: Limit used for most recent run.
     _last_limit = Int()

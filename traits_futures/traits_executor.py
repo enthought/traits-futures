@@ -9,7 +9,8 @@ import concurrent.futures
 import threading
 
 from traits.api import (
-    Any, Bool, Enum, HasStrictTraits, Instance, on_trait_change, Property, Set)
+    Any, Bool, Dict, Enum, HasStrictTraits, Instance, on_trait_change,
+    Property)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
@@ -31,6 +32,15 @@ STOPPED = "stopped"
 
 #: Trait type representing the executor state.
 ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
+
+
+def _background_job_wrapper(background_job, sender):
+    """
+    This is the callable that's actually submitted as a concurrent.futures
+    job.
+    """
+    with sender:
+        background_job(sender.send_message)
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -176,17 +186,14 @@ class TraitsExecutor(HasStrictTraits):
         try:
             future, runner = task.future_and_callable(
                 cancel_event=threading.Event(),
-                message_sender=sender,
                 message_receiver=receiver,
             )
-            self._thread_pool.submit(runner)
         except Exception:
-            # Clean up the pipe.
-            with sender:
-                pass
+            self._message_router.close_pipe(sender, receiver)
             raise
 
-        self._futures.add(future)
+        self._thread_pool.submit(_background_job_wrapper, runner, sender)
+        self._futures[receiver] = future
         return future
 
     def stop(self):
@@ -201,7 +208,7 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for future in self._futures:
+        for _, future in self._futures.items():
             if future.cancellable:
                 future.cancel()
 
@@ -221,8 +228,9 @@ class TraitsExecutor(HasStrictTraits):
     #: and foreground futures.
     _message_router = Any()
 
-    #: Currently executing futures.
-    _futures = Set()
+    #: Currently executing futures: mapping from message receivers to
+    #: futures.
+    _futures = Dict(Any(), Any())
 
     # Private methods #########################################################
 
@@ -250,9 +258,9 @@ class TraitsExecutor(HasStrictTraits):
         router.connect()
         return router
 
-    @on_trait_change('_futures:_exiting')
-    def _remove_future(self, future, name, new):
-        self._futures.remove(future)
+    @on_trait_change("_message_router:receiver_done")
+    def _remove_future(self, receiver):
+        self._futures.pop(receiver)
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
         if self.state == STOPPING and not self._futures:
