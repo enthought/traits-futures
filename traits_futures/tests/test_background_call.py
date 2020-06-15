@@ -1,6 +1,7 @@
 # (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
 # All rights reserved.
 
+import concurrent.futures
 import contextlib
 import operator
 import threading
@@ -277,12 +278,14 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
         event = threading.Event()
 
+        futures = []
         for _ in range(max_workers):
-            thread_pool.submit(event.wait)
+            futures.append(thread_pool.submit(event.wait))
         try:
             yield
         finally:
             event.set()
+            concurrent.futures.wait(futures)
 
     def halt_executor(self):
         """
