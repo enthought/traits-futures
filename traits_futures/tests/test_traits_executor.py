@@ -100,6 +100,17 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             del self.executor
         GuiTestAssistant.tearDown(self)
 
+    def test_max_workers(self):
+        executor = TraitsExecutor(max_workers=11)
+        self.assertEqual(executor._thread_pool._max_workers, 11)
+        executor.stop()
+        self.wait_until_stopped(executor)
+
+    def test_max_workers_mutually_exclusive_with_thread_pool(self):
+        with self.temporary_thread_pool() as thread_pool:
+            with self.assertRaises(TypeError):
+                TraitsExecutor(thread_pool=thread_pool, max_workers=11)
+
     def test_stop_method(self):
         executor = TraitsExecutor()
         listener = ExecutorListener(executor=executor)
