@@ -73,6 +73,22 @@ class FuturesListener(HasStrictTraits):
         return all(future.done for future in self.futures)
 
 
+def test_call(*args, **kwds):
+    """ Simple test target for submit_call. """
+    return args, kwds
+
+
+def test_iteration(*args, **kwargs):
+    """ Simple test target for submit_iteration. """
+    yield args
+    yield kwargs
+
+
+def test_progress(arg1, arg2, kwd1, kwd2, progress):
+    """ Simple test target for submit_progress. """
+    return arg1, arg2, kwd1, kwd2
+
+
 class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
@@ -197,9 +213,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(cf_future.result(), 0)
 
     def test_submit_call(self):
-        def test_call(*args, **kwds):
-            return args, kwds
-
         self.executor = TraitsExecutor()
         future = self.executor.submit_call(
             test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
@@ -215,10 +228,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_submit_iteration(self):
-        def test_iteration(*args, **kwargs):
-            yield args
-            yield kwargs
-
         self.executor = TraitsExecutor()
         future = self.executor.submit_iteration(
             test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
@@ -237,9 +246,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_submit_progress(self):
-        def test_progress(arg1, arg2, kwd1, kwd2, progress):
-            return arg1, arg2, kwd1, kwd2
-
         self.executor = TraitsExecutor()
         future = self.executor.submit_progress(
             test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")

@@ -46,6 +46,63 @@ def squares(start, stop):
         yield i * i
 
 
+def yield_then_wait(barrier):
+    """
+    Yield a result, then wait for an external event.
+    """
+    yield 1
+    barrier.wait(timeout=TIMEOUT)
+
+
+def set_then_yield(event):
+    """
+    Set an event before generating the first result.
+    """
+    event.set()
+    yield 1
+
+
+def wait_midway(barrier):
+    """
+    Wait for an external event in the middle of an iteration.
+    """
+    yield 1729
+    barrier.wait(timeout=TIMEOUT)
+    yield 2718
+
+
+def wait_then_fail(barrier):
+    """
+    Wait for an external event, then fail.
+    """
+    barrier.wait(timeout=TIMEOUT)
+    yield 1 / 0
+
+
+def ping_pong(test_ready, midpoint):
+    """
+    Send ping and wait for answering pong mid-iteration.
+    """
+    # Using sets because we need something weakref'able.
+    yield {1, 2, 3}
+    midpoint.set()
+    test_ready.wait(timeout=TIMEOUT)
+    yield {4, 5, 6}
+
+
+def resource_acquiring_iteration(acquired, released, barrier):
+    """
+    Iteration that simulates acquiring a resource.
+    """
+    acquired.set()
+    try:
+        yield 1
+        barrier.wait(timeout=TIMEOUT)
+        yield 2
+    finally:
+        released.set()
+
+
 class IterationFutureListener(HasStrictTraits):
     #: The object we're listening to.
     future = Instance(IterationFuture)
@@ -135,11 +192,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         # the STARTED message.
         event = threading.Event()
 
-        def set_then_yield():
-            event.set()
-            yield 1
-
-        future = self.executor.submit_iteration(set_then_yield)
+        future = self.executor.submit_iteration(set_then_yield, event)
         listener = IterationFutureListener(future=future)
 
         self.assertTrue(event.wait(timeout=TIMEOUT))
@@ -157,12 +210,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
 
         blocker = threading.Event()
 
-        def wait_midway():
-            yield 1
-            blocker.wait(timeout=TIMEOUT)
-            yield 2
-
-        future = self.executor.submit_iteration(wait_midway)
+        future = self.executor.submit_iteration(wait_midway, blocker)
         listener = IterationFutureListener(future=future)
 
         self.run_until(
@@ -178,17 +226,13 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         self.wait_until_done(future)
 
         self.assertNoException(future)
-        self.assertEqual(listener.results, [1])
+        self.assertEqual(listener.results, [1729])
         self.assertEqual(
             listener.states,
             [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_exhausted(self):
-        def yield_then_wait(blocker):
-            yield 1
-            blocker.wait(timeout=TIMEOUT)
-
         blocker = threading.Event()
         future = self.executor.submit_iteration(yield_then_wait, blocker)
         listener = IterationFutureListener(future=future)
@@ -225,14 +269,9 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
 
     def test_cancel_after_start(self):
-        def target(blocker):
-            yield 1729
-            blocker.wait(timeout=TIMEOUT)
-            yield 2718
-
         blocker = threading.Event()
 
-        future = self.executor.submit_iteration(target, blocker)
+        future = self.executor.submit_iteration(wait_midway, blocker)
         listener = IterationFutureListener(future=future)
 
         self.run_until(
@@ -253,13 +292,9 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_cancel_before_failure(self):
-        def target(blocker):
-            blocker.wait(timeout=TIMEOUT)
-            yield 1 / 0
-
         blocker = threading.Event()
 
-        future = self.executor.submit_iteration(target, blocker)
+        future = self.executor.submit_iteration(wait_then_fail, blocker)
         listener = IterationFutureListener(future=future)
 
         self.wait_for_state(future, EXECUTING)
@@ -308,22 +343,12 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
             future.cancel()
 
     def test_generator_closed_on_cancellation(self):
-        def target(resource_acquired, resource_released, blocker):
-            # Generator function that requires cleanup on exit.
-            resource_acquired.set()
-            try:
-                yield 1
-                blocker.wait(timeout=TIMEOUT)
-                yield 2
-            finally:
-                resource_released.set()
-
         resource_acquired = threading.Event()
         blocker = threading.Event()
         resource_released = threading.Event()
 
         future = self.executor.submit_iteration(
-            target,
+            resource_acquiring_iteration,
             resource_acquired, resource_released, blocker)
         listener = IterationFutureListener(future=future)
 
@@ -344,18 +369,11 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
     def test_prompt_result_deletion(self):
         # Check that we're not hanging onto result references needlessly in the
         # background task.
-        def waiting_iteration(test_ready, midpoint):
-            # Using sets because we need something weakref'able.
-            yield {1, 2, 3}
-            midpoint.set()
-            test_ready.wait(timeout=TIMEOUT)
-            yield {4, 5, 6}
-
         test_ready = threading.Event()
         midpoint = threading.Event()
 
         future = self.executor.submit_iteration(
-            waiting_iteration, test_ready, midpoint)
+            ping_pong, test_ready, midpoint)
         listener = IterationFutureListener(future=future)
 
         self.run_until(
