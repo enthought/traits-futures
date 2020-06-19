@@ -15,4 +15,4 @@ class GuiTestAssistant(PyFaceGuiTestAssistant):
         Run the event loop until the given condition holds true.
         """
         self.event_loop_helper.event_loop_until_condition(
-            lambda: condition(object), timeout=timeout)
+            lambda: condition, timeout=timeout)

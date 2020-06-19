@@ -12,7 +12,7 @@ import sys
 MINIMUM_EDM_VERSION = 1, 6, 0
 
 
-class PythonEnvironment(object):
+class PythonEnvironment:
     """ A Python Environment provisioned by edm. """
 
     def __init__(self, name, runtime_version, edm_platform=None,

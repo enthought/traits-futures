@@ -49,7 +49,7 @@ class _ProgressCancelled(Exception):
     """
 
 
-class ProgressReporter(object):
+class ProgressReporter:
     """
     Object used by the target callable to report progress.
     """
@@ -75,7 +75,7 @@ class ProgressReporter(object):
         self.send(PROGRESS, progress_info)
 
 
-class ProgressBackgroundTask(object):
+class ProgressBackgroundTask:
     """
     Background portion of a progress background task.
 

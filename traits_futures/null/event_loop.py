@@ -21,7 +21,7 @@ _IDLE = "idle"
 _RUNNING = "running"
 
 
-class AsyncCaller(object):
+class AsyncCaller:
     """
     Object allowing asynchronous execution of a callable.
 
@@ -64,7 +64,7 @@ class AsyncCaller(object):
         self._closed = True
 
 
-class EventLoop(object):
+class EventLoop:
     """
     A simple event loop that doesn't require any UI framework.
 

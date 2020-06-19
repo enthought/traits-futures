@@ -34,7 +34,7 @@ RAISED = "raised"
 RETURNED = "returned"
 
 
-class CallBackgroundTask(object):
+class CallBackgroundTask:
     """
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor

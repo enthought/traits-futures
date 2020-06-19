@@ -7,7 +7,7 @@ Support for toolkit-specific classes.
 from pyface.base_toolkit import find_toolkit
 
 
-class Toolkit(object):
+class Toolkit:
     """
     Provide access to toolkit-specific classes.
 

@@ -11,7 +11,7 @@ from traits_futures.null.package_globals import get_event_loop, set_event_loop
 DEFAULT_TIMEOUT = 10.0
 
 
-class GuiTestAssistant(object):
+class GuiTestAssistant:
     def setUp(self):
         # Save the old event loop and create a fresh one for testing.
         self._old_event_loop = get_event_loop()
@@ -51,13 +51,13 @@ class GuiTestAssistant(object):
         RuntimeError
             If the condition didn't become true before timeout.
         """
-        if condition(object):
+        if condition:
             return
 
         event_loop = get_event_loop()
 
         def stop_on_condition():
-            if condition(object):
+            if condition:
                 event_loop.stop()
 
         object.on_trait_change(stop_on_condition, trait)
