@@ -32,7 +32,7 @@ class FutureListener(HasStrictTraits):
         self.done_changes.append((old, new))
 
 
-class CommonFutureTests(object):
+class CommonFutureTests:
     """
     Mixin class providing tests that are run for all future types.
     """

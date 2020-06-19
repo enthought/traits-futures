@@ -11,7 +11,7 @@ from traits_futures.null.package_globals import get_event_loop, set_event_loop
 DEFAULT_TIMEOUT = 10.0
 
 
-class GuiTestAssistant(object):
+class GuiTestAssistant:
     def setUp(self):
         # Save the old event loop and create a fresh one for testing.
         self._old_event_loop = get_event_loop()

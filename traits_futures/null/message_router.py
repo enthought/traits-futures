@@ -24,7 +24,7 @@ class MessageReceiver(HasStrictTraits):
         self.message = message
 
 
-class MessageSender(object):
+class MessageSender:
     """
     Object allowing the worker to send messages.
 

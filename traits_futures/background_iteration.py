@@ -46,7 +46,7 @@ EXHAUSTED = "exhausted"
 GENERATED = "generated"
 
 
-class IterationBackgroundTask(object):
+class IterationBackgroundTask:
     """
     Iteration to be executed in the background.
     """

@@ -36,7 +36,7 @@ class _MessageSignallee(QObject):
         self.on_message_sent()
 
 
-class MessageSender(object):
+class MessageSender:
     """
     Object allowing the worker to send messages.
 
