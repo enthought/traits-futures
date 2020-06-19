@@ -1,5 +1,5 @@
 ..
-   (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+   (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
    All rights reserved.
 
 Traits Futures: reactive background processing for Traits and TraitsUI
