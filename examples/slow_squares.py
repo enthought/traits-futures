@@ -6,7 +6,14 @@ import time
 
 from traits.api import Button, Instance, List, Property, Range
 from traitsui.api import (
-    Handler, HGroup, Item, TabularEditor, UItem, VGroup, View)
+    Handler,
+    HGroup,
+    Item,
+    TabularEditor,
+    UItem,
+    VGroup,
+    View,
+)
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
@@ -41,7 +48,7 @@ def slow_square(n, timeout=5.0):
 
 class JobTabularAdapter(TabularAdapter):
     columns = [
-        ('Job State', 'state'),
+        ("Job State", "state"),
     ]
 
     #: Row colors for the table.
@@ -113,17 +120,16 @@ class SquaringHelper(Handler):
         return View(
             HGroup(
                 VGroup(
-                    Item('input'),
-                    UItem('square'),
-                    UItem('cancel_all'),
-                    UItem('clear_finished'),
+                    Item("input"),
+                    UItem("square"),
+                    UItem("cancel_all"),
+                    UItem("clear_finished"),
                 ),
                 VGroup(
                     UItem(
-                        'current_futures',
+                        "current_futures",
                         editor=TabularEditor(
-                            adapter=JobTabularAdapter(),
-                            auto_update=True,
+                            adapter=JobTabularAdapter(), auto_update=True,
                         ),
                     ),
                 ),
@@ -134,6 +140,6 @@ class SquaringHelper(Handler):
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     view = SquaringHelper()
     view.configure_traits()

@@ -7,7 +7,12 @@ Test methods run for all future types.
 from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
 
 from traits_futures.api import (
-    CANCELLED, CANCELLING, COMPLETED, EXECUTING, FAILED)
+    CANCELLED,
+    CANCELLING,
+    COMPLETED,
+    EXECUTING,
+    FAILED,
+)
 from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
 
@@ -23,11 +28,11 @@ class FutureListener(HasStrictTraits):
     #: Changes to the 'done' trait.
     done_changes = List(Tuple(Bool(), Bool()))
 
-    @on_trait_change('future:cancellable')
+    @on_trait_change("future:cancellable")
     def _record_cancellable_change(self, object, name, old, new):
         self.cancellable_changes.append((old, new))
 
-    @on_trait_change('future:done')
+    @on_trait_change("future:done")
     def _record_done_change(self, object, name, old, new):
         self.done_changes.append((old, new))
 
@@ -36,6 +41,7 @@ class CommonFutureTests:
     """
     Mixin class providing tests that are run for all future types.
     """
+
     def test_cancellable_and_done_consistent_with_state(self):
         # Triples (state, cancellable, done)
         states = []
@@ -46,9 +52,9 @@ class CommonFutureTests:
 
         # Record state when any of the three traits changes.
         future = self.future_class()
-        future.on_trait_change(record_states, 'cancellable')
-        future.on_trait_change(record_states, 'done')
-        future.on_trait_change(record_states, 'state')
+        future.on_trait_change(record_states, "cancellable")
+        future.on_trait_change(record_states, "done")
+        future.on_trait_change(record_states, "state")
 
         # Record initial, synthesize some state changes, then record final.
         record_states()

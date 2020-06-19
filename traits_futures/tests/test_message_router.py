@@ -5,7 +5,13 @@ import threading
 import unittest
 
 from traits.api import (
-    Any, Event, HasStrictTraits, Instance, List, on_trait_change)
+    Any,
+    Event,
+    HasStrictTraits,
+    Instance,
+    List,
+    on_trait_change,
+)
 
 from traits_futures.toolkit_support import toolkit
 
@@ -26,6 +32,7 @@ class ReceiverListener(HasStrictTraits):
     Test helper that listens to and records all messages from a
     MessageReceiver.
     """
+
     #: The receiver that we're listening to.
     receiver = Any()
 
@@ -38,7 +45,7 @@ class ReceiverListener(HasStrictTraits):
     #: List of threads that messages arrived on.
     threads = List(Any)
 
-    @on_trait_change('receiver:message')
+    @on_trait_change("receiver:message")
     def _record_message(self, message):
         self.messages.append(message)
         self.threads.append(threading.current_thread())
@@ -50,13 +57,14 @@ class MultiListener(HasStrictTraits):
     Monitor a collection of listeners and fire an event whenever any
     one of them receives a message.
     """
+
     # Listeners we'll listen to.
     listeners = List(Instance(ReceiverListener))
 
     # Event fired whenever a message is received by any of the listeners.
     message_received = Event()
 
-    @on_trait_change('listeners:message_received')
+    @on_trait_change("listeners:message_received")
     def _fire_message_received(self):
         self.message_received = True
 
@@ -80,8 +88,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
 
         # Send messages from a background thread.
         worker = threading.Thread(
-            target=send_messages,
-            args=(sender, messages),
+            target=send_messages, args=(sender, messages),
         )
         worker.start()
         worker.join()
@@ -104,8 +111,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
 
         # Messages for each worker to send: one list of messages per worker.
         worker_messages = [
-            [(i, j) for j in range(message_count)]
-            for i in range(worker_count)
+            [(i, j) for j in range(message_count)] for i in range(worker_count)
         ]
 
         workers = []
@@ -115,8 +121,7 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
             listeners.append(ReceiverListener(receiver=receiver))
             workers.append(
                 threading.Thread(
-                    target=send_messages,
-                    args=(sender, messages),
+                    target=send_messages, args=(sender, messages),
                 )
             )
 

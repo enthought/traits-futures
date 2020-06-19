@@ -14,6 +14,7 @@ class Toolkit:
     This is a wrapper around the real toolkit object. The first time it's
     used it'll fix the UI backend.
     """
+
     def __init__(self):
         self._toolkit_object = None
 

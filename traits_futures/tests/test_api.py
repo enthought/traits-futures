@@ -10,7 +10,6 @@ class TestApi(unittest.TestCase):
             CallFuture,
             IterationFuture,
             ProgressFuture,
-
             FutureState,
             CANCELLED,
             CANCELLING,
@@ -18,7 +17,6 @@ class TestApi(unittest.TestCase):
             FAILED,
             COMPLETED,
             WAITING,
-
             TraitsExecutor,
             ExecutorState,
             RUNNING,
@@ -30,11 +28,15 @@ class TestApi(unittest.TestCase):
         import traits_futures.api
 
         future_imports = [
-            'absolute_import', 'print_function', 'unicode_literals']
+            "absolute_import",
+            "print_function",
+            "unicode_literals",
+        ]
         items_in_all = set(traits_futures.api.__all__)
         items_in_api = {
-            name for name in dir(traits_futures.api)
-            if not name.startswith('_')
+            name
+            for name in dir(traits_futures.api)
+            if not name.startswith("_")
             if name not in future_imports
         }
         self.assertEqual(items_in_all, items_in_api)

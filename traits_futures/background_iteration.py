@@ -7,13 +7,32 @@ Background task that sends results from an iteration.
 import types
 
 from traits.api import (
-    Any, Bool, Callable, Dict, Event, HasStrictTraits, HasTraits, Instance,
-    on_trait_change, Property, Str, Tuple)
+    Any,
+    Bool,
+    Callable,
+    Dict,
+    Event,
+    HasStrictTraits,
+    HasTraits,
+    Instance,
+    on_trait_change,
+    Property,
+    Str,
+    Tuple,
+)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
-    CANCELLABLE_STATES, DONE_STATES, FutureState)
+    CANCELLED,
+    CANCELLING,
+    EXECUTING,
+    FAILED,
+    COMPLETED,
+    WAITING,
+    CANCELLABLE_STATES,
+    DONE_STATES,
+    FutureState,
+)
 
 # Message types for messages from IterationBackgroundTask to IterationFuture.
 # The background iteration will emit exactly one of the following
@@ -50,6 +69,7 @@ class IterationBackgroundTask:
     """
     Iteration to be executed in the background.
     """
+
     def __init__(self, callable, args, kwargs, cancel_event):
         self.callable = callable
         self.args = args
@@ -119,6 +139,7 @@ class IterationFuture(HasStrictTraits):
     Foreground representation of an iteration executing in the
     background.
     """
+
     #: The state of the background iteration, to the best of the knowledge of
     #: this future.
     state = FutureState
@@ -178,7 +199,7 @@ class IterationFuture(HasStrictTraits):
 
     # Private methods #########################################################
 
-    @on_trait_change('_message_receiver:message')
+    @on_trait_change("_message_receiver:message")
     def _process_message(self, message):
         message_type, message_arg = message
         method_name = "_process_{}".format(message_type)
@@ -226,7 +247,8 @@ class IterationFuture(HasStrictTraits):
         new_cancellable = new_state in CANCELLABLE_STATES
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
-                "cancellable", old_cancellable, new_cancellable)
+                "cancellable", old_cancellable, new_cancellable
+            )
 
         old_done = old_state in DONE_STATES
         new_done = new_state in DONE_STATES
@@ -238,6 +260,7 @@ class BackgroundIteration(HasStrictTraits):
     """
     Object representing the background iteration to be executed.
     """
+
     #: The callable to be executed. This should return something iterable.
     callable = Callable()
 
@@ -270,8 +293,7 @@ class BackgroundIteration(HasStrictTraits):
             Callable to be executed in the background.
         """
         future = IterationFuture(
-            _cancel_event=cancel_event,
-            _message_receiver=message_receiver,
+            _cancel_event=cancel_event, _message_receiver=message_receiver,
         )
         runner = IterationBackgroundTask(
             callable=self.callable,

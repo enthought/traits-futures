@@ -15,8 +15,14 @@ MINIMUM_EDM_VERSION = 1, 6, 0
 class PythonEnvironment:
     """ A Python Environment provisioned by edm. """
 
-    def __init__(self, name, runtime_version, edm_platform=None,
-                 edm_config=None, api_token=None):
+    def __init__(
+        self,
+        name,
+        runtime_version,
+        edm_platform=None,
+        edm_config=None,
+        api_token=None,
+    ):
 
         # Check that EDM is new enough.
         edm_version = _edm_version()
@@ -113,9 +119,13 @@ class PythonEnvironment:
             like setuptools and pip get installed.
         """
         cmd = [
-            "environments", "create", self.environment_name,
-            "--version", self.runtime_version,
-            "--platform", self.edm_platform,
+            "environments",
+            "create",
+            self.environment_name,
+            "--version",
+            self.runtime_version,
+            "--platform",
+            self.edm_platform,
         ]
         if force:
             cmd.append("--force")
@@ -129,8 +139,10 @@ class PythonEnvironment:
         Remove an existing environment, completely.
         """
         cmd = [
-            "environments", "remove",
-            "--purge", "--yes",
+            "environments",
+            "remove",
+            "--purge",
+            "--yes",
             self.environment_name,
         ]
         self.edm(cmd)
@@ -148,7 +160,8 @@ class PythonEnvironment:
         """
         install_cmd = [
             "install",
-            "--environment", self.environment_name,
+            "--environment",
+            self.environment_name,
             "--yes",
         ]
         install_cmd.extend(requirements)
@@ -174,11 +187,7 @@ class PythonEnvironment:
         The return code of the subprocess or its stdout
         depending on the capture flag.
         """
-        cmd = [
-            "run",
-            "--environment", self.environment_name,
-            "--",
-        ] + command
+        cmd = ["run", "--environment", self.environment_name, "--"] + command
         if capture:
             return self.edm_capture(cmd)
         else:
@@ -202,7 +211,8 @@ class PythonEnvironment:
         """
         cmd = [
             "run",
-            "--environment", self.environment_name,
+            "--environment",
+            self.environment_name,
             "--",
             "python",
         ] + command
@@ -247,6 +257,7 @@ class PythonEnvironment:
 
 # Utils ################################################################
 
+
 def current_platform():
     """
     Return a string representing the current platform, in the format
@@ -270,7 +281,8 @@ def _edm_version():
     Returns the EDM version as a tuple of integers.
     """
     edm_version_info = subprocess.check_output(["edm", "--version"]).decode(
-        "utf-8")
+        "utf-8"
+    )
     m = re.match(r"(?:EDM|edm) (?P<version>\d+\.\d+\.\d+)", edm_version_info)
     version = m.group("version")
     return tuple(int(piece) for piece in version.split("."))

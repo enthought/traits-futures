@@ -14,6 +14,7 @@ class MessageReceiver(HasStrictTraits):
     """
     Main-thread object that receives messages from a MessageSender.
     """
+
     #: Event fired when a message is received from the paired sender.
     message = Event(Any())
 
@@ -35,6 +36,7 @@ class MessageSender:
     Only the worker thread should use the send method, and only
     inside a "with sender:" block.
     """
+
     def __init__(self, async_message, async_done):
         self.async_message = async_message
         self.async_done = async_done
@@ -78,6 +80,7 @@ class MessageRouter(HasStrictTraits):
     """
     Router for messages from background jobs to their corresponding futures.
     """
+
     #: Event fired when a receiver is dropped from the routing table.
     receiver_done = Event(Instance(MessageReceiver))
 
@@ -112,7 +115,8 @@ class MessageRouter(HasStrictTraits):
         sender = MessageSender(
             async_message=event_loop.async_caller(receiver._on_message),
             async_done=event_loop.async_caller(
-                lambda: self._on_done(receiver)),
+                lambda: self._on_done(receiver)
+            ),
         )
         return sender, receiver
 

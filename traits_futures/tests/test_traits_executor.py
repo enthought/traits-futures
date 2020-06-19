@@ -10,7 +10,14 @@ import threading
 import unittest
 
 from traits.api import (
-    Bool, HasStrictTraits, Instance, List, on_trait_change, Property, Tuple)
+    Bool,
+    HasStrictTraits,
+    Instance,
+    List,
+    on_trait_change,
+    Property,
+    Tuple,
+)
 
 from traits_futures.api import (
     CallFuture,
@@ -30,6 +37,7 @@ GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 class ExecutorListener(HasStrictTraits):
     """ Listener for executor state changes. """
+
     #: Executor that we're listening to.
     executor = Instance(TraitsExecutor)
 
@@ -42,7 +50,7 @@ class ExecutorListener(HasStrictTraits):
     #: Changes to the 'stopped' trait value.
     stopped_changes = List(Tuple(Bool(), Bool()))
 
-    @on_trait_change('executor:state')
+    @on_trait_change("executor:state")
     def _record_state_change(self, obj, name, old_state, new_state):
         if not self.states:
             # On the first state change, record the initial state as well as
@@ -50,11 +58,11 @@ class ExecutorListener(HasStrictTraits):
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change('executor:running')
+    @on_trait_change("executor:running")
     def _record_running_change(self, object, name, old, new):
         self.running_changes.append((old, new))
 
-    @on_trait_change('executor:stopped')
+    @on_trait_change("executor:stopped")
     def _record_stopped_change(self, object, name, old, new):
         self.stopped_changes.append((old, new))
 
@@ -63,6 +71,7 @@ class FuturesListener(HasStrictTraits):
     """
     Listener for multiple futures.
     """
+
     #: List of futures that we're listening to.
     futures = List(Instance(CallFuture))
 
@@ -226,46 +235,42 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_submit_call(self):
         self.executor = TraitsExecutor()
         future = self.executor.submit_call(
-            test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
+            test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
+        )
 
         self.wait_until_done(future)
 
         self.assertEqual(
             future.result,
-            (
-                ("arg1", "arg2"),
-                {"kwd1": "kwd1", "kwd2": "kwd2"},
-            ),
+            (("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}),
         )
 
     def test_submit_iteration(self):
         self.executor = TraitsExecutor()
         future = self.executor.submit_iteration(
-            test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
+            test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
+        )
 
         results = []
         future.on_trait_change(
-            lambda result: results.append(result), 'result_event')
+            lambda result: results.append(result), "result_event"
+        )
 
         self.wait_until_done(future)
         self.assertEqual(
-            results,
-            [
-                ("arg1", "arg2"),
-                {"kwd1": "kwd1", "kwd2": "kwd2"},
-            ],
+            results, [("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}],
         )
 
     def test_submit_progress(self):
         self.executor = TraitsExecutor()
         future = self.executor.submit_progress(
-            test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2")
+            test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
+        )
 
         self.wait_until_done(future)
 
         self.assertEqual(
-            future.result,
-            ("arg1", "arg2", "kwd1", "kwd2"),
+            future.result, ("arg1", "arg2", "kwd1", "kwd2"),
         )
 
     def test_states_consistent(self):
@@ -276,9 +281,9 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             states.append((executor.state, executor.running, executor.stopped))
 
         executor = TraitsExecutor()
-        executor.on_trait_change(record_states, 'running')
-        executor.on_trait_change(record_states, 'stopped')
-        executor.on_trait_change(record_states, 'state')
+        executor.on_trait_change(record_states, "running")
+        executor.on_trait_change(record_states, "stopped")
+        executor.on_trait_change(record_states, "state")
         executor.submit_call(int)
 
         # Record states before, during, and after stopping.
@@ -325,7 +330,8 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         # Wait for all futures to complete.
         self.run_until(
-            listener, "all_done", lambda listener: listener.all_done)
+            listener, "all_done", lambda listener: listener.all_done
+        )
 
         for i, future in enumerate(futures):
             self.assertEqual(future.result, str(i))

@@ -14,7 +14,16 @@ from chaco.api import ArrayPlotData, Plot
 from chaco.overlays.coordinate_line_overlay import CoordinateLineOverlay
 from enable.component_editor import ComponentEditor
 from traits.api import (
-    Bool, Button, Float, Instance, Int, List, on_trait_change, Property, Tuple)
+    Bool,
+    Button,
+    Float,
+    Instance,
+    Int,
+    List,
+    on_trait_change,
+    Property,
+    Tuple,
+)
 from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
 from traits_futures.api import (
@@ -59,7 +68,7 @@ def pi_iterations(chunk_size):
         # https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
         approximation = 4 * ninside / nsamples
         noutside = nsamples - ninside
-        error = 7.839856 * np.sqrt(ninside * noutside / (nsamples**3))
+        error = 7.839856 * np.sqrt(ninside * noutside / (nsamples ** 3))
         yield nsamples, approximation, error
 
 
@@ -67,6 +76,7 @@ class PiIterator(Handler):
     """
     View and plot of pi approximation running in the background.
     """
+
     #: The Traits executor for the background jobs.
     traits_executor = Instance(TraitsExecutor, ())
 
@@ -83,13 +93,13 @@ class PiIterator(Handler):
     approximate = Button()
 
     #: Is the approximate button enabled?
-    approximate_enabled = Property(Bool(), depends_on='future.state')
+    approximate_enabled = Property(Bool(), depends_on="future.state")
 
     #: Button to cancel the pi approximation.
     cancel = Button()
 
     #: Is the cancel button enabled?
-    cancel_enabled = Property(Bool(), depends_on='future.state')
+    cancel_enabled = Property(Bool(), depends_on="future.state")
 
     #: Maximum number of points to show in the plot.
     max_points = Int(100)
@@ -107,16 +117,17 @@ class PiIterator(Handler):
 
     def _approximate_fired(self):
         self.future = self.traits_executor.submit_iteration(
-            pi_iterations, chunk_size=self.chunk_size)
+            pi_iterations, chunk_size=self.chunk_size
+        )
 
     def _cancel_fired(self):
         self.future.cancel()
 
-    @on_trait_change('future')
+    @on_trait_change("future")
     def _reset_results(self):
         self.results = []
 
-    @on_trait_change('future:result_event')
+    @on_trait_change("future:result_event")
     def _record_result(self, result):
         self.results.append(result)
         self._update_plot_data()
@@ -128,8 +139,9 @@ class PiIterator(Handler):
         return self.future is not None and self.future.cancellable
 
     def _update_plot_data(self):
+        recent_results = self.results[-self.max_points :]  # noqa: E203
         # We need the reshape for the case where the results list is empty.
-        results = np.array(self.results[-self.max_points:]).reshape((-1, 3))
+        results = np.array(recent_results).reshape((-1, 3))
         counts, approx, errors = results.T
         self.plot_data.update_data(
             counts=counts / 1e6,
@@ -164,24 +176,18 @@ class PiIterator(Handler):
     def default_traits_view(self):
         return View(
             HGroup(
-                UItem('plot', editor=ComponentEditor()),
+                UItem("plot", editor=ComponentEditor()),
                 VGroup(
-                    Item('chunk_size'),
-                    Item('max_points'),
-                    UItem(
-                        'approximate',
-                        enabled_when='approximate_enabled',
-                    ),
-                    UItem(
-                        'cancel',
-                        enabled_when='cancel_enabled',
-                    ),
+                    Item("chunk_size"),
+                    Item("max_points"),
+                    UItem("approximate", enabled_when="approximate_enabled"),
+                    UItem("cancel", enabled_when="cancel_enabled"),
                 ),
             ),
             resizable=True,
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     view = PiIterator()
     view.configure_traits()
