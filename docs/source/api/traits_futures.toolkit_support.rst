@@ -1,5 +1,5 @@
 ..
-   (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
+   (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
    All rights reserved.
 
 traits\_futures\.toolkit\_support module
