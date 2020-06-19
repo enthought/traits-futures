@@ -1,6 +1,7 @@
 # (C) Copyright 2018-2019 Enthought, Inc., Austin, TX
 # All rights reserved.
 
+import concurrent.futures
 import contextlib
 import operator
 import threading
@@ -20,6 +21,23 @@ GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 #: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
+
+
+def ping_pong(ping_event, pong_event):
+    """
+    Send a ping, then wait for an answering pong.
+    """
+    ping_event.set()
+    pong_event.wait(timeout=TIMEOUT)
+
+
+def ping_pong_fail(ping_event, pong_event):
+    """
+    Send a ping, wait for an answering pong, then fail.
+    """
+    ping_event.set()
+    pong_event.wait(timeout=TIMEOUT)
+    1 / 0
 
 
 class CallFutureListener(HasStrictTraits):
@@ -119,14 +137,10 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_cancellation_before_success(self):
-        def target(signal, test_ready):
-            signal.set()
-            test_ready.wait(timeout=TIMEOUT)
-
         signal = threading.Event()
         test_ready = threading.Event()
 
-        future = self.executor.submit_call(target, signal, test_ready)
+        future = self.executor.submit_call(ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)
 
         # Wait for executing state; the test_ready event ensures we
@@ -147,15 +161,10 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_cancellation_before_failure(self):
-        def target(signal, test_ready):
-            signal.set()
-            test_ready.wait(timeout=TIMEOUT)
-            1 / 0
-
         signal = threading.Event()
         test_ready = threading.Event()
 
-        future = self.executor.submit_call(target, signal, test_ready)
+        future = self.executor.submit_call(ping_pong_fail, signal, test_ready)
         listener = CallFutureListener(future=future)
 
         # Wait for executing state; the test_ready event ensures we
@@ -229,14 +238,10 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         )
 
     def test_double_cancel_variant(self):
-        def target(signal, test_ready):
-            signal.set()
-            test_ready.wait(timeout=TIMEOUT)
-
         signal = threading.Event()
         test_ready = threading.Event()
 
-        future = self.executor.submit_call(target, signal, test_ready)
+        future = self.executor.submit_call(ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)
 
         # Wait for executing state; the test_ready event ensures we
@@ -273,12 +278,14 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
 
         event = threading.Event()
 
+        futures = []
         for _ in range(max_workers):
-            thread_pool.submit(event.wait)
+            futures.append(thread_pool.submit(event.wait))
         try:
             yield
         finally:
             event.set()
+            concurrent.futures.wait(futures)
 
     def halt_executor(self):
         """
