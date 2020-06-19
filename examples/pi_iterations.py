@@ -139,8 +139,9 @@ class PiIterator(Handler):
         return self.future is not None and self.future.cancellable
 
     def _update_plot_data(self):
+        recent_results = self.results[-self.max_points :]  # noqa: E203
         # We need the reshape for the case where the results list is empty.
-        results = np.array(self.results[-self.max_points :]).reshape((-1, 3))
+        results = np.array(recent_results).reshape((-1, 3))
         counts, approx, errors = results.T
         self.plot_data.update_data(
             counts=counts / 1e6,
