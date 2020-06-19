@@ -18,6 +18,7 @@ class _MessageSignaller(QObject):
 
     This class must be instantiated in the worker thread.
     """
+
     message_sent = Signal()
 
 
@@ -27,6 +28,7 @@ class _MessageSignallee(QObject):
 
     This object stays in the main thread.
     """
+
     def __init__(self, on_message_sent):
         QObject.__init__(self)
         self.on_message_sent = on_message_sent
@@ -47,6 +49,7 @@ class MessageSender:
     Only the worker thread should use the send method, and only
     inside a "with sender:" block.
     """
+
     def __init__(self, connection_id, signallee, message_queue):
         self.connection_id = connection_id
         self.signallee = signallee
@@ -91,6 +94,7 @@ class MessageReceiver(HasStrictTraits):
     """
     Main-thread object that receives messages from a MessageSender.
     """
+
     #: Event fired when a message is received from the paired sender.
     message = Event(Any())
 
@@ -101,6 +105,7 @@ class MessageRouter(HasStrictTraits):
 
     Requires the event loop to be running in order for messages to arrive.
     """
+
     #: Event fired when a receiver is dropped from the routing table.
     receiver_done = Event(Instance(MessageReceiver))
 

@@ -30,6 +30,7 @@ class AsyncCaller:
     ``__call__`` and ``close`` methods should all be called from the same
     thread.
     """
+
     def __init__(self, event_queue, handler_id):
         #: The main event loop's queue.
         self._event_queue = event_queue
@@ -71,6 +72,7 @@ class EventLoop:
     This event loop has exactly one trick, and that's the ability
     to fire callables asynchronously.
     """
+
     def __init__(self):
         #: Action queue for the event loop.
         self._event_queue = queue.Queue()
@@ -154,7 +156,9 @@ class EventLoop:
         if not stopped:
             raise RuntimeError(
                 "There were unclosed event handlers after {} seconds".format(
-                    timeout))
+                    timeout
+                )
+            )
 
     # Private methods #########################################################
 
@@ -205,7 +209,7 @@ class EventLoop:
                 event_handler(*args, **kwargs)
             else:  # action_type == CLOSE_ACTION
                 assert action_type == _CLOSE_ACTION
-                handler_id, = action_args
+                (handler_id,) = action_args
                 self._event_handlers.pop(handler_id)
 
         # Condition became true.

@@ -4,8 +4,15 @@
 import time
 
 from traits.api import (
-    Bool, Button, HasStrictTraits, Instance, Int,
-    on_trait_change, Property, Str)
+    Bool,
+    Button,
+    HasStrictTraits,
+    Instance,
+    Int,
+    on_trait_change,
+    Property,
+    Str,
+)
 from traitsui.api import Item, UItem, View
 
 from traits_futures.api import CallFuture, TraitsExecutor
@@ -37,7 +44,7 @@ class QuickStartExample(HasStrictTraits):
     calculate = Button()
 
     #: Boolean used to decide whether to enable the "calculate" button.
-    no_running_future = Property(Bool(), depends_on='future:done')
+    no_running_future = Property(Bool(), depends_on="future:done")
 
     @on_trait_change("calculate")
     def _submit_background_call(self):
@@ -52,7 +59,8 @@ class QuickStartExample(HasStrictTraits):
     @on_trait_change("future:done")
     def _report_result(self, future, name, done):
         self.message = "The square of {} is {}.".format(
-            self.input_for_calculation, future.result)
+            self.input_for_calculation, future.result
+        )
 
     def _get_no_running_future(self):
         return self.future is None or self.future.done

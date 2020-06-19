@@ -36,11 +36,11 @@ import traits_futures.version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
-    'traits.util.trait_documenter',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "traits.util.trait_documenter",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -50,15 +50,15 @@ templates_path = []
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'Traits Futures'
-copyright = '2018-2020, Enthought'
-author = 'Enthought'
+project = "Traits Futures"
+copyright = "2018-2020, Enthought"
+author = "Enthought"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -82,7 +82,7 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -97,7 +97,7 @@ add_function_parentheses = False
 #
 html_theme_path = [enthought_sphinx_theme.theme_path]
 
-html_theme = 'enthought'
+html_theme = "enthought"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -114,7 +114,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'TraitsFuturesdoc'
+htmlhelp_basename = "TraitsFuturesdoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -123,15 +123,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -141,8 +138,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'TraitsFutures.tex', 'Traits Futures Documentation',
-     'Enthought', 'manual'),
+    (
+        master_doc,
+        "TraitsFutures.tex",
+        "Traits Futures Documentation",
+        "Enthought",
+        "manual",
+    ),
 ]
 
 
@@ -151,8 +153,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'traitsfutures', 'Traits Futures Documentation',
-     [author], 1)
+    (master_doc, "traitsfutures", "Traits Futures Documentation", [author], 1)
 ]
 
 
@@ -162,7 +163,13 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'TraitsFutures', 'Traits Futures Documentation',
-     author, 'TraitsFutures', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "TraitsFutures",
+        "Traits Futures Documentation",
+        author,
+        "TraitsFutures",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]

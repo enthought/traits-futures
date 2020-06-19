@@ -25,8 +25,10 @@ class TestVersion(unittest.TestCase):
         self.assertIsInstance(version, str)
         match = VERSION_MATCHER.match(version)
         self.assertIsNotNone(
-            match, msg="{!r} appears to be an invalid version".format(version))
+            match, msg="{!r} appears to be an invalid version".format(version)
+        )
 
     def test_top_level_package_version(self):
         self.assertEqual(
-            traits_futures.__version__, traits_futures.version.version)
+            traits_futures.__version__, traits_futures.version.version
+        )

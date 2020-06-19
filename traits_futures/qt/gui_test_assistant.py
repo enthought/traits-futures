@@ -6,7 +6,8 @@ Test support, providing the ability to run the event loop from tests.
 """
 
 from pyface.ui.qt4.util.gui_test_assistant import (
-    GuiTestAssistant as PyFaceGuiTestAssistant)
+    GuiTestAssistant as PyFaceGuiTestAssistant,
+)
 
 
 class GuiTestAssistant(PyFaceGuiTestAssistant):
@@ -15,4 +16,5 @@ class GuiTestAssistant(PyFaceGuiTestAssistant):
         Run the event loop until the given condition holds true.
         """
         self.event_loop_helper.event_loop_until_condition(
-            lambda: condition(object), timeout=timeout)
+            lambda: condition(object), timeout=timeout
+        )

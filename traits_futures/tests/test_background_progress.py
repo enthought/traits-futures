@@ -31,6 +31,7 @@ TIMEOUT = 10.0
 
 # Target functions used for testing ###########################################
 
+
 def progress_reporting_sum(numbers, progress):
     """
     Sum a list of numbers, reporting progress at each step.
@@ -110,6 +111,7 @@ class ProgressFutureListener(HasStrictTraits):
     """
     Listener for a ProgressFuture. Records state changes and progress messages.
     """
+
     #: Future that we're listening to.
     future = Instance(ProgressFuture)
 
@@ -149,7 +151,8 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
     def test_progress(self):
         # Straightforward case.
         future = self.executor.submit_progress(
-            progress_reporting_sum, [1, 2, 3])
+            progress_reporting_sum, [1, 2, 3]
+        )
         listener = ProgressFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -164,7 +167,8 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
     def test_progress_with_progress_keyword_argument(self):
         with self.assertRaises(TypeError):
             self.executor.submit_progress(
-                progress_reporting_sum, [1, 2, 3], progress=None)
+                progress_reporting_sum, [1, 2, 3], progress=None
+            )
 
     def test_failed_progress(self):
         # Callable that raises.
@@ -194,8 +198,7 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_background_task_starts(self):
@@ -205,7 +208,8 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
 
         with self.blocked_thread_pool():
             future = self.executor.submit_progress(
-                event_set_with_progress, event)
+                event_set_with_progress, event
+            )
             listener = ProgressFutureListener(future=future)
             future.cancel()
 
@@ -222,12 +226,14 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         raised = threading.Event()
 
         future = self.executor.submit_progress(
-            syncing_progress, test_ready, raised)
+            syncing_progress, test_ready, raised
+        )
         listener = ProgressFutureListener(future=future)
 
         # Wait until we get the first progress message.
         self.run_until(
-            listener, "progress_items",
+            listener,
+            "progress_items",
             lambda listener: len(listener.progress) > 0,
         )
 
@@ -241,7 +247,8 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED])
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED]
+        )
         self.assertEqual(listener.progress, ["first"])
 
     def test_double_cancellation(self):
@@ -292,7 +299,8 @@ class TestBackgroundProgress(GuiTestAssistant, unittest.TestCase):
 
         try:
             future = self.executor.submit_progress(
-                resource_acquirer, acquired, ready, checkpoint)
+                resource_acquirer, acquired, ready, checkpoint
+            )
 
             self.wait_for_state(future, EXECUTING)
             self.assertTrue(checkpoint.wait(timeout=TIMEOUT))

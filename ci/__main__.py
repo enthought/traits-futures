@@ -58,9 +58,7 @@ def cli():
 @python_version_option
 @toolkit_option
 @click.argument(
-    "mode",
-    type=click.Choice(["ci", "develop"]),
-    default="develop",
+    "mode", type=click.Choice(["ci", "develop"]), default="develop",
 )
 def build(python_version, toolkit, mode):
     """
@@ -92,8 +90,9 @@ def build(python_version, toolkit, mode):
     pip_cmd.append(".")
     pyenv.python(pip_cmd)
 
-    click.echo("Created environment with name {}".format(
-        pyenv.environment_name))
+    click.echo(
+        "Created environment with name {}".format(pyenv.environment_name)
+    )
 
 
 @cli.command()
@@ -127,8 +126,11 @@ def coverage(python_version, toolkit, verbose, branch, html, report):
     test_cmd.append(cfg.PACKAGE_NAME)
 
     coverage_cmd = [
-        "-m", "coverage", "run",
-        "--source", cfg.PACKAGE_NAME,
+        "-m",
+        "coverage",
+        "run",
+        "--source",
+        cfg.PACKAGE_NAME,
     ]
     if branch:
         coverage_cmd.append("--branch")
@@ -170,8 +172,7 @@ def doc(python_version, toolkit):
 @python_version_option
 @toolkit_option
 @click.argument(
-    "example-name",
-    type=click.Choice(cfg.EXAMPLES),
+    "example-name", type=click.Choice(cfg.EXAMPLES),
 )
 def example(python_version, toolkit, example_name):
     """
@@ -228,6 +229,7 @@ def test(python_version, toolkit, verbose):
 
 # Helper functions ############################################################
 
+
 def _get_devenv(python_version, toolkit):
     """
     Return a PythonEnvironment corresponding to the development environment for
@@ -246,9 +248,7 @@ def _get_devenv(python_version, toolkit):
 
     runtime_version = cfg.RUNTIME_VERSION[python_version]
     environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
-        prefix=cfg.PREFIX,
-        python_version=python_version,
-        toolkit=toolkit,
+        prefix=cfg.PREFIX, python_version=python_version, toolkit=toolkit,
     )
 
     return PythonEnvironment(

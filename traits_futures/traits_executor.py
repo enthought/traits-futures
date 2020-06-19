@@ -9,8 +9,15 @@ import concurrent.futures
 import threading
 
 from traits.api import (
-    Any, Bool, Dict, Enum, HasStrictTraits, Instance, on_trait_change,
-    Property)
+    Any,
+    Bool,
+    Dict,
+    Enum,
+    HasStrictTraits,
+    Instance,
+    on_trait_change,
+    Property,
+)
 
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
@@ -61,6 +68,7 @@ class TraitsExecutor(HasStrictTraits):
         delegates the choice of number of workers to Python's
         ``ThreadPoolExecutor``.
     """
+
     #: Current state of this executor.
     state = ExecutorState
 
@@ -77,13 +85,15 @@ class TraitsExecutor(HasStrictTraits):
 
         if thread_pool is None:
             self._thread_pool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=max_workers)
+                max_workers=max_workers
+            )
             self._own_thread_pool = True
         else:
             if max_workers is not None:
                 raise TypeError(
                     "at most one of 'thread_pool' and 'max_workers' "
-                    "should be supplied")
+                    "should be supplied"
+                )
             self._thread_pool = thread_pool
             self._own_thread_pool = False
 
@@ -105,11 +115,7 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture
             Object representing the state of the background call.
         """
-        task = BackgroundCall(
-            callable=callable,
-            args=args,
-            kwargs=kwargs,
-        )
+        task = BackgroundCall(callable=callable, args=args, kwargs=kwargs,)
         return self.submit(task)
 
     def submit_iteration(self, callable, *args, **kwargs):
@@ -131,9 +137,7 @@ class TraitsExecutor(HasStrictTraits):
             Object representing the state of the background iteration.
         """
         task = BackgroundIteration(
-            callable=callable,
-            args=args,
-            kwargs=kwargs,
+            callable=callable, args=args, kwargs=kwargs,
         )
         return self.submit(task)
 
@@ -158,11 +162,7 @@ class TraitsExecutor(HasStrictTraits):
         future : ProgressFuture
             Object representing the state of the background task.
         """
-        task = BackgroundProgress(
-            callable=callable,
-            args=args,
-            kwargs=kwargs,
-        )
+        task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs,)
         return self.submit(task)
 
     def submit(self, task):
@@ -185,8 +185,7 @@ class TraitsExecutor(HasStrictTraits):
         sender, receiver = self._message_router.pipe()
         try:
             future, runner = task.future_and_callable(
-                cancel_event=threading.Event(),
-                message_receiver=receiver,
+                cancel_event=threading.Event(), message_receiver=receiver,
             )
         except Exception:
             self._message_router.close_pipe(sender, receiver)
@@ -253,7 +252,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        MessageRouter = toolkit('message_router:MessageRouter')
+        MessageRouter = toolkit("message_router:MessageRouter")
         router = MessageRouter()
         router.connect()
         return router

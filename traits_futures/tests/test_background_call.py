@@ -10,8 +10,15 @@ import unittest
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    CallFuture, FutureState, TraitsExecutor,
-    CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
+    CallFuture,
+    FutureState,
+    TraitsExecutor,
+    CANCELLED,
+    CANCELLING,
+    EXECUTING,
+    FAILED,
+    COMPLETED,
+    WAITING,
 )
 from traits_futures.tests.common_future_tests import CommonFutureTests
 from traits_futures.toolkit_support import toolkit
@@ -79,8 +86,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_failed_call(self):
@@ -92,8 +98,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, FAILED],
+            listener.states, [WAITING, EXECUTING, FAILED],
         )
 
     def test_cancellation_vs_started_race_condition(self):
@@ -114,8 +119,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_execution(self):
@@ -132,8 +136,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_success(self):
@@ -156,8 +159,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_failure(self):
@@ -180,8 +182,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cannot_cancel_after_success(self):
@@ -197,8 +198,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_cannot_cancel_after_failure(self):
@@ -214,8 +214,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, FAILED],
+            listener.states, [WAITING, EXECUTING, FAILED],
         )
 
     def test_cannot_cancel_after_cancel(self):
@@ -233,8 +232,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_double_cancel_variant(self):
@@ -262,8 +260,7 @@ class TestBackgroundCall(GuiTestAssistant, unittest.TestCase):
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     # Helpers

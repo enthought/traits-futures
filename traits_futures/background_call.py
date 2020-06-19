@@ -5,13 +5,31 @@
 Background task consisting of a simple callable.
 """
 from traits.api import (
-    Any, Bool, Callable, Dict, HasStrictTraits, HasTraits, Instance,
-    on_trait_change, Property, Str, Tuple)
+    Any,
+    Bool,
+    Callable,
+    Dict,
+    HasStrictTraits,
+    HasTraits,
+    Instance,
+    on_trait_change,
+    Property,
+    Str,
+    Tuple,
+)
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
-    CANCELLABLE_STATES, DONE_STATES, FutureState)
+    CANCELLED,
+    CANCELLING,
+    EXECUTING,
+    FAILED,
+    COMPLETED,
+    WAITING,
+    CANCELLABLE_STATES,
+    DONE_STATES,
+    FutureState,
+)
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following
@@ -39,6 +57,7 @@ class CallBackgroundTask:
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor
     """
+
     def __init__(self, callable, args, kwargs, cancel_event):
         self.callable = callable
         self.args = args
@@ -74,6 +93,7 @@ class CallFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a background call.
     """
+
     #: The state of the background call, to the best of the knowledge of
     #: this future.
     state = FutureState
@@ -148,7 +168,7 @@ class CallFuture(HasStrictTraits):
 
     # Private methods #########################################################
 
-    @on_trait_change('_message_receiver:message')
+    @on_trait_change("_message_receiver:message")
     def _process_message(self, message):
         message_type, message_arg = message
         method_name = "_process_{}".format(message_type)
@@ -190,7 +210,8 @@ class CallFuture(HasStrictTraits):
         new_cancellable = new_state in CANCELLABLE_STATES
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
-                "cancellable", old_cancellable, new_cancellable)
+                "cancellable", old_cancellable, new_cancellable
+            )
 
         old_done = old_state in DONE_STATES
         new_done = new_state in DONE_STATES
@@ -202,6 +223,7 @@ class BackgroundCall(HasStrictTraits):
     """
     Object representing the background call to be executed.
     """
+
     #: The callable to be executed.
     callable = Callable()
 
@@ -234,8 +256,7 @@ class BackgroundCall(HasStrictTraits):
             Callable to be executed in the background.
         """
         future = CallFuture(
-            _cancel_event=cancel_event,
-            _message_receiver=message_receiver,
+            _cancel_event=cancel_event, _message_receiver=message_receiver,
         )
         runner = CallBackgroundTask(
             callable=self.callable,

@@ -68,4 +68,5 @@ class GuiTestAssistant:
 
         if not stopped:
             raise RuntimeError(
-                "Timeout occurred before the condition became true.")
+                "Timeout occurred before the condition became true."
+            )

@@ -13,8 +13,15 @@ import weakref
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    IterationFuture, FutureState, TraitsExecutor,
-    CANCELLED, CANCELLING, EXECUTING, FAILED, COMPLETED, WAITING,
+    IterationFuture,
+    FutureState,
+    TraitsExecutor,
+    CANCELLED,
+    CANCELLING,
+    EXECUTING,
+    FAILED,
+    COMPLETED,
+    WAITING,
 )
 from traits_futures.tests.common_future_tests import CommonFutureTests
 from traits_futures.toolkit_support import toolkit
@@ -121,7 +128,7 @@ class IterationFutureListener(HasStrictTraits):
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change('future:result_event')
+    @on_trait_change("future:result_event")
     def record_iteration_result(self, result):
         self.results.append(result)
 
@@ -176,8 +183,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
 
     def test_failing_iteration(self):
         # Iteration that eventually fails.
-        future = self.executor.submit_iteration(
-            reciprocals, start=-2, stop=2)
+        future = self.executor.submit_iteration(reciprocals, start=-2, stop=2)
         listener = IterationFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -214,7 +220,8 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         listener = IterationFutureListener(future=future)
 
         self.run_until(
-            listener, "results_items",
+            listener,
+            "results_items",
             lambda listener: len(listener.results) > 0,
         )
 
@@ -228,8 +235,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         self.assertNoException(future)
         self.assertEqual(listener.results, [1729])
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_exhausted(self):
@@ -239,7 +245,8 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
 
         # Make sure we've got the single result.
         self.run_until(
-            listener, "results_items",
+            listener,
+            "results_items",
             lambda listener: len(listener.results) > 0,
         )
 
@@ -251,8 +258,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         self.assertNoException(future)
         self.assertEqual(listener.results, [1])
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_start(self):
@@ -275,7 +281,8 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         listener = IterationFutureListener(future=future)
 
         self.run_until(
-            listener, "results_items",
+            listener,
+            "results_items",
             lambda listener: len(listener.results) > 0,
         )
 
@@ -287,8 +294,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         self.assertNoException(future)
         self.assertEqual(listener.results, [1729])
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_failure(self):
@@ -306,8 +312,7 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         self.assertNoException(future)
         self.assertEqual(listener.results, [])
         self.assertEqual(
-            listener.states,
-            [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_bad_job(self):
@@ -349,11 +354,15 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
 
         future = self.executor.submit_iteration(
             resource_acquiring_iteration,
-            resource_acquired, resource_released, blocker)
+            resource_acquired,
+            resource_released,
+            blocker,
+        )
         listener = IterationFutureListener(future=future)
 
         self.run_until(
-            listener, "results_items",
+            listener,
+            "results_items",
             lambda listener: len(listener.results) > 0,
         )
 
@@ -373,11 +382,13 @@ class TestBackgroundIteration(GuiTestAssistant, unittest.TestCase):
         midpoint = threading.Event()
 
         future = self.executor.submit_iteration(
-            ping_pong, test_ready, midpoint)
+            ping_pong, test_ready, midpoint
+        )
         listener = IterationFutureListener(future=future)
 
         self.run_until(
-            listener, "results_items",
+            listener,
+            "results_items",
             lambda listener: len(listener.results) > 0,
         )
 

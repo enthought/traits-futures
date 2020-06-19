@@ -29,7 +29,6 @@ __all__ = [
     "CallFuture",
     "IterationFuture",
     "ProgressFuture",
-
     # Future states
     "FutureState",
     "CANCELLED",
@@ -38,10 +37,8 @@ __all__ = [
     "FAILED",
     "COMPLETED",
     "WAITING",
-
     # Executor
     "TraitsExecutor",
-
     # Executor states
     "ExecutorState",
     "RUNNING",
