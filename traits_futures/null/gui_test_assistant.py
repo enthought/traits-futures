@@ -51,13 +51,13 @@ class GuiTestAssistant:
         RuntimeError
             If the condition didn't become true before timeout.
         """
-        if condition:
+        if condition(object):
             return
 
         event_loop = get_event_loop()
 
         def stop_on_condition():
-            if condition:
+            if condition(object):
                 event_loop.stop()
 
         object.on_trait_change(stop_on_condition, trait)
