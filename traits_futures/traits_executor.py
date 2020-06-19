@@ -115,7 +115,7 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture
             Object representing the state of the background call.
         """
-        task = BackgroundCall(callable=callable, args=args, kwargs=kwargs,)
+        task = BackgroundCall(callable=callable, args=args, kwargs=kwargs)
         return self.submit(task)
 
     def submit_iteration(self, callable, *args, **kwargs):
@@ -162,7 +162,7 @@ class TraitsExecutor(HasStrictTraits):
         future : ProgressFuture
             Object representing the state of the background task.
         """
-        task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs,)
+        task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs)
         return self.submit(task)
 
     def submit(self, task):

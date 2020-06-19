@@ -110,7 +110,7 @@ class ProgressBackgroundTask:
         self.cancel_event = cancel_event
 
     def __call__(self, send):
-        progress = ProgressReporter(send=send, cancel_event=self.cancel_event,)
+        progress = ProgressReporter(send=send, cancel_event=self.cancel_event)
         self.kwargs["progress"] = progress.report
 
         if self.cancel_event.is_set():

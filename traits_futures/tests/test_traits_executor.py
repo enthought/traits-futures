@@ -242,7 +242,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         self.assertEqual(
             future.result,
-            (("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"},),
+            (("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}),
         )
 
     def test_submit_iteration(self):

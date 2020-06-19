@@ -179,8 +179,8 @@ class PiIterator(Handler):
                 VGroup(
                     Item("chunk_size"),
                     Item("max_points"),
-                    UItem("approximate", enabled_when="approximate_enabled",),
-                    UItem("cancel", enabled_when="cancel_enabled",),
+                    UItem("approximate", enabled_when="approximate_enabled"),
+                    UItem("cancel", enabled_when="cancel_enabled"),
                 ),
             ),
             resizable=True,
