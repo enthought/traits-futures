@@ -1,8 +1,6 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
 
-import operator
-
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
@@ -38,6 +36,13 @@ def ping_pong_fail(ping_event, pong_event):
     1 / 0
 
 
+def fail():
+    """
+    Callable that fails with an exception.
+    """
+    1 / 0
+
+
 class CallFutureListener(HasStrictTraits):
     #: Future that we're listening to.
     future = Instance(CallFuture)
@@ -70,7 +75,7 @@ class BackgroundCallTests:
         )
 
     def test_failed_call(self):
-        future = self.executor.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(fail)
         listener = CallFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -182,7 +187,7 @@ class BackgroundCallTests:
         )
 
     def test_cannot_cancel_after_failure(self):
-        future = self.executor.submit_call(operator.floordiv, 1, 0)
+        future = self.executor.submit_call(fail)
         listener = CallFutureListener(future=future)
 
         self.wait_until_done(future)
