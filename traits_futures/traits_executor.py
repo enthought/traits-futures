@@ -64,16 +64,16 @@ class TraitsExecutor(HasStrictTraits):
            Use ``worker_pool`` instead.
 
     worker_pool : concurrent.futures.ThreadPoolExecutor, optional
-        If supplied, provides the underlying thread pool executor to use. In
+        If supplied, provides the underlying worker pool executor to use. In
         this case, the creator of the TraitsExecutor is responsible for
-        shutting down the thread pool once it's no longer needed. If not
-        supplied, a new private thread pool will be created, and this object's
-        ``stop`` method will shut down that thread pool.
+        shutting down the worker pool once it's no longer needed. If not
+        supplied, a new private worker pool will be created, and this object's
+        ``stop`` method will shut down that worker pool.
     max_workers : int or None, optional
-        Maximum number of workers for the private thread pool. This parameter
-        is mutually exclusive with thread_pool. The default is ``None``, which
-        delegates the choice of number of workers to Python's
-        ``ThreadPoolExecutor``.
+        Maximum number of workers for the private worker pool. This parameter
+        is mutually exclusive with ``worker_pool``. The default is ``None``,
+        which delegates the choice of number of workers to Python's
+        ``concurrent.futures`` module.
     """
 
     #: Current state of this executor.
