@@ -254,8 +254,8 @@ application components. In that case, you can instantiate the |TraitsExecutor|
 with an existing thread pool, which should be an instance of
 ``concurrent.futures.ThreadPoolExecutor``::
 
-    thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=24)
-    executor = TraitsExecutor(thread_pool=thread_pool)
+    worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=24)
+    executor = TraitsExecutor(worker_pool=worker_pool)
 
 It's then your responsibility to shut down the thread pool once it's no longer
 needed.

@@ -2,6 +2,31 @@ Changelog for Traits Futures
 ============================
 
 
+Release 0.2.0
+-------------
+
+Release date: XXXX-XX-XX
+
+Features
+~~~~~~~~
+
+- ``TraitsExecutor`` now accepts a ``max_workers`` argument, which will
+  be used to specify the number of workers if the executor creates its own
+  worker pool.
+
+Changes
+~~~~~~~
+
+- The ``thread_pool`` argument to ``TraitsExecutor`` has been renamed to
+  ``worker_pool``. The old name ``thread_pool`` continues to work, but its
+  use is deprecated.
+
+- The default number of workers in the worker pool has changed. Previously
+  it was hard-coded as ``4``. Now it defaults to whatever Python's
+  ``concurrent.futures`` executors give (but it can be controlled by
+  passing the ``max_workers`` argument).
+
+
 Release 0.1.1
 -------------
 
