@@ -187,6 +187,9 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.wait_until_done(future)
         self.assertEqual(future.state, CANCELLED)
 
+        self.wait_until_stopped(executor)
+        self.assertEqual(executor.state, STOPPED)
+
     def test_running(self):
         executor = TraitsExecutor()
         self.assertTrue(executor.running)
