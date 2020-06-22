@@ -118,7 +118,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_max_workers_mutually_exclusive_with_thread_pool(self):
         with self.temporary_thread_pool() as thread_pool:
             with self.assertRaises(TypeError):
-                TraitsExecutor(thread_pool=thread_pool, max_workers=11)
+                TraitsExecutor(worker_pool=thread_pool, max_workers=11)
 
     def test_stop_method(self):
         executor = TraitsExecutor()
@@ -225,9 +225,20 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         with self.assertRaises(RuntimeError):
             thread_pool.submit(int)
 
+    def test_thread_pool_argument_deprecated(self):
+        with self.temporary_thread_pool() as thread_pool:
+            with self.assertWarns(DeprecationWarning) as warning_info:
+                executor = TraitsExecutor(thread_pool=thread_pool)
+            executor.stop()
+            self.wait_until_stopped(executor)
+
+        # Check we're using the right stack level in the warning.
+        *_, this_module = __name__.rsplit(".")
+        self.assertIn(this_module, warning_info.filename)
+
     def test_shared_thread_pool(self):
         with self.temporary_thread_pool() as thread_pool:
-            executor = TraitsExecutor(thread_pool=thread_pool)
+            executor = TraitsExecutor(worker_pool=thread_pool)
             executor.stop()
             self.wait_until_stopped(executor)
 
