@@ -22,6 +22,8 @@ class TestApi(unittest.TestCase):
             RUNNING,
             STOPPING,
             STOPPED,
+            IParallelContext,
+            MultithreadingContext,
         )
 
     def test___all__(self):

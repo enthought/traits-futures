@@ -24,6 +24,7 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     EXECUTING,
+    MultithreadingContext,
     TraitsExecutor,
     ExecutorState,
     RUNNING,
@@ -119,6 +120,25 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         with self.temporary_worker_pool() as worker_pool:
             with self.assertRaises(TypeError):
                 TraitsExecutor(worker_pool=worker_pool, max_workers=11)
+
+    def test_default_context(self):
+        with self.temporary_executor() as executor:
+            self.assertIsInstance(executor._context, MultithreadingContext)
+
+    def test_externally_supplied_context(self):
+        context = MultithreadingContext()
+        try:
+            with self.temporary_executor(context=context) as executor:
+                self.assertIs(executor._context, context)
+            self.assertFalse(context.closed)
+        finally:
+            context.close()
+
+    def test_owned_context_closed_at_executor_stop(self):
+        with self.temporary_executor() as executor:
+            context = executor._context
+            self.assertFalse(context.closed)
+        self.assertTrue(context.closed)
 
     def test_stop_method(self):
         executor = TraitsExecutor()
@@ -376,6 +396,18 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
     def wait_for_state(self, future, state):
         self.run_until(future, "state", lambda future: future.state == state)
+
+    @contextlib.contextmanager
+    def temporary_executor(self, **kwds):
+        """
+        Create a temporary TraitsExecutor, and shut it down properly after use.
+        """
+        executor = TraitsExecutor(**kwds)
+        try:
+            yield executor
+        finally:
+            executor.stop()
+            self.wait_until_stopped(executor)
 
     @contextlib.contextmanager
     def long_running_task(self, executor):

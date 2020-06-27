@@ -16,6 +16,8 @@ from traits_futures.future_states import (
     COMPLETED,
     WAITING,
 )
+from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.traits_executor import (
     TraitsExecutor,
     ExecutorState,
@@ -44,4 +46,7 @@ __all__ = [
     "RUNNING",
     "STOPPING",
     "STOPPED",
+    # Contexts
+    "IParallelContext",
+    "MultithreadingContext",
 ]
