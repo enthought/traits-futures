@@ -330,4 +330,5 @@ class TraitsExecutor(HasStrictTraits):
 
         if self._own_context:
             self._context.close()
+        self._context = None
         self.state = STOPPED
