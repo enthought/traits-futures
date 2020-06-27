@@ -57,13 +57,13 @@ class TraitsExecutor(HasStrictTraits):
 
     Parameters
     ----------
-    thread_pool : concurrent.futures.ThreadPoolExecutor, optional
+    thread_pool : concurrent.futures.Executor, optional
         Deprecated alias for worker_pool.
 
         .. deprecated:: 0.2
            Use ``worker_pool`` instead.
 
-    worker_pool : concurrent.futures.ThreadPoolExecutor, optional
+    worker_pool : concurrent.futures.Executor, optional
         If supplied, provides the underlying worker pool executor to use. In
         this case, the creator of the TraitsExecutor is responsible for
         shutting down the worker pool once it's no longer needed. If not
@@ -103,19 +103,18 @@ class TraitsExecutor(HasStrictTraits):
             )
             worker_pool = thread_pool
 
-        if worker_pool is None:
-            self._worker_pool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=max_workers
+        own_worker_pool = worker_pool is None
+        if own_worker_pool:
+            worker_pool = concurrent.futures.ThreadPoolExecutor(
+                max_workers=max_workers)
+        elif max_workers is not None:
+            raise TypeError(
+                "at most one of 'worker_pool' and 'max_workers' "
+                "should be supplied"
             )
-            self._own_worker_pool = True
-        else:
-            if max_workers is not None:
-                raise TypeError(
-                    "at most one of 'worker_pool' and 'max_workers' "
-                    "should be supplied"
-                )
-            self._worker_pool = worker_pool
-            self._own_worker_pool = False
+
+        self._worker_pool = worker_pool
+        self._own_worker_pool = own_worker_pool
 
     def submit_call(self, callable, *args, **kwargs):
         """
