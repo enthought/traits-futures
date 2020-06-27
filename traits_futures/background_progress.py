@@ -99,7 +99,7 @@ class ProgressBackgroundTask:
     """
     Background portion of a progress background task.
 
-    This provides the callable that will be submitted to the thread pool, and
+    This provides the callable that will be submitted to the worker pool, and
     sends messages to communicate with the ProgressFuture.
     """
 

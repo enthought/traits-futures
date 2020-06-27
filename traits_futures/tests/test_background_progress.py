@@ -41,7 +41,7 @@ class TestBackgroundProgress(
         """
         Context manager to temporarily block the workers in the worker pool.
         """
-        worker_pool = self.executor._thread_pool
+        worker_pool = self.executor._worker_pool
         max_workers = worker_pool._max_workers
 
         event = self.Event()

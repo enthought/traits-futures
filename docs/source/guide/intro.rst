@@ -14,9 +14,9 @@ Submitting background tasks
 
 The |TraitsExecutor| is the main point of entry to |traits_futures|. Its job is
 to accept one or more task submissions. For each task submitted, it sends the
-computation to run in the background on a thread pool worker, and returns a
-corresponding "future" object that allows monitoring of the state of the
-background computation and retrieval of its results.
+computation to run in the background on a worker from a worker pool, and
+returns a corresponding "future" object that allows monitoring of the state of
+the background computation and retrieval of its results.
 
 We'll examine the future objects in the next section. This section deals with
 the executor's main top-level methods.
@@ -92,12 +92,11 @@ underlying computation. That state has one of six possible different values:
 
 |WAITING|
    The background task has been scheduled to run, but has not yet started
-   executing (for example, because the thread pool is still busy dealing
+   executing (for example, because the worker pool is still busy dealing
    with previously-submitted tasks.
 
 |EXECUTING|
-   The background task is currently executing on one of the thread pool
-   workers.
+   The background task is currently executing on one of the workers.
 
 |COMPLETED|
    The background task has completed without error. For a progress task or a
@@ -237,27 +236,27 @@ executing or waiting futures, puts the executor into |STOPPING| state and then
 returns.
 
 Once all futures reach |CANCELLED| state, an executor in |STOPPING| state moves
-into |STOPPED| state. If the executor owns its thread pool, that thread pool is
+into |STOPPED| state. If the executor owns its worker pool, that worker pool is
 shut down immediately before moving into |STOPPED| state.
 
 It's advisable to stop the executor explicitly and wait for it to reach
 |STOPPING| state before exiting an application using it.
 
 
-Using a shared thread pool
+Using a shared worker pool
 --------------------------
 
-By default, the |TraitsExecutor| creates its own thread pool, and shuts that
-thread pool down when its |stop| method is called. In a large multithreaded
-application, you might want to use a shared thread pool for multiple different
+By default, the |TraitsExecutor| creates its own worker pool, and shuts that
+worker pool down when its |stop| method is called. In a large multithreaded
+application, you might want to use a shared worker pool for multiple different
 application components. In that case, you can instantiate the |TraitsExecutor|
-with an existing thread pool, which should be an instance of
+with an existing worker pool, which should be an instance of
 ``concurrent.futures.ThreadPoolExecutor``::
 
     worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=24)
     executor = TraitsExecutor(worker_pool=worker_pool)
 
-It's then your responsibility to shut down the thread pool once it's no longer
+It's then your responsibility to shut down the worker pool once it's no longer
 needed.
 
 ..
