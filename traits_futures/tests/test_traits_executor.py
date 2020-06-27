@@ -111,14 +111,14 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
     def test_max_workers(self):
         executor = TraitsExecutor(max_workers=11)
-        self.assertEqual(executor._thread_pool._max_workers, 11)
+        self.assertEqual(executor._worker_pool._max_workers, 11)
         executor.stop()
         self.wait_until_stopped(executor)
 
-    def test_max_workers_mutually_exclusive_with_thread_pool(self):
-        with self.temporary_thread_pool() as thread_pool:
+    def test_max_workers_mutually_exclusive_with_worker_pool(self):
+        with self.temporary_worker_pool() as worker_pool:
             with self.assertRaises(TypeError):
-                TraitsExecutor(worker_pool=thread_pool, max_workers=11)
+                TraitsExecutor(worker_pool=worker_pool, max_workers=11)
 
     def test_stop_method(self):
         executor = TraitsExecutor()
@@ -214,21 +214,21 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         self.wait_until_stopped(executor)
         self.assertTrue(executor.stopped)
 
-    def test_owned_thread_pool(self):
+    def test_owned_worker_pool(self):
         executor = TraitsExecutor()
-        thread_pool = executor._thread_pool
+        worker_pool = executor._worker_pool
 
         executor.stop()
         self.wait_until_stopped(executor)
 
         # Check that the internally-created thread pool has been shut down.
         with self.assertRaises(RuntimeError):
-            thread_pool.submit(int)
+            worker_pool.submit(int)
 
     def test_thread_pool_argument_deprecated(self):
-        with self.temporary_thread_pool() as thread_pool:
+        with self.temporary_worker_pool() as worker_pool:
             with self.assertWarns(DeprecationWarning) as warning_info:
-                executor = TraitsExecutor(thread_pool=thread_pool)
+                executor = TraitsExecutor(thread_pool=worker_pool)
             executor.stop()
             self.wait_until_stopped(executor)
 
@@ -236,14 +236,14 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         *_, this_module = __name__.rsplit(".")
         self.assertIn(this_module, warning_info.filename)
 
-    def test_shared_thread_pool(self):
-        with self.temporary_thread_pool() as thread_pool:
-            executor = TraitsExecutor(worker_pool=thread_pool)
+    def test_shared_worker_pool(self):
+        with self.temporary_worker_pool() as worker_pool:
+            executor = TraitsExecutor(worker_pool=worker_pool)
             executor.stop()
             self.wait_until_stopped(executor)
 
             # Check that the the shared thread pool is still usable.
-            cf_future = thread_pool.submit(int)
+            cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
 
     def test_submit_call(self):
@@ -391,12 +391,12 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             event.set()
 
     @contextlib.contextmanager
-    def temporary_thread_pool(self):
+    def temporary_worker_pool(self):
         """
         Create a thread pool that's shut down at the end of the with block.
         """
-        thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+        worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
         try:
-            yield thread_pool
+            yield worker_pool
         finally:
-            thread_pool.shutdown()
+            worker_pool.shutdown()

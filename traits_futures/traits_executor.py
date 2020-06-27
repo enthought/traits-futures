@@ -104,18 +104,18 @@ class TraitsExecutor(HasStrictTraits):
             worker_pool = thread_pool
 
         if worker_pool is None:
-            self._thread_pool = concurrent.futures.ThreadPoolExecutor(
+            self._worker_pool = concurrent.futures.ThreadPoolExecutor(
                 max_workers=max_workers
             )
-            self._own_thread_pool = True
+            self._own_worker_pool = True
         else:
             if max_workers is not None:
                 raise TypeError(
                     "at most one of 'worker_pool' and 'max_workers' "
                     "should be supplied"
                 )
-            self._thread_pool = worker_pool
-            self._own_thread_pool = False
+            self._worker_pool = worker_pool
+            self._own_worker_pool = False
 
     def submit_call(self, callable, *args, **kwargs):
         """
@@ -211,7 +211,7 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(sender, receiver)
             raise
 
-        self._thread_pool.submit(_background_job_wrapper, runner, sender)
+        self._worker_pool.submit(_background_job_wrapper, runner, sender)
         self._futures[receiver] = future
         return future
 
@@ -237,11 +237,11 @@ class TraitsExecutor(HasStrictTraits):
     # Private traits ##########################################################
 
     #: concurrent.futures.Executor instance providing the thread pool.
-    _thread_pool = Instance(concurrent.futures.Executor)
+    _worker_pool = Instance(concurrent.futures.Executor)
 
     #: True if we own this thread pool (and are therefore responsible
     #: for shutting it down), else False.
-    _own_thread_pool = Bool()
+    _own_worker_pool = Bool()
 
     #: Router providing message connections between background tasks
     #: and foreground futures.
@@ -293,7 +293,7 @@ class TraitsExecutor(HasStrictTraits):
         self._message_router.disconnect()
         self._message_router = None
 
-        if self._own_thread_pool:
-            self._thread_pool.shutdown()
-        self._thread_pool = None
+        if self._own_worker_pool:
+            self._worker_pool.shutdown()
+        self._worker_pool = None
         self.state = STOPPED
