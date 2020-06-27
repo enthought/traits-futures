@@ -84,7 +84,7 @@ class TraitsExecutor(HasStrictTraits):
     running = Property(Bool())
 
     #: Derived state: true if this executor is stopped and it's safe
-    #: to dispose of related resources (like the thread pool).
+    #: to dispose of related resources (like the worker pool).
     stopped = Property(Bool())
 
     def __init__(
@@ -236,10 +236,10 @@ class TraitsExecutor(HasStrictTraits):
 
     # Private traits ##########################################################
 
-    #: concurrent.futures.Executor instance providing the thread pool.
+    #: concurrent.futures.Executor instance providing the worker pool.
     _worker_pool = Instance(concurrent.futures.Executor)
 
-    #: True if we own this thread pool (and are therefore responsible
+    #: True if we own this worker pool (and are therefore responsible
     #: for shutting it down), else False.
     _own_worker_pool = Bool()
 
@@ -287,7 +287,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def _stop(self):
         """
-        Go to STOPPED state, and shut down the thread pool if we own it.
+        Go to STOPPED state, and shut down the worker pool if we own it.
         """
         assert self.state == STOPPING
         self._message_router.disconnect()

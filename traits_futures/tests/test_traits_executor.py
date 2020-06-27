@@ -221,7 +221,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         executor.stop()
         self.wait_until_stopped(executor)
 
-        # Check that the internally-created thread pool has been shut down.
+        # Check that the internally-created worker pool has been shut down.
         with self.assertRaises(RuntimeError):
             worker_pool.submit(int)
 
@@ -242,7 +242,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             executor.stop()
             self.wait_until_stopped(executor)
 
-            # Check that the the shared thread pool is still usable.
+            # Check that the the shared worker pool is still usable.
             cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
 
@@ -393,7 +393,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     @contextlib.contextmanager
     def temporary_worker_pool(self):
         """
-        Create a thread pool that's shut down at the end of the with block.
+        Create a worker pool that's shut down at the end of the with block.
         """
         worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
         try:
