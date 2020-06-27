@@ -233,7 +233,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             self.wait_until_stopped(executor)
 
         # Check we're using the right stack level in the warning.
-        *_, this_module = __name__.rsplit(".")
+        _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
 
     def test_shared_worker_pool(self):
