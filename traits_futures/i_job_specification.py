@@ -10,6 +10,16 @@ from abc import ABC, abstractmethod
 
 
 class IJobSpecification(ABC):
+    """
+    Specify background job and foreground future for a task.
+
+    An object implementing the IJobSpecification interface describes how to
+    create a background job and a corresponding foreground future to execute a
+    particular type of background task. It's consumed by the TraitsExecutor
+    when submitting background tasks, and implemented by BackgroundCall,
+    BackgroundIteration and others.
+    """
+
     @abstractmethod
     def background_job(self):
         """
