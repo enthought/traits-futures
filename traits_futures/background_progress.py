@@ -14,6 +14,7 @@ be cancelled.
 
 from traits.api import (
     Any,
+    Bool,
     Callable,
     Dict,
     Event,
@@ -126,8 +127,8 @@ class ProgressFuture(BaseFuture):
     @property
     def result(self):
         """
-        Result of the background task. Raises an ``Attributerror`` on access if
-        no result is available (because the background task failed, was
+        Result of the background task. Raises an ``AttributeError`` on access
+        if no result is available (because the background task failed, was
         cancelled, or has not yet completed).
 
         Note: this is deliberately a regular Python property rather than a
@@ -155,8 +156,14 @@ class ProgressFuture(BaseFuture):
 
     # Private traits ##########################################################
 
+    #: Boolean indicating whether we have a result available.
+    _have_result = Bool(False)
+
     #: Result from the background task.
     _result = Any()
+
+    #: Boolean indicating whether we have exception information available.
+    _have_exception = Bool(False)
 
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
@@ -166,6 +173,7 @@ class ProgressFuture(BaseFuture):
     def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
+            self._have_exception = True
             self._exception = exception_info
             self.state = FAILED
         else:
@@ -174,6 +182,7 @@ class ProgressFuture(BaseFuture):
     def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
+            self._have_result = True
             self._result = result
             self.state = COMPLETED
         else:

@@ -8,6 +8,7 @@ import types
 
 from traits.api import (
     Any,
+    Bool,
     Callable,
     Dict,
     Event,
@@ -141,11 +142,14 @@ class IterationFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != FAILED:
+        if not self._have_exception:
             raise AttributeError("No exception has been raised for this call.")
         return self._exception
 
     # Private traits ##########################################################
+
+    #: Boolean indicating whether we have exception information available.
+    _have_exception = Bool(False)
 
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
@@ -155,6 +159,7 @@ class IterationFuture(BaseFuture):
     def _process_raised(self, exception_info):
         assert self.state in (WAITING, EXECUTING, CANCELLING)
         if self.state in (EXECUTING, WAITING):
+            self._have_exception = True
             self._exception = exception_info
             self.state = FAILED
         else:

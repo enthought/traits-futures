@@ -6,6 +6,7 @@ Background task consisting of a simple callable.
 """
 from traits.api import (
     Any,
+    Bool,
     Callable,
     Dict,
     HasStrictTraits,
@@ -72,15 +73,15 @@ class CallFuture(BaseFuture):
     @property
     def result(self):
         """
-        Result of the background call. Raises an ``Attributerror`` on access if
-        no result is available (because the background call failed, was
+        Result of the background call. Raises an ``AttributeError`` on access
+        if no result is available (because the background call failed, was
         cancelled, or has not yet completed).
 
         Note: this is deliberately a regular Python property rather than a
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != COMPLETED:
+        if not self._have_result:
             raise AttributeError("No result available for this call.")
         return self._result
 
@@ -95,14 +96,20 @@ class CallFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != FAILED:
+        if not self._have_exception:
             raise AttributeError("No exception has been raised for this call.")
         return self._exception
 
     # Private traits ##########################################################
 
+    #: Boolean indicating whether we have a result available.
+    _have_result = Bool(False)
+
     #: Result from the background task.
     _result = Any()
+
+    #: Boolean indicating whether we have exception information available.
+    _have_exception = Bool(False)
 
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
@@ -112,6 +119,7 @@ class CallFuture(BaseFuture):
     def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
+            self._have_exception = True
             self._exception = exception_info
             self.state = FAILED
         else:
@@ -120,6 +128,7 @@ class CallFuture(BaseFuture):
     def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
+            self._have_result = True
             self._result = result
             self.state = COMPLETED
         else:
