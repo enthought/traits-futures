@@ -8,9 +8,8 @@ from traits_futures.api import (
     FutureState,
     CANCELLED,
     CANCELLING,
-    COMPLETED,
+    DONE,
     EXECUTING,
-    FAILED,
     WAITING,
 )
 
@@ -71,8 +70,9 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, DONE],
         )
+        self.assertTrue(future.ok)
 
     def test_failed_call(self):
         future = self.executor.submit_call(fail)
@@ -83,8 +83,9 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, FAILED],
+            listener.states, [WAITING, EXECUTING, DONE],
         )
+        self.assertFalse(future.ok)
 
     def test_cancellation_vs_started_race_condition(self):
         # Simulate situation where a STARTED message arrives post-cancellation.
@@ -183,8 +184,9 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, DONE],
         )
+        self.assertTrue(future.ok)
 
     def test_cannot_cancel_after_failure(self):
         future = self.executor.submit_call(fail)
@@ -199,8 +201,9 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, FAILED],
+            listener.states, [WAITING, EXECUTING, DONE],
         )
+        self.assertFalse(future.ok)
 
     def test_cannot_cancel_after_cancel(self):
         future = self.executor.submit_call(pow, 2, 3)

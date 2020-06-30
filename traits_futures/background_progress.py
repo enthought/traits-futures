@@ -28,9 +28,8 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
+    DONE,
     EXECUTING,
-    FAILED,
-    COMPLETED,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -125,6 +124,18 @@ class ProgressFuture(BaseFuture):
     progress = Event(Any())
 
     @property
+    def ok(self):
+        """
+        Boolean indicating whether the background job completed successfully.
+
+        Not available for cancelled or pending jobs.
+        """
+        if self.state != DONE:
+            raise AttributeError(
+                "Background job was cancelled, or has not yet completed.")
+        return not self._have_exception
+
+    @property
     def result(self):
         """
         Result of the background task. Raises an ``AttributeError`` on access
@@ -135,7 +146,7 @@ class ProgressFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != COMPLETED:
+        if not self._have_result:
             raise AttributeError("No result available for this call.")
         return self._result
 
@@ -150,7 +161,7 @@ class ProgressFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != FAILED:
+        if not self._have_exception:
             raise AttributeError("No exception has been raised for this call.")
         return self._exception
 
@@ -175,7 +186,7 @@ class ProgressFuture(BaseFuture):
         if self.state == EXECUTING:
             self._have_exception = True
             self._exception = exception_info
-            self.state = FAILED
+            self.state = DONE
         else:
             self.state = CANCELLED
 
@@ -184,7 +195,7 @@ class ProgressFuture(BaseFuture):
         if self.state == EXECUTING:
             self._have_result = True
             self._result = result
-            self.state = COMPLETED
+            self.state = DONE
         else:
             self.state = CANCELLED
 

@@ -19,9 +19,8 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
+    DONE,
     EXECUTING,
-    FAILED,
-    COMPLETED,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -56,19 +55,30 @@ class CallBackgroundTask:
 
 # CallFuture states. These represent the future's current
 # state of knowledge of the background task. A task starts out
-# in WAITING state and ends in one of the three final states:
-# COMPLETED, FAILED, OR CANCELLED. The possible progressions of states are:
+# in WAITING state and ends in one of the two final states
+# DONE OR CANCELLED. The possible progressions of states are:
 #
 # WAITING -> CANCELLING -> CANCELLED
 # WAITING -> EXECUTING -> CANCELLING -> CANCELLED
-# WAITING -> EXECUTING -> FAILED
-# WAITING -> EXECUTING -> COMPLETED
+# WAITING -> EXECUTING -> DONE
 
 
 class CallFuture(BaseFuture):
     """
     Object representing the front-end handle to a background call.
     """
+
+    @property
+    def ok(self):
+        """
+        Boolean indicating whether the background job completed successfully.
+
+        Not available for cancelled or pending jobs.
+        """
+        if self.state != DONE:
+            raise AttributeError(
+                "Background job was cancelled, or has not yet completed.")
+        return self._have_result
 
     @property
     def result(self):
@@ -121,7 +131,7 @@ class CallFuture(BaseFuture):
         if self.state == EXECUTING:
             self._have_exception = True
             self._exception = exception_info
-            self.state = FAILED
+            self.state = DONE
         else:
             self.state = CANCELLED
 
@@ -130,7 +140,7 @@ class CallFuture(BaseFuture):
         if self.state == EXECUTING:
             self._have_result = True
             self._result = result
-            self.state = COMPLETED
+            self.state = DONE
         else:
             self.state = CANCELLED
 

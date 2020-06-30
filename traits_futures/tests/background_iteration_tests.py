@@ -13,9 +13,8 @@ from traits_futures.api import (
     FutureState,
     CANCELLED,
     CANCELLING,
+    DONE,
     EXECUTING,
-    FAILED,
-    COMPLETED,
     WAITING,
 )
 
@@ -133,7 +132,8 @@ class BackgroundIterationTests:
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [1.0, 0.5, 1 / 3.0])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertTrue(future.ok)
 
     def test_general_iterable(self):
         # Any call that returns an iterable should be accepted
@@ -144,7 +144,8 @@ class BackgroundIterationTests:
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [0, 2, 4, 6, 8])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertTrue(future.ok)
 
     def test_bad_iteration_setup(self):
         # Deliberately passing a callable that returns
@@ -156,7 +157,8 @@ class BackgroundIterationTests:
 
         self.assertException(future, TypeError)
         self.assertEqual(listener.results, [])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertFalse(future.ok)
 
     def test_failing_iteration(self):
         # Iteration that eventually fails.
@@ -167,7 +169,8 @@ class BackgroundIterationTests:
 
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(listener.results, [-0.5, -1.0])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertFalse(future.ok)
 
     def test_cancel_before_execution(self):
         # Simulate race condition where we cancel after the background
