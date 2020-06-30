@@ -16,11 +16,7 @@ from traits.api import (
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
-from traits_futures.future_states import (
-    CANCELLING,
-    DONE,
-    WAITING,
-)
+from traits_futures.future_states import CANCELLING, DONE
 from traits_futures.i_job_specification import IJobSpecification
 
 # The background task sends either a "RAISED" message or a "RETURNED" message.
@@ -117,14 +113,12 @@ class CallFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_raised(self, exception_info):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
+        if self.state != CANCELLING:
             self._have_exception = True
             self._exception = exception_info
 
     def _process_returned(self, result):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
+        if self.state != CANCELLING:
             self._have_result = True
             self._result = result
 
