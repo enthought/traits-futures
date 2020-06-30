@@ -14,19 +14,15 @@ be cancelled.
 
 from traits.api import (
     Any,
-    Bool,
     Callable,
     Dict,
     Event,
     HasStrictTraits,
-    HasTraits,
-    Instance,
-    on_trait_change,
-    Property,
     Str,
     Tuple,
 )
 
+from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED,
@@ -34,10 +30,6 @@ from traits_futures.future_states import (
     EXECUTING,
     FAILED,
     COMPLETED,
-    WAITING,
-    CANCELLABLE_STATES,
-    DONE_STATES,
-    FutureState,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -113,7 +105,6 @@ class ProgressBackgroundTask:
         progress = ProgressReporter(send=send, cancelled=cancelled)
         self.kwargs["progress"] = progress.report
 
-        send(STARTED)
         try:
             result = self.callable(*self.args, **self.kwargs)
         except _ProgressCancelled:
@@ -124,22 +115,10 @@ class ProgressBackgroundTask:
             send(RETURNED, result)
 
 
-class ProgressFuture(HasStrictTraits):
+class ProgressFuture(BaseFuture):
     """
     Object representing the front-end handle to a ProgressBackgroundTask.
     """
-
-    #: The state of the background task, to the best of the knowledge of
-    #: this future.
-    state = FutureState
-
-    #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool())
-
-    #: True if we've received the final message from the background task,
-    #: else False. `True` indicates either that the background task
-    #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool())
 
     #: Event fired whenever a progress message arrives from the background.
     progress = Event(Any())
@@ -174,29 +153,7 @@ class ProgressFuture(HasStrictTraits):
             raise AttributeError("No exception has been raised for this call.")
         return self._exception
 
-    def cancel(self):
-        """
-        Method that can be called from the main thread to
-        indicate that the task should be cancelled (provided
-        it hasn't already started running).
-        """
-        # In the interests of catching coding errors early in client
-        # code, we're strict about what states we allow cancellation
-        # from. Some applications may want to weaken the error below
-        # to a warning, or just do nothing on an invalid cancellation.
-        if not self.cancellable:
-            raise RuntimeError(
-                "Can only cancel a queued or executing task. "
-                "Task state is {!r}".format(self.state)
-            )
-        self._cancel()
-        self.state = CANCELLING
-
     # Private traits ##########################################################
-
-    #: Callable called with no arguments to request cancellation of the
-    #: background task.
-    _cancel = Callable()
 
     #: Result from the background task.
     _result = Any()
@@ -204,25 +161,7 @@ class ProgressFuture(HasStrictTraits):
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
 
-    #: Object that receives messages from the background task.
-    _message_receiver = Instance(HasTraits)
-
     # Private methods #########################################################
-
-    @on_trait_change("_message_receiver:message")
-    def _process_message(self, message):
-        message_type, message_arg = message
-        method_name = "_process_{}".format(message_type)
-        getattr(self, method_name)(message_arg)
-
-    def _process_interrupted(self, none):
-        assert self.state in (CANCELLING,)
-        self.state = CANCELLED
-
-    def _process_started(self, none):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
-            self.state = EXECUTING
 
     def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
@@ -244,25 +183,6 @@ class ProgressFuture(HasStrictTraits):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self.progress = progress_info
-
-    def _get_cancellable(self):
-        return self.state in CANCELLABLE_STATES
-
-    def _get_done(self):
-        return self.state in DONE_STATES
-
-    def _state_changed(self, old_state, new_state):
-        old_cancellable = old_state in CANCELLABLE_STATES
-        new_cancellable = new_state in CANCELLABLE_STATES
-        if old_cancellable != new_cancellable:
-            self.trait_property_changed(
-                "cancellable", old_cancellable, new_cancellable
-            )
-
-        old_done = old_state in DONE_STATES
-        new_done = new_state in DONE_STATES
-        if old_done != new_done:
-            self.trait_property_changed("done", old_done, new_done)
 
 
 @IJobSpecification.register

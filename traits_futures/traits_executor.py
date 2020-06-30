@@ -28,11 +28,21 @@ from traits.api import (
 # foreground listener shouldn't have to deal with that message - the router
 # should intercept instead.
 
-from traits_futures.background_call import BackgroundCall, INTERRUPTED
+from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
 from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.toolkit_support import toolkit
+
+
+#: Common messages send by background jobs. These should be being imported
+#: from somewhere else.
+
+#: Call was cancelled before it started. No arguments.
+INTERRUPTED = "interrupted"
+
+#: Call started executing. No arguments.
+STARTED = "started"
 
 
 # Executor states.
@@ -64,6 +74,7 @@ def _background_job_wrapper(background_job, sender, cancel_event):
             send(INTERRUPTED)
             return
 
+        send(STARTED)
         background_job(send, cancelled)
 
 
