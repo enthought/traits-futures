@@ -109,7 +109,7 @@ class CallFuture(HasStrictTraits):
     @property
     def result(self):
         """
-        Result of the background call. Raises an ``Attributerror`` on access if
+        Result of the background call. Raises an ``AttributeError`` on access if
         no result is available (because the background call failed, was
         cancelled, or has not yet completed).
 
