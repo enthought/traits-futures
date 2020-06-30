@@ -28,7 +28,7 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     DONE,
-    EXECUTING,
+    WAITING,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -176,21 +176,26 @@ class ProgressFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_raised(self, exception_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
             self._have_exception = True
             self._exception = exception_info
 
     def _process_returned(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
             self._have_result = True
             self._result = result
 
     def _process_progress(self, progress_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
             self.progress = progress_info
+
+    def _process_started(self, none):
+        # Short-circuit base class behaviour
+        # XXX Remove me once the base class method is gone.
+        pass
 
 
 @IJobSpecification.register

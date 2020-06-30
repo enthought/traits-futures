@@ -91,12 +91,7 @@ The |CallFuture|, |IterationFuture| and |ProgressFuture| objects all provide a
 underlying computation. That state has one of six possible different values:
 
 |WAITING|
-   The background task has been scheduled to run, but has not yet started
-   executing (for example, because the worker pool is still busy dealing
-   with previously-submitted tasks.
-
-|EXECUTING|
-   The background task is currently executing on one of the workers.
+   The background task is either waiting to run, or is already executing.
 
 |DONE|
    The background task has completed, possibly yielding a result, possibly
@@ -112,15 +107,14 @@ underlying computation. That state has one of six possible different values:
 In addition, there are two traits whose values are derived from the ``state``
 trait: the ``done`` trait is ``True`` when ``state`` is one of |DONE|
 or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
-``state`` is one of |WAITING| or |EXECUTING|.
+``state`` is |WAITING|.
 
 It's important to understand that the ``state`` trait represents the state of
-the background task *to the best of knowledge* of the main thread. For example,
-when the background task starts executing, it sends a message to the
-corresponding future telling it to change its state from |WAITING| to
-|EXECUTING|. However, that message won't necessarily get processed immediately,
-so there will be a brief interval during which the background task has, in
-fact, started executing, but the state of the future is still |WAITING|.
+the background task *to the best of knowledge* of the main thread. For example
+when a background task is cancelled, the ``state`` of the future is immediately
+changed to |CANCELLING|, even though the future itself may not yet have
+received the request to cancel, and indeed may even have completed execution
+by the time that the cancellation request arrives.
 
 
 Getting task results
@@ -196,14 +190,14 @@ For |ProgressFuture|, the |cancel| method causes a running
 task to abort the next time that task calls ``progress``. No further
 progress results are received after calling |cancel|.
 
-In all cases, a future may only be cancelled if its state is one of |WAITING|
-or |EXECUTING|. Attempting to cancel a future in another state will raise a
-``RuntimeError``. Calling |cancel| immediately puts the future into
-|CANCELLING| state, and the state is updated to |CANCELLED| once the future has
-finished executing. No results or exception information are received from a
-future in |CANCELLING| state. A cancelled future will never reach |DONE|
-state, and will never record information from a background task exception that
-occurs after the |cancel| call.
+In all cases, a future may only be cancelled if its state is |WAITING|.
+Attempting to cancel a future in another state will raise a ``RuntimeError``.
+Calling |cancel| immediately puts the future into |CANCELLING| state, and the
+state is updated to |CANCELLED| once the future has finished executing. No
+results or exception information are received from a future in |CANCELLING|
+state. A cancelled future will never reach |DONE| state, and will never record
+information from a background task exception that occurs after the |cancel|
+call.
 
 
 Stopping the executor
@@ -278,5 +272,4 @@ needed.
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
-.. |EXECUTING| replace:: :data:`~traits_futures.future_states.EXECUTING`
 .. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`

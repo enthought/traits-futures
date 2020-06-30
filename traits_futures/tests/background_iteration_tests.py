@@ -14,7 +14,6 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     DONE,
-    EXECUTING,
     WAITING,
 )
 
@@ -67,10 +66,11 @@ def wait_midway(barrier):
     yield 2718
 
 
-def wait_then_fail(barrier):
+def wait_then_fail(signal, barrier):
     """
     Wait for an external event, then fail.
     """
+    signal.set()
     barrier.wait(timeout=TIMEOUT)
     yield 1 / 0
 
@@ -132,7 +132,7 @@ class BackgroundIterationTests:
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [1.0, 0.5, 1 / 3.0])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertEqual(listener.states, [WAITING, DONE])
         self.assertTrue(future.ok)
 
     def test_general_iterable(self):
@@ -144,7 +144,7 @@ class BackgroundIterationTests:
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [0, 2, 4, 6, 8])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertEqual(listener.states, [WAITING, DONE])
         self.assertTrue(future.ok)
 
     def test_bad_iteration_setup(self):
@@ -157,7 +157,7 @@ class BackgroundIterationTests:
 
         self.assertException(future, TypeError)
         self.assertEqual(listener.results, [])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertEqual(listener.states, [WAITING, DONE])
         self.assertFalse(future.ok)
 
     def test_failing_iteration(self):
@@ -169,7 +169,7 @@ class BackgroundIterationTests:
 
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(listener.results, [-0.5, -1.0])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertEqual(listener.states, [WAITING, DONE])
         self.assertFalse(future.ok)
 
     def test_cancel_before_execution(self):
@@ -215,7 +215,7 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [1729])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_exhausted(self):
@@ -238,7 +238,7 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [1])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_start(self):
@@ -274,16 +274,19 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [1729])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_failure(self):
+        signal = self.Event()
         blocker = self.Event()
 
-        future = self.executor.submit_iteration(wait_then_fail, blocker)
+        future = self.executor.submit_iteration(
+            wait_then_fail, signal, blocker
+        )
         listener = IterationFutureListener(future=future)
 
-        self.wait_for_state(future, EXECUTING)
+        self.assertTrue(signal.wait(timeout=TIMEOUT))
         self.assertTrue(future.cancellable)
         future.cancel()
         blocker.set()
@@ -292,7 +295,7 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_bad_job(self):

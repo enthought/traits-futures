@@ -23,12 +23,12 @@ from traits_futures.api import (
     CallFuture,
     CANCELLED,
     CANCELLING,
-    EXECUTING,
     TraitsExecutor,
     ExecutorState,
     RUNNING,
     STOPPING,
     STOPPED,
+    WAITING,
 )
 from traits_futures.toolkit_support import toolkit
 
@@ -178,9 +178,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_stop_cancels_running_futures(self):
         executor = TraitsExecutor()
         with self.long_running_task(executor) as future:
-            self.wait_for_state(future, EXECUTING)
-
-            self.assertEqual(future.state, EXECUTING)
+            self.assertEqual(future.state, WAITING)
             executor.stop()
             self.assertEqual(future.state, CANCELLING)
 

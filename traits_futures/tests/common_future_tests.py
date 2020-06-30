@@ -10,7 +10,6 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     DONE,
-    EXECUTING,
 )
 from traits_futures.future_states import CANCELLABLE_STATES, FINAL_STATES
 
@@ -57,7 +56,6 @@ class CommonFutureTests:
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
-        future.state = EXECUTING
         future.state = DONE
         record_states()
 
@@ -66,38 +64,16 @@ class CommonFutureTests:
             self.assertEqual(cancellable, state in CANCELLABLE_STATES)
             self.assertEqual(done, state in FINAL_STATES)
 
-    def test_cancellable_and_done_success(self):
+    def test_cancellable_and_done(self):
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = DONE
-
-        self.assertEqual(listener.cancellable_changes, [(True, False)])
-        self.assertEqual(listener.done_changes, [(False, True)])
-
-    def test_cancellable_and_done_failure(self):
-        future = self.future_class()
-        listener = FutureListener(future=future)
-
-        future.state = EXECUTING
         future.state = DONE
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_cancellation(self):
-        future = self.future_class()
-        listener = FutureListener(future=future)
-
-        future.state = EXECUTING
-        future.state = CANCELLING
-        future.state = CANCELLED
-
-        self.assertEqual(listener.cancellable_changes, [(True, False)])
-        self.assertEqual(listener.done_changes, [(False, True)])
-
-    def test_cancellable_and_done_early_cancellation(self):
         future = self.future_class()
         listener = FutureListener(future=future)
 

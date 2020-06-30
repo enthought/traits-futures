@@ -9,7 +9,6 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     DONE,
-    EXECUTING,
     WAITING,
 )
 
@@ -42,10 +41,11 @@ def bad_progress_reporting_function(progress):
     1 / 0
 
 
-def wait_then_fail(signal, progress):
+def wait_then_fail(started, signal, progress):
     """
     Target function that waits until given permission to proceed, then fails.
     """
+    started.set()
     signal.wait(timeout=TIMEOUT)
     1 / 0
 
@@ -134,7 +134,7 @@ class BackgroundProgressTests:
 
         self.assertResult(future, 6)
         self.assertNoException(future)
-        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertEqual(listener.states, [WAITING, DONE])
         self.assertTrue(future.ok)
 
         expected_progress = [(0, 3), (1, 3), (2, 3), (3, 3)]
@@ -155,7 +155,7 @@ class BackgroundProgressTests:
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
-        self.assertEqual(listener.states, [WAITING, EXECUTING, DONE])
+        self.assertEqual(listener.states, [WAITING, DONE])
         self.assertFalse(future.ok)
 
         expected_progress = [(5, 10)]
@@ -224,7 +224,7 @@ class BackgroundProgressTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED]
+            listener.states, [WAITING, CANCELLING, CANCELLED]
         )
         self.assertEqual(listener.progress, ["first"])
 
@@ -238,11 +238,11 @@ class BackgroundProgressTests:
             future.cancel()
 
     def test_cancel_raising_task(self):
+        started = self.Event()
         signal = self.Event()
-        future = self.executor.submit_progress(wait_then_fail, signal)
+        future = self.executor.submit_progress(wait_then_fail, started, signal)
 
-        self.wait_for_state(future, EXECUTING)
-
+        self.assertTrue(started.wait(timeout=TIMEOUT))
         future.cancel()
         signal.set()
 
@@ -279,7 +279,6 @@ class BackgroundProgressTests:
                 resource_acquirer, acquired, ready, checkpoint
             )
 
-            self.wait_for_state(future, EXECUTING)
             self.assertTrue(checkpoint.wait(timeout=TIMEOUT))
             self.assertTrue(acquired.is_set())
             future.cancel()

@@ -20,7 +20,6 @@ from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
     DONE,
-    EXECUTING,
     FINAL_STATES,
     FutureState,
     WAITING,
@@ -79,14 +78,9 @@ class BaseFuture(HasStrictTraits):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_started(self, none):
+    def _process_completed(self, none):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
-            self.state = EXECUTING
-
-    def _process_completed(self, none):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
             self.state = DONE
         else:
             self.state = CANCELLED

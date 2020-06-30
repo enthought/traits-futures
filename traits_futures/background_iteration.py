@@ -22,7 +22,6 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     DONE,
-    EXECUTING,
     WAITING,
 )
 from traits_futures.i_job_specification import IJobSpecification
@@ -90,10 +89,9 @@ class IterationBackgroundTask:
 # progressions of states are:
 #
 # WAITING -> CANCELLING -> CANCELLED
-# WAITING -> EXECUTING -> CANCELLING -> CANCELLED
-# WAITING -> EXECUTING -> DONE
+# WAITING -> DONE
 #
-# The ``result`` trait will only be fired when the state is EXECUTING;
+# The ``result`` trait will only be fired when the state is WAITING;
 # no results events will be fired after cancelling.
 
 
@@ -146,16 +144,21 @@ class IterationFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_raised(self, exception_info):
-        assert self.state in (WAITING, EXECUTING, CANCELLING)
-        if self.state in (EXECUTING, WAITING):
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
             self._have_exception = True
             self._exception = exception_info
 
     def _process_generated(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
+        assert self.state in (WAITING, CANCELLING)
         # Any results arriving after a cancellation request are ignored.
-        if self.state == EXECUTING:
+        if self.state == WAITING:
             self.result_event = result
+
+    def _process_started(self, none):
+        # Short-circuit base class behaviour
+        # XXX Remove me once the base class method is gone.
+        pass
 
 
 @IJobSpecification.register

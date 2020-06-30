@@ -19,7 +19,7 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     DONE,
-    EXECUTING,
+    WAITING,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -50,16 +50,6 @@ class CallBackgroundTask:
             send(RAISED, marshal_exception(e))
         else:
             send(RETURNED, result)
-
-
-# CallFuture states. These represent the future's current
-# state of knowledge of the background task. A task starts out
-# in WAITING state and ends in one of the two final states
-# DONE OR CANCELLED. The possible progressions of states are:
-#
-# WAITING -> CANCELLING -> CANCELLED
-# WAITING -> EXECUTING -> CANCELLING -> CANCELLED
-# WAITING -> EXECUTING -> DONE
 
 
 class CallFuture(BaseFuture):
@@ -127,16 +117,21 @@ class CallFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_raised(self, exception_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
             self._have_exception = True
             self._exception = exception_info
 
     def _process_returned(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
             self._have_result = True
             self._result = result
+
+    def _process_started(self, none):
+        # Short-circuit base class behaviour
+        # XXX Remove me once the base class method is gone.
+        pass
 
 
 @IJobSpecification.register
