@@ -12,7 +12,7 @@ from traits_futures.api import (
     DONE,
     EXECUTING,
 )
-from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
+from traits_futures.future_states import CANCELLABLE_STATES, FINAL_STATES
 
 
 class FutureListener(HasStrictTraits):
@@ -64,7 +64,7 @@ class CommonFutureTests:
         # Check consistency.
         for state, cancellable, done in states:
             self.assertEqual(cancellable, state in CANCELLABLE_STATES)
-            self.assertEqual(done, state in DONE_STATES)
+            self.assertEqual(done, state in FINAL_STATES)
 
     def test_cancellable_and_done_success(self):
         future = self.future_class()

@@ -19,10 +19,11 @@ from traits_futures.future_states import (
     CANCELLABLE_STATES,
     CANCELLED,
     CANCELLING,
-    DONE_STATES,
+    DONE,
     EXECUTING,
-    WAITING,
+    FINAL_STATES,
     FutureState,
+    WAITING,
 )
 
 
@@ -78,20 +79,23 @@ class BaseFuture(HasStrictTraits):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_interrupted(self, none):
-        assert self.state in (CANCELLING,)
-        self.state = CANCELLED
-
     def _process_started(self, none):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
             self.state = EXECUTING
 
+    def _process_completed(self, none):
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
+            self.state = DONE
+        else:
+            self.state = CANCELLED
+
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
 
     def _get_done(self):
-        return self.state in DONE_STATES
+        return self.state in FINAL_STATES
 
     def _state_changed(self, old_state, new_state):
         old_cancellable = old_state in CANCELLABLE_STATES
@@ -101,7 +105,7 @@ class BaseFuture(HasStrictTraits):
                 "cancellable", old_cancellable, new_cancellable
             )
 
-        old_done = old_state in DONE_STATES
-        new_done = new_state in DONE_STATES
+        old_done = old_state in FINAL_STATES
+        new_done = new_state in FINAL_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)

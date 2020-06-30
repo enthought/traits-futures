@@ -26,9 +26,7 @@ CANCELLABLE_STATES = EXECUTING, WAITING
 
 #: Final states. If the future is in one of these states,
 #: no more messages will be received from the background job.
-DONE_STATES = CANCELLED, DONE
+FINAL_STATES = CANCELLED, DONE
 
 #: Trait type representing a future state.
-FutureState = Enum(
-    WAITING, EXECUTING, CANCELLING, CANCELLED, DONE
-)
+FutureState = Enum(WAITING, EXECUTING, CANCELLING, CANCELLED, DONE)

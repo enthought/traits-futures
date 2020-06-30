@@ -17,7 +17,6 @@ from traits.api import (
 from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED,
     CANCELLING,
     DONE,
     EXECUTING,
@@ -77,7 +76,8 @@ class CallFuture(BaseFuture):
         """
         if self.state != DONE:
             raise AttributeError(
-                "Background job was cancelled, or has not yet completed.")
+                "Background job was cancelled, or has not yet completed."
+            )
         return self._have_result
 
     @property
@@ -131,18 +131,12 @@ class CallFuture(BaseFuture):
         if self.state == EXECUTING:
             self._have_exception = True
             self._exception = exception_info
-            self.state = DONE
-        else:
-            self.state = CANCELLED
 
     def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._have_result = True
             self._result = result
-            self.state = DONE
-        else:
-            self.state = CANCELLED
 
 
 @IJobSpecification.register
@@ -200,4 +194,4 @@ class BackgroundCall(HasStrictTraits):
             Foreground object representing the state of the running
             calculation.
         """
-        return CallFuture(_cancel=cancel, _message_receiver=message_receiver,)
+        return CallFuture(_cancel=cancel, _message_receiver=message_receiver)

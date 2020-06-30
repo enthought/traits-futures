@@ -26,7 +26,6 @@ from traits.api import (
 from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED,
     CANCELLING,
     DONE,
     EXECUTING,
@@ -36,12 +35,6 @@ from traits_futures.i_job_specification import IJobSpecification
 
 # Message types for messages from ProgressBackgroundTask
 # to ProgressFuture.
-
-#: Task was cancelled before it started. No arguments.
-INTERRUPTED = "interrupted"
-
-#: Task started executing. No arguments.
-STARTED = "started"
 
 #: Task failed with an exception. Argument gives exception information.
 RAISED = "raised"
@@ -108,7 +101,7 @@ class ProgressBackgroundTask:
         try:
             result = self.callable(*self.args, **self.kwargs)
         except _ProgressCancelled:
-            send(INTERRUPTED)
+            pass
         except BaseException as e:
             send(RAISED, marshal_exception(e))
         else:
@@ -132,7 +125,8 @@ class ProgressFuture(BaseFuture):
         """
         if self.state != DONE:
             raise AttributeError(
-                "Background job was cancelled, or has not yet completed.")
+                "Background job was cancelled, or has not yet completed."
+            )
         return not self._have_exception
 
     @property
@@ -186,18 +180,12 @@ class ProgressFuture(BaseFuture):
         if self.state == EXECUTING:
             self._have_exception = True
             self._exception = exception_info
-            self.state = DONE
-        else:
-            self.state = CANCELLED
 
     def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._have_result = True
             self._result = result
-            self.state = DONE
-        else:
-            self.state = CANCELLED
 
     def _process_progress(self, progress_info):
         assert self.state in (EXECUTING, CANCELLING)

@@ -20,14 +20,6 @@ from traits.api import (
     Property,
 )
 
-# XXX INTERRUPTED should be moved to a common location. Every future
-# would support this. Possibly this form of cancellation should be
-# separated entirely from the job-level machinery. And possibly we
-# should be using the concurrent.futures state for this. In particular,
-# if the background job never sends the "INTERRUPTED" message, then the
-# foreground listener shouldn't have to deal with that message - the router
-# should intercept instead.
-
 from traits_futures.background_call import BackgroundCall
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
@@ -38,11 +30,12 @@ from traits_futures.toolkit_support import toolkit
 #: Common messages send by background jobs. These should be being imported
 #: from somewhere else.
 
-#: Call was cancelled before it started. No arguments.
-INTERRUPTED = "interrupted"
-
-#: Call started executing. No arguments.
+#: Call started executing.
 STARTED = "started"
+
+#: Background job completed, either with a result, or with an exception,
+#: or as a result of cancellation.
+COMPLETED = "completed"
 
 
 # Executor states.
@@ -71,11 +64,12 @@ def _background_job_wrapper(background_job, sender, cancel_event):
 
     with sender:
         if cancelled():
-            send(INTERRUPTED)
+            send(COMPLETED)
             return
 
         send(STARTED)
         background_job(send, cancelled)
+        send(COMPLETED)
 
 
 class TraitsExecutor(HasStrictTraits):

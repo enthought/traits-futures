@@ -20,7 +20,6 @@ from traits.api import (
 from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED,
     CANCELLING,
     DONE,
     EXECUTING,
@@ -34,23 +33,14 @@ from traits_futures.i_job_specification import IJobSpecification
 # sequences of message types, where GENERATED* indicates zero-or-more
 # GENERATED messages.
 #
-#   [INTERRUPTED]
 #   [RAISED]
-#   [STARTED, GENERATED*, INTERRUPTED]
 #   [STARTED, GENERATED*, RAISED]
-#   [STARTED, GENERATED*, EXHAUSTED]
-
-#: Iteration was cancelled either before it started or during the
-#: iteration. No arguments.
-INTERRUPTED = "interrupted"
+#   [STARTED, GENERATED*]
 
 #: Iteration failed with an exception, or there was
 #: an exception on creation of the iterator. Argument gives
 #: exception information.
 RAISED = "raised"
-
-#: Iteration completed normally. No arguments.
-EXHAUSTED = "exhausted"
 
 #: Message sent whenever the iteration yields a result.
 #: Argument is the result generated.
@@ -74,36 +64,24 @@ class IterationBackgroundTask:
             send(RAISED, marshal_exception(e))
             return
 
-        while True:
-            if cancelled():
-                message, message_args = INTERRUPTED, None
-                break
-
+        while not cancelled():
             try:
                 result = next(iterable)
             except StopIteration:
-                message, message_args = EXHAUSTED, None
                 break
             except BaseException as e:
-                message, message_args = RAISED, marshal_exception(e)
+                send(RAISED, marshal_exception(e))
                 break
             else:
                 send(GENERATED, result)
-                # Delete now, else we'll hang on to the reference to this
-                # result until the next iteration, which could be some
-                # arbitrary time in the future.
+                # Don't keep a reference around until the next iteration.
                 del result
 
-        # If the iterable is a generator, close it before we send the final
-        # message. This ensures that any cleanup in the generator function
-        # (e.g., as a result of leaving a with block, or executing a
-        # finally clause) occurs promptly.
+        # If the iterable is a generator, close it. This ensures that any
+        # cleanup in the generator function (e.g., as a result of leaving a
+        # with block, or executing a finally clause) occurs promptly.
         if isinstance(iterable, types.GeneratorType):
             iterable.close()
-        # Belt and braces: also delete the reference to the iterable.
-        del iterable
-
-        send(message, message_args)
 
 
 # IterationFuture states. These represent the futures' current state of
@@ -138,7 +116,8 @@ class IterationFuture(BaseFuture):
         """
         if self.state != DONE:
             raise AttributeError(
-                "Background job was cancelled, or has not yet completed.")
+                "Background job was cancelled, or has not yet completed."
+            )
         return not self._have_exception
 
     @property
@@ -171,17 +150,6 @@ class IterationFuture(BaseFuture):
         if self.state in (EXECUTING, WAITING):
             self._have_exception = True
             self._exception = exception_info
-            self.state = DONE
-        else:
-            # Don't record the exception if the job was already cancelled.
-            self.state = CANCELLED
-
-    def _process_exhausted(self, none):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self.state = DONE
-        else:
-            self.state = CANCELLED
 
     def _process_generated(self, result):
         assert self.state in (EXECUTING, CANCELLING)
