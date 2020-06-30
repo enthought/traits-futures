@@ -41,8 +41,9 @@ class IJobSpecification(ABC):
         returns no useful result.
 
         The ``cancelled`` argument may be used by the background job to check
-        whether cancellation has been requested. It returns either ``True``
-        to indicate that cancellation has been requested, or ``False``.
+        whether cancellation has been requested. When called with no arguments,
+        it returns either ``True`` to indicate that cancellation has been
+        requested, or ``False``.
 
         Note that there's no obligation for the background job to check the
         cancellation status.
