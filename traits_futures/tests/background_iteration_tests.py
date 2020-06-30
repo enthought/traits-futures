@@ -174,8 +174,8 @@ class BackgroundIterationTests:
 
     def test_cancel_before_execution(self):
         # Simulate race condition where we cancel after the background
-        # iteration has checked the cancel event, but before we process
-        # the STARTED message.
+        # iteration has checked the cancel event, but before we start
+        # the iteration itself.
         event = self.Event()
 
         future = self.executor.submit_iteration(set_then_yield, event)

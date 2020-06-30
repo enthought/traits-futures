@@ -33,8 +33,8 @@ from traits_futures.i_job_specification import IJobSpecification
 # GENERATED messages.
 #
 #   [RAISED]
-#   [STARTED, GENERATED*, RAISED]
-#   [STARTED, GENERATED*]
+#   [GENERATED*, RAISED]
+#   [GENERATED*]
 
 #: Iteration failed with an exception, or there was
 #: an exception on creation of the iterator. Argument gives
@@ -154,11 +154,6 @@ class IterationFuture(BaseFuture):
         # Any results arriving after a cancellation request are ignored.
         if self.state == WAITING:
             self.result_event = result
-
-    def _process_started(self, none):
-        # Short-circuit base class behaviour
-        # XXX Remove me once the base class method is gone.
-        pass
 
 
 @IJobSpecification.register

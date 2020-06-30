@@ -223,9 +223,7 @@ class BackgroundProgressTests:
         self.assertTrue(raised.is_set())
         self.assertNoResult(future)
         self.assertNoException(future)
-        self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED]
-        )
+        self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
         self.assertEqual(listener.progress, ["first"])
 
     def test_double_cancellation(self):

@@ -87,7 +87,7 @@ class BackgroundCallTests:
         self.assertFalse(future.ok)
 
     def test_cancellation_vs_started_race_condition(self):
-        # Simulate situation where a STARTED message arrives post-cancellation.
+        # Simulate situation where we start executing post-cancellation.
         event = self.Event()
 
         future = self.executor.submit_call(event.set)

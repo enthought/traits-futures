@@ -30,9 +30,6 @@ from traits_futures.toolkit_support import toolkit
 #: Common messages send by background jobs. These should be being imported
 #: from somewhere else.
 
-#: Call started executing.
-STARTED = "started"
-
 #: Background job completed, either with a result, or with an exception,
 #: or as a result of cancellation.
 COMPLETED = "completed"
@@ -63,12 +60,8 @@ def _background_job_wrapper(background_job, sender, cancel_event):
     send = sender.send_message
 
     with sender:
-        if cancelled():
-            send(COMPLETED)
-            return
-
-        send(STARTED)
-        background_job(send, cancelled)
+        if not cancelled():
+            background_job(send, cancelled)
         send(COMPLETED)
 
 

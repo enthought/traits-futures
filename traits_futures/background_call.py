@@ -128,11 +128,6 @@ class CallFuture(BaseFuture):
             self._have_result = True
             self._result = result
 
-    def _process_started(self, none):
-        # Short-circuit base class behaviour
-        # XXX Remove me once the base class method is gone.
-        pass
-
 
 @IJobSpecification.register
 class BackgroundCall(HasStrictTraits):
