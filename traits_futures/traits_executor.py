@@ -42,13 +42,14 @@ STOPPED = "stopped"
 ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
 
 
-def _background_job_wrapper(background_job, sender):
+def _background_job_wrapper(background_job, sender, cancel_event):
     """
     This is the callable that's actually submitted as a concurrent.futures
     job.
     """
+    cancelled = cancel_event.is_set
     with sender:
-        background_job(sender.send_message)
+        background_job(sender.send_message, cancelled)
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -201,16 +202,19 @@ class TraitsExecutor(HasStrictTraits):
         if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
+        cancel_event = threading.Event()
+
         sender, receiver = self._message_router.pipe()
         try:
             future, runner = task.future_and_callable(
-                cancel_event=threading.Event(), message_receiver=receiver,
+                cancel_event=cancel_event, message_receiver=receiver,
             )
         except Exception:
             self._message_router.close_pipe(sender, receiver)
             raise
 
-        self._worker_pool.submit(_background_job_wrapper, runner, sender)
+        self._worker_pool.submit(
+            _background_job_wrapper, runner, sender, cancel_event)
         self._futures[receiver] = future
         return future
 

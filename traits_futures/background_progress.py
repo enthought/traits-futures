@@ -73,9 +73,9 @@ class ProgressReporter:
     Object used by the target callable to report progress.
     """
 
-    def __init__(self, send, cancel_event):
+    def __init__(self, send, cancelled):
         self.send = send
-        self.cancel_event = cancel_event
+        self.cancelled = cancelled
 
     def report(self, progress_info):
         """
@@ -90,7 +90,7 @@ class ProgressReporter:
             An arbitrary object representing progress. Ideally, this
             should be immutable and pickleable.
         """
-        if self.cancel_event.is_set():
+        if self.cancelled():
             raise _ProgressCancelled("Task was cancelled")
         self.send(PROGRESS, progress_info)
 
@@ -103,17 +103,16 @@ class ProgressBackgroundTask:
     sends messages to communicate with the ProgressFuture.
     """
 
-    def __init__(self, callable, args, kwargs, cancel_event):
+    def __init__(self, callable, args, kwargs):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
-        self.cancel_event = cancel_event
 
-    def __call__(self, send):
-        progress = ProgressReporter(send=send, cancel_event=self.cancel_event)
+    def __call__(self, send, cancelled):
+        progress = ProgressReporter(send=send, cancelled=cancelled)
         self.kwargs["progress"] = progress.report
 
-        if self.cancel_event.is_set():
+        if cancelled():
             send(INTERRUPTED)
             return
 
@@ -316,6 +315,5 @@ class BackgroundProgress(HasStrictTraits):
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            cancel_event=cancel_event,
         )
         return future, runner

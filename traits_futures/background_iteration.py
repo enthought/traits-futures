@@ -70,14 +70,13 @@ class IterationBackgroundTask:
     Iteration to be executed in the background.
     """
 
-    def __init__(self, callable, args, kwargs, cancel_event):
+    def __init__(self, callable, args, kwargs):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
-        self.cancel_event = cancel_event
 
-    def __call__(self, send):
-        if self.cancel_event.is_set():
+    def __call__(self, send, cancelled):
+        if cancelled():
             send(INTERRUPTED)
             return
 
@@ -89,7 +88,7 @@ class IterationBackgroundTask:
             return
 
         while True:
-            if self.cancel_event.is_set():
+            if cancelled():
                 message, message_args = INTERRUPTED, None
                 break
 
@@ -300,6 +299,5 @@ class BackgroundIteration(HasStrictTraits):
             args=self.args,
             # Convert TraitsDict to a regular dict
             kwargs=dict(self.kwargs),
-            cancel_event=cancel_event,
         )
         return future, runner
