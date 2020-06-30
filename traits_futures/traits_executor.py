@@ -107,7 +107,8 @@ class TraitsExecutor(HasStrictTraits):
         own_worker_pool = worker_pool is None
         if own_worker_pool:
             worker_pool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=max_workers)
+                max_workers=max_workers
+            )
         elif max_workers is not None:
             raise TypeError(
                 "at most one of 'worker_pool' and 'max_workers' "
@@ -206,7 +207,8 @@ class TraitsExecutor(HasStrictTraits):
 
         sender, receiver = self._message_router.pipe()
         try:
-            future, runner = task.future_and_callable(
+            runner = task.background_job()
+            future = task.future(
                 cancel_event=cancel_event, message_receiver=receiver,
             )
         except Exception:
@@ -214,7 +216,8 @@ class TraitsExecutor(HasStrictTraits):
             raise
 
         self._worker_pool.submit(
-            _background_job_wrapper, runner, sender, cancel_event)
+            _background_job_wrapper, runner, sender, cancel_event
+        )
         self._futures[receiver] = future
         return future
 

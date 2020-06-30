@@ -282,9 +282,28 @@ class BackgroundProgress(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def future_and_callable(self, cancel_event, message_receiver):
+    def background_job(self):
         """
-        Return a future and a linked background callable.
+        Return a background callable for this job specification.
+
+        Returns
+        -------
+        background : callable
+            Callable accepting arguments ``sender`` and ``cancelled``, and
+            returning nothing. The callable will use ``sender`` to send
+            messages and ``cancelled` to check whether the job has been
+            cancelled.
+        """
+        return ProgressBackgroundTask(
+            callable=self.callable,
+            args=self.args,
+            # Convert TraitsDict to a regular dict
+            kwargs=dict(self.kwargs),
+        )
+
+    def future(self, cancel_event, message_receiver):
+        """
+        Return a future for a background job.
 
         Parameters
         ----------
@@ -301,19 +320,10 @@ class BackgroundProgress(HasStrictTraits):
         future : ProgressFuture
             Foreground object representing the state of the running
             calculation.
-        runner : ProgressBackgroundTask
-            Callable to be executed in the background.
         """
         if "progress" in self.kwargs:
             raise TypeError("progress may not be passed as a named argument")
 
-        future = ProgressFuture(
+        return ProgressFuture(
             _cancel_event=cancel_event, _message_receiver=message_receiver,
         )
-        runner = ProgressBackgroundTask(
-            callable=self.callable,
-            args=self.args,
-            # Convert TraitsDict to a regular dict
-            kwargs=dict(self.kwargs),
-        )
-        return future, runner

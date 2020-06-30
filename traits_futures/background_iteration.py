@@ -269,9 +269,33 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def future_and_callable(self, cancel_event, message_receiver):
+    # XXX Move the pre-run cancel check to the background job wrapper.
+
+    def background_job(self):
         """
-        Return a future and a linked background callable.
+        Return a background callable for this job specification.
+
+        Returns
+        -------
+        background : callable
+            Callable accepting arguments ``sender`` and ``cancelled``, and
+            returning nothing. The callable will use ``sender`` to send
+            messages and ``cancelled` to check whether the job has been
+            cancelled.
+        """
+        return IterationBackgroundTask(
+            callable=self.callable,
+            args=self.args,
+            # Convert TraitsDict to a regular dict.
+            # XXX Perhaps we should just be using `instance(dict)` in
+            # the first place? We have no need to listen to the `kwargs`
+            # attribute.
+            kwargs=dict(self.kwargs),
+        )
+
+    def future(self, cancel_event, message_receiver):
+        """
+        Return a future for a background job.
 
         Parameters
         ----------
@@ -288,16 +312,7 @@ class BackgroundIteration(HasStrictTraits):
         future : IterationFuture
             Foreground object representing the state of the running
             calculation.
-        runner : IterationBackgroundTask
-            Callable to be executed in the background.
         """
-        future = IterationFuture(
+        return IterationFuture(
             _cancel_event=cancel_event, _message_receiver=message_receiver,
         )
-        runner = IterationBackgroundTask(
-            callable=self.callable,
-            args=self.args,
-            # Convert TraitsDict to a regular dict
-            kwargs=dict(self.kwargs),
-        )
-        return future, runner

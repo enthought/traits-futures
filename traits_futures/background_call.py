@@ -232,9 +232,28 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def future_and_callable(self, cancel_event, message_receiver):
+    def background_job(self):
         """
-        Return a future and a linked background callable.
+        Return a background callable for this job specification.
+
+        Returns
+        -------
+        background : callable
+            Callable accepting arguments ``sender`` and ``cancelled``, and
+            returning nothing. The callable will use ``sender`` to send
+            messages and ``cancelled` to check whether the job has been
+            cancelled.
+        """
+        return CallBackgroundTask(
+            callable=self.callable,
+            args=self.args,
+            # Convert TraitsDict to a regular dict
+            kwargs=dict(self.kwargs),
+        )
+
+    def future(self, cancel_event, message_receiver):
+        """
+        Return a future for a background job.
 
         Parameters
         ----------
@@ -251,16 +270,7 @@ class BackgroundCall(HasStrictTraits):
         future : CallFuture
             Foreground object representing the state of the running
             calculation.
-        runner : CallBackgroundTask
-            Callable to be executed in the background.
         """
-        future = CallFuture(
+        return CallFuture(
             _cancel_event=cancel_event, _message_receiver=message_receiver,
         )
-        runner = CallBackgroundTask(
-            callable=self.callable,
-            args=self.args,
-            # Convert TraitsDict to a regular dict
-            kwargs=dict(self.kwargs),
-        )
-        return future, runner
