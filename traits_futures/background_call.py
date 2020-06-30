@@ -30,6 +30,7 @@ from traits_futures.future_states import (
     DONE_STATES,
     FutureState,
 )
+from traits_futures.i_job_specification import IJobSpecification
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following
@@ -64,10 +65,6 @@ class CallBackgroundTask:
         self.kwargs = kwargs
 
     def __call__(self, send, cancelled):
-        if cancelled():
-            send(INTERRUPTED)
-            return
-
         send(STARTED)
         try:
             result = self.callable(*self.args, **self.kwargs)
@@ -147,14 +144,14 @@ class CallFuture(HasStrictTraits):
         # to a warning, or just do nothing on an invalid cancellation.
         if not self.cancellable:
             raise RuntimeError("Can only cancel a queued or executing task.")
-        self._cancel_event.set()
+        self._cancel()
         self.state = CANCELLING
 
     # Private traits ##########################################################
 
-    #: Private event used to request cancellation of this task. Users
-    #: should call the cancel() method instead of using this event.
-    _cancel_event = Any()
+    #: Callable called with no arguments to request cancellation of the
+    #: background task.
+    _cancel = Callable()
 
     #: Result from the background task.
     _result = Any()
@@ -218,6 +215,7 @@ class CallFuture(HasStrictTraits):
             self.trait_property_changed("done", old_done, new_done)
 
 
+@IJobSpecification.register
 class BackgroundCall(HasStrictTraits):
     """
     Object representing the background call to be executed.
@@ -251,14 +249,15 @@ class BackgroundCall(HasStrictTraits):
             kwargs=dict(self.kwargs),
         )
 
-    def future(self, cancel_event, message_receiver):
+    def future(self, cancel, message_receiver):
         """
         Return a future for a background job.
 
         Parameters
         ----------
-        cancel_event : threading.Event
-            Event used to request cancellation of the background job.
+        cancel : callable
+            Callable called with no arguments to request cancellation
+            of the background task.
         message_receiver : MessageReceiver
             Object that remains in the main thread and receives messages sent
             by the message sender. This is a HasTraits subclass with
@@ -271,6 +270,4 @@ class BackgroundCall(HasStrictTraits):
             Foreground object representing the state of the running
             calculation.
         """
-        return CallFuture(
-            _cancel_event=cancel_event, _message_receiver=message_receiver,
-        )
+        return CallFuture(_cancel=cancel, _message_receiver=message_receiver,)

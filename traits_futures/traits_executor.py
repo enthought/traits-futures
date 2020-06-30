@@ -20,9 +20,18 @@ from traits.api import (
     Property,
 )
 
-from traits_futures.background_call import BackgroundCall
+# XXX INTERRUPTED should be moved to a common location. Every future
+# would support this. Possibly this form of cancellation should be
+# separated entirely from the job-level machinery. And possibly we
+# should be using the concurrent.futures state for this. In particular,
+# if the background job never sends the "INTERRUPTED" message, then the
+# foreground listener shouldn't have to deal with that message - the router
+# should intercept instead.
+
+from traits_futures.background_call import BackgroundCall, INTERRUPTED
 from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
+from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.toolkit_support import toolkit
 
 
@@ -48,8 +57,14 @@ def _background_job_wrapper(background_job, sender, cancel_event):
     job.
     """
     cancelled = cancel_event.is_set
+    send = sender.send_message
+
     with sender:
-        background_job(sender.send_message, cancelled)
+        if cancelled():
+            send(INTERRUPTED)
+            return
+
+        background_job(send, cancelled)
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -192,14 +207,19 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        task : BackgroundCall, BackgroundIteration or BackgroundProgress
-            The task to be executed.
+        task : IJobSpecification
 
         Returns
         -------
-        future : CallFuture, IterationFuture or ProgressFuture
+        future : IFuture
+            XXX: IFuture interface is not yet formally defined.
             Future for this task.
         """
+        # XXX probably remove this check in the final version, or leave it
+        # as a type annotation.
+        if not isinstance(task, IJobSpecification):
+            raise TypeError("task should be an instance of IJobSpecification")
+
         if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
@@ -209,7 +229,7 @@ class TraitsExecutor(HasStrictTraits):
         try:
             runner = task.background_job()
             future = task.future(
-                cancel_event=cancel_event, message_receiver=receiver,
+                cancel=cancel_event.set, message_receiver=receiver,
             )
         except Exception:
             self._message_router.close_pipe(sender, receiver)
