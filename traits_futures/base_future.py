@@ -21,8 +21,8 @@ from traits_futures.future_states import (
     CANCELLING,
     DONE_STATES,
     EXECUTING,
-    WAITING,
     FutureState,
+    WAITING,
 )
 
 

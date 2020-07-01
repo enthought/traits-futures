@@ -19,9 +19,9 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
+    COMPLETED,
     EXECUTING,
     FAILED,
-    COMPLETED,
 )
 from traits_futures.i_job_specification import IJobSpecification
 

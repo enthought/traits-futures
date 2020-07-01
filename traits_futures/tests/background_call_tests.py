@@ -5,12 +5,12 @@ from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
     CallFuture,
-    FutureState,
     CANCELLED,
     CANCELLING,
     COMPLETED,
     EXECUTING,
     FAILED,
+    FutureState,
     WAITING,
 )
 
