@@ -25,15 +25,31 @@ class GuiTestAssistant:
 
     def run_until(self, object, trait, condition, timeout=TIMEOUT):
         """
-        Run the event loop until the given condition holds true, or
-        until timeout.
+        Run event loop until the given condition holds true, or until timeout.
 
         The condition is re-evaluated, with the object as argument, every time
         the trait changes.
 
-        Raises if timeout is reached, regardless of whether the condition
-        is true at that point.
+        Parameters
+        ----------
+        object : HasTraits
+            Object whose trait we monitor.
+        trait : str
+            Name of the trait to monitor for changes.
+        condition : callable
+            Single-argument callable, returning a boolean. This will be
+            called with *object* as the only input.
+        timeout : float, optional
+            Number of seconds to allow before timing out with an exception.
+            The (somewhat arbitrary) default is 10 seconds.
+
+        Raises
+        ------
+        RuntimeError
+            If timeout is reached, regardless of whether the condition is
+            true or not at that point.
         """
+
         qt_app = self.qt_app
 
         timeout_in_ms = round(1000.0 * timeout)
