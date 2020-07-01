@@ -5,7 +5,6 @@
 Entry point for finding toolkit-specific classes.
 """
 from pyface.base_toolkit import Toolkit
-
 # Force an ImportError if Qt is not installed.
 from pyface.qt import QtCore  # noqa: F401
 

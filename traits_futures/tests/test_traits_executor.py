@@ -23,12 +23,12 @@ from traits_futures.api import (
     CallFuture,
     CANCELLED,
     CANCELLING,
-    TraitsExecutor,
+    EXECUTING,
     ExecutorState,
     RUNNING,
-    STOPPING,
     STOPPED,
-    EXECUTING,
+    STOPPING,
+    TraitsExecutor,
 )
 from traits_futures.toolkit_support import toolkit
 

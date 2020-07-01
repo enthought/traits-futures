@@ -17,12 +17,12 @@ from traitsui.api import (
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
-    TraitsExecutor,
     CallFuture,
     CANCELLED,
     CANCELLING,
-    EXECUTING,
     COMPLETED,
+    EXECUTING,
+    TraitsExecutor,
 )
 
 #: String constant used to represent jobs that failed.

@@ -4,12 +4,12 @@
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    FutureState,
-    ProgressFuture,
     CANCELLED,
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FutureState,
+    ProgressFuture,
 )
 
 #: Timeout for blocking operations, in seconds.

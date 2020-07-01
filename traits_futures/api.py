@@ -8,18 +8,18 @@ from traits_futures.background_call import CallFuture
 from traits_futures.background_iteration import IterationFuture
 from traits_futures.background_progress import ProgressFuture
 from traits_futures.future_states import (
-    FutureState,
     CANCELLED,
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FutureState,
 )
 from traits_futures.traits_executor import (
-    TraitsExecutor,
     ExecutorState,
     RUNNING,
-    STOPPING,
     STOPPED,
+    STOPPING,
+    TraitsExecutor,
 )
 
 __all__ = [
