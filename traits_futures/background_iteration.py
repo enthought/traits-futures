@@ -246,7 +246,5 @@ def submit_iteration(executor, callable, *args, **kwargs):
     future : IterationFuture
         Object representing the state of the background iteration.
     """
-    task = BackgroundIteration(
-        callable=callable, args=args, kwargs=kwargs,
-    )
+    task = BackgroundIteration(callable=callable, args=args, kwargs=kwargs,)
     return executor.submit(task)
