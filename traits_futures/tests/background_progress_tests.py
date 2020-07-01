@@ -4,13 +4,13 @@
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    FutureState,
-    ProgressFuture,
     CANCELLED,
     CANCELLING,
     COMPLETED,
     EXECUTING,
     FAILED,
+    FutureState,
+    ProgressFuture,
     WAITING,
 )
 

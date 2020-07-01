@@ -20,15 +20,15 @@ from traits.api import (
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
+    CANCELLABLE_STATES,
     CANCELLED,
     CANCELLING,
+    COMPLETED,
+    DONE_STATES,
     EXECUTING,
     FAILED,
-    COMPLETED,
-    WAITING,
-    CANCELLABLE_STATES,
-    DONE_STATES,
     FutureState,
+    WAITING,
 )
 
 # Message types for messages from CallBackgroundTask to CallFuture.

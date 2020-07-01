@@ -106,7 +106,8 @@ class TraitsExecutor(HasStrictTraits):
         own_worker_pool = worker_pool is None
         if own_worker_pool:
             worker_pool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=max_workers)
+                max_workers=max_workers
+            )
         elif max_workers is not None:
             raise TypeError(
                 "at most one of 'worker_pool' and 'max_workers' "
