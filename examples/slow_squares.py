@@ -17,13 +17,13 @@ from traitsui.api import (
 from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
-    TraitsExecutor,
     CallFuture,
     CANCELLED,
     CANCELLING,
+    COMPLETED,
     EXECUTING,
     FAILED,
-    COMPLETED,
+    TraitsExecutor,
     WAITING,
 )
 

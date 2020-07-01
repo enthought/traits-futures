@@ -24,12 +24,12 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     EXECUTING,
-    MultithreadingContext,
-    TraitsExecutor,
     ExecutorState,
+    MultithreadingContext,
     RUNNING,
-    STOPPING,
     STOPPED,
+    STOPPING,
+    TraitsExecutor,
 )
 from traits_futures.toolkit_support import toolkit
 
