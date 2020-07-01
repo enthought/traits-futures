@@ -27,7 +27,7 @@ from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
-    DONE,
+    COMPLETED,
     EXECUTING,
 )
 from traits_futures.i_job_specification import IJobSpecification
@@ -123,7 +123,7 @@ class ProgressFuture(BaseFuture):
 
         Not available for cancelled or pending jobs.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled."
                 "Job status is {}".format(self.state)
@@ -142,7 +142,7 @@ class ProgressFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)
@@ -167,7 +167,7 @@ class ProgressFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)

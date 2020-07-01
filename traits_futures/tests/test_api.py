@@ -13,7 +13,7 @@ class TestApi(unittest.TestCase):
             FutureState,
             CANCELLED,
             CANCELLING,
-            DONE,
+            COMPLETED,
             EXECUTING,
             TraitsExecutor,
             ExecutorState,

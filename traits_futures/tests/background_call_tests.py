@@ -8,7 +8,7 @@ from traits_futures.api import (
     FutureState,
     CANCELLED,
     CANCELLING,
-    DONE,
+    COMPLETED,
     EXECUTING,
 )
 
@@ -69,7 +69,7 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, DONE],
+            listener.states, [EXECUTING, COMPLETED],
         )
         self.assertTrue(future.ok)
 
@@ -82,7 +82,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [EXECUTING, DONE],
+            listener.states, [EXECUTING, COMPLETED],
         )
         self.assertFalse(future.ok)
 
@@ -181,7 +181,7 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, DONE],
+            listener.states, [EXECUTING, COMPLETED],
         )
         self.assertTrue(future.ok)
 
@@ -198,7 +198,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [EXECUTING, DONE],
+            listener.states, [EXECUTING, COMPLETED],
         )
         self.assertFalse(future.ok)
 

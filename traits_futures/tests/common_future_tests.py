@@ -9,9 +9,9 @@ from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
 from traits_futures.api import (
     CANCELLED,
     CANCELLING,
-    DONE,
+    COMPLETED,
 )
-from traits_futures.future_states import CANCELLABLE_STATES, FINAL_STATES
+from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
 
 class FutureListener(HasStrictTraits):
@@ -56,19 +56,19 @@ class CommonFutureTests:
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
-        future.state = DONE
+        future.state = COMPLETED
         record_states()
 
         # Check consistency.
         for state, cancellable, done in states:
             self.assertEqual(cancellable, state in CANCELLABLE_STATES)
-            self.assertEqual(done, state in FINAL_STATES)
+            self.assertEqual(done, state in DONE_STATES)
 
     def test_cancellable_and_done(self):
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = DONE
+        future.state = COMPLETED
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])

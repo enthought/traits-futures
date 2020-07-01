@@ -13,7 +13,7 @@ from traits_futures.api import (
     FutureState,
     CANCELLED,
     CANCELLING,
-    DONE,
+    COMPLETED,
     EXECUTING,
 )
 
@@ -132,7 +132,7 @@ class BackgroundIterationTests:
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [1.0, 0.5, 1 / 3.0])
-        self.assertEqual(listener.states, [EXECUTING, DONE])
+        self.assertEqual(listener.states, [EXECUTING, COMPLETED])
         self.assertTrue(future.ok)
 
     def test_general_iterable(self):
@@ -144,7 +144,7 @@ class BackgroundIterationTests:
 
         self.assertNoException(future)
         self.assertEqual(listener.results, [0, 2, 4, 6, 8])
-        self.assertEqual(listener.states, [EXECUTING, DONE])
+        self.assertEqual(listener.states, [EXECUTING, COMPLETED])
         self.assertTrue(future.ok)
 
     def test_bad_iteration_setup(self):
@@ -157,7 +157,7 @@ class BackgroundIterationTests:
 
         self.assertException(future, TypeError)
         self.assertEqual(listener.results, [])
-        self.assertEqual(listener.states, [EXECUTING, DONE])
+        self.assertEqual(listener.states, [EXECUTING, COMPLETED])
         self.assertFalse(future.ok)
 
     def test_failing_iteration(self):
@@ -169,7 +169,7 @@ class BackgroundIterationTests:
 
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(listener.results, [-0.5, -1.0])
-        self.assertEqual(listener.states, [EXECUTING, DONE])
+        self.assertEqual(listener.states, [EXECUTING, COMPLETED])
         self.assertFalse(future.ok)
 
     def test_cancel_before_execution(self):

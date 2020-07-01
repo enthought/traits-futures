@@ -93,7 +93,7 @@ underlying computation. That state has one of six possible different values:
 |EXECUTING|
    The background task is either waiting to run, or is already executing.
 
-|DONE|
+|COMPLETED|
    The background task has completed, possibly yielding a result, possibly
    raising an exception.
 
@@ -105,7 +105,7 @@ underlying computation. That state has one of six possible different values:
    The task has stopped following a cancellation request.
 
 In addition, there are two traits whose values are derived from the ``state``
-trait: the ``done`` trait is ``True`` when ``state`` is one of |DONE|
+trait: the ``done`` trait is ``True`` when ``state`` is one of |COMPLETED|
 or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
 ``state`` is |EXECUTING|.
 
@@ -125,7 +125,7 @@ futures.
 
 The |submit_call| and |submit_progress| methods run callables that eventually
 expect to return a result. Once the state of the corresponding future reaches
-|DONE|, the result of the call is available via the ``result`` attribute.
+|COMPLETED|, the result of the call is available via the ``result`` attribute.
 Assuming that your calculation future is stored in a trait called ``future``,
 you might use this as follows::
 
@@ -159,14 +159,14 @@ results. For example::
         self.update_plot_data()
 
 If a background task fails with an exception, then the corresponding
-future ``future`` eventually reaches |DONE| state. In that case,
+future ``future`` eventually reaches |COMPLETED| state. In that case,
 information about the exception that occurred is available in the
 ``future.exception`` attribute. This information takes the form of
 a ``tuple`` of length 3, containing stringified versions of the
 exception type, the exception value and the exception traceback.
 
 As with ``future.result``, an attempt to access ``future.exception`` for a
-``future`` that's not in |DONE| state will give an ``AttributeError``.
+``future`` that's not in |COMPLETED| state will give an ``AttributeError``.
 
 
 Cancelling the background task
@@ -195,7 +195,7 @@ Attempting to cancel a future in another state will raise a ``RuntimeError``.
 Calling |cancel| immediately puts the future into |CANCELLING| state, and the
 state is updated to |CANCELLED| once the future has finished executing. No
 results or exception information are received from a future in |CANCELLING|
-state. A cancelled future will never reach |DONE| state, and will never record
+state. A cancelled future will never reach |COMPLETED| state, and will never record
 information from a background task exception that occurs after the |cancel|
 call.
 

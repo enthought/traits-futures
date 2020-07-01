@@ -16,14 +16,14 @@ CANCELLING = "cancelling"
 CANCELLED = "cancelled"
 
 #: Execution completed normally.
-DONE = "done"
+COMPLETED = "done"
 
 #: States in which we're permitted to cancel.
 CANCELLABLE_STATES = (EXECUTING,)
 
 #: Final states. If the future is in one of these states,
 #: no more messages will be received from the background job.
-FINAL_STATES = CANCELLED, DONE
+DONE_STATES = CANCELLED, COMPLETED
 
 #: Trait type representing a future state.
-FutureState = Enum(EXECUTING, DONE, CANCELLING, CANCELLED)
+FutureState = Enum(EXECUTING, COMPLETED, CANCELLING, CANCELLED)

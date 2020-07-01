@@ -16,7 +16,7 @@ from traits.api import (
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
-from traits_futures.future_states import CANCELLING, DONE
+from traits_futures.future_states import CANCELLING, COMPLETED
 from traits_futures.i_job_specification import IJobSpecification
 
 # The background task sends either a "RAISED" message or a "RETURNED" message
@@ -58,7 +58,7 @@ class CallFuture(BaseFuture):
     def ok(self):
         """
         Boolean indicating whether the background job completed successfully.
-        This attribute is only available for a job in DONE state.
+        This attribute is only available for a job in COMPLETED state.
 
         Returns
         -------
@@ -72,7 +72,7 @@ class CallFuture(BaseFuture):
         AttributeError
             If the job is still executing, or was cancelled.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled."
                 "Job status is {}".format(self.state)
@@ -85,7 +85,7 @@ class CallFuture(BaseFuture):
         """
         Result of the background call. This is only available if:
 
-        - the state of the future is DONE
+        - the state of the future is COMPLETED
         - the call completed normally, without raising
 
         Returns
@@ -99,7 +99,7 @@ class CallFuture(BaseFuture):
             If the job is still executing, or was cancelled, or raised an
             exception instead of returning a result.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)
@@ -131,7 +131,7 @@ class CallFuture(BaseFuture):
             If the job is still executing, or was cancelled, or completed
             without raising an exception.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)

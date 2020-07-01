@@ -21,7 +21,7 @@ from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
-    DONE,
+    COMPLETED,
     EXECUTING,
 )
 from traits_futures.i_job_specification import IJobSpecification
@@ -85,11 +85,11 @@ class IterationBackgroundTask:
 
 # IterationFuture states. These represent the futures' current state of
 # knowledge of the background iteration. An iteration starts out in EXECUTING
-# state and ends with one of DONE or CANCELLED. The possible
+# state and ends with one of COMPLETED or CANCELLED. The possible
 # progressions of states are:
 #
 # EXECUTING -> CANCELLING -> CANCELLED
-# EXECUTING -> DONE
+# EXECUTING -> COMPLETED
 #
 # The ``result`` trait will only be fired when the state is EXECUTING;
 # no results events will be fired after cancelling.
@@ -112,7 +112,7 @@ class IterationFuture(BaseFuture):
 
         Not available for cancelled or pending jobs.
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)
@@ -127,7 +127,7 @@ class IterationFuture(BaseFuture):
         an ``AttributeError`` on access if no exception was raised (because the
         call succeeded, was cancelled, or has not yet completed).
         """
-        if self.state != DONE:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)

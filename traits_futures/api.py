@@ -11,7 +11,7 @@ from traits_futures.future_states import (
     FutureState,
     CANCELLED,
     CANCELLING,
-    DONE,
+    COMPLETED,
     EXECUTING,
 )
 from traits_futures.traits_executor import (
@@ -31,7 +31,7 @@ __all__ = [
     "FutureState",
     "CANCELLED",
     "CANCELLING",
-    "DONE",
+    "COMPLETED",
     "EXECUTING",
     # Executor
     "TraitsExecutor",
