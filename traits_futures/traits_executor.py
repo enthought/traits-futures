@@ -21,9 +21,6 @@ from traits.api import (
     Property,
 )
 
-from traits_futures.background_call import BackgroundCall
-from traits_futures.background_iteration import BackgroundIteration
-from traits_futures.background_progress import BackgroundProgress
 from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.toolkit_support import toolkit
 
@@ -35,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 #: Background job completed, either with a result, or with an exception,
 #: or as a result of cancellation.
+# XXX Rename me, to avoid confusion with the COMPLETED future state.
 COMPLETED = "completed"
 
 
@@ -156,8 +154,8 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture
             Object representing the state of the background call.
         """
-        task = BackgroundCall(callable=callable, args=args, kwargs=kwargs)
-        return self.submit(task)
+        from traits_futures.background_call import submit_call
+        return submit_call(self, callable, *args, **kwargs)
 
     def submit_iteration(self, callable, *args, **kwargs):
         """
@@ -177,10 +175,8 @@ class TraitsExecutor(HasStrictTraits):
         future : IterationFuture
             Object representing the state of the background iteration.
         """
-        task = BackgroundIteration(
-            callable=callable, args=args, kwargs=kwargs,
-        )
-        return self.submit(task)
+        from traits_futures.background_iteration import submit_iteration
+        return submit_iteration(self, callable, *args, **kwargs)
 
     def submit_progress(self, callable, *args, **kwargs):
         """
@@ -203,8 +199,8 @@ class TraitsExecutor(HasStrictTraits):
         future : ProgressFuture
             Object representing the state of the background task.
         """
-        task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs)
-        return self.submit(task)
+        from traits_futures.background_progress import submit_progress
+        return submit_progress(self, callable, *args, **kwargs)
 
     def submit(self, task):
         """

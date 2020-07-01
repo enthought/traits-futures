@@ -4,9 +4,18 @@
 """
 Core API for the traits_futures package.
 """
-from traits_futures.background_call import CallFuture
-from traits_futures.background_iteration import IterationFuture
-from traits_futures.background_progress import ProgressFuture
+from traits_futures.background_call import (
+    CallFuture,
+    submit_call,
+)
+from traits_futures.background_iteration import (
+    IterationFuture,
+    submit_iteration,
+)
+from traits_futures.background_progress import (
+    ProgressFuture,
+    submit_progress,
+)
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
@@ -40,4 +49,8 @@ __all__ = [
     "RUNNING",
     "STOPPING",
     "STOPPED",
+    # Convenience submission functions for job types that we define
+    "submit_call",
+    "submit_iteration",
+    "submit_progress",
 ]

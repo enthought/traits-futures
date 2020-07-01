@@ -20,6 +20,9 @@ class TestApi(unittest.TestCase):
             RUNNING,
             STOPPING,
             STOPPED,
+            submit_call,
+            submit_iteration,
+            submit_progress,
         )
 
     def test___all__(self):

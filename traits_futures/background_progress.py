@@ -271,3 +271,30 @@ class BackgroundProgress(HasStrictTraits):
             raise TypeError("progress may not be passed as a named argument")
 
         return ProgressFuture(_cancel=cancel, _receiver=receiver,)
+
+
+def submit_progress(executor, callable, *args, **kwargs):
+    """
+    Convenience function to submit a background progress call.
+
+    Parameters
+    ----------
+    executor : TraitsExecutor
+        Executor to submit the call to.
+    callable : callable accepting a "progress" named argument
+        Function executed in the background to provide the iterable. This
+        should accept a "progress" named argument. The callable can then
+        call the "progress" object to report progress.
+    *args
+        Positional arguments to pass to that function.
+    **kwargs
+        Named arguments to pass to that function. These should not include
+        "progress".
+
+    Returns
+    -------
+    future : ProgressFuture
+        Object representing the state of the background task.
+    """
+    task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs)
+    return executor.submit(task)
