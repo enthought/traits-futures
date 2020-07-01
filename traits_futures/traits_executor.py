@@ -221,9 +221,7 @@ class TraitsExecutor(HasStrictTraits):
             raise
 
         cancelled = cancel_event.is_set
-        send = sender.send_message
-
-        self._worker_pool.submit(job_wrapper, runner, send, cancelled)
+        self._worker_pool.submit(job_wrapper, runner, sender, cancelled)
         self._futures[receiver] = future
         return future
 
