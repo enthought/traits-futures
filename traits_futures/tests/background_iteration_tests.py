@@ -9,13 +9,13 @@ import weakref
 from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
 
 from traits_futures.api import (
-    IterationFuture,
-    FutureState,
     CANCELLED,
     CANCELLING,
+    COMPLETED,
     EXECUTING,
     FAILED,
-    COMPLETED,
+    FutureState,
+    IterationFuture,
     WAITING,
 )
 

@@ -4,9 +4,8 @@
 """
 Entry point for finding toolkit-specific classes.
 """
+# We import QtCore to force an ImportError if Qt is not installed.
 from pyface.base_toolkit import Toolkit
-
-# Force an ImportError if Qt is not installed.
 from pyface.qt import QtCore  # noqa: F401
 
 #: The toolkit object used to find toolkit-specific reources.

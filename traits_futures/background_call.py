@@ -20,15 +20,15 @@ from traits.api import (
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
+    CANCELLABLE_STATES,
     CANCELLED,
     CANCELLING,
+    COMPLETED,
+    DONE_STATES,
     EXECUTING,
     FAILED,
-    COMPLETED,
-    WAITING,
-    CANCELLABLE_STATES,
-    DONE_STATES,
     FutureState,
+    WAITING,
 )
 
 # Message types for messages from CallBackgroundTask to CallFuture.
@@ -109,8 +109,8 @@ class CallFuture(HasStrictTraits):
     @property
     def result(self):
         """
-        Result of the background call. Raises an ``Attributerror`` on access if
-        no result is available (because the background call failed, was
+        Result of the background call. Raises an ``AttributeError`` on access
+        if no result is available (because the background call failed, was
         cancelled, or has not yet completed).
 
         Note: this is deliberately a regular Python property rather than a
