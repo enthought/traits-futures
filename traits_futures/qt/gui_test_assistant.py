@@ -64,11 +64,9 @@ class GuiTestAssistant:
             object.on_trait_change(stop_if_condition, trait, remove=True)
 
         if timed_out:
-            condition_at_timeout = condition(object)
-
             raise RuntimeError(
                 "run_until timed out after {} seconds. "
                 "At timeout, condition was {}.".format(
-                    timeout, condition_at_timeout
+                    timeout, condition(object)
                 )
             )
