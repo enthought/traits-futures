@@ -6,7 +6,6 @@ Main-thread executor for submission of background tasks.
 """
 
 import concurrent.futures
-import logging
 import threading
 import warnings
 
@@ -21,20 +20,9 @@ from traits.api import (
     Property,
 )
 
+from traits_futures.base_future import job_wrapper
 from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.toolkit_support import toolkit
-
-logger = logging.getLogger(__name__)
-
-
-#: Common messages send by background jobs. These should be being imported
-#: from somewhere else.
-
-#: Background job completed, either with a result, or with an exception,
-#: or as a result of cancellation.
-# XXX Rename me, to avoid confusion with the COMPLETED future state.
-# XXX Also consider moving the background job wrapper to its own module.
-COMPLETED = "completed"
 
 
 # Executor states.
@@ -51,24 +39,6 @@ STOPPED = "stopped"
 
 #: Trait type representing the executor state.
 ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
-
-
-def _background_job_wrapper(background_job, sender, cancel_event):
-    """
-    This is the callable that's actually submitted as a concurrent.futures
-    job.
-    """
-    try:
-        cancelled = cancel_event.is_set
-        send = sender.send_message
-
-        with sender:
-            if not cancelled():
-                background_job(send, cancelled)
-            send(COMPLETED)
-    except BaseException:
-        logger.exception("Unexpected exception in background job.")
-        raise
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -238,11 +208,6 @@ class TraitsExecutor(HasStrictTraits):
             XXX: IFuture interface is not yet formally defined.
             Future for this task.
         """
-        # XXX probably remove this check in the final version, or leave it
-        # as a type annotation.
-        if not isinstance(task, IJobSpecification):
-            raise TypeError("task should be an instance of IJobSpecification")
-
         if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
@@ -256,9 +221,7 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(sender, receiver)
             raise
 
-        self._worker_pool.submit(
-            _background_job_wrapper, runner, sender, cancel_event
-        )
+        self._worker_pool.submit(job_wrapper, runner, sender, cancel_event)
         self._futures[receiver] = future
         return future
 

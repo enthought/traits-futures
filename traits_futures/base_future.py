@@ -5,6 +5,8 @@
 Base class providing common pieces of the Future machinery.
 """
 
+import logging
+
 from traits.api import (
     Bool,
     Callable,
@@ -24,6 +26,14 @@ from traits_futures.future_states import (
     EXECUTING,
     FutureState,
 )
+
+logger = logging.getLogger(__name__)
+
+
+# Messages sent by the wrapper, and interpreted by the BaseFuture
+
+#: Message sent when the target callable has completed.
+DONE = "done"
 
 
 class BaseFuture(HasStrictTraits):
@@ -78,7 +88,7 @@ class BaseFuture(HasStrictTraits):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_completed(self, none):
+    def _process_done(self, none):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self.state = COMPLETED
@@ -103,3 +113,30 @@ class BaseFuture(HasStrictTraits):
         new_done = new_state in DONE_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
+
+
+def job_wrapper(background_job, sender, cancel_event):
+    """
+    Wrapper for callables submitted to the underlying executor.
+
+    Parameters
+    ----------
+    background_job : callable
+        Callable representing the background job. This will be called
+        with arguments ``send`` and ``cancelled`..
+    sender : MessageSender
+        Object used to send messages.
+    cancel_event : event-like
+        Event used to check for cancellation requests.
+    """
+    try:
+        cancelled = cancel_event.is_set
+        send = sender.send_message
+
+        with sender:
+            if not cancelled():
+                background_job(send, cancelled)
+            send(DONE)
+    except BaseException:
+        logger.exception("Unexpected exception in background job.")
+        raise
