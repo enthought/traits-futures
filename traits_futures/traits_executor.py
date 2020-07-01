@@ -21,6 +21,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import job_wrapper
+from traits_futures.i_future import IFuture
 from traits_futures.toolkit_support import toolkit
 
 
@@ -204,7 +205,6 @@ class TraitsExecutor(HasStrictTraits):
         Returns
         -------
         future : IFuture
-            XXX: IFuture interface is not yet formally defined.
             Future for this task.
         """
         if not self.running:
@@ -258,7 +258,7 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Currently executing futures: mapping from message receivers to
     #: futures.
-    _futures = Dict(Any(), Any())
+    _futures = Dict(Any(), Instance(IFuture))
 
     # Private methods #########################################################
 

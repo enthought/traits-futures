@@ -10,7 +10,6 @@ import logging
 from traits.api import (
     Bool,
     Callable,
-    HasStrictTraits,
     HasTraits,
     Instance,
     on_trait_change,
@@ -26,6 +25,7 @@ from traits_futures.future_states import (
     EXECUTING,
     FutureState,
 )
+from traits_futures.i_future import IFuture
 
 logger = logging.getLogger(__name__)
 
@@ -36,12 +36,9 @@ logger = logging.getLogger(__name__)
 DONE = "done"
 
 
-class BaseFuture(HasStrictTraits):
+class BaseFuture(IFuture):
     """
     Convenience base class for the various flavours of Future.
-
-    This isn't yet well-defined enough, documented enough or tested enough
-    to be considered a formal abstract base class.
     """
 
     #: The state of the background task, to the best of the knowledge of

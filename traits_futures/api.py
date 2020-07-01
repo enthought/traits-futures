@@ -23,6 +23,7 @@ from traits_futures.future_states import (
     EXECUTING,
     FutureState,
 )
+from traits_futures.i_future import IFuture
 from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.traits_executor import (
     ExecutorState,
@@ -56,4 +57,6 @@ __all__ = [
     "submit_progress",
     # IJobSpecification: interface for creating new job types
     "IJobSpecification",
+    # IFuture: interface for futures
+    "IFuture",
 ]
