@@ -157,6 +157,12 @@ class TraitsExecutor(HasStrictTraits):
         """
         from traits_futures.background_call import submit_call
 
+        warnings.warn(
+            "The submit_call method is deprecated. Use the submit_call "
+            "convenience function instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return submit_call(self, callable, *args, **kwargs)
 
     def submit_iteration(self, callable, *args, **kwargs):
@@ -179,6 +185,12 @@ class TraitsExecutor(HasStrictTraits):
         """
         from traits_futures.background_iteration import submit_iteration
 
+        warnings.warn(
+            "The submit_iteration method is deprecated. Use the "
+            "submit_iteration convenience function instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return submit_iteration(self, callable, *args, **kwargs)
 
     def submit_progress(self, callable, *args, **kwargs):
@@ -204,6 +216,12 @@ class TraitsExecutor(HasStrictTraits):
         """
         from traits_futures.background_progress import submit_progress
 
+        warnings.warn(
+            "The submit_progress method is deprecated. Use the "
+            "submit_progress convenience function instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return submit_progress(self, callable, *args, **kwargs)
 
     def submit(self, task):

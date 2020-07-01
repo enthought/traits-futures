@@ -15,7 +15,7 @@ from traits.api import (
 )
 from traitsui.api import Item, UItem, View
 
-from traits_futures.api import CallFuture, TraitsExecutor
+from traits_futures.api import CallFuture, submit_call, TraitsExecutor
 
 
 def slow_square(n):
@@ -52,7 +52,7 @@ class QuickStartExample(HasStrictTraits):
         input = self.input
         self.input_for_calculation = self.input
         self.message = "Calculating square of {} ...".format(input)
-        self.future = self.executor.submit_call(slow_square, input)
+        self.future = submit_call(self.executor, slow_square, input)
         # Keep a record so that we can present messages accurately.
         self.input_for_calculation = input
 

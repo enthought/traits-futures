@@ -23,25 +23,25 @@ the executor's main top-level methods.
 
 To submit a task, use one of the |TraitsExecutor| top-level methods:
 
-- The |submit_call| method allows submission of a simple Python callable, with
+- The |submit_call| function allows submission of a simple Python callable, with
   given positional and named arguments. For example::
 
-    my_executor.submit_call(int, "10101", base=2)
+    submit_call(my_executor, int, "10101", base=2)
 
   will execute ``int("10101", base=2)`` in the background. |submit_call|
   doesn't wait for the background task to finish; instead, it immediately
   returns a |CallFuture| object. See the next section for more details on
   the |CallFuture| and related objects.
 
-- The |submit_iteration| method allows submission of an arbitrary iterable. The
+- The |submit_iteration| function allows submission of an arbitrary iterable. The
   user provides a callable which, when called, returns an iterable object. For
   example::
 
-    my_executor.submit_iteration(range, 0, 5)
+    submit_iteration(my_executor, range, 0, 5)
 
   It returns a |IterationFuture| object.
 
-- The |submit_progress| method allows submission of a progress-reporting
+- The |submit_progress| function allows submission of a progress-reporting
   callable, and returns a |ProgressFuture| object. The callable submitted
   *must* have a parameter called "progress".  A value for this parameter will
   be passed (by name) by the executor machinery. The value passed for the
@@ -253,9 +253,9 @@ needed.
 .. |traits_futures.api| replace:: :mod:`traits_futures.api`
 
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
-.. |submit_call| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_call`
-.. |submit_iteration| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_iteration`
-.. |submit_progress| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_progress`
+.. |submit_call| replace:: :function:`~traits_futures.background_call.submit_call`
+.. |submit_iteration| replace:: :function:`~traits_futures.background_iteration.submit_iteration`
+.. |submit_progress| replace:: :function:`~traits_futures.background_progress.submit_progress`
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
 .. |ExecutorState| replace:: :meth:`~traits_futures.traits_executor.ExecutorState`

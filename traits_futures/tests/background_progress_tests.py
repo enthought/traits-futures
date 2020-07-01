@@ -10,6 +10,7 @@ from traits_futures.api import (
     EXECUTING,
     FutureState,
     ProgressFuture,
+    submit_progress,
 )
 
 #: Timeout for blocking operations, in seconds.
@@ -125,8 +126,8 @@ class ProgressFutureListener(HasStrictTraits):
 class BackgroundProgressTests:
     def test_progress(self):
         # Straightforward case.
-        future = self.executor.submit_progress(
-            progress_reporting_sum, [1, 2, 3]
+        future = submit_progress(
+            self.executor, progress_reporting_sum, [1, 2, 3]
         )
         listener = ProgressFutureListener(future=future)
 
@@ -142,13 +143,15 @@ class BackgroundProgressTests:
 
     def test_progress_with_progress_keyword_argument(self):
         with self.assertRaises(TypeError):
-            self.executor.submit_progress(
-                progress_reporting_sum, [1, 2, 3], progress=None
+            submit_progress(
+                self.executor, progress_reporting_sum, [1, 2, 3], progress=None
             )
 
     def test_failed_progress(self):
         # Callable that raises.
-        future = self.executor.submit_progress(bad_progress_reporting_function)
+        future = submit_progress(
+            self.executor, bad_progress_reporting_function
+        )
         listener = ProgressFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -164,7 +167,7 @@ class BackgroundProgressTests:
     def test_cancellation_before_execution(self):
         event = self.Event()
 
-        future = self.executor.submit_progress(event_set_with_progress, event)
+        future = submit_progress(self.executor, event_set_with_progress, event)
         listener = ProgressFutureListener(future=future)
 
         self.assertTrue(event.wait(timeout=TIMEOUT))
@@ -184,8 +187,8 @@ class BackgroundProgressTests:
         event = self.Event()
 
         with self.block_worker_pool():
-            future = self.executor.submit_progress(
-                event_set_with_progress, event
+            future = submit_progress(
+                self.executor, event_set_with_progress, event
             )
             listener = ProgressFutureListener(future=future)
             future.cancel()
@@ -202,8 +205,8 @@ class BackgroundProgressTests:
         test_ready = self.Event()
         raised = self.Event()
 
-        future = self.executor.submit_progress(
-            syncing_progress, test_ready, raised
+        future = submit_progress(
+            self.executor, syncing_progress, test_ready, raised
         )
         listener = ProgressFutureListener(future=future)
 
@@ -227,7 +230,7 @@ class BackgroundProgressTests:
         self.assertEqual(listener.progress, ["first"])
 
     def test_double_cancellation(self):
-        future = self.executor.submit_progress(progress_reporting_sum, [1, 2])
+        future = submit_progress(self.executor, progress_reporting_sum, [1, 2])
         self.assertTrue(future.cancellable)
         future.cancel()
 
@@ -238,7 +241,9 @@ class BackgroundProgressTests:
     def test_cancel_raising_task(self):
         started = self.Event()
         signal = self.Event()
-        future = self.executor.submit_progress(wait_then_fail, started, signal)
+        future = submit_progress(
+            self.executor, wait_then_fail, started, signal
+        )
 
         self.assertTrue(started.wait(timeout=TIMEOUT))
         future.cancel()
@@ -251,7 +256,7 @@ class BackgroundProgressTests:
 
     def test_progress_messages_after_cancellation(self):
         signal = self.Event()
-        future = self.executor.submit_progress(progress_then_signal, signal)
+        future = submit_progress(self.executor, progress_then_signal, signal)
         listener = ProgressFutureListener(future=future)
 
         # Let the background task run to completion; it will have already sent
@@ -273,8 +278,8 @@ class BackgroundProgressTests:
         checkpoint = self.Event()
 
         try:
-            future = self.executor.submit_progress(
-                resource_acquirer, acquired, ready, checkpoint
+            future = submit_progress(
+                self.executor, resource_acquirer, acquired, ready, checkpoint
             )
 
             self.assertTrue(checkpoint.wait(timeout=TIMEOUT))

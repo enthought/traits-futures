@@ -10,6 +10,7 @@ from traits_futures.api import (
     COMPLETED,
     EXECUTING,
     FutureState,
+    submit_call,
 )
 
 
@@ -61,7 +62,7 @@ class BackgroundCallTests:
     """ Mixin class containing tests for the background call. """
 
     def test_successful_call(self):
-        future = self.executor.submit_call(pow, 2, 3)
+        future = submit_call(self.executor, pow, 2, 3)
         listener = CallFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -74,7 +75,7 @@ class BackgroundCallTests:
         self.assertTrue(future.ok)
 
     def test_failed_call(self):
-        future = self.executor.submit_call(fail)
+        future = submit_call(self.executor, fail)
         listener = CallFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -90,7 +91,7 @@ class BackgroundCallTests:
         # Simulate situation where we start executing post-cancellation.
         event = self.Event()
 
-        future = self.executor.submit_call(event.set)
+        future = submit_call(self.executor, event.set)
         listener = CallFutureListener(future=future)
 
         # Ensure the background task is past the cancel_event.is_set() check.
@@ -111,7 +112,7 @@ class BackgroundCallTests:
         # Case where cancellation occurs before the future even starts
         # executing.
         with self.block_worker_pool():
-            future = self.executor.submit_call(pow, 2, 3)
+            future = submit_call(self.executor, pow, 2, 3)
             listener = CallFutureListener(future=future)
             self.assertTrue(future.cancellable)
             future.cancel()
@@ -128,7 +129,7 @@ class BackgroundCallTests:
         signal = self.Event()
         test_ready = self.Event()
 
-        future = self.executor.submit_call(ping_pong, signal, test_ready)
+        future = submit_call(self.executor, ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)
 
         # Wait until execution starts; the test_ready event ensures we
@@ -150,7 +151,7 @@ class BackgroundCallTests:
         signal = self.Event()
         test_ready = self.Event()
 
-        future = self.executor.submit_call(ping_pong_fail, signal, test_ready)
+        future = submit_call(self.executor, ping_pong_fail, signal, test_ready)
         listener = CallFutureListener(future=future)
 
         # Wait until execution starts; the test_ready event ensures we
@@ -169,7 +170,7 @@ class BackgroundCallTests:
         )
 
     def test_cannot_cancel_after_success(self):
-        future = self.executor.submit_call(pow, 2, 3)
+        future = submit_call(self.executor, pow, 2, 3)
         listener = CallFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -186,7 +187,7 @@ class BackgroundCallTests:
         self.assertTrue(future.ok)
 
     def test_cannot_cancel_after_failure(self):
-        future = self.executor.submit_call(fail)
+        future = submit_call(self.executor, fail)
         listener = CallFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -203,7 +204,7 @@ class BackgroundCallTests:
         self.assertFalse(future.ok)
 
     def test_cannot_cancel_after_cancel(self):
-        future = self.executor.submit_call(pow, 2, 3)
+        future = submit_call(self.executor, pow, 2, 3)
         listener = CallFutureListener(future=future)
 
         self.assertTrue(future.cancellable)
@@ -224,7 +225,7 @@ class BackgroundCallTests:
         signal = self.Event()
         test_ready = self.Event()
 
-        future = self.executor.submit_call(ping_pong, signal, test_ready)
+        future = submit_call(self.executor, ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)
 
         # Wait until execution starts; the test_ready event ensures we
