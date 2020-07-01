@@ -5,10 +5,10 @@
 Interface for the parallelism context needed by the TraitsExecutor
 """
 
-from abc import ABC, abstractmethod
+import abc
 
 
-class IParallelContext(ABC):
+class IParallelContext(abc.ABC):
     """
     Interface for the parallelism context needed by the TraitsExecutor.
 
@@ -18,7 +18,7 @@ class IParallelContext(ABC):
     multiprocessing.
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def worker_pool(self, *, max_workers=None):
         """
         Provide a worker pool suitable for this context.
@@ -36,7 +36,7 @@ class IParallelContext(ABC):
         executor : concurrent.futures.Executor
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def event(self):
         """
         Return a shareable event suitable for this context.
@@ -47,7 +47,7 @@ class IParallelContext(ABC):
             An event that can be shared safely with workers.
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def queue(self):
         """
         Return a shareable queue suitable for this context.
@@ -58,7 +58,7 @@ class IParallelContext(ABC):
             A queue that can be shared safely with workers.
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def message_router(self):
         """
         Return a message router suitable for use in this context.
@@ -68,14 +68,14 @@ class IParallelContext(ABC):
         message_router : MessageRouter
         """
 
-    @abstractmethod
+    @abc.abstractmethod
     def close(self):
         """
         Do any cleanup necessary before disposal of the context.
         """
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def closed(self):
         """
         True if this context is closed, else False.
