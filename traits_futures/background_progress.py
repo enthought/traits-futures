@@ -125,9 +125,11 @@ class ProgressFuture(BaseFuture):
         """
         if self.state != DONE:
             raise AttributeError(
-                "Background job was cancelled, or has not yet completed."
+                "Job has not yet completed, or was cancelled."
+                "Job status is {}".format(self.state)
             )
-        return not self._have_exception
+
+        return self._ok
 
     @property
     def result(self):
@@ -140,8 +142,18 @@ class ProgressFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if not self._have_result:
-            raise AttributeError("No result available for this call.")
+        if self.state != DONE:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
+
+        if not self._ok:
+            raise AttributeError(
+                "No result available; job raised an exception. "
+                "Exception details are in the 'exception' attribute."
+            )
+
         return self._result
 
     @property
@@ -155,20 +167,27 @@ class ProgressFuture(BaseFuture):
         Trait, to discourage users from attaching Traits listeners to
         it. Listen to the state or its derived traits instead.
         """
-        if not self._have_exception:
-            raise AttributeError("No exception has been raised for this call.")
+        if self.state != DONE:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
+
+        if self._ok:
+            raise AttributeError(
+                "This job completed without raising an exception. "
+                "See the 'result' attribute for the job result."
+            )
+
         return self._exception
 
     # Private traits ##########################################################
 
-    #: Boolean indicating whether we have a result available.
-    _have_result = Bool(False)
+    #: Boolean indicating whether we the job completed successfully.
+    _ok = Bool()
 
     #: Result from the background task.
     _result = Any()
-
-    #: Boolean indicating whether we have exception information available.
-    _have_exception = Bool(False)
 
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
@@ -178,14 +197,14 @@ class ProgressFuture(BaseFuture):
     def _process_raised(self, exception_info):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
-            self._have_exception = True
             self._exception = exception_info
+            self._ok = False
 
     def _process_returned(self, result):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
-            self._have_result = True
             self._result = result
+            self._ok = True
 
     def _process_progress(self, progress_info):
         assert self.state in (WAITING, CANCELLING)
@@ -251,6 +270,4 @@ class BackgroundProgress(HasStrictTraits):
         if "progress" in self.kwargs:
             raise TypeError("progress may not be passed as a named argument")
 
-        return ProgressFuture(
-            _cancel=cancel, _receiver=receiver,
-        )
+        return ProgressFuture(_cancel=cancel, _receiver=receiver,)

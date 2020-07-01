@@ -147,7 +147,7 @@ class CallFuture(BaseFuture):
 
     # Private traits ##########################################################
 
-    #: Boolean indicating whether we have a result available.
+    #: Boolean indicating whether the job completed successfully.
     _ok = Bool()
 
     #: Result from the background task.
@@ -199,9 +199,7 @@ class BackgroundCall(HasStrictTraits):
             cancelled.
         """
         return CallBackgroundTask(
-            callable=self.callable,
-            args=self.args,
-            kwargs=self.kwargs.copy(),
+            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
 
     def future(self, cancel, receiver):

@@ -114,9 +114,11 @@ class IterationFuture(BaseFuture):
         """
         if self.state != DONE:
             raise AttributeError(
-                "Background job was cancelled, or has not yet completed."
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
             )
-        return not self._have_exception
+
+        return self._ok
 
     @property
     def exception(self):
@@ -124,19 +126,24 @@ class IterationFuture(BaseFuture):
         Information about any exception raised by the background call. Raises
         an ``AttributeError`` on access if no exception was raised (because the
         call succeeded, was cancelled, or has not yet completed).
-
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
         """
-        if not self._have_exception:
-            raise AttributeError("No exception has been raised for this call.")
+        if self.state != DONE:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
+
+        if self._ok:
+            raise AttributeError(
+                "This job completed without raising an exception. "
+            )
+
         return self._exception
 
     # Private traits ##########################################################
 
-    #: Boolean indicating whether we have exception information available.
-    _have_exception = Bool(False)
+    #: Boolean indicating whether the job completed successfully.
+    _ok = Bool(True)
 
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
@@ -146,7 +153,7 @@ class IterationFuture(BaseFuture):
     def _process_raised(self, exception_info):
         assert self.state in (WAITING, CANCELLING)
         if self.state == WAITING:
-            self._have_exception = True
+            self._ok = False
             self._exception = exception_info
 
     def _process_generated(self, result):
@@ -216,6 +223,4 @@ class BackgroundIteration(HasStrictTraits):
             Foreground object representing the state of the running
             calculation.
         """
-        return IterationFuture(
-            _cancel=cancel, _receiver=receiver,
-        )
+        return IterationFuture(_cancel=cancel, _receiver=receiver,)
