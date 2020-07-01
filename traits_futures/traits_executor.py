@@ -6,6 +6,7 @@ Main-thread executor for submission of background tasks.
 """
 
 import concurrent.futures
+import logging
 import threading
 import warnings
 
@@ -25,6 +26,8 @@ from traits_futures.background_iteration import BackgroundIteration
 from traits_futures.background_progress import BackgroundProgress
 from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.toolkit_support import toolkit
+
+logger = logging.getLogger(__name__)
 
 
 #: Common messages send by background jobs. These should be being imported
@@ -56,13 +59,17 @@ def _background_job_wrapper(background_job, sender, cancel_event):
     This is the callable that's actually submitted as a concurrent.futures
     job.
     """
-    cancelled = cancel_event.is_set
-    send = sender.send_message
+    try:
+        cancelled = cancel_event.is_set
+        send = sender.send_message
 
-    with sender:
-        if not cancelled():
-            background_job(send, cancelled)
-        send(COMPLETED)
+        with sender:
+            if not cancelled():
+                background_job(send, cancelled)
+            send(COMPLETED)
+    except BaseException:
+        logger.exception("Unexpected exception in background job.")
+        raise
 
 
 class TraitsExecutor(HasStrictTraits):
