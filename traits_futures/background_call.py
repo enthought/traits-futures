@@ -72,12 +72,7 @@ class CallFuture(BaseFuture):
         AttributeError
             If the job is still executing, or was cancelled.
         """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled."
-                "Job status is {}".format(self.state)
-            )
-
+        self._raise_unless_completed()
         return self._ok
 
     @property
@@ -99,18 +94,12 @@ class CallFuture(BaseFuture):
             If the job is still executing, or was cancelled, or raised an
             exception instead of returning a result.
         """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
+        self._raise_unless_completed()
         if not self._ok:
             raise AttributeError(
                 "No result available; job raised an exception. "
                 "Exception details are in the 'exception' attribute."
             )
-
         return self._result
 
     @property
@@ -131,19 +120,25 @@ class CallFuture(BaseFuture):
             If the job is still executing, or was cancelled, or completed
             without raising an exception.
         """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
+        self._raise_unless_completed()
         if self._ok:
             raise AttributeError(
                 "This job completed without raising an exception. "
                 "See the 'result' attribute for the job result."
             )
-
         return self._exception
+
+    # Message processing ######################################################
+
+    def _process_raised(self, exception_info):
+        if self.state != CANCELLING:
+            self._exception = exception_info
+            self._ok = False
+
+    def _process_returned(self, result):
+        if self.state != CANCELLING:
+            self._result = result
+            self._ok = True
 
     # Private traits ##########################################################
 
@@ -158,17 +153,15 @@ class CallFuture(BaseFuture):
 
     # Private methods #########################################################
 
-    # Process the messages from the background call.
-
-    def _process_raised(self, exception_info):
-        if self.state != CANCELLING:
-            self._exception = exception_info
-            self._ok = False
-
-    def _process_returned(self, result):
-        if self.state != CANCELLING:
-            self._result = result
-            self._ok = True
+    def _raise_unless_completed(self):
+        """
+        Check that the job has completed, and raise AttributeError if not.
+        """
+        if self.state != COMPLETED:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
 
 
 @IJobSpecification.register
