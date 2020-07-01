@@ -220,7 +220,10 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(sender, receiver)
             raise
 
-        self._worker_pool.submit(job_wrapper, runner, sender, cancel_event)
+        cancelled = cancel_event.is_set
+        send = sender.send_message
+
+        self._worker_pool.submit(job_wrapper, runner, send, cancelled)
         self._futures[receiver] = future
         return future
 

@@ -114,7 +114,7 @@ class BaseFuture(IFuture):
             self.trait_property_changed("done", old_done, new_done)
 
 
-def job_wrapper(background_job, sender, cancel_event):
+def job_wrapper(background_job, sender, cancelled):
     """
     Wrapper for callables submitted to the underlying executor.
 
@@ -125,13 +125,12 @@ def job_wrapper(background_job, sender, cancel_event):
         with arguments ``send`` and ``cancelled`..
     sender : MessageSender
         Object used to send messages.
-    cancel_event : event-like
-        Event used to check for cancellation requests.
+    cancelled : zero-argument callable returning bool
+        Callable that can be called to check whether cancellation has
+        been requested.
     """
     try:
-        cancelled = cancel_event.is_set
         send = sender.send_message
-
         with sender:
             if not cancelled():
                 background_job(send, cancelled)
