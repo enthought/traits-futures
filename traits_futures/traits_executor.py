@@ -21,7 +21,6 @@ from traits.api import (
 )
 
 from traits_futures.base_future import job_wrapper
-from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.toolkit_support import toolkit
 
 
