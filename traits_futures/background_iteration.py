@@ -178,8 +178,6 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    # XXX Move the pre-run cancel check to the background job wrapper.
-
     def background_job(self):
         """
         Return a background callable for this job specification.
@@ -193,13 +191,7 @@ class BackgroundIteration(HasStrictTraits):
             cancelled.
         """
         return IterationBackgroundTask(
-            callable=self.callable,
-            args=self.args,
-            # Convert TraitsDict to a regular dict.
-            # XXX Perhaps we should just be using `instance(dict)` in
-            # the first place? We have no need to listen to the `kwargs`
-            # attribute.
-            kwargs=dict(self.kwargs),
+            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
 
     def future(self, cancel, receiver):
@@ -223,7 +215,7 @@ class BackgroundIteration(HasStrictTraits):
             Foreground object representing the state of the running
             calculation.
         """
-        return IterationFuture(_cancel=cancel, _receiver=receiver,)
+        return IterationFuture(_cancel=cancel, _receiver=receiver)
 
 
 def submit_iteration(executor, callable, *args, **kwargs):
@@ -246,5 +238,5 @@ def submit_iteration(executor, callable, *args, **kwargs):
     future : IterationFuture
         Object representing the state of the background iteration.
     """
-    task = BackgroundIteration(callable=callable, args=args, kwargs=kwargs,)
+    task = BackgroundIteration(callable=callable, args=args, kwargs=kwargs)
     return executor.submit(task)

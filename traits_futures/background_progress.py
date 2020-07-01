@@ -240,10 +240,7 @@ class BackgroundProgress(HasStrictTraits):
             cancelled.
         """
         return ProgressBackgroundTask(
-            callable=self.callable,
-            args=self.args,
-            # Convert TraitsDict to a regular dict
-            kwargs=dict(self.kwargs),
+            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
 
     def future(self, cancel, receiver):
@@ -270,7 +267,7 @@ class BackgroundProgress(HasStrictTraits):
         if "progress" in self.kwargs:
             raise TypeError("progress may not be passed as a named argument")
 
-        return ProgressFuture(_cancel=cancel, _receiver=receiver,)
+        return ProgressFuture(_cancel=cancel, _receiver=receiver)
 
 
 def submit_progress(executor, callable, *args, **kwargs):
