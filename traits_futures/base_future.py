@@ -17,11 +17,9 @@ from traits.api import (
 )
 
 from traits_futures.future_states import (
-    CANCELLABLE_STATES,
     CANCELLED,
     CANCELLING,
     COMPLETED,
-    DONE_STATES,
     EXECUTING,
     FutureState,
 )
@@ -34,6 +32,10 @@ logger = logging.getLogger(__name__)
 
 #: Message sent when the target callable has completed.
 DONE = "done"
+
+#: Final states. If the future is in one of these states,
+#: no more messages will be received from the background job.
+DONE_STATES = CANCELLED, COMPLETED
 
 
 class BaseFuture(IFuture):
@@ -93,14 +95,14 @@ class BaseFuture(IFuture):
             self.state = CANCELLED
 
     def _get_cancellable(self):
-        return self.state in CANCELLABLE_STATES
+        return self.state == EXECUTING
 
     def _get_done(self):
         return self.state in DONE_STATES
 
     def _state_changed(self, old_state, new_state):
-        old_cancellable = old_state in CANCELLABLE_STATES
-        new_cancellable = new_state in CANCELLABLE_STATES
+        old_cancellable = old_state == EXECUTING
+        new_cancellable = new_state == EXECUTING
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable

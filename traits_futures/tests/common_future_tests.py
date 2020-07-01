@@ -10,8 +10,8 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     COMPLETED,
+    EXECUTING,
 )
-from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
 
 class FutureListener(HasStrictTraits):
@@ -61,8 +61,8 @@ class CommonFutureTests:
 
         # Check consistency.
         for state, cancellable, done in states:
-            self.assertEqual(cancellable, state in CANCELLABLE_STATES)
-            self.assertEqual(done, state in DONE_STATES)
+            self.assertEqual(cancellable, state == EXECUTING)
+            self.assertEqual(done, state in (CANCELLED, COMPLETED))
 
     def test_cancellable_and_done(self):
         future = self.future_class()
