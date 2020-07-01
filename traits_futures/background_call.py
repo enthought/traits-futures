@@ -16,7 +16,10 @@ from traits.api import (
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.exception_handling import marshal_exception
-from traits_futures.future_states import CANCELLING, COMPLETED
+from traits_futures.future_states import (
+    CANCELLING,
+    COMPLETED,
+)
 from traits_futures.i_job_specification import IJobSpecification
 
 # The background task sends either a "RAISED" message or a "RETURNED" message

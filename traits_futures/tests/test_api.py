@@ -8,22 +8,22 @@ class TestApi(unittest.TestCase):
     def test_imports(self):
         from traits_futures.api import (  # noqa: F401
             CallFuture,
-            IterationFuture,
-            ProgressFuture,
-            FutureState,
             CANCELLED,
             CANCELLING,
             COMPLETED,
             EXECUTING,
-            TraitsExecutor,
             ExecutorState,
+            FutureState,
+            IJobSpecification,
+            IterationFuture,
+            ProgressFuture,
             RUNNING,
-            STOPPING,
             STOPPED,
+            STOPPING,
             submit_call,
             submit_iteration,
             submit_progress,
-            IJobSpecification,
+            TraitsExecutor,
         )
 
     def test___all__(self):

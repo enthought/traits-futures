@@ -101,6 +101,7 @@ VERSION_CORE_DEPS = {}
 # Additional packages needed for running tests under CI.
 ADDITIONAL_CI_DEPS = [
     "flake8",
+    "flake8_import_order",
     "pip",
 ]
 
