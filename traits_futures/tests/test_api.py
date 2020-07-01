@@ -23,6 +23,7 @@ class TestApi(unittest.TestCase):
             submit_call,
             submit_iteration,
             submit_progress,
+            IJobSpecification,
         )
 
     def test___all__(self):
