@@ -5,8 +5,8 @@
 Test support, providing the ability to run the event loop from tests.
 """
 
-from pyface.qt.QtGui import QApplication
 from pyface.qt.QtCore import QTimer
+from pyface.qt.QtGui import QApplication
 
 
 #: Default timeout, in seconds
@@ -63,7 +63,6 @@ class GuiTestAssistant:
         finally:
             object.on_trait_change(stop_if_condition, trait, remove=True)
 
-        # If we stopped due to timeout, raise.
         if timed_out:
             raise RuntimeError(
                 "run_until timed out after {} seconds".format(timeout)
