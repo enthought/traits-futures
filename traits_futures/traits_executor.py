@@ -226,9 +226,7 @@ class TraitsExecutor(HasStrictTraits):
         sender, receiver = self._message_router.pipe()
         try:
             runner = task.background_job()
-            future = task.future(
-                cancel=cancel_event.set, message_receiver=receiver,
-            )
+            future = task.future(cancel=cancel_event.set, receiver=receiver)
         except Exception:
             self._message_router.close_pipe(sender, receiver)
             raise

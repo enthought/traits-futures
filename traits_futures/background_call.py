@@ -19,7 +19,8 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import CANCELLING, DONE
 from traits_futures.i_job_specification import IJobSpecification
 
-# The background task sends either a "RAISED" message or a "RETURNED" message.
+# The background task sends either a "RAISED" message or a "RETURNED" message
+# on completion.
 
 #: Call failed with an exception. Argument gives exception information.
 RAISED = "raised"
@@ -57,28 +58,59 @@ class CallFuture(BaseFuture):
     def ok(self):
         """
         Boolean indicating whether the background job completed successfully.
+        This attribute is only available for a job in DONE state.
 
-        Not available for cancelled or pending jobs.
+        Returns
+        -------
+        ok : bool
+            True if the job completed successfully, in which case the result
+            is available from the .result attribute. False if the job
+            raised an exception.
+
+        Raises
+        ------
+        AttributeError
+            If the job is still executing, or was cancelled.
         """
         if self.state != DONE:
             raise AttributeError(
-                "Background job was cancelled, or has not yet completed."
+                "Job has not yet completed, or was cancelled."
+                "Job status is {}".format(self.state)
             )
-        return self._have_result
+
+        return self._ok
 
     @property
     def result(self):
         """
-        Result of the background call. Raises an ``AttributeError`` on access
-        if no result is available (because the background call failed, was
-        cancelled, or has not yet completed).
+        Result of the background call. This is only available if:
 
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
+        - the state of the future is DONE
+        - the call completed normally, without raising
+
+        Returns
+        -------
+        result : object
+            The result obtained from the background call.
+
+        Raises
+        ------
+        AttributeError
+            If the job is still executing, or was cancelled, or raised an
+            exception instead of returning a result.
         """
-        if not self._have_result:
-            raise AttributeError("No result available for this call.")
+        if self.state != DONE:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
+
+        if not self._ok:
+            raise AttributeError(
+                "No result available; job raised an exception. "
+                "Exception details are in the 'exception' attribute."
+            )
+
         return self._result
 
     @property
@@ -88,39 +120,55 @@ class CallFuture(BaseFuture):
         an ``AttributeError`` on access if no exception was raised (because the
         call succeeded, was cancelled, or has not yet completed).
 
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
+        Returns
+        -------
+        exc_info : tuple(str, str, str)
+            Tuple containing marshalled exception information.
+
+        Raises
+        ------
+        AttributeError
+            If the job is still executing, or was cancelled, or completed
+            without raising an exception.
         """
-        if not self._have_exception:
-            raise AttributeError("No exception has been raised for this call.")
+        if self.state != DONE:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
+
+        if self._ok:
+            raise AttributeError(
+                "This job completed without raising an exception. "
+                "See the 'result' attribute for the job result."
+            )
+
         return self._exception
 
     # Private traits ##########################################################
 
     #: Boolean indicating whether we have a result available.
-    _have_result = Bool(False)
+    _ok = Bool()
 
     #: Result from the background task.
     _result = Any()
-
-    #: Boolean indicating whether we have exception information available.
-    _have_exception = Bool(False)
 
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
 
     # Private methods #########################################################
 
+    # Process the messages from the background call.
+
     def _process_raised(self, exception_info):
         if self.state != CANCELLING:
-            self._have_exception = True
             self._exception = exception_info
+            self._ok = False
 
     def _process_returned(self, result):
         if self.state != CANCELLING:
-            self._have_result = True
             self._result = result
+            self._ok = True
 
 
 @IJobSpecification.register
@@ -153,11 +201,10 @@ class BackgroundCall(HasStrictTraits):
         return CallBackgroundTask(
             callable=self.callable,
             args=self.args,
-            # Convert TraitsDict to a regular dict
-            kwargs=dict(self.kwargs),
+            kwargs=self.kwargs.copy(),
         )
 
-    def future(self, cancel, message_receiver):
+    def future(self, cancel, receiver):
         """
         Return a future for a background job.
 
@@ -166,7 +213,7 @@ class BackgroundCall(HasStrictTraits):
         cancel : callable
             Callable called with no arguments to request cancellation
             of the background task.
-        message_receiver : MessageReceiver
+        receiver : MessageReceiver
             Object that remains in the main thread and receives messages sent
             by the message sender. This is a HasTraits subclass with
             a 'message' Event trait that can be listened to for arriving
@@ -178,4 +225,4 @@ class BackgroundCall(HasStrictTraits):
             Foreground object representing the state of the running
             calculation.
         """
-        return CallFuture(_cancel=cancel, _message_receiver=message_receiver)
+        return CallFuture(_cancel=cancel, _receiver=receiver)

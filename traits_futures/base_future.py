@@ -68,11 +68,11 @@ class BaseFuture(HasStrictTraits):
     _cancel = Callable()
 
     #: Object that receives messages from the background task.
-    _message_receiver = Instance(HasTraits)
+    _receiver = Instance(HasTraits)
 
     # Private methods #########################################################
 
-    @on_trait_change("_message_receiver:message")
+    @on_trait_change("_receiver:message")
     def _process_message(self, message):
         message_type, message_arg = message
         method_name = "_process_{}".format(message_type)

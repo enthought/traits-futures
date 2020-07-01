@@ -54,7 +54,7 @@ class IJobSpecification(ABC):
         """
 
     @abstractmethod
-    def future(self, cancel, message_receiver):
+    def future(self, cancel, receiver):
         """
         Return a Future for the background job.
 
