@@ -90,7 +90,7 @@ The |CallFuture|, |IterationFuture| and |ProgressFuture| objects all provide a
 ``state`` trait, of trait type |FutureState|, that represents the state of the
 underlying computation. That state has one of six possible different values:
 
-|WAITING|
+|EXECUTING|
    The background task is either waiting to run, or is already executing.
 
 |DONE|
@@ -107,7 +107,7 @@ underlying computation. That state has one of six possible different values:
 In addition, there are two traits whose values are derived from the ``state``
 trait: the ``done`` trait is ``True`` when ``state`` is one of |DONE|
 or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
-``state`` is |WAITING|.
+``state`` is |EXECUTING|.
 
 It's important to understand that the ``state`` trait represents the state of
 the background task *to the best of knowledge* of the main thread. For example
@@ -190,7 +190,7 @@ For |ProgressFuture|, the |cancel| method causes a running
 task to abort the next time that task calls ``progress``. No further
 progress results are received after calling |cancel|.
 
-In all cases, a future may only be cancelled if its state is |WAITING|.
+In all cases, a future may only be cancelled if its state is |EXECUTING|.
 Attempting to cancel a future in another state will raise a ``RuntimeError``.
 Calling |cancel| immediately puts the future into |CANCELLING| state, and the
 state is updated to |CANCELLED| once the future has finished executing. No
@@ -272,4 +272,4 @@ needed.
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
-.. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`
+.. |EXECUTING| replace:: :data:`~traits_futures.future_states.EXECUTING`

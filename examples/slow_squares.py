@@ -24,7 +24,6 @@ from traits_futures.api import (
     EXECUTING,
     FAILED,
     COMPLETED,
-    WAITING,
 )
 
 
@@ -58,7 +57,6 @@ class JobTabularAdapter(TabularAdapter):
         EXECUTING: (128, 128, 255),
         FAILED: (255, 192, 255),
         COMPLETED: (128, 255, 128),
-        WAITING: (255, 255, 255),
     }
 
     #: Text to be displayed for the state column.

@@ -28,7 +28,7 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     DONE,
-    WAITING,
+    EXECUTING,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -195,20 +195,20 @@ class ProgressFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_raised(self, exception_info):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
             self._exception = exception_info
             self._ok = False
 
     def _process_returned(self, result):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
             self._result = result
             self._ok = True
 
     def _process_progress(self, progress_info):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
             self.progress = progress_info
 
 

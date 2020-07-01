@@ -14,7 +14,7 @@ class TestApi(unittest.TestCase):
             CANCELLED,
             CANCELLING,
             DONE,
-            WAITING,
+            EXECUTING,
             TraitsExecutor,
             ExecutorState,
             RUNNING,

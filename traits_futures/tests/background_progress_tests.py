@@ -9,7 +9,7 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     DONE,
-    WAITING,
+    EXECUTING,
 )
 
 #: Timeout for blocking operations, in seconds.
@@ -134,7 +134,7 @@ class BackgroundProgressTests:
 
         self.assertResult(future, 6)
         self.assertNoException(future)
-        self.assertEqual(listener.states, [WAITING, DONE])
+        self.assertEqual(listener.states, [EXECUTING, DONE])
         self.assertTrue(future.ok)
 
         expected_progress = [(0, 3), (1, 3), (2, 3), (3, 3)]
@@ -155,7 +155,7 @@ class BackgroundProgressTests:
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
-        self.assertEqual(listener.states, [WAITING, DONE])
+        self.assertEqual(listener.states, [EXECUTING, DONE])
         self.assertFalse(future.ok)
 
         expected_progress = [(5, 10)]
@@ -175,7 +175,7 @@ class BackgroundProgressTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED],
+            listener.states, [EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_background_task_starts(self):
@@ -196,7 +196,7 @@ class BackgroundProgressTests:
 
         self.assertNoResult(future)
         self.assertNoException(future)
-        self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
+        self.assertEqual(listener.states, [EXECUTING, CANCELLING, CANCELLED])
 
     def test_progress_allows_cancellation(self):
         test_ready = self.Event()
@@ -223,7 +223,7 @@ class BackgroundProgressTests:
         self.assertTrue(raised.is_set())
         self.assertNoResult(future)
         self.assertNoException(future)
-        self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
+        self.assertEqual(listener.states, [EXECUTING, CANCELLING, CANCELLED])
         self.assertEqual(listener.progress, ["first"])
 
     def test_double_cancellation(self):
@@ -264,7 +264,7 @@ class BackgroundProgressTests:
 
         self.assertNoResult(future)
         self.assertNoException(future)
-        self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
+        self.assertEqual(listener.states, [EXECUTING, CANCELLING, CANCELLED])
         self.assertEqual(listener.progress, [])
 
     def test_progress_cleanup_on_cancellation(self):

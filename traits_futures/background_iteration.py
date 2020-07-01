@@ -22,7 +22,7 @@ from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     DONE,
-    WAITING,
+    EXECUTING,
 )
 from traits_futures.i_job_specification import IJobSpecification
 
@@ -84,14 +84,14 @@ class IterationBackgroundTask:
 
 
 # IterationFuture states. These represent the futures' current state of
-# knowledge of the background iteration. An iteration starts out in WAITING
+# knowledge of the background iteration. An iteration starts out in EXECUTING
 # state and ends with one of DONE or CANCELLED. The possible
 # progressions of states are:
 #
-# WAITING -> CANCELLING -> CANCELLED
-# WAITING -> DONE
+# EXECUTING -> CANCELLING -> CANCELLED
+# EXECUTING -> DONE
 #
-# The ``result`` trait will only be fired when the state is WAITING;
+# The ``result`` trait will only be fired when the state is EXECUTING;
 # no results events will be fired after cancelling.
 
 
@@ -151,15 +151,15 @@ class IterationFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_raised(self, exception_info):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
             self._ok = False
             self._exception = exception_info
 
     def _process_generated(self, result):
-        assert self.state in (WAITING, CANCELLING)
+        assert self.state in (EXECUTING, CANCELLING)
         # Any results arriving after a cancellation request are ignored.
-        if self.state == WAITING:
+        if self.state == EXECUTING:
             self.result_event = result
 
 
