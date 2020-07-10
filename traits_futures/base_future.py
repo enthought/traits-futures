@@ -46,9 +46,6 @@ RAISED = "raised"
 #: Call succeeded and returned a result. Argument is the result.
 RETURNED = "returned"
 
-#: Message sent when the target callable has completed.
-DONE = "done"
-
 #: States in which the job can be cancelled.
 CANCELLABLE_STATES = WAITING, EXECUTING
 
@@ -166,10 +163,6 @@ class BaseFuture(IFuture):
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
 
-    def _process_done(self, none):
-        assert self.state in (CANCELLING,)
-        self.state = CANCELLED
-
     def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
@@ -240,7 +233,7 @@ def job_wrapper(background_job, sender, cancelled):
         send = sender.send_message
         with sender:
             if cancelled():
-                send(DONE)
+                send(RETURNED, None)
             else:
                 send(STARTED)
                 try:
