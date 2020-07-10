@@ -261,7 +261,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
-
         self.assertIn(
             "submit_call method is deprecated", str(warning_info.warning),
         )
@@ -285,7 +284,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
-
         self.assertIn(
             "submit_iteration method is deprecated", str(warning_info.warning),
         )
@@ -305,7 +303,6 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
-
         self.assertIn(
             "submit_progress method is deprecated", str(warning_info.warning),
         )
