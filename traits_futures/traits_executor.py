@@ -2,11 +2,10 @@
 # All rights reserved.
 
 """
-Main-thread executor for submission of background tasks.
+Executor to submit background tasks.
 """
 
 import concurrent.futures
-import threading
 import warnings
 
 from traits.api import (
@@ -20,9 +19,12 @@ from traits.api import (
     Property,
 )
 
+from traits_futures.background_call import submit_call
+from traits_futures.background_iteration import submit_iteration
+from traits_futures.background_progress import submit_progress
 from traits_futures.base_future import job_wrapper
 from traits_futures.i_future import IFuture
-from traits_futures.toolkit_support import toolkit
+from traits_futures.i_parallel_context import IParallelContext
 
 
 # Executor states.
@@ -64,6 +66,12 @@ class TraitsExecutor(HasStrictTraits):
         is mutually exclusive with ``worker_pool``. The default is ``None``,
         which delegates the choice of number of workers to Python's
         ``concurrent.futures`` module.
+    context : IParallelContext, optional
+        Parallelism context, providing appropriate concurrent primitives
+        and worker pools for a given choice of parallelism (for example
+        multithreading or multiprocessing). If not given, assumes
+        multithreading. Note that if both ``context`` and ``worker_pool``
+        are given, they must be compatible.
     """
 
     #: Current state of this executor.
@@ -78,7 +86,13 @@ class TraitsExecutor(HasStrictTraits):
     stopped = Property(Bool())
 
     def __init__(
-        self, thread_pool=None, *, worker_pool=None, max_workers=None, **traits
+        self,
+        thread_pool=None,
+        *,
+        worker_pool=None,
+        max_workers=None,
+        context=None,
+        **traits,
     ):
         super(TraitsExecutor, self).__init__(**traits)
 
@@ -93,11 +107,17 @@ class TraitsExecutor(HasStrictTraits):
             )
             worker_pool = thread_pool
 
+        if context is not None:
+            self._context = context
+
         own_worker_pool = worker_pool is None
         if own_worker_pool:
-            worker_pool = concurrent.futures.ThreadPoolExecutor(
-                max_workers=max_workers
-            )
+            if max_workers is None:
+                worker_pool = self._context.worker_pool()
+            else:
+                worker_pool = self._context.worker_pool(
+                    max_workers=max_workers
+                )
         elif max_workers is not None:
             raise TypeError(
                 "at most one of 'worker_pool' and 'max_workers' "
@@ -110,6 +130,9 @@ class TraitsExecutor(HasStrictTraits):
     def submit_call(self, callable, *args, **kwargs):
         """
         Convenience function to submit a background call.
+
+        .. deprecated:: 0.2
+           Use the :func:`submit_call` function instead.
 
         Parameters
         ----------
@@ -125,8 +148,6 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture
             Object representing the state of the background call.
         """
-        from traits_futures.background_call import submit_call
-
         warnings.warn(
             "The submit_call method is deprecated. Use the submit_call "
             "convenience function instead.",
@@ -138,6 +159,9 @@ class TraitsExecutor(HasStrictTraits):
     def submit_iteration(self, callable, *args, **kwargs):
         """
         Convenience function to submit a background iteration.
+
+        .. deprecated:: 0.2
+           Use the :func:`submit_iteration` function instead.
 
         Parameters
         ----------
@@ -153,8 +177,6 @@ class TraitsExecutor(HasStrictTraits):
         future : IterationFuture
             Object representing the state of the background iteration.
         """
-        from traits_futures.background_iteration import submit_iteration
-
         warnings.warn(
             "The submit_iteration method is deprecated. Use the "
             "submit_iteration convenience function instead.",
@@ -166,6 +188,9 @@ class TraitsExecutor(HasStrictTraits):
     def submit_progress(self, callable, *args, **kwargs):
         """
         Convenience function to submit a background progress call.
+
+        .. deprecated:: 0.2
+           Use the :func:`submit_progress` function instead.
 
         Parameters
         ----------
@@ -184,8 +209,6 @@ class TraitsExecutor(HasStrictTraits):
         future : ProgressFuture
             Object representing the state of the background task.
         """
-        from traits_futures.background_progress import submit_progress
-
         warnings.warn(
             "The submit_progress method is deprecated. Use the "
             "submit_progress convenience function instead.",
@@ -210,7 +233,7 @@ class TraitsExecutor(HasStrictTraits):
         if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
-        cancel_event = threading.Event()
+        cancel_event = self._context.event()
 
         sender, receiver = self._message_router.pipe()
         try:
@@ -245,6 +268,12 @@ class TraitsExecutor(HasStrictTraits):
             self._stop()
 
     # Private traits ##########################################################
+
+    #: Parallelization context
+    _context = Instance(IParallelContext)
+
+    #: True if we own this context, else False.
+    _own_context = Bool(False)
 
     #: concurrent.futures.Executor instance providing the worker pool.
     _worker_pool = Instance(concurrent.futures.Executor)
@@ -282,10 +311,17 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        MessageRouter = toolkit("message_router:MessageRouter")
-        router = MessageRouter()
+        router = self._context.message_router()
         router.connect()
         return router
+
+    def __context_default(self):
+        # By default, we use multithreading
+        from traits_futures.multithreading_context import MultithreadingContext
+
+        context = MultithreadingContext()
+        self._own_context = True
+        return context
 
     @on_trait_change("_message_router:receiver_done")
     def _remove_future(self, receiver):
@@ -306,4 +342,8 @@ class TraitsExecutor(HasStrictTraits):
         if self._own_worker_pool:
             self._worker_pool.shutdown()
         self._worker_pool = None
+
+        if self._own_context:
+            self._context.close()
+        self._context = None
         self.state = STOPPED

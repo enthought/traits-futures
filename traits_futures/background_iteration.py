@@ -47,9 +47,8 @@ class IterationBackgroundTask:
             try:
                 result = next(iterable)
             except StopIteration as e:
-                # The StopIteration exception potentially carries a value.
-                # Return it.
-                # XXX Needs tests!
+                # If the iteration returned a value, the StopIteration
+                # exception carries that value. Return it.
                 return e.value
             else:
                 send(GENERATED, result)

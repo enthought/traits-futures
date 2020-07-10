@@ -167,7 +167,7 @@ class BackgroundProgress(HasStrictTraits):
         if "progress" in self.kwargs:
             raise TypeError("progress may not be passed as a named argument")
 
-        return ProgressFuture(_cancel=cancel, _receiver=receiver)
+        return ProgressFuture(_cancel=cancel, _receiver=receiver,)
 
 
 def submit_progress(executor, callable, *args, **kwargs):

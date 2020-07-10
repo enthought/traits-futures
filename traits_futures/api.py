@@ -27,6 +27,8 @@ from traits_futures.future_states import (
 )
 from traits_futures.i_future import IFuture
 from traits_futures.i_job_specification import IJobSpecification
+from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.traits_executor import (
     ExecutorState,
     RUNNING,
@@ -63,4 +65,7 @@ __all__ = [
     "IJobSpecification",
     # IFuture: interface for futures
     "IFuture",
+    # Contexts
+    "IParallelContext",
+    "MultithreadingContext",
 ]

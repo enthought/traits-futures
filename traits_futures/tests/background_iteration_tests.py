@@ -101,6 +101,15 @@ def resource_acquiring_iteration(acquired, released, barrier):
         released.set()
 
 
+def iteration_with_result():
+    """
+    Iteration that also returns a result.
+    """
+    yield 1
+    yield 2
+    return 45
+
+
 class IterationFutureListener(HasStrictTraits):
     #: The object we're listening to.
     future = Instance(IterationFuture)
@@ -132,6 +141,7 @@ class BackgroundIterationTests:
 
         self.wait_until_done(future)
 
+        self.assertResult(future, None)
         self.assertNoException(future)
         self.assertEqual(listener.results, [1.0, 0.5, 1 / 3.0])
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
@@ -167,6 +177,7 @@ class BackgroundIterationTests:
         self.wait_until_done(future)
 
         self.assertException(future, ZeroDivisionError)
+        self.assertNoResult(future)
         self.assertEqual(listener.results, [-0.5, -1.0])
         self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
 
@@ -387,6 +398,17 @@ class BackgroundIterationTests:
             # Let the background task complete, even if the test fails.
             test_ready.set()
 
+    def test_iteration_with_result(self):
+        future = submit_iteration(self.executor, iteration_with_result)
+        listener = IterationFutureListener(future=future)
+
+        self.wait_until_done(future)
+
+        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.results, [1, 2])
+        self.assertResult(future, 45)
+        self.assertNoException(future)
+
     # Helper functions
 
     def halt_executor(self):
@@ -405,6 +427,13 @@ class BackgroundIterationTests:
         self.run_until(future, "state", lambda future: future.state == state)
 
     # Assertions
+
+    def assertResult(self, future, expected_result):
+        self.assertEqual(future.result, expected_result)
+
+    def assertNoResult(self, future):
+        with self.assertRaises(AttributeError):
+            future.result
 
     def assertException(self, future, exc_type):
         self.assertEqual(future.exception[0], str(exc_type))
