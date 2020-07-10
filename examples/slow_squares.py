@@ -22,15 +22,11 @@ from traits_futures.api import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FAILED,
     submit_call,
     TraitsExecutor,
+    WAITING,
 )
-
-#: String constant used to represent jobs that failed.
-FAILED = "failed"
-
-#: String constant used to represent jobs that succeeded.
-SUCCEEDED = "succeeded"
 
 
 def slow_square(n, timeout=5.0):
@@ -62,29 +58,24 @@ class JobTabularAdapter(TabularAdapter):
         CANCELLING: (255, 128, 0),
         EXECUTING: (128, 128, 255),
         FAILED: (255, 192, 255),
-        SUCCEEDED: (128, 255, 128),
+        COMPLETED: (128, 255, 128),
+        WAITING: (255, 255, 255),
     }
 
     #: Text to be displayed for the state column.
     state_text = Property
 
     def _get_bg_color(self):
-        job = self.item
-        state = job.state
-        # Distinguish completed state into failed and succeeded.
-        if state == COMPLETED:
-            state = SUCCEEDED if job.ok else FAILED
-        return self.colors[state]
+        return self.colors[self.item.state]
 
     def _get_state_text(self):
         job = self.item
         state = job.state
         state_text = state.title()
         if state == COMPLETED:
-            if job.ok:
-                state_text = "Succeeded: result={}".format(job.result)
-            else:
-                state_text = "Failed: {}".format(job.exception[1])
+            state_text += ": result={}".format(job.result)
+        elif state == FAILED:
+            state_text += ": {}".format(job.exception[1])
         return state_text
 
 

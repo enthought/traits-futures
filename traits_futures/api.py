@@ -44,9 +44,9 @@ __all__ = [
     "FutureState",
     "CANCELLED",
     "CANCELLING",
-    "COMPLETED",
     "EXECUTING",
     "FAILED",
+    "COMPLETED",
     "WAITING",
     # Executor
     "TraitsExecutor",

@@ -11,8 +11,9 @@ from traits_futures.api import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
-    WAITING,
+    FAILED,
 )
+from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
 
 class FutureListener(HasStrictTraits):
@@ -57,24 +58,47 @@ class CommonFutureTests:
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
+        future.state = EXECUTING
         future.state = COMPLETED
         record_states()
 
         # Check consistency.
         for state, cancellable, done in states:
-            self.assertEqual(cancellable, state in (WAITING, EXECUTING))
-            self.assertEqual(done, state in (CANCELLED, COMPLETED))
+            self.assertEqual(cancellable, state in CANCELLABLE_STATES)
+            self.assertEqual(done, state in DONE_STATES)
 
-    def test_cancellable_and_done(self):
+    def test_cancellable_and_done_success(self):
         future = self.future_class()
         listener = FutureListener(future=future)
 
+        future.state = EXECUTING
         future.state = COMPLETED
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
 
+    def test_cancellable_and_done_failure(self):
+        future = self.future_class()
+        listener = FutureListener(future=future)
+
+        future.state = EXECUTING
+        future.state = FAILED
+
+        self.assertEqual(listener.cancellable_changes, [(True, False)])
+        self.assertEqual(listener.done_changes, [(False, True)])
+
     def test_cancellable_and_done_cancellation(self):
+        future = self.future_class()
+        listener = FutureListener(future=future)
+
+        future.state = EXECUTING
+        future.state = CANCELLING
+        future.state = CANCELLED
+
+        self.assertEqual(listener.cancellable_changes, [(True, False)])
+        self.assertEqual(listener.done_changes, [(False, True)])
+
+    def test_cancellable_and_done_early_cancellation(self):
         future = self.future_class()
         listener = FutureListener(future=future)
 

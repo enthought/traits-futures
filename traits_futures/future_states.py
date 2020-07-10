@@ -6,7 +6,7 @@ Future states, used by the various future classes.
 """
 from traits.api import Enum
 
-#: Task is waiting to be executed.
+#: Task queued, waiting to be executed.
 WAITING = "waiting"
 
 #: Task is executing.
@@ -23,6 +23,13 @@ FAILED = "failed"
 
 #: Task cancelled.
 CANCELLED = "cancelled"
+
+#: States in which we're permitted to cancel.
+CANCELLABLE_STATES = EXECUTING, WAITING
+
+#: Final states. If the future is in one of these states,
+#: no more messages will be received from the background job.
+DONE_STATES = CANCELLED, COMPLETED, FAILED
 
 #: Trait type representing a future state.
 FutureState = Enum(
