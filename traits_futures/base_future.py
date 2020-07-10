@@ -16,6 +16,7 @@ from traits.api import (
     Property,
 )
 
+from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
@@ -33,6 +34,10 @@ logger = logging.getLogger(__name__)
 
 #: Message sent before we start to process the target callable.
 STARTED = "started"
+
+#: Message sent when an exception was raised by the background
+#: callable. The argument is a tuple containing exception information.
+RAISED = "raised"
 
 #: Message sent when the target callable has completed.
 DONE = "done"
@@ -146,8 +151,14 @@ def job_wrapper(background_job, sender, cancelled):
         with sender:
             if not cancelled():
                 send(STARTED)
-                background_job(send, cancelled)
+                try:
+                    background_job(send, cancelled)
+                except BaseException as e:
+                    send(RAISED, marshal_exception(e))
             send(DONE)
     except BaseException:
+        # We'll only ever get here in the case of a coding error. But in
+        # case that happens, it's useful to have the exception logged to
+        # help the developer.
         logger.exception("Unexpected exception in background job.")
         raise

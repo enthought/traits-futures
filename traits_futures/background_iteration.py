@@ -4,7 +4,6 @@
 """
 Background task that sends results from an iteration.
 """
-import types
 
 from traits.api import (
     Any,
@@ -18,7 +17,6 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     COMPLETED,
@@ -36,11 +34,6 @@ from traits_futures.i_job_specification import IJobSpecification
 #   [GENERATED*, RAISED]
 #   [GENERATED*]
 
-#: Iteration failed with an exception, or there was
-#: an exception on creation of the iterator. Argument gives
-#: exception information.
-RAISED = "raised"
-
 #: Message sent whenever the iteration yields a result.
 #: Argument is the result generated.
 GENERATED = "generated"
@@ -57,30 +50,17 @@ class IterationBackgroundTask:
         self.kwargs = kwargs
 
     def __call__(self, send, cancelled):
-        try:
-            iterable = iter(self.callable(*self.args, **self.kwargs))
-        except BaseException as e:
-            send(RAISED, marshal_exception(e))
-            return
+        iterable = iter(self.callable(*self.args, **self.kwargs))
 
         while not cancelled():
             try:
                 result = next(iterable)
             except StopIteration:
                 break
-            except BaseException as e:
-                send(RAISED, marshal_exception(e))
-                break
             else:
                 send(GENERATED, result)
                 # Don't keep a reference around until the next iteration.
                 del result
-
-        # If the iterable is a generator, close it. This ensures that any
-        # cleanup in the generator function (e.g., as a result of leaving a
-        # with block, or executing a finally clause) occurs promptly.
-        if isinstance(iterable, types.GeneratorType):
-            iterable.close()
 
 
 # IterationFuture states. These represent the futures' current state of

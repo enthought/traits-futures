@@ -24,7 +24,6 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     COMPLETED,
@@ -35,9 +34,6 @@ from traits_futures.i_job_specification import IJobSpecification
 
 # Message types for messages from ProgressBackgroundTask
 # to ProgressFuture.
-
-#: Task failed with an exception. Argument gives exception information.
-RAISED = "raised"
 
 #: Task succeeded and returned a result. Argument is the result.
 RETURNED = "returned"
@@ -102,8 +98,6 @@ class ProgressBackgroundTask:
             result = self.callable(*self.args, **self.kwargs)
         except _ProgressCancelled:
             pass
-        except BaseException as e:
-            send(RAISED, marshal_exception(e))
         else:
             send(RETURNED, result)
 

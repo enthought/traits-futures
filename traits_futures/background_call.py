@@ -15,7 +15,6 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLING,
     COMPLETED,
@@ -24,9 +23,6 @@ from traits_futures.i_job_specification import IJobSpecification
 
 # The background task sends either a "RAISED" message or a "RETURNED" message
 # on completion.
-
-#: Call failed with an exception. Argument gives exception information.
-RAISED = "raised"
 
 #: Call succeeded and returned a result. Argument is the result.
 RETURNED = "returned"
@@ -44,12 +40,8 @@ class CallBackgroundTask:
         self.kwargs = kwargs
 
     def __call__(self, send, cancelled):
-        try:
-            result = self.callable(*self.args, **self.kwargs)
-        except BaseException as e:
-            send(RAISED, marshal_exception(e))
-        else:
-            send(RETURNED, result)
+        result = self.callable(*self.args, **self.kwargs)
+        send(RETURNED, result)
 
 
 class CallFuture(BaseFuture):
