@@ -45,6 +45,9 @@ class IParallelContext(abc.ABC):
         -------
         event : event-like
             An event that can be shared safely with workers.
+            The event should have the same API as ``threading.Event``
+            and ``multiprocessing.Event``, providing at a minimum
+            the ``set`` and ``is_set`` methods from that API.
         """
 
     @abc.abstractmethod
@@ -55,7 +58,8 @@ class IParallelContext(abc.ABC):
         Returns
         -------
         queue : queue-like
-            A queue that can be shared safely with workers.
+            A queue that can be shared safely with workers. This package
+            relies only on the ``put`` and ``get`` methods of the queue.
         """
 
     @abc.abstractmethod
