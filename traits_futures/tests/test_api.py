@@ -13,6 +13,7 @@ class TestApi(unittest.TestCase):
             COMPLETED,
             EXECUTING,
             ExecutorState,
+            FAILED,
             FutureState,
             IJobSpecification,
             IterationFuture,

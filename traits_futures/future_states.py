@@ -15,14 +15,16 @@ EXECUTING = "executing"
 #: Cancellation has been requested, awaiting response.
 CANCELLING = "cancelling"
 
+#: Task completed without error.
+COMPLETED = "completed"
+
+#: Task failed, raising an exception.
+FAILED = "failed"
+
 #: Task cancelled.
 CANCELLED = "cancelled"
 
-#: Execution completed normally.
-COMPLETED = "completed"
-
 #: Trait type representing a future state.
 FutureState = Enum(
-    WAITING,  # default value
-    [WAITING, EXECUTING, COMPLETED, CANCELLING, CANCELLED],
+    WAITING, EXECUTING, CANCELLING, COMPLETED, FAILED, CANCELLED
 )

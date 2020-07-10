@@ -107,7 +107,8 @@ class ProgressFuture(BaseFuture):
 
     def _process_progress(self, progress_info):
         assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
+        # Ignore progress messages that arrive after a cancellation request.
+        if self.state != CANCELLING:
             self.progress = progress_info
 
 

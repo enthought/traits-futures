@@ -13,6 +13,7 @@ from traits_futures.api import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FAILED,
     FutureState,
     IterationFuture,
     submit_iteration,
@@ -159,7 +160,7 @@ class BackgroundIterationTests:
 
         self.assertException(future, TypeError)
         self.assertEqual(listener.results, [])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
         self.assertFalse(future.ok)
 
     def test_failing_iteration(self):
@@ -171,7 +172,7 @@ class BackgroundIterationTests:
 
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(listener.results, [-0.5, -1.0])
-        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
         self.assertFalse(future.ok)
 
     def test_cancel_before_execution(self):

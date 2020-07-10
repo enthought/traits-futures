@@ -23,14 +23,7 @@ from traits_futures.future_states import (
 from traits_futures.i_job_specification import IJobSpecification
 
 
-# Message types for messages from IterationBackgroundTask to IterationFuture.
-# The background iteration will emit exactly one of the following
-# sequences of message types, where GENERATED* indicates zero-or-more
-# GENERATED messages.
-#
-#   [RAISED]
-#   [GENERATED*, RAISED]
-#   [GENERATED*]
+# Additional message types for background iterations.
 
 #: Message sent whenever the iteration yields a result.
 #: Argument is the result generated.
@@ -53,24 +46,15 @@ class IterationBackgroundTask:
         while not cancelled():
             try:
                 result = next(iterable)
-            except StopIteration:
-                return
+            except StopIteration as e:
+                # The StopIteration exception potentially carries a value.
+                # Return it.
+                # XXX Needs tests!
+                return e.value
             else:
                 send(GENERATED, result)
                 # Don't keep a reference around until the next iteration.
                 del result
-
-
-# IterationFuture states. These represent the futures' current state of
-# knowledge of the background iteration. An iteration starts out in EXECUTING
-# state and ends with one of COMPLETED or CANCELLED. The possible
-# progressions of states are:
-#
-# EXECUTING -> CANCELLING -> CANCELLED
-# EXECUTING -> COMPLETED
-#
-# The ``result`` trait will only be fired when the state is EXECUTING;
-# no results events will be fired after cancelling.
 
 
 class IterationFuture(BaseFuture):

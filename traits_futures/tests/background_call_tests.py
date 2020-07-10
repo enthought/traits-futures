@@ -9,6 +9,7 @@ from traits_futures.api import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FAILED,
     FutureState,
     submit_call,
     WAITING,
@@ -84,7 +85,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, FAILED],
         )
         self.assertFalse(future.ok)
 
@@ -202,7 +203,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, FAILED],
         )
         self.assertFalse(future.ok)
 

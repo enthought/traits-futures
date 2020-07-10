@@ -25,6 +25,7 @@ from traits_futures.future_states import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FAILED,
     FutureState,
     WAITING,
 )
@@ -53,7 +54,7 @@ CANCELLABLE_STATES = WAITING, EXECUTING
 
 #: Final states. If the future is in one of these states,
 #: no more messages will be received from the background job.
-DONE_STATES = CANCELLED, COMPLETED
+DONE_STATES = CANCELLED, COMPLETED, FAILED
 
 
 class BaseFuture(IFuture):
@@ -191,14 +192,12 @@ class BaseFuture(IFuture):
     def _process_done(self, none):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
-            self.state = COMPLETED
+            if self._ok:
+                self.state = COMPLETED
+            else:
+                self.state = FAILED
         else:
             self.state = CANCELLED
-
-    def _process_started(self, none):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
-            self.state = EXECUTING
 
     def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
@@ -211,6 +210,11 @@ class BaseFuture(IFuture):
         if self.state == EXECUTING:
             self._result = result
             self._ok = True
+
+    def _process_started(self, none):
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
+            self.state = EXECUTING
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
@@ -235,7 +239,7 @@ class BaseFuture(IFuture):
         """
         Check that the job has completed, and raise AttributeError if not.
         """
-        if self.state != COMPLETED:
+        if self.state not in (COMPLETED, FAILED):
             raise AttributeError(
                 "Job has not yet completed, or was cancelled. "
                 "Job status is {}".format(self.state)

@@ -8,6 +8,7 @@ from traits_futures.api import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    FAILED,
     FutureState,
     ProgressFuture,
     submit_progress,
@@ -159,7 +160,7 @@ class BackgroundProgressTests:
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
-        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
         self.assertFalse(future.ok)
 
         expected_progress = [(5, 10)]
