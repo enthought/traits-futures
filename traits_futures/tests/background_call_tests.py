@@ -11,6 +11,7 @@ from traits_futures.api import (
     EXECUTING,
     FutureState,
     submit_call,
+    WAITING,
 )
 
 
@@ -70,7 +71,7 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, COMPLETED],
         )
         self.assertTrue(future.ok)
 
@@ -83,12 +84,12 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, COMPLETED],
         )
         self.assertFalse(future.ok)
 
     def test_cancellation_vs_started_race_condition(self):
-        # Simulate situation where we start executing post-cancellation.
+        # Simulate situation where a STARTED message arrives post-cancellation.
         event = self.Event()
 
         future = submit_call(self.executor, event.set)
@@ -105,7 +106,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_execution(self):
@@ -122,7 +123,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_success(self):
@@ -132,9 +133,10 @@ class BackgroundCallTests:
         future = submit_call(self.executor, ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)
 
-        # Wait until execution starts; the test_ready event ensures we
+        # Wait for executing state; the test_ready event ensures we
         # get no further.
         self.assertTrue(signal.wait(timeout=TIMEOUT))
+        self.wait_for_state(future, EXECUTING)
 
         self.assertTrue(future.cancellable)
         future.cancel()
@@ -144,7 +146,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_failure(self):
@@ -154,9 +156,10 @@ class BackgroundCallTests:
         future = submit_call(self.executor, ping_pong_fail, signal, test_ready)
         listener = CallFutureListener(future=future)
 
-        # Wait until execution starts; the test_ready event ensures we
+        # Wait for executing state; the test_ready event ensures we
         # get no further.
         self.assertTrue(signal.wait(timeout=TIMEOUT))
+        self.wait_for_state(future, EXECUTING)
 
         self.assertTrue(future.cancellable)
         future.cancel()
@@ -166,7 +169,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cannot_cancel_after_success(self):
@@ -182,7 +185,7 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, COMPLETED],
         )
         self.assertTrue(future.ok)
 
@@ -199,7 +202,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [EXECUTING, COMPLETED],
+            listener.states, [WAITING, EXECUTING, COMPLETED],
         )
         self.assertFalse(future.ok)
 
@@ -218,7 +221,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_double_cancel_variant(self):
@@ -245,7 +248,7 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [EXECUTING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, CANCELLING, CANCELLED],
         )
 
     # Helper functions

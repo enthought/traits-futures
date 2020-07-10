@@ -11,6 +11,7 @@ from traits_futures.api import (
     CANCELLING,
     COMPLETED,
     EXECUTING,
+    WAITING,
 )
 
 
@@ -61,7 +62,7 @@ class CommonFutureTests:
 
         # Check consistency.
         for state, cancellable, done in states:
-            self.assertEqual(cancellable, state == EXECUTING)
+            self.assertEqual(cancellable, state in (WAITING, EXECUTING))
             self.assertEqual(done, state in (CANCELLED, COMPLETED))
 
     def test_cancellable_and_done(self):

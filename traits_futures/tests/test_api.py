@@ -24,6 +24,7 @@ class TestApi(unittest.TestCase):
             submit_iteration,
             submit_progress,
             TraitsExecutor,
+            WAITING,
         )
 
     def test___all__(self):

@@ -6,8 +6,11 @@ Future states, used by the various future classes.
 """
 from traits.api import Enum
 
-#: Task is executing or waiting to be executed.
-EXECUTING = "waiting"
+#: Task is waiting to be executed.
+WAITING = "waiting"
+
+#: Task is executing.
+EXECUTING = "executing"
 
 #: Cancellation has been requested, awaiting response.
 CANCELLING = "cancelling"
@@ -16,7 +19,10 @@ CANCELLING = "cancelling"
 CANCELLED = "cancelled"
 
 #: Execution completed normally.
-COMPLETED = "done"
+COMPLETED = "completed"
 
 #: Trait type representing a future state.
-FutureState = Enum(EXECUTING, COMPLETED, CANCELLING, CANCELLED)
+FutureState = Enum(
+    WAITING,  # default value
+    [WAITING, EXECUTING, COMPLETED, CANCELLING, CANCELLED],
+)

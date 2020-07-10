@@ -22,6 +22,7 @@ from traits_futures.future_states import (
     COMPLETED,
     EXECUTING,
     FutureState,
+    WAITING,
 )
 from traits_futures.i_future import IFuture
 from traits_futures.i_job_specification import IJobSpecification
@@ -44,6 +45,7 @@ __all__ = [
     "CANCELLING",
     "COMPLETED",
     "EXECUTING",
+    "WAITING",
     # Executor
     "TraitsExecutor",
     # Executor states

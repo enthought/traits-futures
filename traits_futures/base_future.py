@@ -22,6 +22,7 @@ from traits_futures.future_states import (
     COMPLETED,
     EXECUTING,
     FutureState,
+    WAITING,
 )
 from traits_futures.i_future import IFuture
 
@@ -30,8 +31,14 @@ logger = logging.getLogger(__name__)
 
 # Messages sent by the wrapper, and interpreted by the BaseFuture
 
+#: Message sent before we start to process the target callable.
+STARTED = "started"
+
 #: Message sent when the target callable has completed.
 DONE = "done"
+
+#: States in which the job can be cancelled.
+CANCELLABLE_STATES = WAITING, EXECUTING
 
 #: Final states. If the future is in one of these states,
 #: no more messages will be received from the background job.
@@ -94,15 +101,20 @@ class BaseFuture(IFuture):
         else:
             self.state = CANCELLED
 
+    def _process_started(self, none):
+        assert self.state in (WAITING, CANCELLING)
+        if self.state == WAITING:
+            self.state = EXECUTING
+
     def _get_cancellable(self):
-        return self.state == EXECUTING
+        return self.state in CANCELLABLE_STATES
 
     def _get_done(self):
         return self.state in DONE_STATES
 
     def _state_changed(self, old_state, new_state):
-        old_cancellable = old_state == EXECUTING
-        new_cancellable = new_state == EXECUTING
+        old_cancellable = old_state in CANCELLABLE_STATES
+        new_cancellable = new_state in CANCELLABLE_STATES
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable
@@ -133,6 +145,7 @@ def job_wrapper(background_job, sender, cancelled):
         send = sender.send_message
         with sender:
             if not cancelled():
+                send(STARTED)
                 background_job(send, cancelled)
             send(DONE)
     except BaseException:
