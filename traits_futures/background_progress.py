@@ -14,7 +14,6 @@ be cancelled.
 
 from traits.api import (
     Any,
-    Bool,
     Callable,
     Dict,
     Event,
@@ -26,7 +25,6 @@ from traits.api import (
 from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import (
     CANCELLING,
-    COMPLETED,
     EXECUTING,
 )
 from traits_futures.i_job_specification import IJobSpecification
@@ -34,9 +32,6 @@ from traits_futures.i_job_specification import IJobSpecification
 
 # Message types for messages from ProgressBackgroundTask
 # to ProgressFuture.
-
-#: Task succeeded and returned a result. Argument is the result.
-RETURNED = "returned"
 
 #: Task sends progress. Argument is a single object giving progress
 #: information. This module does not interpret the contents of the argument.
@@ -95,11 +90,9 @@ class ProgressBackgroundTask:
         self.kwargs["progress"] = progress.report
 
         try:
-            result = self.callable(*self.args, **self.kwargs)
+            return self.callable(*self.args, **self.kwargs)
         except _ProgressCancelled:
-            pass
-        else:
-            send(RETURNED, result)
+            return None
 
 
 class ProgressFuture(BaseFuture):
@@ -110,61 +103,7 @@ class ProgressFuture(BaseFuture):
     #: Event fired whenever a progress message arrives from the background.
     progress = Event(Any())
 
-    @property
-    def ok(self):
-        """
-        Boolean indicating whether the background job completed successfully.
-
-        Not available for cancelled or pending jobs.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled."
-                "Job status is {}".format(self.state)
-            )
-
-        return self._ok
-
-    @property
-    def result(self):
-        """
-        Result of the background task. Raises an ``AttributeError`` on access
-        if no result is available (because the background task failed, was
-        cancelled, or has not yet completed).
-
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
-        if not self._ok:
-            raise AttributeError(
-                "No result available; job raised an exception. "
-                "Exception details are in the 'exception' attribute."
-            )
-
-        return self._result
-
-    # Private traits ##########################################################
-
-    #: Boolean indicating whether we the job completed successfully.
-    _ok = Bool()
-
-    #: Result from the background task.
-    _result = Any()
-
     # Private methods #########################################################
-
-    def _process_returned(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._result = result
-            self._ok = True
 
     def _process_progress(self, progress_info):
         assert self.state in (EXECUTING, CANCELLING)

@@ -6,7 +6,6 @@ Background task consisting of a simple callable.
 """
 from traits.api import (
     Any,
-    Bool,
     Callable,
     Dict,
     HasStrictTraits,
@@ -15,14 +14,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import CANCELLING
 from traits_futures.i_job_specification import IJobSpecification
-
-# The background task sends either a "RAISED" message or a "RETURNED" message
-# on completion.
-
-#: Call succeeded and returned a result. Argument is the result.
-RETURNED = "returned"
 
 
 class CallBackgroundTask:
@@ -37,77 +29,13 @@ class CallBackgroundTask:
         self.kwargs = kwargs
 
     def __call__(self, send, cancelled):
-        result = self.callable(*self.args, **self.kwargs)
-        send(RETURNED, result)
+        return self.callable(*self.args, **self.kwargs)
 
 
 class CallFuture(BaseFuture):
     """
     Object representing the front-end handle to a background call.
     """
-
-    @property
-    def ok(self):
-        """
-        Boolean indicating whether the background job completed successfully.
-        This attribute is only available for a job in COMPLETED state.
-
-        Returns
-        -------
-        ok : bool
-            True if the job completed successfully, in which case the result
-            is available from the .result attribute. False if the job
-            raised an exception.
-
-        Raises
-        ------
-        AttributeError
-            If the job is still executing, or was cancelled.
-        """
-        self._raise_unless_completed()
-        return self._ok
-
-    @property
-    def result(self):
-        """
-        Result of the background call. This is only available if:
-
-        - the state of the future is COMPLETED
-        - the call completed normally, without raising
-
-        Returns
-        -------
-        result : object
-            The result obtained from the background call.
-
-        Raises
-        ------
-        AttributeError
-            If the job is still executing, or was cancelled, or raised an
-            exception instead of returning a result.
-        """
-        self._raise_unless_completed()
-        if not self._ok:
-            raise AttributeError(
-                "No result available; job raised an exception. "
-                "Exception details are in the 'exception' attribute."
-            )
-        return self._result
-
-    # Message processing ######################################################
-
-    def _process_returned(self, result):
-        if self.state != CANCELLING:
-            self._result = result
-            self._ok = True
-
-    # Private traits ##########################################################
-
-    #: Boolean indicating whether the job completed successfully.
-    _ok = Bool()
-
-    #: Result from the background task.
-    _result = Any()
 
 
 @IJobSpecification.register

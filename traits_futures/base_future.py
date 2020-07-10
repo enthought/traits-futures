@@ -8,6 +8,7 @@ Base class providing common pieces of the Future machinery.
 import logging
 
 from traits.api import (
+    Any,
     Bool,
     Callable,
     HasTraits,
@@ -40,6 +41,9 @@ STARTED = "started"
 #: Message sent when an exception was raised by the background
 #: callable. The argument is a tuple containing exception information.
 RAISED = "raised"
+
+#: Call succeeded and returned a result. Argument is the result.
+RETURNED = "returned"
 
 #: Message sent when the target callable has completed.
 DONE = "done"
@@ -85,6 +89,54 @@ class BaseFuture(IFuture):
         self.state = CANCELLING
 
     @property
+    def ok(self):
+        """
+        Boolean indicating whether the background job completed successfully.
+        This attribute is only available for a job in COMPLETED state.
+
+        Returns
+        -------
+        ok : bool
+            True if the job completed successfully, in which case the result
+            is available from the .result attribute. False if the job
+            raised an exception.
+
+        Raises
+        ------
+        AttributeError
+            If the job is still executing, or was cancelled.
+        """
+        self._raise_unless_completed()
+        return self._ok
+
+    @property
+    def result(self):
+        """
+        Result of the background call. This is only available if:
+
+        - the state of the future is COMPLETED
+        - the call completed normally, without raising
+
+        Returns
+        -------
+        result : object
+            The result obtained from the background call.
+
+        Raises
+        ------
+        AttributeError
+            If the job is still executing, or was cancelled, or raised an
+            exception instead of returning a result.
+        """
+        self._raise_unless_completed()
+        if not self._ok:
+            raise AttributeError(
+                "No result available; job raised an exception. "
+                "Exception details are in the 'exception' attribute."
+            )
+        return self._result
+
+    @property
     def exception(self):
         """
         Information about any exception raised by the background call. Raises
@@ -119,6 +171,12 @@ class BaseFuture(IFuture):
     #: Object that receives messages from the background task.
     _receiver = Instance(HasTraits)
 
+    #: Boolean indicating whether the job completed successfully.
+    _ok = Bool(True)
+
+    #: Result from the background task.
+    _result = Any()
+
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
 
@@ -147,6 +205,12 @@ class BaseFuture(IFuture):
         if self.state == EXECUTING:
             self._exception = exception_info
             self._ok = False
+
+    def _process_returned(self, result):
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
+            self._result = result
+            self._ok = True
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
@@ -199,9 +263,11 @@ def job_wrapper(background_job, sender, cancelled):
             if not cancelled():
                 send(STARTED)
                 try:
-                    background_job(send, cancelled)
+                    result = background_job(send, cancelled)
                 except BaseException as e:
                     send(RAISED, marshal_exception(e))
+                else:
+                    send(RETURNED, result)
             send(DONE)
     except BaseException:
         # We'll only ever get here in the case of a coding error. But in

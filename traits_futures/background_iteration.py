@@ -7,7 +7,6 @@ Background task that sends results from an iteration.
 
 from traits.api import (
     Any,
-    Bool,
     Callable,
     Dict,
     Event,
@@ -19,7 +18,6 @@ from traits.api import (
 from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import (
     CANCELLING,
-    COMPLETED,
     EXECUTING,
 )
 from traits_futures.i_job_specification import IJobSpecification
@@ -56,7 +54,7 @@ class IterationBackgroundTask:
             try:
                 result = next(iterable)
             except StopIteration:
-                break
+                return
             else:
                 send(GENERATED, result)
                 # Don't keep a reference around until the next iteration.
@@ -84,26 +82,6 @@ class IterationFuture(BaseFuture):
     #: Event fired whenever a result arrives from the background
     #: iteration.
     result_event = Event(Any())
-
-    @property
-    def ok(self):
-        """
-        Boolean indicating whether the background job completed successfully.
-
-        Not available for cancelled or pending jobs.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
-        return self._ok
-
-    # Private traits ##########################################################
-
-    #: Boolean indicating whether the job completed successfully.
-    _ok = Bool(True)
 
     # Private methods #########################################################
 
