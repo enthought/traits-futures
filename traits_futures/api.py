@@ -64,8 +64,6 @@ __all__ = [
     "submit_progress",
     # IJobSpecification: interface for creating new job types
     "IJobSpecification",
-    # IFuture: interface for futures
-    "IFuture",
     # Contexts
     "IParallelContext",
     "MultithreadingContext",
