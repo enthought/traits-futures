@@ -266,3 +266,27 @@ class BackgroundCall(HasStrictTraits):
             cancel_event=cancel_event,
         )
         return future, runner
+
+
+def submit_call(executor, callable, *args, **kwargs):
+    """
+    Convenience function to submit a background call to an executor.
+
+    Parameters
+    ----------
+    executor : TraitsExecutor
+        Executor to submit the call to.
+    callable : an arbitrary callable
+        Function to execute in the background.
+    *args
+        Positional arguments to pass to that function.
+    **kwargs
+        Named arguments to pass to that function.
+
+    Returns
+    -------
+    future : CallFuture
+        Object representing the state of the background call.
+    """
+    task = BackgroundCall(callable=callable, args=args, kwargs=kwargs)
+    return executor.submit(task)
