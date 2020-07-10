@@ -40,7 +40,7 @@ from ``traits_futures.api``:
 
     submit_iteration(my_executor, range, 0, 5)
 
-  It returns a |IterationFuture| object.
+  It returns an |IterationFuture| object.
 
 - The |submit_progress| function allows submission of a progress-reporting
   callable, and returns a |ProgressFuture| object. The callable submitted
