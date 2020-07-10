@@ -22,6 +22,7 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
+from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
 
 
@@ -235,7 +236,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Returns
         -------
-        future : CallFuture, IterationFuture or ProgressFuture
+        future : IFuture
             Future for this task.
         """
         if not self.running:
@@ -295,7 +296,7 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Currently executing futures: mapping from message receivers to
     #: futures.
-    _futures = Dict(Any(), Any())
+    _futures = Dict(Any(), Instance(IFuture))
 
     # Private methods #########################################################
 
