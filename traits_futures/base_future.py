@@ -190,26 +190,26 @@ class BaseFuture(IFuture):
         getattr(self, method_name)(message_arg)
 
     def _process_done(self, none):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            if self._ok:
-                self.state = COMPLETED
-            else:
-                self.state = FAILED
-        else:
-            self.state = CANCELLED
+        assert self.state in (CANCELLING,)
+        self.state = CANCELLED
 
     def _process_raised(self, exception_info):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._exception = exception_info
             self._ok = False
+            self.state = FAILED
+        else:
+            self.state = CANCELLED
 
     def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._result = result
             self._ok = True
+            self.state = COMPLETED
+        else:
+            self.state = CANCELLED
 
     def _process_started(self, none):
         assert self.state in (WAITING, CANCELLING)
@@ -264,7 +264,9 @@ def job_wrapper(background_job, sender, cancelled):
     try:
         send = sender.send_message
         with sender:
-            if not cancelled():
+            if cancelled():
+                send(DONE)
+            else:
                 send(STARTED)
                 try:
                     result = background_job(send, cancelled)
@@ -272,7 +274,6 @@ def job_wrapper(background_job, sender, cancelled):
                     send(RAISED, marshal_exception(e))
                 else:
                     send(RETURNED, result)
-            send(DONE)
     except BaseException:
         # We'll only ever get here in the case of a coding error. But in
         # case that happens, it's useful to have the exception logged to
