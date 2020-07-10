@@ -15,10 +15,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import (
-    CANCELLING,
-    COMPLETED,
-)
+from traits_futures.future_states import CANCELLING
 from traits_futures.i_job_specification import IJobSpecification
 
 # The background task sends either a "RAISED" message or a "RETURNED" message
@@ -97,38 +94,7 @@ class CallFuture(BaseFuture):
             )
         return self._result
 
-    @property
-    def exception(self):
-        """
-        Information about any exception raised by the background call. Raises
-        an ``AttributeError`` on access if no exception was raised (because the
-        call succeeded, was cancelled, or has not yet completed).
-
-        Returns
-        -------
-        exc_info : tuple(str, str, str)
-            Tuple containing marshalled exception information.
-
-        Raises
-        ------
-        AttributeError
-            If the job is still executing, or was cancelled, or completed
-            without raising an exception.
-        """
-        self._raise_unless_completed()
-        if self._ok:
-            raise AttributeError(
-                "This job completed without raising an exception. "
-                "See the 'result' attribute for the job result."
-            )
-        return self._exception
-
     # Message processing ######################################################
-
-    def _process_raised(self, exception_info):
-        if self.state != CANCELLING:
-            self._exception = exception_info
-            self._ok = False
 
     def _process_returned(self, result):
         if self.state != CANCELLING:
@@ -142,21 +108,6 @@ class CallFuture(BaseFuture):
 
     #: Result from the background task.
     _result = Any()
-
-    #: Exception information from the background task.
-    _exception = Tuple(Str(), Str(), Str())
-
-    # Private methods #########################################################
-
-    def _raise_unless_completed(self):
-        """
-        Check that the job has completed, and raise AttributeError if not.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
 
 
 @IJobSpecification.register

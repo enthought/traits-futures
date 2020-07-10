@@ -100,41 +100,12 @@ class IterationFuture(BaseFuture):
 
         return self._ok
 
-    @property
-    def exception(self):
-        """
-        Information about any exception raised by the background call. Raises
-        an ``AttributeError`` on access if no exception was raised (because the
-        call succeeded, was cancelled, or has not yet completed).
-        """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
-        if self._ok:
-            raise AttributeError(
-                "This job completed without raising an exception. "
-            )
-
-        return self._exception
-
     # Private traits ##########################################################
 
     #: Boolean indicating whether the job completed successfully.
     _ok = Bool(True)
 
-    #: Exception information from the background task.
-    _exception = Tuple(Str(), Str(), Str())
-
     # Private methods #########################################################
-
-    def _process_raised(self, exception_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._ok = False
-            self._exception = exception_info
 
     def _process_generated(self, result):
         assert self.state in (EXECUTING, CANCELLING)

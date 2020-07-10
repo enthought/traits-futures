@@ -14,6 +14,8 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    Str,
+    Tuple,
 )
 
 from traits_futures.exception_handling import marshal_exception
@@ -82,6 +84,32 @@ class BaseFuture(IFuture):
         self._cancel()
         self.state = CANCELLING
 
+    @property
+    def exception(self):
+        """
+        Information about any exception raised by the background call. Raises
+        an ``AttributeError`` on access if no exception was raised (because the
+        call succeeded, was cancelled, or has not yet completed).
+
+        Returns
+        -------
+        exc_info : tuple(str, str, str)
+            Tuple containing marshalled exception information.
+
+        Raises
+        ------
+        AttributeError
+            If the job is still executing, or was cancelled, or completed
+            without raising an exception.
+        """
+        self._raise_unless_completed()
+        if self._ok:
+            raise AttributeError(
+                "This job completed without raising an exception. "
+                "See the 'result' attribute for the job result."
+            )
+        return self._exception
+
     # Private traits ##########################################################
 
     #: Callable called with no arguments to request cancellation of the
@@ -90,6 +118,9 @@ class BaseFuture(IFuture):
 
     #: Object that receives messages from the background task.
     _receiver = Instance(HasTraits)
+
+    #: Exception information from the background task.
+    _exception = Tuple(Str(), Str(), Str())
 
     # Private methods #########################################################
 
@@ -111,6 +142,12 @@ class BaseFuture(IFuture):
         if self.state == WAITING:
             self.state = EXECUTING
 
+    def _process_raised(self, exception_info):
+        assert self.state in (EXECUTING, CANCELLING)
+        if self.state == EXECUTING:
+            self._exception = exception_info
+            self._ok = False
+
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
 
@@ -129,6 +166,16 @@ class BaseFuture(IFuture):
         new_done = new_state in DONE_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
+
+    def _raise_unless_completed(self):
+        """
+        Check that the job has completed, and raise AttributeError if not.
+        """
+        if self.state != COMPLETED:
+            raise AttributeError(
+                "Job has not yet completed, or was cancelled. "
+                "Job status is {}".format(self.state)
+            )
 
 
 def job_wrapper(background_job, sender, cancelled):

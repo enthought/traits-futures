@@ -150,31 +150,6 @@ class ProgressFuture(BaseFuture):
 
         return self._result
 
-    @property
-    def exception(self):
-        """
-        Information about any exception raised by the background call. Raises
-        an ``AttributeError`` on access if no exception was raised (because the
-        call succeeded, was cancelled, or has not yet completed).
-
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
-        if self._ok:
-            raise AttributeError(
-                "This job completed without raising an exception. "
-                "See the 'result' attribute for the job result."
-            )
-
-        return self._exception
-
     # Private traits ##########################################################
 
     #: Boolean indicating whether we the job completed successfully.
@@ -183,16 +158,7 @@ class ProgressFuture(BaseFuture):
     #: Result from the background task.
     _result = Any()
 
-    #: Exception information from the background task.
-    _exception = Tuple(Str(), Str(), Str())
-
     # Private methods #########################################################
-
-    def _process_raised(self, exception_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._exception = exception_info
-            self._ok = False
 
     def _process_returned(self, result):
         assert self.state in (EXECUTING, CANCELLING)
