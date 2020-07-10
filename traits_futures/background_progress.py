@@ -39,6 +39,7 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_future import IFuture
 
 
 # Message types for messages from ProgressBackgroundTask
@@ -128,7 +129,7 @@ class ProgressBackgroundTask:
             send(RETURNED, result)
 
 
-class ProgressFuture(HasStrictTraits):
+class ProgressFuture(IFuture):
     """
     Object representing the front-end handle to a ProgressBackgroundTask.
     """

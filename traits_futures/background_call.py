@@ -30,6 +30,7 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_future import IFuture
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following
@@ -89,7 +90,7 @@ class CallBackgroundTask:
 # WAITING -> EXECUTING -> COMPLETED
 
 
-class CallFuture(HasStrictTraits):
+class CallFuture(IFuture):
     """
     Object representing the front-end handle to a background call.
     """

@@ -33,6 +33,7 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_future import IFuture
 
 # Message types for messages from IterationBackgroundTask to IterationFuture.
 # The background iteration will emit exactly one of the following
@@ -134,7 +135,7 @@ class IterationBackgroundTask:
 # no results events will be fired after cancelling.
 
 
-class IterationFuture(HasStrictTraits):
+class IterationFuture(IFuture):
     """
     Foreground representation of an iteration executing in the
     background.
