@@ -16,10 +16,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import (
-    CANCELLING,
-    EXECUTING,
-)
+from traits_futures.future_states import CANCELLING, EXECUTING
 from traits_futures.i_job_specification import IJobSpecification
 
 
@@ -58,8 +55,7 @@ class IterationBackgroundTask:
 
 class IterationFuture(BaseFuture):
     """
-    Foreground representation of an iteration executing in the
-    background.
+    Foreground representation of an iteration executing in the background.
     """
 
     #: Event fired whenever a result arrives from the background
@@ -71,7 +67,7 @@ class IterationFuture(BaseFuture):
     def _process_generated(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         # Any results arriving after a cancellation request are ignored.
-        if self.state == EXECUTING:
+        if self.state != CANCELLING:
             self.result_event = result
 
 

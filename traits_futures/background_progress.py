@@ -23,10 +23,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import (
-    CANCELLING,
-    EXECUTING,
-)
+from traits_futures.future_states import CANCELLING, EXECUTING
 from traits_futures.i_job_specification import IJobSpecification
 
 
