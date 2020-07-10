@@ -12,6 +12,7 @@ from traits_futures.api import (
     COMPLETED,
     EXECUTING,
     FAILED,
+    IFuture,
 )
 from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
@@ -107,3 +108,7 @@ class CommonFutureTests:
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
+
+    def test_interface(self):
+        future = self.future_class()
+        self.assertIsInstance(future, IFuture)

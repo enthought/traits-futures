@@ -23,6 +23,7 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    provides,
     Str,
     Tuple,
 )
@@ -39,6 +40,7 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_future import IFuture
 
 
 # Message types for messages from ProgressBackgroundTask
@@ -128,6 +130,7 @@ class ProgressBackgroundTask:
             send(RETURNED, result)
 
 
+@provides(IFuture)
 class ProgressFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a ProgressBackgroundTask.

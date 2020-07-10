@@ -14,6 +14,7 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    provides,
     Str,
     Tuple,
 )
@@ -30,6 +31,7 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_future import IFuture
 
 # Message types for messages from CallBackgroundTask to CallFuture.
 # The background task will emit exactly one of the following
@@ -89,6 +91,7 @@ class CallBackgroundTask:
 # WAITING -> EXECUTING -> COMPLETED
 
 
+@provides(IFuture)
 class CallFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a background call.
