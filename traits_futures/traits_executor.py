@@ -20,6 +20,9 @@ from traits.api import (
     Property,
 )
 
+from traits_futures.background_call import submit_call
+from traits_futures.background_iteration import submit_iteration
+from traits_futures.background_progress import submit_progress
 from traits_futures.toolkit_support import toolkit
 
 
@@ -132,8 +135,6 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture
             Object representing the state of the background call.
         """
-        from traits_futures.background_call import submit_call
-
         warnings.warn(
             "The submit_call method is deprecated. Use the submit_call "
             "convenience function instead.",
@@ -160,8 +161,6 @@ class TraitsExecutor(HasStrictTraits):
         future : IterationFuture
             Object representing the state of the background iteration.
         """
-        from traits_futures.background_iteration import submit_iteration
-
         warnings.warn(
             "The submit_iteration method is deprecated. Use the "
             "submit_iteration convenience function instead.",
@@ -191,8 +190,6 @@ class TraitsExecutor(HasStrictTraits):
         future : ProgressFuture
             Object representing the state of the background task.
         """
-        from traits_futures.background_progress import submit_progress
-
         warnings.warn(
             "The submit_progress method is deprecated. Use the "
             "submit_progress convenience function instead.",
