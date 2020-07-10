@@ -121,6 +121,9 @@ class TraitsExecutor(HasStrictTraits):
         """
         Convenience function to submit a background call.
 
+        .. deprecated:: 0.2
+           Use the :func:`submit_call` function instead.
+
         Parameters
         ----------
         callable : an arbitrary callable
@@ -147,6 +150,9 @@ class TraitsExecutor(HasStrictTraits):
         """
         Convenience function to submit a background iteration.
 
+        .. deprecated:: 0.2
+           Use the :func:`submit_iteration` function instead.
+
         Parameters
         ----------
         callable : an arbitrary callable
@@ -172,6 +178,9 @@ class TraitsExecutor(HasStrictTraits):
     def submit_progress(self, callable, *args, **kwargs):
         """
         Convenience function to submit a background progress call.
+
+        .. deprecated:: 0.2
+           Use the :func:`submit_progress` function instead.
 
         Parameters
         ----------
