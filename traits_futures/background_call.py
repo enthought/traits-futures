@@ -14,6 +14,7 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    provides,
     Str,
     Tuple,
 )
@@ -90,7 +91,8 @@ class CallBackgroundTask:
 # WAITING -> EXECUTING -> COMPLETED
 
 
-class CallFuture(IFuture):
+@provides(IFuture)
+class CallFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a background call.
     """

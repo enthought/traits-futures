@@ -7,12 +7,12 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import ABCHasStrictTraits, Bool, Property
+from traits.api import Bool, Interface, Property
 
 from traits_futures.future_states import FutureState
 
 
-class IFuture(ABCHasStrictTraits):
+class IFuture(Interface):
     """
     Interface for futures returned by the executor.
     """

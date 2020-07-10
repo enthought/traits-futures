@@ -17,6 +17,7 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    provides,
     Str,
     Tuple,
 )
@@ -135,7 +136,8 @@ class IterationBackgroundTask:
 # no results events will be fired after cancelling.
 
 
-class IterationFuture(IFuture):
+@provides(IFuture)
+class IterationFuture(HasStrictTraits):
     """
     Foreground representation of an iteration executing in the
     background.

@@ -23,6 +23,7 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    provides,
     Str,
     Tuple,
 )
@@ -129,7 +130,8 @@ class ProgressBackgroundTask:
             send(RETURNED, result)
 
 
-class ProgressFuture(IFuture):
+@provides(IFuture)
+class ProgressFuture(HasStrictTraits):
     """
     Object representing the front-end handle to a ProgressBackgroundTask.
     """
