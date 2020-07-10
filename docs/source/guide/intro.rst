@@ -35,8 +35,8 @@ from ``traits_futures.api``:
   the |CallFuture| and related objects.
 
 - The |submit_iteration| function allows submission of an arbitrary iterable.
-  The user provides a callable which, when called, returns an iterable object. For
-  example::
+  The user provides a callable which, when called, returns an iterable object.
+  For example::
 
     submit_iteration(my_executor, range, 0, 5)
 
