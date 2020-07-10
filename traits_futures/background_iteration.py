@@ -159,9 +159,14 @@ class IterationFuture(HasStrictTraits):
     @property
     def result(self):
         """
-        Result of the background call. Raises an ``AttributeError`` on access
-        if no result is available (because the background call failed, was
-        cancelled, or has not yet completed).
+        Result returned at the end of the iteration, if any.
+
+        Most iterations do not return a result, and for those iterations, the
+        ``result`` attribute will be ``None`` on background task completion.
+
+        The result is not available unless ``state`` is ``COMPLETED``. An
+        attempt to access this attribute in any other state will give an
+        ``AttributeError``.
 
         Note: this is deliberately a regular Python property rather than a
         Trait, to discourage users from attaching Traits listeners to
