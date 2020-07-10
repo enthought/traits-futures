@@ -91,8 +91,13 @@ The |CallFuture|, |IterationFuture| and |ProgressFuture| objects all provide a
 ``state`` trait, of trait type |FutureState|, that represents the state of the
 underlying computation. That state has one of six possible different values:
 
+|WAITING|
+   The background task has been scheduled to run, but has not yet started
+   executing (for example, because the worker pool is still busy dealing
+   with previously-submitted tasks.
+
 |EXECUTING|
-   The background task is either waiting to run, or is already executing.
+   The background task is currently executing on one of the workers.
 
 |COMPLETED|
    The background task has completed, possibly yielding a result, possibly
@@ -108,7 +113,7 @@ underlying computation. That state has one of six possible different values:
 In addition, there are two traits whose values are derived from the ``state``
 trait: the ``done`` trait is ``True`` when ``state`` is one of |COMPLETED|
 or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
-``state`` is |EXECUTING|.
+``state`` is one of |WAITING| or |EXECUTING|.
 
 It's important to understand that the ``state`` trait represents the state of
 the background task *to the best of knowledge* of the main thread. For example
