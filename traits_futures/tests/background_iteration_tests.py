@@ -69,11 +69,10 @@ def wait_midway(barrier):
     yield 2718
 
 
-def wait_then_fail(signal, barrier):
+def wait_then_fail(barrier):
     """
     Wait for an external event, then fail.
     """
-    signal.set()
     barrier.wait(timeout=TIMEOUT)
     yield 1 / 0
 
@@ -277,15 +276,14 @@ class BackgroundIterationTests:
         )
 
     def test_cancel_before_failure(self):
-        signal = self.Event()
         blocker = self.Event()
 
         future = submit_iteration(
-            self.executor, wait_then_fail, signal, blocker
+            self.executor, wait_then_fail, blocker
         )
         listener = IterationFutureListener(future=future)
 
-        self.assertTrue(signal.wait(timeout=TIMEOUT))
+        self.wait_for_state(future, EXECUTING)
         self.assertTrue(future.cancellable)
         future.cancel()
         blocker.set()
@@ -294,7 +292,7 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [])
         self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED],
+            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_bad_job(self):
