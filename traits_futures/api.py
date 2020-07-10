@@ -25,6 +25,8 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.traits_executor import (
     ExecutorState,
     RUNNING,
@@ -57,4 +59,7 @@ __all__ = [
     "submit_call",
     "submit_iteration",
     "submit_progress",
+    # Contexts
+    "IParallelContext",
+    "MultithreadingContext",
 ]
