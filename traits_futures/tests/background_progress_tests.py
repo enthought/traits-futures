@@ -44,11 +44,10 @@ def bad_progress_reporting_function(progress):
     1 / 0
 
 
-def wait_then_fail(started, signal, progress):
+def wait_then_fail(signal, progress):
     """
     Target function that waits until given permission to proceed, then fails.
     """
-    started.set()
     signal.wait(timeout=TIMEOUT)
     1 / 0
 
@@ -241,13 +240,11 @@ class BackgroundProgressTests:
             future.cancel()
 
     def test_cancel_raising_task(self):
-        started = self.Event()
         signal = self.Event()
-        future = submit_progress(
-            self.executor, wait_then_fail, started, signal
-        )
+        future = submit_progress(self.executor, wait_then_fail, signal)
 
-        self.assertTrue(started.wait(timeout=TIMEOUT))
+        self.wait_for_state(future, EXECUTING)
+
         future.cancel()
         signal.set()
 
@@ -284,6 +281,7 @@ class BackgroundProgressTests:
                 self.executor, resource_acquirer, acquired, ready, checkpoint
             )
 
+            self.wait_for_state(future, EXECUTING)
             self.assertTrue(checkpoint.wait(timeout=TIMEOUT))
             self.assertTrue(acquired.is_set())
             future.cancel()
