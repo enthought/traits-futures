@@ -11,10 +11,12 @@ from traits.api import (
     Any,
     Bool,
     Callable,
+    HasStrictTraits,
     HasTraits,
     Instance,
     on_trait_change,
     Property,
+    provides,
     Str,
     Tuple,
 )
@@ -54,7 +56,8 @@ CANCELLABLE_STATES = WAITING, EXECUTING
 DONE_STATES = CANCELLED, COMPLETED, FAILED
 
 
-class BaseFuture(IFuture):
+@provides(IFuture)
+class BaseFuture(HasStrictTraits):
     """
     Convenience base class for the various flavours of Future.
     """

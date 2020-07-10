@@ -15,6 +15,7 @@ class TestApi(unittest.TestCase):
             ExecutorState,
             FAILED,
             FutureState,
+            IFuture,
             IJobSpecification,
             IParallelContext,
             IterationFuture,

@@ -39,6 +39,7 @@ from traits_futures.traits_executor import (
 
 __all__ = [
     # Different types of Future
+    "IFuture",
     "CallFuture",
     "IterationFuture",
     "ProgressFuture",
