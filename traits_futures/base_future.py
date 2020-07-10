@@ -90,27 +90,6 @@ class BaseFuture(IFuture):
         self.state = CANCELLING
 
     @property
-    def ok(self):
-        """
-        Boolean indicating whether the background job completed successfully.
-        This attribute is only available for a job in COMPLETED state.
-
-        Returns
-        -------
-        ok : bool
-            True if the job completed successfully, in which case the result
-            is available from the .result attribute. False if the job
-            raised an exception.
-
-        Raises
-        ------
-        AttributeError
-            If the job is still executing, or was cancelled.
-        """
-        self._raise_unless_completed()
-        return self._ok
-
-    @property
     def result(self):
         """
         Result of the background call. This is only available if:
@@ -129,11 +108,11 @@ class BaseFuture(IFuture):
             If the job is still executing, or was cancelled, or raised an
             exception instead of returning a result.
         """
-        self._raise_unless_completed()
-        if not self._ok:
+        if self.state != COMPLETED:
             raise AttributeError(
-                "No result available; job raised an exception. "
-                "Exception details are in the 'exception' attribute."
+                "No result available. Task has not yet completed, "
+                "or was cancelled, or failed with an exception. "
+                "Job status is {}".format(self.state)
             )
         return self._result
 
@@ -155,11 +134,12 @@ class BaseFuture(IFuture):
             If the job is still executing, or was cancelled, or completed
             without raising an exception.
         """
-        self._raise_unless_completed()
-        if self._ok:
+        if self.state != FAILED:
             raise AttributeError(
-                "This job completed without raising an exception. "
-                "See the 'result' attribute for the job result."
+                "No exception information available. Job has "
+                "not yet completed, or was cancelled, or completed "
+                "without an exception. "
+                "Job status is {}".format(self.state)
             )
         return self._exception
 
@@ -171,9 +151,6 @@ class BaseFuture(IFuture):
 
     #: Object that receives messages from the background task.
     _receiver = Instance(HasTraits)
-
-    #: Boolean indicating whether the job completed successfully.
-    _ok = Bool(True)
 
     #: Result from the background task.
     _result = Any()
@@ -197,7 +174,6 @@ class BaseFuture(IFuture):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._exception = exception_info
-            self._ok = False
             self.state = FAILED
         else:
             self.state = CANCELLED
@@ -206,7 +182,6 @@ class BaseFuture(IFuture):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
             self._result = result
-            self._ok = True
             self.state = COMPLETED
         else:
             self.state = CANCELLED

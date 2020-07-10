@@ -138,7 +138,6 @@ class BackgroundProgressTests:
         self.assertResult(future, 6)
         self.assertNoException(future)
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
-        self.assertTrue(future.ok)
 
         expected_progress = [(0, 3), (1, 3), (2, 3), (3, 3)]
         self.assertEqual(listener.progress, expected_progress)
@@ -161,7 +160,6 @@ class BackgroundProgressTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(listener.states, [WAITING, EXECUTING, FAILED])
-        self.assertFalse(future.ok)
 
         expected_progress = [(5, 10)]
         self.assertEqual(listener.progress, expected_progress)
