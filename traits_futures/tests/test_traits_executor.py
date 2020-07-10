@@ -28,6 +28,7 @@ from traits_futures.api import (
     RUNNING,
     STOPPED,
     STOPPING,
+    submit_call,
     TraitsExecutor,
 )
 from traits_futures.toolkit_support import toolkit
@@ -168,12 +169,12 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(executor.state, STOPPING)
 
             with self.assertRaises(RuntimeError):
-                executor.submit_call(len, (1, 2, 3))
+                submit_call(executor, len, (1, 2, 3))
 
         self.wait_until_stopped(executor)
         self.assertEqual(executor.state, STOPPED)
         with self.assertRaises(RuntimeError):
-            executor.submit_call(int)
+            submit_call(executor, int)
 
     def test_stop_cancels_running_futures(self):
         executor = TraitsExecutor()
@@ -246,11 +247,12 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
 
-    def test_submit_call(self):
+    def test_submit_call_method(self):
         self.executor = TraitsExecutor()
-        future = self.executor.submit_call(
-            test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
-        )
+        with self.assertWarns(DeprecationWarning) as warning_info:
+            future = self.executor.submit_call(
+                test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
+            )
 
         self.wait_until_done(future)
 
@@ -259,11 +261,18 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             (("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}),
         )
 
-    def test_submit_iteration(self):
-        self.executor = TraitsExecutor()
-        future = self.executor.submit_iteration(
-            test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
+        _, _, this_module = __name__.rpartition(".")
+        self.assertIn(this_module, warning_info.filename)
+        self.assertIn(
+            "submit_call method is deprecated", str(warning_info.warning),
         )
+
+    def test_submit_iteration_method(self):
+        self.executor = TraitsExecutor()
+        with self.assertWarns(DeprecationWarning) as warning_info:
+            future = self.executor.submit_iteration(
+                test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2",
+            )
 
         results = []
         future.on_trait_change(
@@ -275,16 +284,29 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             results, [("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}],
         )
 
-    def test_submit_progress(self):
-        self.executor = TraitsExecutor()
-        future = self.executor.submit_progress(
-            test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
+        _, _, this_module = __name__.rpartition(".")
+        self.assertIn(this_module, warning_info.filename)
+        self.assertIn(
+            "submit_iteration method is deprecated", str(warning_info.warning),
         )
+
+    def test_submit_progress_method(self):
+        self.executor = TraitsExecutor()
+        with self.assertWarns(DeprecationWarning) as warning_info:
+            future = self.executor.submit_progress(
+                test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2",
+            )
 
         self.wait_until_done(future)
 
         self.assertEqual(
             future.result, ("arg1", "arg2", "kwd1", "kwd2"),
+        )
+
+        _, _, this_module = __name__.rpartition(".")
+        self.assertIn(this_module, warning_info.filename)
+        self.assertIn(
+            "submit_progress method is deprecated", str(warning_info.warning),
         )
 
     def test_states_consistent(self):
@@ -298,7 +320,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         executor.on_trait_change(record_states, "running")
         executor.on_trait_change(record_states, "stopped")
         executor.on_trait_change(record_states, "state")
-        executor.submit_call(int)
+        submit_call(executor, int)
 
         # Record states before, during, and after stopping.
         record_states()
@@ -314,7 +336,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         executor = TraitsExecutor()
         listener = ExecutorListener(executor=executor)
 
-        executor.submit_call(int)
+        submit_call(executor, int)
         executor.stop()
         self.wait_until_stopped(executor)
 
@@ -338,7 +360,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         futures = []
         for i in range(100):
-            futures.append(self.executor.submit_call(str, i))
+            futures.append(submit_call(self.executor, str, i))
 
         listener = FuturesListener(futures=futures)
 
@@ -355,7 +377,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         futures = []
         for i in range(100):
-            futures.append(executor.submit_call(str, i))
+            futures.append(submit_call(executor, str, i))
 
         executor.stop()
         self.wait_until_stopped(executor)
@@ -386,7 +408,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         """
         event = threading.Event()
         try:
-            yield executor.submit_call(event.wait)
+            yield submit_call(executor, event.wait)
         finally:
             event.set()
 

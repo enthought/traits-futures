@@ -26,7 +26,7 @@ To submit a task, use one of the |TraitsExecutor| top-level methods:
 - The |submit_call| method allows submission of a simple Python callable, with
   given positional and named arguments. For example::
 
-    my_executor.submit_call(int, "10101", base=2)
+    submit_call(my_executor, int, "10101", base=2)
 
   will execute ``int("10101", base=2)`` in the background. |submit_call|
   doesn't wait for the background task to finish; instead, it immediately
@@ -37,7 +37,7 @@ To submit a task, use one of the |TraitsExecutor| top-level methods:
   user provides a callable which, when called, returns an iterable object. For
   example::
 
-    my_executor.submit_iteration(range, 0, 5)
+    submit_iteration(my_executor, range, 0, 5)
 
   It returns a |IterationFuture| object.
 
@@ -266,9 +266,6 @@ needed.
 .. |traits_futures.api| replace:: :mod:`traits_futures.api`
 
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
-.. |submit_call| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_call`
-.. |submit_iteration| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_iteration`
-.. |submit_progress| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_progress`
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
 .. |ExecutorState| replace:: :meth:`~traits_futures.traits_executor.ExecutorState`
@@ -277,10 +274,14 @@ needed.
 .. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
-.. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
-.. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
-
+.. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
 .. |cancel| replace:: :class:`~traits_futures.background_call.CallFuture.cancel`
+
+.. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
+.. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
+
+.. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
+.. |submit_progress| replace:: :func:`~traits_futures.background_progress.submit_progress`
 
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
 .. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`

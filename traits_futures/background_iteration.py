@@ -303,3 +303,27 @@ class BackgroundIteration(HasStrictTraits):
             cancel_event=cancel_event,
         )
         return future, runner
+
+
+def submit_iteration(executor, callable, *args, **kwargs):
+    """
+    Convenience function to submit a background iteration to an executor.
+
+    Parameters
+    ----------
+    executor : TraitsExecutor
+        Executor to submit the call to.
+    callable : an arbitrary callable
+        Function executed in the background to provide the iterable.
+    *args
+        Positional arguments to pass to that function.
+    **kwargs
+        Named arguments to pass to that function.
+
+    Returns
+    -------
+    future : IterationFuture
+        Object representing the state of the background iteration.
+    """
+    task = BackgroundIteration(callable=callable, args=args, kwargs=kwargs)
+    return executor.submit(task)

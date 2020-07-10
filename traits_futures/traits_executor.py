@@ -20,9 +20,6 @@ from traits.api import (
     Property,
 )
 
-from traits_futures.background_call import BackgroundCall
-from traits_futures.background_iteration import BackgroundIteration
-from traits_futures.background_progress import BackgroundProgress
 from traits_futures.toolkit_support import toolkit
 
 
@@ -135,8 +132,15 @@ class TraitsExecutor(HasStrictTraits):
         future : CallFuture
             Object representing the state of the background call.
         """
-        task = BackgroundCall(callable=callable, args=args, kwargs=kwargs)
-        return self.submit(task)
+        from traits_futures.background_call import submit_call
+
+        warnings.warn(
+            "The submit_call method is deprecated. Use the submit_call "
+            "convenience function instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return submit_call(self, callable, *args, **kwargs)
 
     def submit_iteration(self, callable, *args, **kwargs):
         """
@@ -156,10 +160,15 @@ class TraitsExecutor(HasStrictTraits):
         future : IterationFuture
             Object representing the state of the background iteration.
         """
-        task = BackgroundIteration(
-            callable=callable, args=args, kwargs=kwargs,
+        from traits_futures.background_iteration import submit_iteration
+
+        warnings.warn(
+            "The submit_iteration method is deprecated. Use the "
+            "submit_iteration convenience function instead.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return self.submit(task)
+        return submit_iteration(self, callable, *args, **kwargs)
 
     def submit_progress(self, callable, *args, **kwargs):
         """
@@ -182,8 +191,15 @@ class TraitsExecutor(HasStrictTraits):
         future : ProgressFuture
             Object representing the state of the background task.
         """
-        task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs)
-        return self.submit(task)
+        from traits_futures.background_progress import submit_progress
+
+        warnings.warn(
+            "The submit_progress method is deprecated. Use the "
+            "submit_progress convenience function instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return submit_progress(self, callable, *args, **kwargs)
 
     def submit(self, task):
         """

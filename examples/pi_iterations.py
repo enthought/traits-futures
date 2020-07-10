@@ -28,6 +28,7 @@ from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
 from traits_futures.api import (
     IterationFuture,
+    submit_iteration,
     TraitsExecutor,
 )
 
@@ -116,8 +117,8 @@ class PiIterator(Handler):
         super(PiIterator, self).closed(info, is_ok)
 
     def _approximate_fired(self):
-        self.future = self.traits_executor.submit_iteration(
-            pi_iterations, chunk_size=self.chunk_size
+        self.future = submit_iteration(
+            self.traits_executor, pi_iterations, chunk_size=self.chunk_size
         )
 
     def _cancel_fired(self):

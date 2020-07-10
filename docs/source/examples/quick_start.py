@@ -12,6 +12,7 @@ from traits.api import (
     on_trait_change,
     Property,
     Str,
+    submit_call,
 )
 from traitsui.api import Item, UItem, View
 
@@ -52,7 +53,7 @@ class QuickStartExample(HasStrictTraits):
         input = self.input
         self.input_for_calculation = self.input
         self.message = "Calculating square of {} ...".format(input)
-        self.future = self.executor.submit_call(slow_square, input)
+        self.future = submit_call(self.executor, slow_square, input)
         # Keep a record so that we can present messages accurately.
         self.input_for_calculation = input
 

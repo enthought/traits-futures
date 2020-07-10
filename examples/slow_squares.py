@@ -23,6 +23,7 @@ from traits_futures.api import (
     COMPLETED,
     EXECUTING,
     FAILED,
+    submit_call,
     TraitsExecutor,
     WAITING,
 )
@@ -103,7 +104,7 @@ class SquaringHelper(Handler):
         super(SquaringHelper, self).closed(info, is_ok)
 
     def _square_fired(self):
-        future = self.traits_executor.submit_call(slow_square, self.input)
+        future = submit_call(self.traits_executor, slow_square, self.input)
         self.current_futures.append(future)
 
     def _cancel_all_fired(self):

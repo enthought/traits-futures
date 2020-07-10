@@ -16,6 +16,7 @@ from traits_futures.api import (
     FAILED,
     FutureState,
     IterationFuture,
+    submit_iteration,
     WAITING,
 )
 
@@ -126,7 +127,7 @@ class IterationFutureListener(HasStrictTraits):
 class BackgroundIterationTests:
     def test_successful_iteration(self):
         # A simple case.
-        future = self.executor.submit_iteration(reciprocals, start=1, stop=4)
+        future = submit_iteration(self.executor, reciprocals, start=1, stop=4)
         listener = IterationFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -137,7 +138,7 @@ class BackgroundIterationTests:
 
     def test_general_iterable(self):
         # Any call that returns an iterable should be accepted
-        future = self.executor.submit_iteration(range, 0, 10, 2)
+        future = submit_iteration(self.executor, range, 0, 10, 2)
         listener = IterationFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -149,7 +150,7 @@ class BackgroundIterationTests:
     def test_bad_iteration_setup(self):
         # Deliberately passing a callable that returns
         # something non-iterable.
-        future = self.executor.submit_iteration(pow, 2, 5)
+        future = submit_iteration(self.executor, pow, 2, 5)
         listener = IterationFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -160,7 +161,7 @@ class BackgroundIterationTests:
 
     def test_failing_iteration(self):
         # Iteration that eventually fails.
-        future = self.executor.submit_iteration(reciprocals, start=-2, stop=2)
+        future = submit_iteration(self.executor, reciprocals, start=-2, stop=2)
         listener = IterationFutureListener(future=future)
 
         self.wait_until_done(future)
@@ -175,7 +176,7 @@ class BackgroundIterationTests:
         # the STARTED message.
         event = self.Event()
 
-        future = self.executor.submit_iteration(set_then_yield, event)
+        future = submit_iteration(self.executor, set_then_yield, event)
         listener = IterationFutureListener(future=future)
 
         self.assertTrue(event.wait(timeout=TIMEOUT))
@@ -193,7 +194,7 @@ class BackgroundIterationTests:
 
         blocker = self.Event()
 
-        future = self.executor.submit_iteration(wait_midway, blocker)
+        future = submit_iteration(self.executor, wait_midway, blocker)
         listener = IterationFutureListener(future=future)
 
         self.run_until(
@@ -217,7 +218,7 @@ class BackgroundIterationTests:
 
     def test_cancel_before_exhausted(self):
         blocker = self.Event()
-        future = self.executor.submit_iteration(yield_then_wait, blocker)
+        future = submit_iteration(self.executor, yield_then_wait, blocker)
         listener = IterationFutureListener(future=future)
 
         # Make sure we've got the single result.
@@ -240,7 +241,7 @@ class BackgroundIterationTests:
 
     def test_cancel_before_start(self):
         with self.block_worker_pool():
-            future = self.executor.submit_iteration(squares, 0, 10)
+            future = submit_iteration(self.executor, squares, 0, 10)
             listener = IterationFutureListener(future=future)
             self.assertTrue(future.cancellable)
             future.cancel()
@@ -254,7 +255,7 @@ class BackgroundIterationTests:
     def test_cancel_after_start(self):
         blocker = self.Event()
 
-        future = self.executor.submit_iteration(wait_midway, blocker)
+        future = submit_iteration(self.executor, wait_midway, blocker)
         listener = IterationFutureListener(future=future)
 
         self.run_until(
@@ -277,7 +278,7 @@ class BackgroundIterationTests:
     def test_cancel_before_failure(self):
         blocker = self.Event()
 
-        future = self.executor.submit_iteration(wait_then_fail, blocker)
+        future = submit_iteration(self.executor, wait_then_fail, blocker)
         listener = IterationFutureListener(future=future)
 
         self.wait_for_state(future, EXECUTING)
@@ -293,7 +294,7 @@ class BackgroundIterationTests:
         )
 
     def test_cancel_bad_job(self):
-        future = self.executor.submit_iteration(pow, 10, 3)
+        future = submit_iteration(self.executor, pow, 10, 3)
         listener = IterationFutureListener(future=future)
 
         self.assertTrue(future.cancellable)
@@ -306,7 +307,7 @@ class BackgroundIterationTests:
         self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
 
     def test_double_cancel(self):
-        future = self.executor.submit_iteration(squares, 0, 10)
+        future = submit_iteration(self.executor, squares, 0, 10)
 
         self.assertTrue(future.cancellable)
         future.cancel()
@@ -316,7 +317,7 @@ class BackgroundIterationTests:
             future.cancel()
 
     def test_completed_cancel(self):
-        future = self.executor.submit_iteration(squares, 0, 10)
+        future = submit_iteration(self.executor, squares, 0, 10)
 
         self.wait_until_done(future)
 
@@ -329,7 +330,8 @@ class BackgroundIterationTests:
         blocker = self.Event()
         resource_released = self.Event()
 
-        future = self.executor.submit_iteration(
+        future = submit_iteration(
+            self.executor,
             resource_acquiring_iteration,
             resource_acquired,
             resource_released,
@@ -358,8 +360,8 @@ class BackgroundIterationTests:
         test_ready = self.Event()
         midpoint = self.Event()
 
-        future = self.executor.submit_iteration(
-            ping_pong, test_ready, midpoint
+        future = submit_iteration(
+            self.executor, ping_pong, test_ready, midpoint
         )
         listener = IterationFutureListener(future=future)
 
