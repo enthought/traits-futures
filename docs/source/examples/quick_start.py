@@ -12,11 +12,10 @@ from traits.api import (
     on_trait_change,
     Property,
     Str,
-    submit_call,
 )
 from traitsui.api import Item, UItem, View
 
-from traits_futures.api import CallFuture, TraitsExecutor
+from traits_futures.api import CallFuture, submit_call, TraitsExecutor
 
 
 def slow_square(n):
