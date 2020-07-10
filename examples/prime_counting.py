@@ -24,6 +24,7 @@ from traits_futures.api import (
     CANCELLED,
     COMPLETED,
     ProgressFuture,
+    submit_progress,
     TraitsExecutor,
 )
 
@@ -200,8 +201,11 @@ class PrimeCounter(Handler):
 
     def _count_fired(self):
         self._last_limit = self.limit
-        self.future = self.traits_executor.submit_progress(
-            count_primes_less_than, self.limit, chunk_size=self.chunk_size
+        self.future = submit_progress(
+            self.traits_executor,
+            count_primes_less_than,
+            self.limit,
+            chunk_size=self.chunk_size,
         )
         self.result_message = "Counting ..."
 

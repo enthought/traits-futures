@@ -95,8 +95,8 @@ class IterationBackgroundTask:
 
             try:
                 result = next(iterable)
-            except StopIteration:
-                message, message_args = EXHAUSTED, None
+            except StopIteration as e:
+                message, message_args = EXHAUSTED, e.value
                 break
             except BaseException as e:
                 message, message_args = RAISED, marshal_exception(e)
@@ -157,6 +157,26 @@ class IterationFuture(HasStrictTraits):
     result_event = Event(Any())
 
     @property
+    def result(self):
+        """
+        Result returned at the end of the iteration, if any.
+
+        Most iterations do not return a result, and for those iterations, the
+        ``result`` attribute will be ``None`` on background task completion.
+
+        The result is not available unless ``state`` is ``COMPLETED``. An
+        attempt to access this attribute in any other state will give an
+        ``AttributeError``.
+
+        Note: this is deliberately a regular Python property rather than a
+        Trait, to discourage users from attaching Traits listeners to
+        it. Listen to the state or its derived traits instead.
+        """
+        if self.state != COMPLETED:
+            raise AttributeError("No result available for this call.")
+        return self._result
+
+    @property
     def exception(self):
         """
         Information about any exception raised by the background call. Raises
@@ -191,6 +211,9 @@ class IterationFuture(HasStrictTraits):
     #: should call the cancel() method instead of using this event.
     _cancel_event = Any()
 
+    #: Result from the background task.
+    _result = Any()
+
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
 
@@ -223,9 +246,10 @@ class IterationFuture(HasStrictTraits):
             # Don't record the exception if the job was already cancelled.
             self.state = CANCELLED
 
-    def _process_exhausted(self, none):
+    def _process_exhausted(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
+            self._result = result
             self.state = COMPLETED
         else:
             self.state = CANCELLED
@@ -303,3 +327,27 @@ class BackgroundIteration(HasStrictTraits):
             cancel_event=cancel_event,
         )
         return future, runner
+
+
+def submit_iteration(executor, callable, *args, **kwargs):
+    """
+    Convenience function to submit a background iteration to an executor.
+
+    Parameters
+    ----------
+    executor : TraitsExecutor
+        Executor to submit the call to.
+    callable : an arbitrary callable
+        Function executed in the background to provide the iterable.
+    *args
+        Positional arguments to pass to that function.
+    **kwargs
+        Named arguments to pass to that function.
+
+    Returns
+    -------
+    future : IterationFuture
+        Object representing the state of the background iteration.
+    """
+    task = BackgroundIteration(callable=callable, args=args, kwargs=kwargs)
+    return executor.submit(task)

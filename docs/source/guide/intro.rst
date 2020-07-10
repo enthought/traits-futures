@@ -19,29 +19,30 @@ returns a corresponding "future" object that allows monitoring of the state of
 the background computation and retrieval of its results.
 
 We'll examine the future objects in the next section. This section deals with
-the executor's main top-level methods.
+the executor's main top-level methods and the task submission functions.
 
-To submit a task, use one of the |TraitsExecutor| top-level methods:
+To submit a task, use one of the convenience submission functions available
+from ``traits_futures.api``:
 
-- The |submit_call| method allows submission of a simple Python callable, with
-  given positional and named arguments. For example::
+- The |submit_call| function allows submission of a simple Python callable,
+  with given positional and named arguments. For example::
 
-    my_executor.submit_call(int, "10101", base=2)
+    submit_call(my_executor, int, "10101", base=2)
 
   will execute ``int("10101", base=2)`` in the background. |submit_call|
   doesn't wait for the background task to finish; instead, it immediately
   returns a |CallFuture| object. See the next section for more details on
   the |CallFuture| and related objects.
 
-- The |submit_iteration| method allows submission of an arbitrary iterable. The
-  user provides a callable which, when called, returns an iterable object. For
-  example::
+- The |submit_iteration| function allows submission of an arbitrary iterable.
+  The user provides a callable which, when called, returns an iterable object.
+  For example::
 
-    my_executor.submit_iteration(range, 0, 5)
+    submit_iteration(my_executor, range, 0, 5)
 
-  It returns a |IterationFuture| object.
+  It returns an |IterationFuture| object.
 
-- The |submit_progress| method allows submission of a progress-reporting
+- The |submit_progress| function allows submission of a progress-reporting
   callable, and returns a |ProgressFuture| object. The callable submitted
   *must* have a parameter called "progress".  A value for this parameter will
   be passed (by name) by the executor machinery. The value passed for the
@@ -136,7 +137,7 @@ Getting task results
 Background task results can be retrieved directly from the corresponding
 futures.
 
-The |submit_call| and |submit_progress| methods run callables that eventually
+The |submit_call| and |submit_progress| functions run callables that eventually
 expect to return a result. Once the state of the corresponding future reaches
 |COMPLETED|, the result of the call is available via the ``result`` attribute.
 Assuming that your calculation future is stored in a trait called ``future``,
@@ -161,7 +162,7 @@ trait like this::
         self.message = "{} of {} chunks processed. {} matches so far".format(
             current_step, max_steps, matches)
 
-The |submit_iteration| method is a little bit different: it produces a result
+The |submit_iteration| function is a little bit different: it produces a result
 on each iteration, but doesn't give any final result. Its ``result_event``
 trait is an ``Event`` that you can hook listeners up to in order to receive the
 results. For example::
@@ -266,9 +267,6 @@ needed.
 .. |traits_futures.api| replace:: :mod:`traits_futures.api`
 
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
-.. |submit_call| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_call`
-.. |submit_iteration| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_iteration`
-.. |submit_progress| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.submit_progress`
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
 .. |ExecutorState| replace:: :meth:`~traits_futures.traits_executor.ExecutorState`
@@ -277,10 +275,14 @@ needed.
 .. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
-.. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
-.. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
-
+.. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
 .. |cancel| replace:: :class:`~traits_futures.background_call.CallFuture.cancel`
+
+.. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
+.. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
+
+.. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
+.. |submit_progress| replace:: :func:`~traits_futures.background_progress.submit_progress`
 
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
 .. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`

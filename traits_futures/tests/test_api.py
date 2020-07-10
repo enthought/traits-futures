@@ -22,6 +22,9 @@ class TestApi(unittest.TestCase):
             RUNNING,
             STOPPED,
             STOPPING,
+            submit_call,
+            submit_iteration,
+            submit_progress,
             TraitsExecutor,
             WAITING,
         )
