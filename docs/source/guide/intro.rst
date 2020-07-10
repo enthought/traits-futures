@@ -100,8 +100,15 @@ underlying computation. That state has one of six possible different values:
    The background task is currently executing on one of the workers.
 
 |COMPLETED|
-   The background task has completed, possibly yielding a result, possibly
-   raising an exception.
+   The background task has completed without error. For a progress task or a
+   simple call, this implies that a result has been returned and is available
+   via the ``result`` property of the future. For an iteration, it means that
+   the iteration has completed.
+
+|FAILED|
+   The background task raised an exception at some point in its execution.
+   Information about the exception is available via the ``exception`` property
+   of the future.
 
 |CANCELLING|
    Cancellation of the background task has been requested, but the background
@@ -111,8 +118,8 @@ underlying computation. That state has one of six possible different values:
    The task has stopped following a cancellation request.
 
 In addition, there are two traits whose values are derived from the ``state``
-trait: the ``done`` trait is ``True`` when ``state`` is one of |COMPLETED|
-or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
+trait: the ``done`` trait is ``True`` when ``state`` is one of |COMPLETED|,
+|FAILED| or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
 ``state`` is one of |WAITING| or |EXECUTING|.
 
 It's important to understand that the ``state`` trait represents the state of
@@ -166,14 +173,14 @@ results. For example::
         self.update_plot_data()
 
 If a background task fails with an exception, then the corresponding
-future ``future`` eventually reaches |COMPLETED| state. In that case,
+future ``future`` eventually reaches |FAILED| state. In that case,
 information about the exception that occurred is available in the
 ``future.exception`` attribute. This information takes the form of
 a ``tuple`` of length 3, containing stringified versions of the
 exception type, the exception value and the exception traceback.
 
 As with ``future.result``, an attempt to access ``future.exception`` for a
-``future`` that's not in |COMPLETED| state will give an ``AttributeError``.
+``future`` that's not in |FAILED| state will give an ``AttributeError``.
 
 
 Cancelling the background task
@@ -202,7 +209,7 @@ or |EXECUTING|. Attempting to cancel a future in another state will raise a
 ``RuntimeError``. Calling |cancel| immediately puts the future into
 |CANCELLING| state, and the state is updated to |CANCELLED| once the future has
 finished executing. No results or exception information are received from a
-future in |CANCELLING| state. A cancelled future will never reach |COMPLETED|
+future in |CANCELLING| state. A cancelled future will never reach |FAILED|
 state, and will never record information from a background task exception that
 occurs after the |cancel| call.
 
@@ -278,7 +285,9 @@ needed.
 .. |submit_progress| replace:: :func:`~traits_futures.background_progress.submit_progress`
 
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
+.. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`
+.. |EXECUTING| replace:: :data:`~traits_futures.future_states.EXECUTING`
+.. |COMPLETED| replace:: :data:`~traits_futures.future_states.COMPLETED`
+.. |FAILED| replace:: :data:`~traits_futures.future_states.FAILED`
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
-.. |EXECUTING| replace:: :data:`~traits_futures.future_states.EXECUTING`
-.. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`
