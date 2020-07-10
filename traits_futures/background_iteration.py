@@ -95,8 +95,8 @@ class IterationBackgroundTask:
 
             try:
                 result = next(iterable)
-            except StopIteration:
-                message, message_args = EXHAUSTED, None
+            except StopIteration as e:
+                message, message_args = EXHAUSTED, e.value
                 break
             except BaseException as e:
                 message, message_args = RAISED, marshal_exception(e)
@@ -157,6 +157,21 @@ class IterationFuture(HasStrictTraits):
     result_event = Event(Any())
 
     @property
+    def result(self):
+        """
+        Result of the background call. Raises an ``AttributeError`` on access
+        if no result is available (because the background call failed, was
+        cancelled, or has not yet completed).
+
+        Note: this is deliberately a regular Python property rather than a
+        Trait, to discourage users from attaching Traits listeners to
+        it. Listen to the state or its derived traits instead.
+        """
+        if self.state != COMPLETED:
+            raise AttributeError("No result available for this call.")
+        return self._result
+
+    @property
     def exception(self):
         """
         Information about any exception raised by the background call. Raises
@@ -191,6 +206,9 @@ class IterationFuture(HasStrictTraits):
     #: should call the cancel() method instead of using this event.
     _cancel_event = Any()
 
+    #: Result from the background task.
+    _result = Any()
+
     #: Exception information from the background task.
     _exception = Tuple(Str(), Str(), Str())
 
@@ -223,9 +241,10 @@ class IterationFuture(HasStrictTraits):
             # Don't record the exception if the job was already cancelled.
             self.state = CANCELLED
 
-    def _process_exhausted(self, none):
+    def _process_exhausted(self, result):
         assert self.state in (EXECUTING, CANCELLING)
         if self.state == EXECUTING:
+            self._result = result
             self.state = COMPLETED
         else:
             self.state = CANCELLED
