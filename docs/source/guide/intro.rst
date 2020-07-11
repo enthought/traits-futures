@@ -130,6 +130,26 @@ corresponding future telling it to change its state from |WAITING| to
 so there will be a brief interval during which the background task has, in
 fact, started executing, but the state of the future is still |WAITING|.
 
+Here's a diagram showing the possible state transitions. The initial state
+is |WAITING|. The final states are |CANCELLED|, |COMPLETED| and |FAILED|.
+The future expects to receive either the message sequence ``["started",
+"raised"]`` or the message sequence ``["started", "returned"]`` from the
+background task: this happens even if cancellation is requested.
+
+.. graphviz::
+
+   digraph FutureStates {
+       WAITING -> EXECUTING [label="started"];
+       WAITING -> CANCELLING [label="cancel"];
+       CANCELLING -> CANCELLING [label="started"];
+       EXECUTING -> FAILED [label="raised"];
+       EXECUTING -> COMPLETED [label="returned"];
+       EXECUTING -> CANCELLING [label="cancel"];
+       CANCELLING -> CANCELLED [label="raised"];
+       CANCELLING -> CANCELLED [label="returned"];
+   }
+
+
 
 Getting task results
 ~~~~~~~~~~~~~~~~~~~~

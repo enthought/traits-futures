@@ -91,6 +91,11 @@ todo_include_todos = False
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
 
+# -- Options for Graphviz extension ---------------------------------------
+
+# Output format when building HTML files
+graphviz_output_format = "svg"
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
