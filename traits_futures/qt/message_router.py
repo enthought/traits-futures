@@ -12,10 +12,6 @@ from pyface.qt.QtCore import QObject, Signal, Slot
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
-#: Prefix used for custom messages
-CUSTOM = "custom"
-
-
 class _MessageSignaller(QObject):
     """
     QObject used to tell the UI that a message is queued.

@@ -10,10 +10,6 @@ from traits.api import Any, Event, HasStrictTraits, Instance
 from traits_futures.null.package_globals import get_event_loop
 
 
-#: Prefix used for custom messages
-CUSTOM = "custom"
-
-
 class MessageReceiver(HasStrictTraits):
     """
     Main-thread object that receives messages from a MessageSender.
