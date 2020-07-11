@@ -57,7 +57,7 @@ __all__ = [
     "RUNNING",
     "STOPPING",
     "STOPPED",
-    # Convenience submission functions for job types that we define
+    # Convenience submission functions for task types that we define
     "submit_call",
     "submit_iteration",
     "submit_progress",
