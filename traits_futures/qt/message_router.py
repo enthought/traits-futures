@@ -12,6 +12,10 @@ from pyface.qt.QtCore import QObject, Signal, Slot
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
+#: Prefix used for custom messages
+CUSTOM = "custom"
+
+
 class _MessageSignaller(QObject):
     """
     QObject used to tell the UI that a message is queued.
@@ -88,6 +92,9 @@ class MessageSender:
             immutable, pickleable object. If not given, ``None`` is used.
         """
         self.send((message_type, message_args))
+
+    def send_custom_message(self, message_type, message_args=None):
+        self.send((CUSTOM, message_type, message_args))
 
 
 class MessageReceiver(HasStrictTraits):

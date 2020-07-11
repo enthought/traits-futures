@@ -10,6 +10,10 @@ from traits.api import Any, Event, HasStrictTraits, Instance
 from traits_futures.null.package_globals import get_event_loop
 
 
+#: Prefix used for custom messages
+CUSTOM = "custom"
+
+
 class MessageReceiver(HasStrictTraits):
     """
     Main-thread object that receives messages from a MessageSender.
@@ -74,6 +78,9 @@ class MessageSender:
             immutable, pickleable object. If not given, ``None`` is used.
         """
         self.send((message_type, message_args))
+
+    def send_custom_message(self, message_type, message_args=None):
+        self.send((CUSTOM, message_type, message_args))
 
 
 class MessageRouter(HasStrictTraits):

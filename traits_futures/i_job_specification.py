@@ -54,7 +54,7 @@ class IJobSpecification(ABC):
         """
 
     @abstractmethod
-    def future(self, cancel, receiver):
+    def future(self, cancel):
         """
         Return a Future for the background job.
 
@@ -63,9 +63,6 @@ class IJobSpecification(ABC):
         cancel : callable
             Zero-argument callable that can be called to request cancellation
             of the background task.
-        receiver : IMessageReceiver
-            HasTraits instance with a ``message`` trait, which can be listened
-            to in order to receive messages from the background job.
 
         Returns
         -------

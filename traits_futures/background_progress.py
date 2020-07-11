@@ -136,24 +136,16 @@ class BackgroundProgress(HasStrictTraits):
             messages and ``cancelled` to check whether the job has been
             cancelled.
         """
+        if "progress" in self.kwargs:
+            raise TypeError("progress may not be passed as a named argument")
+
         return ProgressBackgroundTask(
             callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
 
-    def future(self, cancel, receiver):
+    def future(self):
         """
         Return a future for a background job.
-
-        Parameters
-        ----------
-        cancel : callable
-            Callable called with no arguments to request cancellation
-            of the background task.
-        receiver : MessageReceiver
-            Object that remains in the main thread and receives messages sent
-            by the message sender. This is a HasTraits subclass with
-            a 'message' Event trait that can be listened to for arriving
-            messages.
 
         Returns
         -------
@@ -161,10 +153,7 @@ class BackgroundProgress(HasStrictTraits):
             Foreground object representing the state of the running
             calculation.
         """
-        if "progress" in self.kwargs:
-            raise TypeError("progress may not be passed as a named argument")
-
-        return ProgressFuture(_cancel=cancel, _receiver=receiver,)
+        return ProgressFuture()
 
 
 def submit_progress(executor, callable, *args, **kwargs):

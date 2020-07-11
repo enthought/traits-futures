@@ -5,15 +5,11 @@
 Base class providing common pieces of the Future machinery.
 """
 
-import logging
-
 from traits.api import (
     Any,
     Bool,
-    Callable,
+    Event,
     HasStrictTraits,
-    HasTraits,
-    Instance,
     on_trait_change,
     Property,
     provides,
@@ -21,39 +17,15 @@ from traits.api import (
     Tuple,
 )
 
-from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED,
+    CANCELLABLE_STATES,
     CANCELLING,
     COMPLETED,
-    EXECUTING,
+    DONE_STATES,
     FAILED,
     FutureState,
-    WAITING,
 )
 from traits_futures.i_future import IFuture
-
-logger = logging.getLogger(__name__)
-
-
-# Messages sent by the wrapper, and interpreted by the BaseFuture
-
-#: Message sent before we start to process the target callable.
-STARTED = "started"
-
-#: Message sent when an exception was raised by the background
-#: callable. The argument is a tuple containing exception information.
-RAISED = "raised"
-
-#: Call succeeded and returned a result. Argument is the result.
-RETURNED = "returned"
-
-#: States in which the job can be cancelled.
-CANCELLABLE_STATES = WAITING, EXECUTING
-
-#: Final states. If the future is in one of these states,
-#: no more messages will be received from the background job.
-DONE_STATES = CANCELLED, COMPLETED, FAILED
 
 
 @provides(IFuture)
@@ -74,6 +46,9 @@ class BaseFuture(HasStrictTraits):
     #: succeeded, or that it raised, or that it was cancelled.
     done = Property(Bool())
 
+    #: Trait for messages received from the background task.
+    message = Event(Any())
+
     def cancel(self):
         """
         Method that can be called from the main thread to
@@ -85,8 +60,10 @@ class BaseFuture(HasStrictTraits):
         # from. Some applications may want to weaken the error below
         # to a warning, or just do nothing on an invalid cancellation.
         if not self.cancellable:
-            raise RuntimeError("Can only cancel a queued or executing task.")
-        self._cancel()
+            raise RuntimeError(
+                "Can only cancel a waiting or executing task. "
+                "Task state is {}".format(self.state))
+        self._cancel = True
         self.state = CANCELLING
 
     @property
@@ -105,14 +82,14 @@ class BaseFuture(HasStrictTraits):
         Raises
         ------
         AttributeError
-            If the job is still executing, or was cancelled, or raised an
+            If the task is still executing, or was cancelled, or raised an
             exception instead of returning a result.
         """
         if self.state != COMPLETED:
             raise AttributeError(
                 "No result available. Task has not yet completed, "
                 "or was cancelled, or failed with an exception. "
-                "Job status is {}".format(self.state)
+                "Task state is {}".format(self.state)
             )
         return self._result
 
@@ -131,26 +108,22 @@ class BaseFuture(HasStrictTraits):
         Raises
         ------
         AttributeError
-            If the job is still executing, or was cancelled, or completed
+            If the task is still executing, or was cancelled, or completed
             without raising an exception.
         """
         if self.state != FAILED:
             raise AttributeError(
-                "No exception information available. Job has "
+                "No exception information available. Task has "
                 "not yet completed, or was cancelled, or completed "
                 "without an exception. "
-                "Job status is {}".format(self.state)
+                "Task state is {}".format(self.state)
             )
         return self._exception
 
     # Private traits ##########################################################
 
-    #: Callable called with no arguments to request cancellation of the
-    #: background task.
-    _cancel = Callable()
-
-    #: Object that receives messages from the background task.
-    _receiver = Instance(HasTraits)
+    #: Event fired on cancellation request.
+    _cancel = Event()
 
     #: Result from the background task.
     _result = Any()
@@ -160,32 +133,11 @@ class BaseFuture(HasStrictTraits):
 
     # Private methods #########################################################
 
-    @on_trait_change("_receiver:message")
-    def _process_message(self, message):
+    @on_trait_change("message")
+    def _dispatch_message(self, message):
         message_type, message_arg = message
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
-
-    def _process_raised(self, exception_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._exception = exception_info
-            self.state = FAILED
-        else:
-            self.state = CANCELLED
-
-    def _process_returned(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._result = result
-            self.state = COMPLETED
-        else:
-            self.state = CANCELLED
-
-    def _process_started(self, none):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
-            self.state = EXECUTING
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
@@ -205,49 +157,3 @@ class BaseFuture(HasStrictTraits):
         new_done = new_state in DONE_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
-
-    def _raise_unless_completed(self):
-        """
-        Check that the job has completed, and raise AttributeError if not.
-        """
-        if self.state not in (COMPLETED, FAILED):
-            raise AttributeError(
-                "Job has not yet completed, or was cancelled. "
-                "Job status is {}".format(self.state)
-            )
-
-
-def job_wrapper(background_job, sender, cancelled):
-    """
-    Wrapper for callables submitted to the underlying executor.
-
-    Parameters
-    ----------
-    background_job : callable
-        Callable representing the background job. This will be called
-        with arguments ``send`` and ``cancelled`..
-    sender : MessageSender
-        Object used to send messages.
-    cancelled : zero-argument callable returning bool
-        Callable that can be called to check whether cancellation has
-        been requested.
-    """
-    try:
-        send = sender.send_message
-        with sender:
-            if cancelled():
-                send(RETURNED, None)
-            else:
-                send(STARTED)
-                try:
-                    result = background_job(send, cancelled)
-                except BaseException as e:
-                    send(RAISED, marshal_exception(e))
-                else:
-                    send(RETURNED, result)
-    except BaseException:
-        # We'll only ever get here in the case of a coding error. But in
-        # case that happens, it's useful to have the exception logged to
-        # help the developer.
-        logger.exception("Unexpected exception in background job.")
-        raise

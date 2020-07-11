@@ -22,9 +22,8 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
-from traits_futures.base_future import job_wrapper
-from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.wrappers import FutureWrapper, job_wrapper
 
 
 # Executor states.
@@ -238,14 +237,16 @@ class TraitsExecutor(HasStrictTraits):
         sender, receiver = self._message_router.pipe()
         try:
             runner = task.background_job()
-            future = task.future(cancel=cancel_event.set, receiver=receiver)
+            future = task.future()
         except Exception:
             self._message_router.close_pipe(sender, receiver)
             raise
 
         cancelled = cancel_event.is_set
         self._worker_pool.submit(job_wrapper, runner, sender, cancelled)
-        self._futures[receiver] = future
+        wrapper = FutureWrapper(
+            future=future, receiver=receiver, cancel=cancel_event.set)
+        self._wrappers[receiver] = wrapper
         return future
 
     def stop(self):
@@ -260,11 +261,12 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for _, future in self._futures.items():
+        for _, wrapper in self._wrappers.items():
+            future = wrapper.future
             if future.cancellable:
                 future.cancel()
 
-        if not self._futures:
+        if not self._wrappers:
             self._stop()
 
     # Private traits ##########################################################
@@ -286,9 +288,8 @@ class TraitsExecutor(HasStrictTraits):
     #: and foreground futures.
     _message_router = Any()
 
-    #: Currently executing futures: mapping from message receivers to
-    #: futures.
-    _futures = Dict(Any(), Instance(IFuture))
+    #: Wrappers for currently-executing futures.
+    _wrappers = Dict(Any(), Any())
 
     # Private methods #########################################################
 
@@ -325,10 +326,10 @@ class TraitsExecutor(HasStrictTraits):
 
     @on_trait_change("_message_router:receiver_done")
     def _remove_future(self, receiver):
-        self._futures.pop(receiver)
+        self._wrappers.pop(receiver)
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
-        if self.state == STOPPING and not self._futures:
+        if self.state == STOPPING and not self._wrappers:
             self._stop()
 
     def _stop(self):

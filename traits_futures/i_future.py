@@ -7,7 +7,7 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import Bool, Interface, Property
+from traits.api import Any, Bool, Event, Interface, Property
 
 from traits_futures.future_states import FutureState
 
@@ -32,6 +32,9 @@ class IFuture(Interface):
     #: is one of ``COMPLETED``, ``FAILED``, or ``CANCELLED``. It's safe to
     #: listen to this trait for changes: it will always fire exactly once.
     done = Property(Bool())
+
+    #: Event trait providing custom messages from the background task.
+    message = Event(Any())
 
     @abc.abstractmethod
     def cancel(self):
