@@ -242,14 +242,13 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(sender, receiver)
             raise
 
-        cancelled = cancel_event.is_set
         background_task_wrapper = BackgroundTaskWrapper(
-            runner, sender, cancelled
+            runner, sender, cancel_event
         )
-        self._worker_pool.submit(background_task_wrapper)
         wrapper = FutureWrapper(
             future=future, receiver=receiver, cancel_event=cancel_event,
         )
+        self._worker_pool.submit(background_task_wrapper)
         self._wrappers[receiver] = wrapper
         return future
 

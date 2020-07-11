@@ -166,30 +166,27 @@ class BackgroundTaskWrapper:
         been requested.
     """
 
-    def __init__(self, background_task, sender, cancelled):
+    def __init__(self, background_task, sender, cancel_event):
         self._background_task = background_task
         self._sender = sender
-        self._cancelled = cancelled
+        self._cancel_event = cancel_event
 
     def __call__(self):
         try:
-            sender = self._sender
-            cancelled = self._cancelled
-            background_task = self._background_task
-
-            send = self.send_control_message
-            send_custom = self.send_custom_message
-            with sender:
-                if cancelled():
-                    send(RETURNED, None)
+            with self._sender:
+                self.send_control_message(STARTED)
+                try:
+                    result = (
+                        None
+                        if self._cancel_event.is_set()
+                        else self._background_task(
+                            self.send_custom_message, self._cancel_event.is_set
+                        )
+                    )
+                except BaseException as e:
+                    self.send_control_message(RAISED, marshal_exception(e))
                 else:
-                    send(STARTED)
-                    try:
-                        result = background_task(send_custom, cancelled)
-                    except BaseException as e:
-                        send(RAISED, marshal_exception(e))
-                    else:
-                        send(RETURNED, result)
+                    self.send_control_message(RETURNED, result)
         except BaseException:
             # We'll only ever get here in the case of a coding error. But in
             # case that happens, it's useful to have the exception logged to
