@@ -89,7 +89,7 @@ class BackgroundCallTests:
 
     def test_cancellation_vs_started_race_condition(self):
         # Simulate situation where a STARTED message arrives post-cancellation.
-        event = self.Event()
+        event = self._context.event()
 
         future = submit_call(self.executor, event.set)
         listener = CallFutureListener(future=future)
@@ -126,8 +126,8 @@ class BackgroundCallTests:
         )
 
     def test_cancellation_before_success(self):
-        signal = self.Event()
-        test_ready = self.Event()
+        signal = self._context.event()
+        test_ready = self._context.event()
 
         future = submit_call(self.executor, ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)
@@ -149,8 +149,8 @@ class BackgroundCallTests:
         )
 
     def test_cancellation_before_failure(self):
-        signal = self.Event()
-        test_ready = self.Event()
+        signal = self._context.event()
+        test_ready = self._context.event()
 
         future = submit_call(self.executor, ping_pong_fail, signal, test_ready)
         listener = CallFutureListener(future=future)
@@ -222,8 +222,8 @@ class BackgroundCallTests:
         )
 
     def test_double_cancel_variant(self):
-        signal = self.Event()
-        test_ready = self.Event()
+        signal = self._context.event()
+        test_ready = self._context.event()
 
         future = submit_call(self.executor, ping_pong, signal, test_ready)
         listener = CallFutureListener(future=future)

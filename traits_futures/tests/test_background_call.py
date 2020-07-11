@@ -3,10 +3,9 @@
 
 import concurrent.futures
 import contextlib
-import threading
 import unittest
 
-from traits_futures.api import TraitsExecutor
+from traits_futures.api import MultithreadingContext, TraitsExecutor
 from traits_futures.tests.background_call_tests import BackgroundCallTests
 from traits_futures.toolkit_support import toolkit
 
@@ -22,14 +21,13 @@ class TestBackgroundCall(
 ):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.executor = TraitsExecutor()
+        self._context = MultithreadingContext()
+        self.executor = TraitsExecutor(context=self._context)
 
     def tearDown(self):
         self.halt_executor()
+        self._context.close()
         GuiTestAssistant.tearDown(self)
-
-    #: Factory for a shared event that can be passed to a worker.
-    Event = threading.Event
 
     @contextlib.contextmanager
     def block_worker_pool(self):
@@ -39,7 +37,7 @@ class TestBackgroundCall(
         worker_pool = self.executor._worker_pool
         max_workers = worker_pool._max_workers
 
-        event = self.Event()
+        event = self._context.event()
 
         futures = []
         for _ in range(max_workers):

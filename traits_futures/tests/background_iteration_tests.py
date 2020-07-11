@@ -185,7 +185,7 @@ class BackgroundIterationTests:
         # Simulate race condition where we cancel after the background
         # iteration has checked the cancel event, but before we process
         # the STARTED message.
-        event = self.Event()
+        event = self._context.event()
 
         future = submit_iteration(self.executor, set_then_yield, event)
         listener = IterationFutureListener(future=future)
@@ -203,7 +203,7 @@ class BackgroundIterationTests:
         # Exercise code path where the cancel event is set during the
         # iteration.
 
-        blocker = self.Event()
+        blocker = self._context.event()
 
         future = submit_iteration(self.executor, wait_midway, blocker)
         listener = IterationFutureListener(future=future)
@@ -228,7 +228,7 @@ class BackgroundIterationTests:
         )
 
     def test_cancel_before_exhausted(self):
-        blocker = self.Event()
+        blocker = self._context.event()
         future = submit_iteration(self.executor, yield_then_wait, blocker)
         listener = IterationFutureListener(future=future)
 
@@ -264,7 +264,7 @@ class BackgroundIterationTests:
         self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
 
     def test_cancel_after_start(self):
-        blocker = self.Event()
+        blocker = self._context.event()
 
         future = submit_iteration(self.executor, wait_midway, blocker)
         listener = IterationFutureListener(future=future)
@@ -287,7 +287,7 @@ class BackgroundIterationTests:
         )
 
     def test_cancel_before_failure(self):
-        blocker = self.Event()
+        blocker = self._context.event()
 
         future = submit_iteration(self.executor, wait_then_fail, blocker)
         listener = IterationFutureListener(future=future)
@@ -337,9 +337,9 @@ class BackgroundIterationTests:
             future.cancel()
 
     def test_generator_closed_on_cancellation(self):
-        resource_acquired = self.Event()
-        blocker = self.Event()
-        resource_released = self.Event()
+        resource_acquired = self._context.event()
+        blocker = self._context.event()
+        resource_released = self._context.event()
 
         future = submit_iteration(
             self.executor,
@@ -368,8 +368,8 @@ class BackgroundIterationTests:
     def test_prompt_result_deletion(self):
         # Check that we're not hanging onto result references needlessly in the
         # background task.
-        test_ready = self.Event()
-        midpoint = self.Event()
+        test_ready = self._context.event()
+        midpoint = self._context.event()
 
         future = submit_iteration(
             self.executor, ping_pong, test_ready, midpoint
