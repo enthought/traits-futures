@@ -164,7 +164,7 @@ class BackgroundProgressTests:
         self.assertEqual(listener.progress, expected_progress)
 
     def test_cancellation_before_execution(self):
-        event = self.Event()
+        event = self._context.event()
 
         future = submit_progress(self.executor, event_set_with_progress, event)
         listener = ProgressFutureListener(future=future)
@@ -183,7 +183,7 @@ class BackgroundProgressTests:
     def test_cancellation_before_background_task_starts(self):
         # Test case where the background task is cancelled before
         # it even starts executing.
-        event = self.Event()
+        event = self._context.event()
 
         with self.block_worker_pool():
             future = submit_progress(
@@ -201,8 +201,8 @@ class BackgroundProgressTests:
         self.assertEqual(listener.states, [WAITING, CANCELLING, CANCELLED])
 
     def test_progress_allows_cancellation(self):
-        test_ready = self.Event()
-        raised = self.Event()
+        test_ready = self._context.event()
+        raised = self._context.event()
 
         future = submit_progress(
             self.executor, syncing_progress, test_ready, raised
@@ -240,7 +240,7 @@ class BackgroundProgressTests:
             future.cancel()
 
     def test_cancel_raising_task(self):
-        signal = self.Event()
+        signal = self._context.event()
         future = submit_progress(self.executor, wait_then_fail, signal)
 
         self.wait_for_state(future, EXECUTING)
@@ -254,7 +254,7 @@ class BackgroundProgressTests:
         self.assertNoException(future)
 
     def test_progress_messages_after_cancellation(self):
-        signal = self.Event()
+        signal = self._context.event()
         future = submit_progress(self.executor, progress_then_signal, signal)
         listener = ProgressFutureListener(future=future)
 
@@ -272,9 +272,9 @@ class BackgroundProgressTests:
         self.assertEqual(listener.progress, [])
 
     def test_progress_cleanup_on_cancellation(self):
-        acquired = self.Event()
-        ready = self.Event()
-        checkpoint = self.Event()
+        acquired = self._context.event()
+        ready = self._context.event()
+        checkpoint = self._context.event()
 
         try:
             future = submit_progress(
