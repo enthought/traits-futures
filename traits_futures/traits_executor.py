@@ -23,7 +23,7 @@ from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
 from traits_futures.i_parallel_context import IParallelContext
-from traits_futures.wrappers import FutureWrapper, job_wrapper
+from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
 
 # Executor states.
@@ -243,7 +243,10 @@ class TraitsExecutor(HasStrictTraits):
             raise
 
         cancelled = cancel_event.is_set
-        self._worker_pool.submit(job_wrapper, runner, sender, cancelled)
+        background_task_wrapper = BackgroundTaskWrapper(
+            runner, sender, cancelled
+        )
+        self._worker_pool.submit(background_task_wrapper)
         wrapper = FutureWrapper(
             future=future, receiver=receiver, cancel=cancel_event.set
         )

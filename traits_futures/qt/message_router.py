@@ -93,9 +93,6 @@ class MessageSender:
         """
         self.send((message_type, message_args))
 
-    def send_custom_message(self, message_type, message_args=None):
-        self.send((CUSTOM, message_type, message_args))
-
 
 class MessageReceiver(HasStrictTraits):
     """

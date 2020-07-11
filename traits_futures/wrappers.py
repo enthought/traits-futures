@@ -135,7 +135,8 @@ class FutureWrapper(HasStrictTraits):
             future.state = EXECUTING
 
 
-def job_wrapper(background_task, sender, cancelled):
+class BackgroundTaskWrapper:
+
     """
     Wrapper for callables submitted to the underlying executor.
 
@@ -150,23 +151,37 @@ def job_wrapper(background_task, sender, cancelled):
         Callable that can be called to check whether cancellation has
         been requested.
     """
-    try:
-        send = sender.send_message
-        send_custom = sender.send_custom_message
-        with sender:
-            if cancelled():
-                send(RETURNED, None)
-            else:
-                send(STARTED)
-                try:
-                    result = background_task(send_custom, cancelled)
-                except BaseException as e:
-                    send(RAISED, marshal_exception(e))
+
+    def __init__(self, background_task, sender, cancelled):
+        self._background_task = background_task
+        self._sender = sender
+        self._cancelled = cancelled
+
+    def __call__(self):
+        sender = self._sender
+        cancelled = self._cancelled
+        background_task = self._background_task
+
+        try:
+            send = sender.send_message
+            send_custom = self.send_custom_message
+            with sender:
+                if cancelled():
+                    send(RETURNED, None)
                 else:
-                    send(RETURNED, result)
-    except BaseException:
-        # We'll only ever get here in the case of a coding error. But in
-        # case that happens, it's useful to have the exception logged to
-        # help the developer.
-        logger.exception("Unexpected exception in background task.")
-        raise
+                    send(STARTED)
+                    try:
+                        result = background_task(send_custom, cancelled)
+                    except BaseException as e:
+                        send(RAISED, marshal_exception(e))
+                    else:
+                        send(RETURNED, result)
+        except BaseException:
+            # We'll only ever get here in the case of a coding error. But in
+            # case that happens, it's useful to have the exception logged to
+            # help the developer.
+            logger.exception("Unexpected exception in background task.")
+            raise
+
+    def send_custom_message(self, message_type, message_args=None):
+        self._sender.send((CUSTOM, message_type, message_args))
