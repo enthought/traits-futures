@@ -163,9 +163,9 @@ trait like this::
             current_step, max_steps, matches)
 
 The |submit_iteration| function is a little bit different: it produces a result
-on each iteration, but doesn't give any final result. Its ``result_event``
-trait is an ``Event`` that you can hook listeners up to in order to receive the
-results. For example::
+on each iteration, but doesn't necessarily give a final result. Its
+``result_event`` trait is an ``Event`` that you can hook listeners up to in
+order to receive the iteration results. For example::
 
     @on_trait_change('future:result_event')
     def _record_result(self, result):
