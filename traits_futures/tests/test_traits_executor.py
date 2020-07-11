@@ -4,9 +4,7 @@
 """
 Tests for the TraitsExecutor class.
 """
-import concurrent.futures
 import contextlib
-import threading
 import unittest
 
 from traits.api import (
@@ -103,12 +101,14 @@ def test_progress(arg1, arg2, kwd1, kwd2, progress):
 class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
+        self._context = MultithreadingContext()
 
     def tearDown(self):
         if hasattr(self, "executor"):
             self.executor.stop()
             self.wait_until_stopped(self.executor)
             del self.executor
+        self._context.close()
         GuiTestAssistant.tearDown(self)
 
     def test_max_workers(self):
@@ -438,7 +438,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
         The task finishes on exit of the with block.
         """
-        event = threading.Event()
+        event = self._context.event()
         try:
             yield submit_call(executor, event.wait)
         finally:
@@ -449,7 +449,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         """
         Create a worker pool that's shut down at the end of the with block.
         """
-        worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
+        worker_pool = self._context.worker_pool(max_workers=4)
         try:
             yield worker_pool
         finally:
