@@ -120,9 +120,9 @@ class BaseFuture(HasStrictTraits):
         """
         Request cancellation of the background task.
 
-        A task in WAITING or EXECUTING state will immediately be moved to
-        CANCELLING state. If the task is not in WAITING or EXECUTING state,
-        this function will raise ``RuntimeError``.
+        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
+        to ``CANCELLING`` state. If the task is not in ``WAITING`` or
+        ``EXECUTING`` state, this function will raise ``RuntimeError``.
 
         Raises
         ------
