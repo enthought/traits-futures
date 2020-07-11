@@ -31,55 +31,70 @@ from traits_futures.i_future import IFuture
 logger = logging.getLogger(__name__)
 
 
-# Messages sent by the wrapper, and interpreted by the BaseFuture
+#: Prefix used for custom messages.
+CUSTOM = "custom"
 
-#: Message sent before we start to process the target callable.
+#: Prefix used for control messages.
+CONTROL = "control"
+
+# Control messages sent by the wrapper, and interpreted by the FutureWrapper.
+
+#: Control message sent before we start to process the target callable.
+#: The argument is always ``None``.
 STARTED = "started"
 
-#: Message sent when an exception was raised by the background
+#: Control message sent when an exception was raised by the background
 #: callable. The argument is a tuple containing exception information.
 RAISED = "raised"
 
-#: Call succeeded and returned a result. Argument is the result.
+#: Control message sent to indicate that the background callable succeeded
+#: and returned a result. The argument is that result.
 RETURNED = "returned"
-
-#: Prefix used for custom messages
-CUSTOM = "custom"
 
 
 class FutureWrapper(HasStrictTraits):
+    """
+    Wrapper for the IFuture.
+
+    This wrapper handles control messages from the background task, and
+    delegates custom messages to the future.
+    """
+
     #: Future being wrapped
     future = Instance(IFuture)
 
     #: Object that receives messages from the background task.
     receiver = Instance(HasTraits)
 
-    #: Callable used to request cancellation
-    cancel = Any()
+    #: threading.Event-style event used to request cancellation.
+    cancel_event = Any()
 
     @on_trait_change("receiver:message")
     def _receive_message(self, message):
         """
         Pass on a message to the appropriate future.
         """
-        if message[0] == CUSTOM:
-            assert self.future.state in (CANCELLING, EXECUTING)
-            self.future.message = message[1:]
-            return
+        message_kind, message = message
 
-        message_type, message_args = message
-        if message_type == STARTED:
-            self._process_started(message_args)
-        elif message_type == RAISED:
-            self._process_raised(message_args)
-        elif message_type == RETURNED:
-            self._process_returned(message_args)
+        if message_kind == CUSTOM:
+            assert self.future.state in (CANCELLING, EXECUTING)
+            self.future.message = message
+        elif message_kind == CONTROL:
+            message_type, message_arg = message
+            method_name = "_process_{}".format(message_type)
+            getattr(self, method_name)(message_arg)
         else:
-            raise RuntimeError("Unknown message type: {}".format(message_type))
+            raise RuntimeError(
+                "Unrecognised message kind: {}".format(message_kind)
+            )
 
     @on_trait_change("future:_cancel")
     def _do_cancellation(self):
-        self.cancel()
+        """
+        Request cancellation of the background task when future:_cancel is
+        fired.
+        """
+        self.cancel_event.set()
 
     def _process_raised(self, exception_info):
         """
@@ -136,7 +151,6 @@ class FutureWrapper(HasStrictTraits):
 
 
 class BackgroundTaskWrapper:
-
     """
     Wrapper for callables submitted to the underlying executor.
 
@@ -163,7 +177,7 @@ class BackgroundTaskWrapper:
         background_task = self._background_task
 
         try:
-            send = sender.send_message
+            send = self.send_control_message
             send_custom = self.send_custom_message
             with sender:
                 if cancelled():
@@ -183,5 +197,25 @@ class BackgroundTaskWrapper:
             logger.exception("Unexpected exception in background task.")
             raise
 
+    def send_control_message(self, message_type, message_args=None):
+        """
+        Send a control message from the background task to the future.
+
+        These messages apply to all futures, and are used to communicate
+        changes to the state of the future.
+        """
+        self._sender.send((CONTROL, (message_type, message_args)))
+
     def send_custom_message(self, message_type, message_args=None):
-        self._sender.send((CUSTOM, message_type, message_args))
+        """
+        Send a custom message from the background task to the future.
+
+        Parameters
+        ----------
+        message_type : str
+            The message type.
+        message_args : object, optional
+            Any arguments providing additional information for the message.
+            If not given, ``None`` is passed.
+        """
+        self._sender.send((CUSTOM, (message_type, message_args)))

@@ -248,7 +248,7 @@ class TraitsExecutor(HasStrictTraits):
         )
         self._worker_pool.submit(background_task_wrapper)
         wrapper = FutureWrapper(
-            future=future, receiver=receiver, cancel=cancel_event.set
+            future=future, receiver=receiver, cancel_event=cancel_event,
         )
         self._wrappers[receiver] = wrapper
         return future
