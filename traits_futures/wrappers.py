@@ -172,11 +172,11 @@ class BackgroundTaskWrapper:
         self._cancelled = cancelled
 
     def __call__(self):
-        sender = self._sender
-        cancelled = self._cancelled
-        background_task = self._background_task
-
         try:
+            sender = self._sender
+            cancelled = self._cancelled
+            background_task = self._background_task
+
             send = self.send_control_message
             send_custom = self.send_custom_message
             with sender:
