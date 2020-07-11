@@ -7,98 +7,17 @@ Tests for the TraitsExecutor class.
 import contextlib
 import unittest
 
-from traits.api import (
-    Bool,
-    HasStrictTraits,
-    Instance,
-    List,
-    on_trait_change,
-    Property,
-    Tuple,
-)
-
-from traits_futures.api import (
-    CallFuture,
-    CANCELLED,
-    CANCELLING,
-    EXECUTING,
-    ExecutorState,
-    MultithreadingContext,
-    RUNNING,
-    STOPPED,
-    STOPPING,
-    submit_call,
-    TraitsExecutor,
+from traits_futures.api import MultithreadingContext, TraitsExecutor
+from traits_futures.tests.traits_executor_tests import (
+    ExecutorListener,
+    TraitsExecutorTests,
 )
 from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 
-class ExecutorListener(HasStrictTraits):
-    """ Listener for executor state changes. """
-
-    #: Executor that we're listening to.
-    executor = Instance(TraitsExecutor)
-
-    #: List of states of that executor.
-    states = List(ExecutorState)
-
-    #: Changes to the 'running' trait value.
-    running_changes = List(Tuple(Bool(), Bool()))
-
-    #: Changes to the 'stopped' trait value.
-    stopped_changes = List(Tuple(Bool(), Bool()))
-
-    @on_trait_change("executor:state")
-    def _record_state_change(self, obj, name, old_state, new_state):
-        if not self.states:
-            # On the first state change, record the initial state as well as
-            # the new one.
-            self.states.append(old_state)
-        self.states.append(new_state)
-
-    @on_trait_change("executor:running")
-    def _record_running_change(self, object, name, old, new):
-        self.running_changes.append((old, new))
-
-    @on_trait_change("executor:stopped")
-    def _record_stopped_change(self, object, name, old, new):
-        self.stopped_changes.append((old, new))
-
-
-class FuturesListener(HasStrictTraits):
-    """
-    Listener for multiple futures.
-    """
-
-    #: List of futures that we're listening to.
-    futures = List(Instance(CallFuture))
-
-    #: True when all futures have completed.
-    all_done = Property(Bool(), depends_on="futures:done")
-
-    def _get_all_done(self):
-        return all(future.done for future in self.futures)
-
-
-def test_call(*args, **kwds):
-    """ Simple test target for submit_call. """
-    return args, kwds
-
-
-def test_iteration(*args, **kwargs):
-    """ Simple test target for submit_iteration. """
-    yield args
-    yield kwargs
-
-
-def test_progress(arg1, arg2, kwd1, kwd2, progress):
-    """ Simple test target for submit_progress. """
-    return arg1, arg2, kwd1, kwd2
-
-
-class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
+class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
         self._context = MultithreadingContext()
@@ -112,7 +31,7 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
         GuiTestAssistant.tearDown(self)
 
     def test_max_workers(self):
-        executor = TraitsExecutor(max_workers=11)
+        executor = TraitsExecutor(max_workers=11, context=self._context)
         self.assertEqual(executor._worker_pool._max_workers, 11)
         executor.stop()
         self.wait_until_stopped(executor)
@@ -120,7 +39,11 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_max_workers_mutually_exclusive_with_worker_pool(self):
         with self.temporary_worker_pool() as worker_pool:
             with self.assertRaises(TypeError):
-                TraitsExecutor(worker_pool=worker_pool, max_workers=11)
+                TraitsExecutor(
+                    worker_pool=worker_pool,
+                    max_workers=11,
+                    context=self._context,
+                )
 
     def test_default_context(self):
         with self.temporary_executor() as executor:
@@ -141,102 +64,8 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             self.assertFalse(context.closed)
         self.assertTrue(context.closed)
 
-    def test_stop_method(self):
-        executor = TraitsExecutor()
-        listener = ExecutorListener(executor=executor)
-
-        with self.long_running_task(executor):
-            self.assertEqual(executor.state, RUNNING)
-            executor.stop()
-            self.assertEqual(executor.state, STOPPING)
-
-        self.wait_until_stopped(executor)
-        self.assertEqual(executor.state, STOPPED)
-        self.assertEqual(listener.states, [RUNNING, STOPPING, STOPPED])
-
-    def test_stop_method_with_no_jobs(self):
-        executor = TraitsExecutor()
-        listener = ExecutorListener(executor=executor)
-
-        self.assertEqual(executor.state, RUNNING)
-        executor.stop()
-        self.wait_until_stopped(executor)
-        self.assertEqual(executor.state, STOPPED)
-        self.assertEqual(listener.states, [RUNNING, STOPPING, STOPPED])
-
-    def test_stop_method_raises_unless_running(self):
-        executor = TraitsExecutor()
-
-        with self.long_running_task(executor):
-            self.assertEqual(executor.state, RUNNING)
-            executor.stop()
-
-            # Raises if in STOPPING mode.
-            self.assertEqual(executor.state, STOPPING)
-            with self.assertRaises(RuntimeError):
-                executor.stop()
-
-        self.wait_until_stopped(executor)
-        # Raises if in STOPPED mode.
-        self.assertEqual(executor.state, STOPPED)
-        with self.assertRaises(RuntimeError):
-            executor.stop()
-
-    def test_cant_submit_new_unless_running(self):
-        executor = TraitsExecutor()
-        with self.long_running_task(executor):
-            executor.stop()
-            self.assertEqual(executor.state, STOPPING)
-
-            with self.assertRaises(RuntimeError):
-                submit_call(executor, len, (1, 2, 3))
-
-        self.wait_until_stopped(executor)
-        self.assertEqual(executor.state, STOPPED)
-        with self.assertRaises(RuntimeError):
-            submit_call(executor, int)
-
-    def test_stop_cancels_running_futures(self):
-        executor = TraitsExecutor()
-        with self.long_running_task(executor) as future:
-            self.wait_for_state(future, EXECUTING)
-
-            self.assertEqual(future.state, EXECUTING)
-            executor.stop()
-            self.assertEqual(future.state, CANCELLING)
-
-        self.wait_until_done(future)
-        self.assertEqual(future.state, CANCELLED)
-
-        self.wait_until_stopped(executor)
-        self.assertEqual(executor.state, STOPPED)
-
-    def test_running(self):
-        executor = TraitsExecutor()
-        self.assertTrue(executor.running)
-
-        with self.long_running_task(executor):
-            self.assertTrue(executor.running)
-            executor.stop()
-            self.assertFalse(executor.running)
-
-        self.wait_until_stopped(executor)
-        self.assertFalse(executor.running)
-
-    def test_stopped(self):
-        executor = TraitsExecutor()
-        self.assertFalse(executor.stopped)
-
-        with self.long_running_task(executor):
-            self.assertFalse(executor.stopped)
-            executor.stop()
-            self.assertFalse(executor.stopped)
-
-        self.wait_until_stopped(executor)
-        self.assertTrue(executor.stopped)
-
     def test_owned_worker_pool(self):
-        executor = TraitsExecutor()
+        executor = TraitsExecutor(context=self._context)
         worker_pool = executor._worker_pool
 
         executor.stop()
@@ -249,7 +78,9 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
     def test_thread_pool_argument_deprecated(self):
         with self.temporary_worker_pool() as worker_pool:
             with self.assertWarns(DeprecationWarning) as warning_info:
-                executor = TraitsExecutor(thread_pool=worker_pool)
+                executor = TraitsExecutor(
+                    thread_pool=worker_pool, context=self._context
+                )
             executor.stop()
             self.wait_until_stopped(executor)
 
@@ -259,7 +90,9 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
 
     def test_shared_worker_pool(self):
         with self.temporary_worker_pool() as worker_pool:
-            executor = TraitsExecutor(worker_pool=worker_pool)
+            executor = TraitsExecutor(
+                worker_pool=worker_pool, context=self._context
+            )
             executor.stop()
             self.wait_until_stopped(executor)
 
@@ -267,157 +100,22 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
 
-    def test_submit_call_method(self):
-        self.executor = TraitsExecutor()
-        with self.assertWarns(DeprecationWarning) as warning_info:
-            future = self.executor.submit_call(
-                test_call, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2"
-            )
-
-        self.wait_until_done(future)
-
-        self.assertEqual(
-            future.result,
-            (("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}),
-        )
-
-        _, _, this_module = __name__.rpartition(".")
-        self.assertIn(this_module, warning_info.filename)
-        self.assertIn(
-            "submit_call method is deprecated", str(warning_info.warning),
-        )
-
-    def test_submit_iteration_method(self):
-        self.executor = TraitsExecutor()
-        with self.assertWarns(DeprecationWarning) as warning_info:
-            future = self.executor.submit_iteration(
-                test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2",
-            )
-
-        results = []
-        future.on_trait_change(
-            lambda result: results.append(result), "result_event"
-        )
-
-        self.wait_until_done(future)
-        self.assertEqual(
-            results, [("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}],
-        )
-
-        _, _, this_module = __name__.rpartition(".")
-        self.assertIn(this_module, warning_info.filename)
-        self.assertIn(
-            "submit_iteration method is deprecated", str(warning_info.warning),
-        )
-
-    def test_submit_progress_method(self):
-        self.executor = TraitsExecutor()
-        with self.assertWarns(DeprecationWarning) as warning_info:
-            future = self.executor.submit_progress(
-                test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2",
-            )
-
-        self.wait_until_done(future)
-
-        self.assertEqual(
-            future.result, ("arg1", "arg2", "kwd1", "kwd2"),
-        )
-
-        _, _, this_module = __name__.rpartition(".")
-        self.assertIn(this_module, warning_info.filename)
-        self.assertIn(
-            "submit_progress method is deprecated", str(warning_info.warning),
-        )
-
-    def test_states_consistent(self):
-        # Triples (state, running, stopped).
-        states = []
-
-        def record_states():
-            states.append((executor.state, executor.running, executor.stopped))
-
-        executor = TraitsExecutor()
-        executor.on_trait_change(record_states, "running")
-        executor.on_trait_change(record_states, "stopped")
-        executor.on_trait_change(record_states, "state")
-        submit_call(executor, int)
-
-        # Record states before, during, and after stopping.
-        record_states()
-        executor.stop()
-        self.wait_until_stopped(executor)
-        record_states()
-
-        for state, running, stopped in states:
-            self.assertEqual(running, state == RUNNING)
-            self.assertEqual(stopped, state == STOPPED)
-
-    def test_running_and_stopped_fired_only_once(self):
-        executor = TraitsExecutor()
-        listener = ExecutorListener(executor=executor)
-
-        submit_call(executor, int)
-        executor.stop()
-        self.wait_until_stopped(executor)
-
-        self.assertEqual(listener.running_changes, [(True, False)])
-        self.assertEqual(listener.stopped_changes, [(False, True)])
-
-    def test_running_and_stopped_fired_only_once_no_futures(self):
-        # Same as above but tests the case where the executor goes to STOPPED
-        # state the moment that stop is called.
-        executor = TraitsExecutor()
-        listener = ExecutorListener(executor=executor)
-
-        executor.stop()
-        self.wait_until_stopped(executor)
-
-        self.assertEqual(listener.running_changes, [(True, False)])
-        self.assertEqual(listener.stopped_changes, [(False, True)])
-
-    def test_multiple_futures(self):
-        self.executor = TraitsExecutor()
-
-        futures = []
-        for i in range(100):
-            futures.append(submit_call(self.executor, str, i))
-
-        listener = FuturesListener(futures=futures)
-
-        # Wait for all futures to complete.
-        self.run_until(
-            listener, "all_done", lambda listener: listener.all_done
-        )
-
-        for i, future in enumerate(futures):
-            self.assertEqual(future.result, str(i))
-
-    def test_stop_with_multiple_futures(self):
-        executor = TraitsExecutor()
-
-        futures = []
-        for i in range(100):
-            futures.append(submit_call(executor, str, i))
-
-        executor.stop()
-        self.wait_until_stopped(executor)
-
-        for future in futures:
-            self.assertEqual(future.state, CANCELLED)
-
-    # Helper methods and assertions ###########################################
-
     def wait_until_stopped(self, executor):
         """"
         Wait for the executor to reach STOPPED state.
         """
         self.run_until(executor, "stopped", lambda executor: executor.stopped)
 
-    def wait_until_done(self, future):
-        self.run_until(future, "done", lambda future: future.done)
-
-    def wait_for_state(self, future, state):
-        self.run_until(future, "state", lambda future: future.state == state)
+    @contextlib.contextmanager
+    def temporary_worker_pool(self):
+        """
+        Create a worker pool that's shut down at the end of the with block.
+        """
+        worker_pool = self._context.worker_pool(max_workers=4)
+        try:
+            yield worker_pool
+        finally:
+            worker_pool.shutdown()
 
     @contextlib.contextmanager
     def temporary_executor(self, **kwds):
@@ -431,26 +129,22 @@ class TestTraitsExecutor(GuiTestAssistant, unittest.TestCase):
             executor.stop()
             self.wait_until_stopped(executor)
 
-    @contextlib.contextmanager
-    def long_running_task(self, executor):
-        """
-        Simulate a long-running task being submitted to the executor.
 
-        The task finishes on exit of the with block.
-        """
-        event = self._context.event()
-        try:
-            yield submit_call(executor, event.wait)
-        finally:
-            event.set()
+class TestTraitsExecutor(
+    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+):
+    def setUp(self):
+        GuiTestAssistant.setUp(self)
+        self._context = MultithreadingContext()
+        self.executor = TraitsExecutor(context=self._context)
+        self.listener = ExecutorListener(executor=self.executor)
 
-    @contextlib.contextmanager
-    def temporary_worker_pool(self):
-        """
-        Create a worker pool that's shut down at the end of the with block.
-        """
-        worker_pool = self._context.worker_pool(max_workers=4)
-        try:
-            yield worker_pool
-        finally:
-            worker_pool.shutdown()
+    def tearDown(self):
+        del self.listener
+        if not self.executor.stopped:
+            self.executor.stop()
+            self.wait_until_stopped(self.executor)
+        del self.executor
+        self._context.close()
+        del self._context
+        GuiTestAssistant.tearDown(self)
