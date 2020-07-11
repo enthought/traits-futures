@@ -2,7 +2,9 @@
 # All rights reserved.
 
 """
-Base class providing common pieces of the Future machinery.
+Wrappers for the background task callable and the foreground future.
+
+These are used by the TraitsExecutor machinery.
 """
 
 import logging
