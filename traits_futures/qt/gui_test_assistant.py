@@ -68,14 +68,17 @@ class GuiTestAssistant:
         try:
             # The condition may have become True before we
             # started listening to changes. So start with a check.
-            QTimer.singleShot(0, stop_if_condition)
-            timeout_timer.timeout.connect(stop_on_timeout)
-            timeout_timer.start()
-            try:
-                timed_out = qt_app.exec_()
-            finally:
-                timeout_timer.stop()
-                timeout_timer.timeout.disconnect(stop_on_timeout)
+            if condition(object):
+                timed_out = 0
+            else:
+                timeout_timer.timeout.connect(stop_on_timeout)
+                timeout_timer.start()
+                try:
+                    timed_out = qt_app.exec_()
+                finally:
+                    pass
+                    timeout_timer.stop()
+                    timeout_timer.timeout.disconnect(stop_on_timeout)
         finally:
             object.on_trait_change(stop_if_condition, trait, remove=True)
 
