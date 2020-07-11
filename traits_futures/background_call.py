@@ -55,15 +55,14 @@ class BackgroundCall(HasStrictTraits):
 
     def background_task(self):
         """
-        Return a background callable for this job specification.
+        Return a background callable for this task specification.
 
         Returns
         -------
         background : callable
-            Callable accepting arguments ``sender`` and ``cancelled``, and
-            returning nothing. The callable will use ``sender`` to send
-            messages and ``cancelled` to check whether the job has been
-            cancelled.
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled` to
+            check whether cancellation has been requested.
         """
         return CallBackgroundTask(
             callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),

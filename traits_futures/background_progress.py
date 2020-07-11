@@ -23,7 +23,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import CANCELLING, EXECUTING
+from traits_futures.future_states import CANCELLING
 from traits_futures.i_task_specification import ITaskSpecification
 
 
@@ -103,10 +103,10 @@ class ProgressFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_progress(self, progress_info):
-        assert self.state in (EXECUTING, CANCELLING)
         # Ignore progress messages that arrive after a cancellation request.
-        if self.state != CANCELLING:
-            self.progress = progress_info
+        if self.state == CANCELLING:
+            return
+        self.progress = progress_info
 
 
 @ITaskSpecification.register
@@ -126,15 +126,14 @@ class BackgroundProgress(HasStrictTraits):
 
     def background_task(self):
         """
-        Return a background callable for this job specification.
+        Return a background callable for this task specification.
 
         Returns
         -------
         background : callable
-            Callable accepting arguments ``sender`` and ``cancelled``, and
-            returning nothing. The callable will use ``sender`` to send
-            messages and ``cancelled` to check whether the job has been
-            cancelled.
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled` to
+            check whether cancellation has been requested.
         """
         if "progress" in self.kwargs:
             raise TypeError("progress may not be passed as a named argument")

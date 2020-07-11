@@ -16,14 +16,12 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import CANCELLING, EXECUTING
+from traits_futures.future_states import CANCELLING
 from traits_futures.i_task_specification import ITaskSpecification
 
 
-# Additional message types for background iterations.
-
 #: Message sent whenever the iteration yields a result.
-#: Argument is the result generated.
+#: The message argument is the result generated.
 GENERATED = "generated"
 
 
@@ -40,17 +38,20 @@ class IterationBackgroundTask:
     def __call__(self, send, cancelled):
         iterable = iter(self.callable(*self.args, **self.kwargs))
 
-        while not cancelled():
+        while True:
+            if cancelled():
+                return None
+
             try:
                 result = next(iterable)
             except StopIteration as e:
                 # If the iteration returned a value, the StopIteration
                 # exception carries that value. Return it.
                 return e.value
-            else:
-                send(GENERATED, result)
-                # Don't keep a reference around until the next iteration.
-                del result
+
+            send(GENERATED, result)
+            # Don't keep a reference around until the next iteration.
+            del result
 
 
 class IterationFuture(BaseFuture):
@@ -65,10 +66,10 @@ class IterationFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_generated(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
-        # Any results arriving after a cancellation request are ignored.
-        if self.state != CANCELLING:
-            self.result_event = result
+        # Results arriving after a cancellation request are ignored.
+        if self.state == CANCELLING:
+            return
+        self.result_event = result
 
 
 @ITaskSpecification.register
@@ -88,15 +89,14 @@ class BackgroundIteration(HasStrictTraits):
 
     def background_task(self):
         """
-        Return a background callable for this job specification.
+        Return a background callable for this task specification.
 
         Returns
         -------
         background : callable
-            Callable accepting arguments ``sender`` and ``cancelled``, and
-            returning nothing. The callable will use ``sender`` to send
-            messages and ``cancelled` to check whether the job has been
-            cancelled.
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled` to
+            check whether cancellation has been requested.
         """
         return IterationBackgroundTask(
             callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),

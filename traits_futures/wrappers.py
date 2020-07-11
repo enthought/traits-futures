@@ -63,6 +63,7 @@ class FutureWrapper(HasStrictTraits):
         Pass on a message to the appropriate future.
         """
         if message[0] == CUSTOM:
+            assert self.future.state in (CANCELLING, EXECUTING)
             self.future.message = message[1:]
             return
 
