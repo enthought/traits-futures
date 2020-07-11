@@ -222,7 +222,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        task : IJobSpecification
+        task : ITaskSpecification
 
         Returns
         -------
@@ -236,7 +236,7 @@ class TraitsExecutor(HasStrictTraits):
 
         sender, receiver = self._message_router.pipe()
         try:
-            runner = task.background_job()
+            runner = task.background_task()
             future = task.future()
         except Exception:
             self._message_router.close_pipe(sender, receiver)

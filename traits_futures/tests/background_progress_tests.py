@@ -181,7 +181,7 @@ class BackgroundProgressTests:
         )
 
     def test_cancellation_before_background_task_starts(self):
-        # Test case where the background job is cancelled before
+        # Test case where the background task is cancelled before
         # it even starts executing.
         event = self.Event()
 

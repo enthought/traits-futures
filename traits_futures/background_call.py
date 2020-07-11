@@ -14,7 +14,7 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.i_job_specification import IJobSpecification
+from traits_futures.i_task_specification import ITaskSpecification
 
 
 class CallBackgroundTask:
@@ -38,7 +38,7 @@ class CallFuture(BaseFuture):
     """
 
 
-@IJobSpecification.register
+@ITaskSpecification.register
 class BackgroundCall(HasStrictTraits):
     """
     Object representing the background call to be executed.
@@ -53,7 +53,7 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def background_job(self):
+    def background_task(self):
         """
         Return a background callable for this job specification.
 
@@ -71,7 +71,7 @@ class BackgroundCall(HasStrictTraits):
 
     def future(self):
         """
-        Return a future for a background job.
+        Return a future for a background task.
 
         Returns
         -------

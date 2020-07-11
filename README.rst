@@ -16,8 +16,9 @@ something like this:
   is running.
 - The UI should update (e.g., show a plot, or show results) in response to the
   background calculation completing normally.
-- The background job should be cancellable.
-- The UI should react appropriately if the background job raises an exception.
+- The background calculation should be cancellable.
+- The UI should react appropriately if the background calculation raises an
+  exception.
 
 And there are some further ease-of-development requirements:
 

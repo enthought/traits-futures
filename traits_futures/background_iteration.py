@@ -17,7 +17,7 @@ from traits.api import (
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import CANCELLING, EXECUTING
-from traits_futures.i_job_specification import IJobSpecification
+from traits_futures.i_task_specification import ITaskSpecification
 
 
 # Additional message types for background iterations.
@@ -71,7 +71,7 @@ class IterationFuture(BaseFuture):
             self.result_event = result
 
 
-@IJobSpecification.register
+@ITaskSpecification.register
 class BackgroundIteration(HasStrictTraits):
     """
     Object representing the background iteration to be executed.
@@ -86,7 +86,7 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def background_job(self):
+    def background_task(self):
         """
         Return a background callable for this job specification.
 
@@ -104,7 +104,7 @@ class BackgroundIteration(HasStrictTraits):
 
     def future(self):
         """
-        Return a future for a background job.
+        Return a future for a background task.
 
         Returns
         -------

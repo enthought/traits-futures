@@ -26,8 +26,8 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_future import IFuture
-from traits_futures.i_job_specification import IJobSpecification
 from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.i_task_specification import ITaskSpecification
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.traits_executor import (
     ExecutorState,
@@ -58,12 +58,12 @@ __all__ = [
     "RUNNING",
     "STOPPING",
     "STOPPED",
-    # Convenience submission functions for job types that we define
+    # Convenience submission functions for task types that we define
     "submit_call",
     "submit_iteration",
     "submit_progress",
-    # IJobSpecification: interface for creating new job types
-    "IJobSpecification",
+    # ITaskSpecification: interface for creating new task types
+    "ITaskSpecification",
     # Contexts
     "IParallelContext",
     "MultithreadingContext",

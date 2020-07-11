@@ -24,7 +24,7 @@ from traits.api import (
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import CANCELLING, EXECUTING
-from traits_futures.i_job_specification import IJobSpecification
+from traits_futures.i_task_specification import ITaskSpecification
 
 
 # Message types for messages from ProgressBackgroundTask
@@ -109,7 +109,7 @@ class ProgressFuture(BaseFuture):
             self.progress = progress_info
 
 
-@IJobSpecification.register
+@ITaskSpecification.register
 class BackgroundProgress(HasStrictTraits):
     """
     Object representing the background task to be executed.
@@ -124,7 +124,7 @@ class BackgroundProgress(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
-    def background_job(self):
+    def background_task(self):
         """
         Return a background callable for this job specification.
 
@@ -145,7 +145,7 @@ class BackgroundProgress(HasStrictTraits):
 
     def future(self):
         """
-        Return a future for a background job.
+        Return a future for a background task.
 
         Returns
         -------

@@ -132,13 +132,13 @@ class FutureWrapper(HasStrictTraits):
             future.state = EXECUTING
 
 
-def job_wrapper(background_job, sender, cancelled):
+def job_wrapper(background_task, sender, cancelled):
     """
     Wrapper for callables submitted to the underlying executor.
 
     Parameters
     ----------
-    background_job : callable
+    background_task : callable
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled`..
     sender : MessageSender
@@ -156,7 +156,7 @@ def job_wrapper(background_job, sender, cancelled):
             else:
                 send(STARTED)
                 try:
-                    result = background_job(send_custom, cancelled)
+                    result = background_task(send_custom, cancelled)
                 except BaseException as e:
                     send(RAISED, marshal_exception(e))
                 else:
