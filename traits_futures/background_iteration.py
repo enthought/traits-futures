@@ -87,6 +87,9 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
+    #: Factory for futures.
+    future = IterationFuture
+
     def background_task(self):
         """
         Return a background callable for this task specification.
@@ -101,18 +104,6 @@ class BackgroundIteration(HasStrictTraits):
         return IterationBackgroundTask(
             callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
-
-    def future(self):
-        """
-        Return a future for a background task.
-
-        Returns
-        -------
-        future : IterationFuture
-            Foreground object representing the state of the running
-            calculation.
-        """
-        return IterationFuture()
 
 
 def submit_iteration(executor, callable, *args, **kwargs):

@@ -124,6 +124,9 @@ class BackgroundProgress(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
+    #: Factory for futures.
+    future = ProgressFuture
+
     def background_task(self):
         """
         Return a background callable for this task specification.
@@ -141,18 +144,6 @@ class BackgroundProgress(HasStrictTraits):
         return ProgressBackgroundTask(
             callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
-
-    def future(self):
-        """
-        Return a future for a background task.
-
-        Returns
-        -------
-        future : ProgressFuture
-            Foreground object representing the state of the running
-            calculation.
-        """
-        return ProgressFuture()
 
 
 def submit_progress(executor, callable, *args, **kwargs):

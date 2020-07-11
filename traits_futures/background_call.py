@@ -4,14 +4,7 @@
 """
 Background task consisting of a simple callable.
 """
-from traits.api import (
-    Any,
-    Callable,
-    Dict,
-    HasStrictTraits,
-    Str,
-    Tuple,
-)
+from traits.api import Any, Callable, Dict, HasStrictTraits, Str, Tuple
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
@@ -53,6 +46,9 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str(), Any())
 
+    #: Factory for futures
+    future = CallFuture
+
     def background_task(self):
         """
         Return a background callable for this task specification.
@@ -67,18 +63,6 @@ class BackgroundCall(HasStrictTraits):
         return CallBackgroundTask(
             callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
         )
-
-    def future(self):
-        """
-        Return a future for a background task.
-
-        Returns
-        -------
-        future : CallFuture
-            Foreground object representing the state of the running
-            calculation.
-        """
-        return CallFuture()
 
 
 def submit_call(executor, callable, *args, **kwargs):
