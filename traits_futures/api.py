@@ -3,6 +3,10 @@
 
 """
 Core API for the traits_futures package.
+
+This module contains everything that's expected to be used by users, and
+represents the supported API of Traits Futures. Users importing from other
+modules do so at their own risk.
 """
 from traits_futures.background_call import (
     CallFuture,

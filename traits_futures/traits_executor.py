@@ -140,7 +140,7 @@ class TraitsExecutor(HasStrictTraits):
         Convenience function to submit a background call.
 
         .. deprecated:: 0.2
-           Use the :func:`submit_call` function instead.
+           Use the :func:`~.submit_call` function instead.
 
         Parameters
         ----------
@@ -169,7 +169,7 @@ class TraitsExecutor(HasStrictTraits):
         Convenience function to submit a background iteration.
 
         .. deprecated:: 0.2
-           Use the :func:`submit_iteration` function instead.
+           Use the :func:`~.submit_iteration` function instead.
 
         Parameters
         ----------
@@ -198,7 +198,7 @@ class TraitsExecutor(HasStrictTraits):
         Convenience function to submit a background progress call.
 
         .. deprecated:: 0.2
-           Use the :func:`submit_progress` function instead.
+           Use the :func:`~.submit_progress` function instead.
 
         Parameters
         ----------
