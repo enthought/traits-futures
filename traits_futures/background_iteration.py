@@ -303,7 +303,7 @@ class BackgroundIteration(HasStrictTraits):
 
         Parameters
         ----------
-        cancel_event : threading.Event
+        cancel_event : threading.Event or multiprocessing.Event
             Event used to request cancellation of the background job.
         message_receiver : MessageReceiver
             Object that remains in the main thread and receives messages sent
