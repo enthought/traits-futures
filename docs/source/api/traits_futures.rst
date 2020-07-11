@@ -12,6 +12,7 @@ traits\_futures package
    traits_futures.background_call
    traits_futures.background_iteration
    traits_futures.background_progress
+   traits_futures.base_future
    traits_futures.exception_handling
    traits_futures.future_states
    traits_futures.toolkit_support

@@ -274,9 +274,10 @@ needed.
 .. |STOPPING| replace:: :meth:`~traits_futures.traits_executor.STOPPING`
 .. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
 
+.. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
+
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
-.. |cancel| replace:: :class:`~traits_futures.background_call.CallFuture.cancel`
 
 .. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
