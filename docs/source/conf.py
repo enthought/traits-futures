@@ -38,6 +38,7 @@ import traits_futures.version
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
+    "sphinx.ext.graphviz",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "traits.util.trait_documenter",
