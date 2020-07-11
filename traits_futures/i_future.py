@@ -17,24 +17,74 @@ class IFuture(Interface):
     Interface for futures returned by the executor.
     """
 
-    #: The known state of the background task. One of the six constants
-    #: ``WAITING``, ``EXECUTING``, ``COMPLETED``, ``FAILED``, ``CANCELLING``
-    #: or ``CANCELLED``.
+    #: The state of the background task, to the best of the knowledge of
+    #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
+    #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.
     state = FutureState
 
-    #: True if this task can be cancelled, else False. A task can be
-    #: cancelled only if ``state`` is ``WAITING`` or ``EXECUTING``. The
-    #: observed value of this trait will always be consistent with ``state``.
+    #: True if cancellation of the background task can be requested,
+    #: else False. Cancellation of the background task can be requested
+    #: only if the ``state`` is one of ``WAITING`` or ``EXECUTING``.
     cancellable = Property(Bool())
 
-    #: True if the task has finished and no further state changes will occur.
-    #: The value of ``done`` is ``True`` if and only if the ``state`` attribute
-    #: is one of ``COMPLETED``, ``FAILED``, or ``CANCELLED``. It's safe to
-    #: listen to this trait for changes: it will always fire exactly once.
+    #: True when communications from the background task are complete.
+    #: At that point, no further state changes can occur for this future.
+    #: This trait has value True if the ``state`` is one of ``COMPLETED``,
+    #: ``FAILED``, or ``CANCELLED``. It's safe to listen to this trait
+    #: for changes: it will always fire exactly once, and when it fires
+    #: it will be consistent with the ``state``.
     done = Property(Bool())
 
     #: Event trait providing custom messages from the background task.
+    #: Subclasses of ``BaseFuture`` can listen to this trait and interpret
+    #: the messages in whatever way they like. Each message takes the
+    #: form ``(message_type, message_args)``.
     message = Event(Any())
+
+    @property
+    @abc.abstractmethod
+    def result(self):
+        """
+        Result of the background task.
+
+        This attribute is only available if the state of the future is
+        ``COMPLETED``. If the future has not reached the ``COMPLETED`` state,
+        any attempt to access this attribute will raise an ``AttributeError``.
+
+        Returns
+        -------
+        result : object
+            The result obtained from the background task.
+
+        Raises
+        ------
+        AttributeError
+            If the task is still executing, or was cancelled, or raised an
+            exception instead of returning a result.
+        """
+
+    @property
+    @abc.abstractmethod
+    def exception(self):
+        """
+        Information about any exception raised by the background task.
+
+        This attribute is only available if the state of this future is
+        ``FAILED``. If the future has not reached the ``FAILED`` state, any
+        attempt to access this attribute will raise an ``AttributeError.``
+
+        Returns
+        -------
+        exc_info : tuple(str, str, str)
+            Tuple containing exception information in string form:
+            (exception type, exception value, formatted traceback).
+
+        Raises
+        ------
+        AttributeError
+            If the task is still executing, or was cancelled, or completed
+            without raising an exception.
+        """
 
     @abc.abstractmethod
     def cancel(self):
@@ -48,28 +98,6 @@ class IFuture(Interface):
         Raises
         ------
         RuntimeError
-            If the task has already completed, or cancellation has already
+            If the task has already completed or cancellation has already
             been requested.
-        """
-
-    @property
-    @abc.abstractmethod
-    def result(self):
-        """
-        Result of the background task.
-
-        This attribute is only available if the state of the future is
-        COMPLETED. If the future has not reached the COMPLETED state, any
-        attempt to access this attribute will give AttributeError.
-        """
-
-    @property
-    @abc.abstractmethod
-    def exception(self):
-        """
-        Exception raised by the background task.
-
-        This attribute is only available if the state of the future is
-        FAILED. If the future has not reached the FAILED state, any
-        attempt to access this attribute will give AttributeError.
         """

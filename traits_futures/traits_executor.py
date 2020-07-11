@@ -245,7 +245,8 @@ class TraitsExecutor(HasStrictTraits):
         cancelled = cancel_event.is_set
         self._worker_pool.submit(job_wrapper, runner, sender, cancelled)
         wrapper = FutureWrapper(
-            future=future, receiver=receiver, cancel=cancel_event.set)
+            future=future, receiver=receiver, cancel=cancel_event.set
+        )
         self._wrappers[receiver] = wrapper
         return future
 

@@ -35,49 +35,42 @@ class BaseFuture(HasStrictTraits):
     """
 
     #: The state of the background task, to the best of the knowledge of
-    #: this future.
+    #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
+    #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.
     state = FutureState
 
-    #: True if this task can be cancelled, else False.
+    #: True if cancellation of the background task can be requested, else
+    #: False. Cancellation of the background task can be requested only if
+    #: the future's ``state`` is either ``WAITING`` or ``EXECUTING``.
     cancellable = Property(Bool())
 
-    #: True if we've received the final message from the background task,
-    #: else False. `True` indicates either that the background task
-    #: succeeded, or that it raised, or that it was cancelled.
+    #: True when communications from the background task are complete.
+    #: At that point, no further state changes can occur for this future.
+    #: This trait has value True if the ``state`` is one of ``COMPLETED``,
+    #: ``FAILED``, or ``CANCELLED``. It's safe to listen to this trait
+    #: for changes: it will always fire exactly once, and when it fires
+    #: it will be consistent with the ``state``.
     done = Property(Bool())
 
-    #: Trait for messages received from the background task.
-    message = Event(Any())
-
-    def cancel(self):
-        """
-        Method that can be called from the main thread to
-        indicate that the task should be cancelled (provided
-        it hasn't already started running).
-        """
-        # In the interests of catching coding errors early in client
-        # code, we're strict about what states we allow cancellation
-        # from. Some applications may want to weaken the error below
-        # to a warning, or just do nothing on an invalid cancellation.
-        if not self.cancellable:
-            raise RuntimeError(
-                "Can only cancel a waiting or executing task. "
-                "Task state is {}".format(self.state))
-        self._cancel = True
-        self.state = CANCELLING
+    #: Event trait providing custom messages from the background task.
+    #: Subclasses of ``BaseFuture`` can listen to this trait and interpret
+    #: the messages in whatever way they like. Each message takes the
+    #: form ``(message_type, message_args)``.
+    message = Event(Tuple(Str(), Any()))
 
     @property
     def result(self):
         """
-        Result of the background call. This is only available if:
+        Result of the background task.
 
-        - the state of the future is COMPLETED
-        - the call completed normally, without raising
+        This attribute is only available if the state of the future is
+        ``COMPLETED``. If the future has not reached the ``COMPLETED`` state,
+        any attempt to access this attribute will raise an ``AttributeError``.
 
         Returns
         -------
         result : object
-            The result obtained from the background call.
+            The result obtained from the background task.
 
         Raises
         ------
@@ -96,14 +89,17 @@ class BaseFuture(HasStrictTraits):
     @property
     def exception(self):
         """
-        Information about any exception raised by the background call. Raises
-        an ``AttributeError`` on access if no exception was raised (because the
-        call succeeded, was cancelled, or has not yet completed).
+        Information about any exception raised by the background task.
+
+        This attribute is only available if the state of this future is
+        ``FAILED``. If the future has not reached the ``FAILED`` state, any
+        attempt to access this attribute will raise an ``AttributeError.``
 
         Returns
         -------
         exc_info : tuple(str, str, str)
-            Tuple containing marshalled exception information.
+            Tuple containing exception information in string form:
+            (exception type, exception value, formatted traceback).
 
         Raises
         ------
@@ -120,6 +116,45 @@ class BaseFuture(HasStrictTraits):
             )
         return self._exception
 
+    def cancel(self):
+        """
+        Request cancellation of the background task.
+
+        A task in WAITING or EXECUTING state will immediately be moved to
+        CANCELLING state. If the task is not in WAITING or EXECUTING state,
+        this function will raise ``RuntimeError``.
+
+        Raises
+        ------
+        RuntimeError
+            If the task has already completed or cancellation has already
+            been requested.
+        """
+
+        if not self.cancellable:
+            raise RuntimeError(
+                "Can only cancel a waiting or executing task. "
+                "Task state is {}".format(self.state)
+            )
+        self._cancel = True
+        self.state = CANCELLING
+
+    @on_trait_change("message")
+    def dispatch_message(self, message):
+        """
+        Automate dispatch of different types of message.
+
+        This is a convenience function, and may be safely overridden by
+        subclasses that want to use a different dispatch mechanism. For
+        a message type ``msgtype``, it looks for a method called
+        ``_process_<msgtype>`` and dispatches the message arguments to
+        that method. Subclasses then only need to provide the appropriate
+        ``_process_<msgtype>`` methods.
+        """
+        message_type, message_arg = message
+        method_name = "_process_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
+
     # Private traits ##########################################################
 
     #: Event fired on cancellation request.
@@ -132,12 +167,6 @@ class BaseFuture(HasStrictTraits):
     _exception = Tuple(Str(), Str(), Str())
 
     # Private methods #########################################################
-
-    @on_trait_change("message")
-    def _dispatch_message(self, message):
-        message_type, message_arg = message
-        method_name = "_process_{}".format(message_type)
-        getattr(self, method_name)(message_arg)
 
     def _get_cancellable(self):
         return self.state in CANCELLABLE_STATES
