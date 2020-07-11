@@ -7,7 +7,7 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import Any, Bool, Event, Interface, Property
+from traits.api import Bool, Interface, Property
 
 from traits_futures.future_states import FutureState
 
