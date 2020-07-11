@@ -27,7 +27,7 @@ class ITaskSpecification(ABC):
 
         This callable should be pickleable and should have the signature
 
-            job(send, cancelled)
+            task(send, cancelled)
 
         Any exception raised while executing the callable, or result returned
         by the callable, will be recorded in the corresponding future.
@@ -51,19 +51,13 @@ class ITaskSpecification(ABC):
 
         Returns
         -------
-        job : callable
+        task : callable
         """
 
     @abstractmethod
-    def future(self, cancel):
+    def future(self):
         """
         Return a Future for the background task.
-
-        Parameters
-        ----------
-        cancel : callable
-            Zero-argument callable that can be called to request cancellation
-            of the background task.
 
         Returns
         -------
