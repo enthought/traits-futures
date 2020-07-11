@@ -14,6 +14,9 @@ traits\_futures package
    traits_futures.background_progress
    traits_futures.exception_handling
    traits_futures.future_states
+   traits_futures.i_future
+   traits_futures.i_parallel_context
+   traits_futures.multithreading_context
    traits_futures.toolkit_support
    traits_futures.traits_executor
    traits_futures.version
