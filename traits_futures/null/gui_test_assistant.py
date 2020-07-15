@@ -34,7 +34,7 @@ class GuiTestAssistant:
 
         Parameters
         ----------
-        object : HasTraits
+        object : traits.has_traits.HasTraits
             Object whose trait we want to listen to.
         trait : str
             Name of the trait to listen to.

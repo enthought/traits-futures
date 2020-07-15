@@ -159,6 +159,20 @@ def doc(python_version, toolkit):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
+    docs_source_api = "docs/source/api"
+    template_dir = "docs/templates/"
+
+    apidoc_command = [
+        "-m", "sphinx.ext.apidoc",
+        "--separate",
+        "--no-toc",
+        "-o", docs_source_api,
+        "-t", template_dir,
+        "traits_futures",
+        "*/tests",
+    ]
+    pyenv.python(apidoc_command)
+
     # Be nitpicky. This detects missing class references.
     sphinx_options = ["-n"]
 

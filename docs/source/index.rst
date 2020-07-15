@@ -54,15 +54,22 @@ result when it arrives.
 .. literalinclude:: examples/quick_start.py
 
 
-Detailed Documentation
-======================
+User Documentation
+==================
 
 .. toctree::
    :maxdepth: 4
-   :caption: Contents:
 
    guide/intro.rst
-   api/modules.rst
+
+
+API Documentation
+=================
+
+.. toctree::
+   :maxdepth: 4
+
+   api/traits_futures.rst
 
 
 Indices and tables
