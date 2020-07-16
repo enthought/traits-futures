@@ -24,7 +24,7 @@ Features
   - facilities to (cooperatively) cancel a long-running background task
   - access to result(s) arriving from the background task
 
-- Future objects are ``HasTraits`` instances, suitable for integration
+- Future objects are |HasTraits| instances, suitable for integration
   into a TraitsUI application.
 - No need to be a threading expert! Incoming results arrive as trait changes in
   the main thread. This eliminates a large class of potential issues with
@@ -36,7 +36,7 @@ Features
 Limitations
 -----------
 
-- By design, and unlike `concurrent_futures`_, |traits_futures| requires the
+- By design, and unlike :mod:`concurrent.futures`, |traits_futures| requires the
   UI event loop to be running in order to process results.
 - For the moment, |traits_futures| requires Qt. Support for wxPython
   may arrive in a future release.
@@ -72,11 +72,13 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+..
+   external links
 
-.. _TraitsUI: https://github.com/enthought/traitsui
-.. _concurrent_futures: https://docs.python.org/3/library/concurrent.futures.html
+.. _TraitsUI: https://docs.enthought.com/traitsui
 
 ..
    substitutions
 
 .. |traits_futures| replace:: :mod:`traits_futures`
+.. |HasTraits| replace:: :class:`~traits.has_traits.HasTraits`
