@@ -159,9 +159,9 @@ def doc(python_version, toolkit):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
+    # Use sphinx-apidoc to build API documentation.
     docs_source_api = "docs/source/api"
-    template_dir = "docs/templates/"
-
+    template_dir = "docs/source/api/templates/"
     apidoc_command = [
         "-m", "sphinx.ext.apidoc",
         "--separate",
