@@ -3,6 +3,58 @@
 
 """
 Core API for the traits_futures package.
+
+This module represents the public API of the Traits Futures library. It
+contains everything you should need as a user of the library. No stability
+guarantees are made for imports from other modules or subpackages.
+
+This module re-exports the following constants, functions and classes:
+
+Executor
+--------
+
+- :class:`~.TraitsExecutor`
+
+Task submission functions
+-------------------------
+
+- :func:`~.submit_call`
+- :func:`~.submit_iteration`
+- :func:`~.submit_progress`
+
+Types of futures
+----------------
+
+- :class:`~.IFuture`
+- :class:`~.CallFuture`
+- :class:`~.IterationFuture`
+- :class:`~.ProgressFuture`
+
+Future states
+-------------
+
+- :attr:`~.FutureState`
+- :data:`~.CANCELLED`
+- :data:`~.CANCELLING`
+- :data:`~.COMPLETED`
+- :data:`~.EXECUTING`
+- :data:`~.FAILED`
+- :data:`~.WAITING`
+
+Executor states
+---------------
+
+- :attr:`~.ExecutorState`
+- :data:`~.RUNNING`
+- :data:`~.STOPPING`
+- :data:`~.STOPPED`
+
+Parallelism contexts
+--------------------
+
+- :class:`~.IParallelContext`
+- :class:`~.MultithreadingContext`
+
 """
 from traits_futures.background_call import (
     CallFuture,

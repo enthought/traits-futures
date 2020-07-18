@@ -32,7 +32,7 @@ class GuiTestAssistant:
 
         Parameters
         ----------
-        object : HasTraits
+        object : traits.has_traits.HasTraits
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
@@ -76,7 +76,6 @@ class GuiTestAssistant:
                 try:
                     timed_out = qt_app.exec_()
                 finally:
-                    pass
                     timeout_timer.stop()
                     timeout_timer.timeout.disconnect(stop_on_timeout)
         finally:

@@ -1,0 +1,31 @@
+..
+   (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+   All rights reserved.
+
+{% macro automodule(modname, options) -%}
+.. automodule:: {{ modname }}
+{%- for option in options %}
+   :{{ option }}:
+{%- endfor %}
+{%- endmacro -%}
+
+{%- macro toctree(docnames) -%}
+.. toctree::
+{% for docname in docnames %}
+   {{ docname }}
+{%- endfor %}
+{%- endmacro -%}
+
+{{ [pkgname, "package"] | join(" ") | e | heading }}
+
+{{ automodule(pkgname, automodule_options) }}
+
+{%- if submodules %}
+
+{{ toctree(submodules) }}
+{% endif %}
+
+{%- if subpackages %}
+
+{{ toctree(subpackages) }}
+{% endif %}
