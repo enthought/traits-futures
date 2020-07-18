@@ -2,71 +2,79 @@
 # All rights reserved.
 
 """
-Support for emulating an event loop for testing purposes.
+Test support, providing the ability to run the event loop from tests.
 """
-from traits_futures.null.event_loop import EventLoop
-from traits_futures.null.package_globals import get_event_loop, set_event_loop
 
-#: The default timeout to use, in seconds.
-DEFAULT_TIMEOUT = 10.0
+import asyncio
+
+
+#: Default timeout, in seconds
+TIMEOUT = 10.0
 
 
 class GuiTestAssistant:
     def setUp(self):
-        # Save the old event loop and create a fresh one for testing.
-        self._old_event_loop = get_event_loop()
-        self.event_loop = EventLoop()
-        set_event_loop(self.event_loop)
+        asyncio.set_event_loop(asyncio.new_event_loop())
 
     def tearDown(self):
-        self.event_loop.run_until_no_handlers(timeout=DEFAULT_TIMEOUT)
-        del self.event_loop
-        set_event_loop(self._old_event_loop)
-        del self._old_event_loop
+        asyncio.get_event_loop().close()
 
-    def run_until(self, object, trait, condition, timeout=DEFAULT_TIMEOUT):
+    def run_until(self, object, trait, condition, timeout=TIMEOUT):
         """
-        Run the event loop until the given condition holds true.
+        Run event loop until the given condition holds true, or until timeout.
 
-        Rechecks the condition whenever the given trait changes. If the
-        expected condition fails to become true within the given
-        timeout, raises a ``RuntimeError``.
+        The condition is re-evaluated, with the object as argument, every time
+        the trait changes.
 
         Parameters
         ----------
         object : traits.has_traits.HasTraits
-            Object whose trait we want to listen to.
+            Object whose trait we monitor.
         trait : str
-            Name of the trait to listen to.
+            Name of the trait to monitor for changes.
         condition : callable
-            Callable of a single argument. This is called whenever the
-            given trait changes, with the object as its sole argument.
-            It should return a bool-like indicating whether to stop
-            the event loop.
+            Single-argument callable, returning a boolean. This will be
+            called with *object* as the only input.
         timeout : float, optional
-            Timeout, in seconds. If not given ``DEFAULT_TIMEOUT`` is used.
+            Number of seconds to allow before timing out with an exception.
+            The (somewhat arbitrary) default is 10 seconds.
 
         Raises
         ------
         RuntimeError
-            If the condition didn't become true before timeout.
+            If timeout is reached, regardless of whether the condition is
+            true or not at that point.
         """
-        if condition(object):
-            return
 
-        event_loop = get_event_loop()
+        timed_out = []
 
-        def stop_on_condition():
+        event_loop = asyncio.get_event_loop()
+
+        def stop_on_timeout():
+            timed_out.append(True)
+            event_loop.stop()
+
+        def stop_if_condition():
             if condition(object):
                 event_loop.stop()
 
-        object.on_trait_change(stop_on_condition, trait)
+        object.on_trait_change(stop_if_condition, trait)
         try:
-            stopped = event_loop.start(timeout=timeout)
+            # The condition may have become True before we
+            # started listening to changes. So start with a check.
+            if not condition(object):
+                timer_handle = event_loop.call_later(timeout, stop_on_timeout)
+                try:
+                    event_loop.run_forever()
+                finally:
+                    timer_handle.cancel()
         finally:
-            object.on_trait_change(stop_on_condition, trait, remove=True)
+            object.on_trait_change(stop_if_condition, trait, remove=True)
 
-        if not stopped:
+        if timed_out:
             raise RuntimeError(
-                "Timeout occurred before the condition became true."
+                "run_until timed out after {} seconds. "
+                "At timeout, condition was {}.".format(
+                    timeout, condition(object)
+                )
             )
