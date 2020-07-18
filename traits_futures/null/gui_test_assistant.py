@@ -14,10 +14,10 @@ TIMEOUT = 10.0
 
 class GuiTestAssistant:
     def setUp(self):
-        self._event_loop = asyncio.get_event_loop()
+        asyncio.set_event_loop(asyncio.new_event_loop())
 
     def tearDown(self):
-        del self._event_loop
+        asyncio.get_event_loop().close()
 
     def run_until(self, object, trait, condition, timeout=TIMEOUT):
         """
@@ -48,7 +48,7 @@ class GuiTestAssistant:
 
         timed_out = []
 
-        event_loop = self._event_loop
+        event_loop = asyncio.get_event_loop()
 
         def stop_on_timeout():
             timed_out.append(True)
