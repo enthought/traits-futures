@@ -133,9 +133,9 @@ class BackgroundProgress(HasStrictTraits):
 
         Returns
         -------
-        background : callable
+        collections.abc.Callable
             Callable accepting arguments ``send`` and ``cancelled``. The
-            callable can use ``send`` to send messages and ``cancelled` to
+            callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
         if "progress" in self.kwargs:
@@ -153,16 +153,17 @@ def submit_progress(executor, callable, *args, **kwargs):
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the call to.
-    callable : callable accepting a "progress" named argument
-        Function executed in the background to provide the iterable. This
-        should accept a "progress" named argument. The callable can then
-        call the "progress" object to report progress.
+        Executor to submit the task to.
+    callable : collections.abc.Callable
+        Callable that executes the progress-providing function. This callable
+        must accept a "progress" named argument, in addition to the provided
+        arguments. The callable may then call the "progress" argument to
+        report progress.
     *args
-        Positional arguments to pass to that function.
+        Positional arguments to pass to the callable.
     **kwargs
-        Named arguments to pass to that function. These should not include
-        "progress".
+        Named arguments other than "progress" to pass to the callable. These
+        must not include "progress".
 
     Returns
     -------

@@ -158,7 +158,7 @@ class BackgroundTaskWrapper:
     ----------
     background_task : callable
         Callable representing the background task. This will be called
-        with arguments ``send`` and ``cancelled`..
+        with arguments ``send`` and ``cancelled``.
     sender : MessageSender
         Object used to send messages.
     cancelled : zero-argument callable returning bool
