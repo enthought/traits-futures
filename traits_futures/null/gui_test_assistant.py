@@ -28,7 +28,7 @@ class GuiTestAssistant:
 
         Parameters
         ----------
-        object : HasTraits
+        object : traits.has_traits.HasTraits
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
