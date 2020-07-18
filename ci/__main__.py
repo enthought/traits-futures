@@ -163,11 +163,14 @@ def doc(python_version, toolkit):
     docs_source_api = "docs/source/api"
     template_dir = "docs/source/api/templates/"
     apidoc_command = [
-        "-m", "sphinx.ext.apidoc",
+        "-m",
+        "sphinx.ext.apidoc",
         "--separate",
         "--no-toc",
-        "-o", docs_source_api,
-        "-t", template_dir,
+        "-o",
+        docs_source_api,
+        "-t",
+        template_dir,
         "traits_futures",
         "*/tests",
     ]
