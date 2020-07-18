@@ -7,6 +7,7 @@ import unittest
 class TestApi(unittest.TestCase):
     def test_imports(self):
         from traits_futures.api import (  # noqa: F401
+            BaseFuture,
             CallFuture,
             CANCELLED,
             CANCELLING,

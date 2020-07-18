@@ -49,6 +49,12 @@ Executor states
 - :data:`~.STOPPING`
 - :data:`~.STOPPED`
 
+Support for user-defined background tasks
+-----------------------------------------
+
+- :class:`~.BaseFuture`
+- :class:`~.ITaskSpecification`
+
 Parallelism contexts
 --------------------
 
@@ -68,6 +74,7 @@ from traits_futures.background_progress import (
     ProgressFuture,
     submit_progress,
 )
+from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
@@ -114,7 +121,8 @@ __all__ = [
     "submit_call",
     "submit_iteration",
     "submit_progress",
-    # ITaskSpecification: interface for creating new task types
+    # Support for creating new task types
+    "BaseFuture",
     "ITaskSpecification",
     # Contexts
     "IParallelContext",
