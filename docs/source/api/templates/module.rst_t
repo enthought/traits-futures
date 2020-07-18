@@ -1,9 +1,14 @@
-{%- if show_headings %}
-{{- [basename, "module"] | join(' ') | e | heading }}
+..
+   (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+   All rights reserved.
 
-{% endif -%}
-.. automodule:: {{ qualname }}
-{%- for option in automodule_options %}
+{% macro automodule(modname, options) -%}
+.. automodule:: {{ modname }}
+{%- for option in options %}
    :{{ option }}:
 {%- endfor %}
+{%- endmacro -%}
 
+{{ [basename, "module"] | join(' ') | e | heading }}
+
+{{ automodule(qualname, automodule_options) }}
