@@ -156,14 +156,14 @@ class BackgroundTaskWrapper:
 
     Parameters
     ----------
-    background_task : callable
+    background_task : collections.abc.Callable
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled``.
     sender : MessageSender
         Object used to send messages.
-    cancelled : zero-argument callable returning bool
-        Callable that can be called to check whether cancellation has
-        been requested.
+    cancelled : collections.abc.Callable
+        Zero-argument callable returning bool. This can be called to check
+        whether cancellation has been requested.
     """
 
     def __init__(self, background_task, sender, cancel_event):
