@@ -19,11 +19,14 @@ from traits.api import (
 
 from traits_futures.future_states import (
     CANCELLABLE_STATES,
+    CANCELLED,
     CANCELLING,
     COMPLETED,
     DONE_STATES,
+    EXECUTING,
     FAILED,
     FutureState,
+    WAITING,
 )
 from traits_futures.i_future import IFuture
 
@@ -137,7 +140,7 @@ class BaseFuture(HasStrictTraits):
                 "Task state is {}".format(self.state)
             )
         self._cancel = True
-        self.state = CANCELLING
+        self._user_requested_cancellation()
 
     @on_trait_change("message")
     def dispatch_message(self, message):
@@ -154,6 +157,69 @@ class BaseFuture(HasStrictTraits):
         message_type, message_arg = message
         method_name = "_process_{}".format(message_type)
         getattr(self, method_name)(message_arg)
+
+    # Semi-private methods ####################################################
+
+    # These methods represent the state transitions in response to external
+    # events. They're used by the FutureWrapper, but are not intended for use
+    # by the users of Traits Futures.
+
+    def _background_task_started(self, none):
+        """
+        Update state when the background task has started processing.
+
+        A future in WAITING state moves to EXECUTING. A future in CANCELLING
+        state stays in CANCELLING state.
+        """
+        if self.state == WAITING:
+            self.state = EXECUTING
+        elif self.state == CANCELLING:
+            self.state = CANCELLING
+        else:
+            raise RuntimeError("Unexpected 'started' message")
+
+    def _background_task_returned(self, result):
+        """
+        Update state when background task reports completing successfully.
+
+        A future in CANCELLING state moves to CANCELLED state. A future in
+        EXECUTING state moves to COMPLETED state.
+        """
+        if self.state == EXECUTING:
+            self._result = result
+            self.state = COMPLETED
+        elif self.state == CANCELLING:
+            self.state = CANCELLED
+        else:
+            raise RuntimeError("Unexpected 'returned' message")
+
+    def _background_task_raised(self, exception_info):
+        """
+        Update state when the background task reports completing with an error.
+
+        A future in CANCELLING state moves to CANCELLED state. A future in
+        EXECUTING state moves to FAILED state.
+        """
+        if self.state == EXECUTING:
+            self._exception = exception_info
+            self.state = FAILED
+        elif self.state == CANCELLING:
+            self.state = CANCELLED
+        else:
+            raise RuntimeError("Unexpected 'raised' message")
+
+    def _user_requested_cancellation(self):
+        """
+        Update state when the user requests cancellation.
+
+        A future in WAITING or EXECUTING state moves to CANCELLING state.
+        """
+        if self.state == WAITING:
+            self.state = CANCELLING
+        elif self.state == EXECUTING:
+            self.state = CANCELLING
+        else:
+            raise RuntimeError("Unexpected 'cancel' message")
 
     # Private traits ##########################################################
 

@@ -19,12 +19,8 @@ from traits.api import (
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
-    CANCELLED,
     CANCELLING,
-    COMPLETED,
     EXECUTING,
-    FAILED,
-    WAITING,
 )
 from traits_futures.i_future import IFuture
 
@@ -81,8 +77,8 @@ class FutureWrapper(HasStrictTraits):
             self.future.message = message
         elif message_kind == CONTROL:
             message_type, message_arg = message
-            method_name = "_process_{}".format(message_type)
-            getattr(self, method_name)(message_arg)
+            method_name = "_background_task_{}".format(message_type)
+            getattr(self.future, method_name)(message_arg)
         else:
             raise RuntimeError(
                 "Unrecognised message kind: {}".format(message_kind)
@@ -95,59 +91,6 @@ class FutureWrapper(HasStrictTraits):
         fired.
         """
         self.cancel_event.set()
-
-    def _process_raised(self, exception_info):
-        """
-        Process a RAISED message from the background task.
-
-        A task in EXECUTING state moves to FAILED state, and then the
-        exception information is available through the future's ``exception``
-        attribute.
-
-        A task in CANCELLING state  moves to CANCELLED state, and the
-        exception information is not made available to the future.
-        """
-
-        future = self.future
-        assert future.state in (EXECUTING, CANCELLING)
-        if future.state == EXECUTING:
-            future._exception = exception_info
-            future.state = FAILED
-        else:
-            future.state = CANCELLED
-
-    def _process_returned(self, result):
-        """
-        Process a RETURNED message from the background task.
-
-        A task in EXECUTING state moves to COMPLETED state, and then the
-        exception information is available through the future's ``result``
-        attribute.
-
-        A task in CANCELLING state  moves to CANCELLED state, and the
-        result information is not made available to the future.
-        """
-        future = self.future
-
-        assert future.state in (EXECUTING, CANCELLING)
-        if future.state == EXECUTING:
-            future._result = result
-            future.state = COMPLETED
-        else:
-            future.state = CANCELLED
-
-    def _process_started(self, none):
-        """
-        Process a STARTED message from the background task.
-
-        A task in WAITING STATE moves to EXECUTING state. A task in
-        CANCELLING state remains in CANCELLING state.
-        """
-        future = self.future
-
-        assert future.state in (WAITING, CANCELLING)
-        if future.state == WAITING:
-            future.state = EXECUTING
 
 
 class BackgroundTaskWrapper:
