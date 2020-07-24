@@ -10,7 +10,6 @@ These are used by the TraitsExecutor machinery.
 import logging
 
 from traits.api import (
-    Any,
     HasStrictTraits,
     HasTraits,
     Instance,
@@ -58,9 +57,6 @@ class FutureWrapper(HasStrictTraits):
     #: Object that receives messages from the background task.
     receiver = Instance(HasTraits)
 
-    #: threading.Event-style event used to request cancellation.
-    cancel_event = Any()
-
     @on_trait_change("receiver:message")
     def _receive_message(self, message):
         """
@@ -78,14 +74,6 @@ class FutureWrapper(HasStrictTraits):
             raise RuntimeError(
                 "Unrecognised message kind: {}".format(message_kind)
             )
-
-    @on_trait_change("future:_cancel")
-    def _do_cancellation(self):
-        """
-        Request cancellation of the background task when future:_cancel is
-        fired.
-        """
-        self.cancel_event.set()
 
 
 class BackgroundTaskWrapper:
