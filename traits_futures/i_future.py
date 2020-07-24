@@ -7,7 +7,7 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import Bool, Interface, Property
+from traits.api import Any, Bool, Event, Interface, Property, Str, Tuple
 
 from traits_futures.future_states import FutureState
 
@@ -34,6 +34,12 @@ class IFuture(Interface):
     #: for changes: it will always fire exactly once, and when it fires
     #: it will be consistent with the ``state``.
     done = Property(Bool())
+
+    #: Event trait providing custom messages from the background task.
+    #: Subclasses of ``BaseFuture`` can listen to this trait and interpret
+    #: the messages in whatever way they like. Each message takes the
+    #: form ``(message_type, message_args)``.
+    message = Event(Tuple(Str(), Any()))
 
     @property
     @abc.abstractmethod

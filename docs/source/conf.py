@@ -38,6 +38,7 @@ import traits_futures.version
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
+    "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
@@ -90,6 +91,11 @@ todo_include_todos = False
 
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
+
+# -- Options for Graphviz extension ---------------------------------------
+
+# Output format when building HTML files
+graphviz_output_format = "svg"
 
 # -- Options for HTML output ----------------------------------------------
 

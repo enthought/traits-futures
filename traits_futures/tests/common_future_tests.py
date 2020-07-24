@@ -6,14 +6,9 @@ Test methods run for all future types.
 """
 from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
 
-from traits_futures.api import (
-    CANCELLED,
-    CANCELLING,
-    COMPLETED,
-    EXECUTING,
-    FAILED,
-    IFuture,
-)
+from traits_futures.api import IFuture
+from traits_futures.base_future import StateTransitionError
+from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
 
@@ -59,8 +54,8 @@ class CommonFutureTests:
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
-        future.state = EXECUTING
-        future.state = COMPLETED
+        future._task_started(None)
+        future._task_returned(self.fake_exception())
         record_states()
 
         # Check consistency.
@@ -72,8 +67,8 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = COMPLETED
+        future._task_started(None)
+        future._task_returned(23)
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -82,8 +77,8 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = FAILED
+        future._task_started(None)
+        future._task_raised(self.fake_exception())
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -92,9 +87,9 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = CANCELLING
-        future.state = CANCELLED
+        future._task_started(None)
+        future._user_cancelled()
+        future._task_returned(23)
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -103,12 +98,78 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = CANCELLING
-        future.state = CANCELLED
+        future._user_cancelled()
+        future._task_started(None)
+        future._task_returned(23)
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
 
+    # Tests for the various possible message sequences.
+
+    # The BaseFuture processes four different messages: started / raised /
+    # returned messages from the task, and a possible cancellation message from
+    # the user. We denote these with the letters S, X (for eXception), R and C,
+    # and add machinery to test various combinations.
+
+    def test_invalid_message_sequences(self):
+        # A complete run must always involve "started, raised" or "started,
+        # returned" in that order. In addition, a single cancellation is
+        # possible at any time before the end of the sequence.
+        complete_valid_sequences = {
+            "SR",
+            "SX",
+            "CSR",
+            "CSX",
+            "SCR",
+            "SCX",
+        }
+        valid_initial_sequences = {
+            seq[:i]
+            for seq in complete_valid_sequences
+            for i in range(len(seq) + 1)
+        }
+        continuations = {
+            seq[:i] + msg
+            for seq in valid_initial_sequences
+            for i in range(len(seq) + 1)
+            for msg in "CRSX"
+        }
+        invalid_sequences = continuations - valid_initial_sequences
+        for sequence in invalid_sequences:
+            with self.subTest(sequence=sequence):
+                with self.assertRaises(StateTransitionError):
+                    self.send_message_sequence(sequence)
+
     def test_interface(self):
         future = self.future_class()
         self.assertIsInstance(future, IFuture)
+
+    def send_message(self, future, message):
+        """ Send a particular message to a future. """
+        if message == "S":
+            future._task_started(None)
+        elif message == "X":
+            future._task_raised(self.fake_exception())
+        elif message == "R":
+            future._task_returned(23)
+        elif message == "C":
+            future._user_cancelled()
+        else:
+            raise ValueError("Invalid message: {}".format(message))
+
+    def send_message_sequence(self, messages):
+        """ Create a new future, and send the given message sequence to it. """
+        future = self.future_class()
+        for message in messages:
+            self.send_message(future, message)
+        return future
+
+    def fake_exception(self):
+        """
+        Return a marshalled exception similar to that returned on task failure.
+        """
+        try:
+            1 / 0
+        except Exception as e:
+            return marshal_exception(e)

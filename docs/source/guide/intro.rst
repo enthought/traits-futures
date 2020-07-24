@@ -130,6 +130,26 @@ corresponding future telling it to change its state from |WAITING| to
 so there will be a brief interval during which the background task has, in
 fact, started executing, but the state of the future is still |WAITING|.
 
+Here's a diagram showing the possible state transitions. The initial state
+is |WAITING|. The final states are |CANCELLED|, |COMPLETED| and |FAILED|.
+The future expects to receive either the message sequence ``["started",
+"raised"]`` or the message sequence ``["started", "returned"]`` from the
+background task: this happens even if cancellation is requested.
+
+.. graphviz::
+
+   digraph FutureStates {
+       WAITING -> EXECUTING [label="started"];
+       WAITING -> CANCELLING [label="cancel"];
+       CANCELLING -> CANCELLING [label="started"];
+       EXECUTING -> FAILED [label="raised"];
+       EXECUTING -> COMPLETED [label="returned"];
+       EXECUTING -> CANCELLING [label="cancel"];
+       CANCELLING -> CANCELLED [label="raised"];
+       CANCELLING -> CANCELLED [label="returned"];
+   }
+
+
 
 Getting task results
 ~~~~~~~~~~~~~~~~~~~~
@@ -274,9 +294,10 @@ needed.
 .. |STOPPING| replace:: :meth:`~traits_futures.traits_executor.STOPPING`
 .. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
 
+.. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
+
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
-.. |cancel| replace:: :class:`~traits_futures.background_call.CallFuture.cancel`
 
 .. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
