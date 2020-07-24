@@ -16,7 +16,6 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import CANCELLING
 from traits_futures.i_task_specification import ITaskSpecification
 
 
@@ -66,9 +65,6 @@ class IterationFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_generated(self, result):
-        # Results arriving after a cancellation request are ignored.
-        if self.state == CANCELLING:
-            return
         self.result_event = result
 
 

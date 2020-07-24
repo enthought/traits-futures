@@ -23,7 +23,6 @@ from traits.api import (
 )
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import CANCELLING
 from traits_futures.i_task_specification import ITaskSpecification
 
 
@@ -103,9 +102,6 @@ class ProgressFuture(BaseFuture):
     # Private methods #########################################################
 
     def _process_progress(self, progress_info):
-        # Ignore progress messages that arrive after a cancellation request.
-        if self.state == CANCELLING:
-            return
         self.progress = progress_info
 
 

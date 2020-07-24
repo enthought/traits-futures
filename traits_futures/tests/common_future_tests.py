@@ -6,14 +6,8 @@ Test methods run for all future types.
 """
 from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
 
-from traits_futures.api import (
-    CANCELLED,
-    CANCELLING,
-    COMPLETED,
-    EXECUTING,
-    FAILED,
-    IFuture,
-)
+from traits_futures.api import IFuture
+from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
 
@@ -59,8 +53,8 @@ class CommonFutureTests:
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
-        future.state = EXECUTING
-        future.state = COMPLETED
+        future._task_started(None)
+        future._task_returned(self.fake_exception())
         record_states()
 
         # Check consistency.
@@ -72,8 +66,8 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = COMPLETED
+        future._task_started(None)
+        future._task_returned(23)
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -82,8 +76,8 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = FAILED
+        future._task_started(None)
+        future._task_raised(self.fake_exception())
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -92,9 +86,9 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = EXECUTING
-        future.state = CANCELLING
-        future.state = CANCELLED
+        future._task_started(None)
+        future._user_requested_cancellation()
+        future._task_returned(23)
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -103,8 +97,9 @@ class CommonFutureTests:
         future = self.future_class()
         listener = FutureListener(future=future)
 
-        future.state = CANCELLING
-        future.state = CANCELLED
+        future._user_requested_cancellation()
+        future._task_started(None)
+        future._task_returned(23)
 
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
@@ -112,3 +107,9 @@ class CommonFutureTests:
     def test_interface(self):
         future = self.future_class()
         self.assertIsInstance(future, IFuture)
+
+    def fake_exception(self):
+        try:
+            1 / 0
+        except Exception as e:
+            return marshal_exception(e)
