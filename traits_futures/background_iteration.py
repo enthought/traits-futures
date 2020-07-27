@@ -6,7 +6,6 @@ Background task that sends results from an iteration.
 """
 
 from traits.api import (
-    Any,
     Callable,
     Dict,
     Event,
@@ -60,7 +59,7 @@ class IterationFuture(BaseFuture):
 
     #: Event fired whenever a result arrives from the background
     #: iteration.
-    result_event = Event(Any())
+    result_event = Event()
 
     # Private methods #########################################################
 
@@ -81,7 +80,7 @@ class BackgroundIteration(HasStrictTraits):
     args = Tuple()
 
     #: Named arguments to be passed to the callable.
-    kwargs = Dict(Str(), Any())
+    kwargs = Dict(Str())
 
     #: Factory for futures.
     future = IterationFuture

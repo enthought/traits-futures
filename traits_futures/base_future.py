@@ -198,8 +198,8 @@ class BaseFuture(HasStrictTraits):
 
         If the future is already in CANCELLING state, no message is dispatched.
         """
-        # Ignore messages that arrive after a cancellation request.
         if self._state == CANCELLING_AFTER_STARTED:
+            # Ignore messages that arrive after a cancellation request.
             return
         elif self._state == EXECUTING:
             message_type, message_arg = message

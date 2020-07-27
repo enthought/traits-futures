@@ -4,7 +4,7 @@
 """
 Background task consisting of a simple callable.
 """
-from traits.api import Any, Callable, Dict, HasStrictTraits, Str, Tuple
+from traits.api import Callable, Dict, HasStrictTraits, Str, Tuple
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
@@ -44,7 +44,7 @@ class BackgroundCall(HasStrictTraits):
     args = Tuple()
 
     #: Named arguments to be passed to the callable.
-    kwargs = Dict(Str(), Any())
+    kwargs = Dict(Str())
 
     #: Factory for futures
     future = CallFuture
