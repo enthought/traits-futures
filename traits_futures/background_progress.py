@@ -13,7 +13,6 @@ be cancelled.
 """
 
 from traits.api import (
-    Any,
     Callable,
     Dict,
     Event,
@@ -97,7 +96,7 @@ class ProgressFuture(BaseFuture):
     """
 
     #: Event fired whenever a progress message arrives from the background.
-    progress = Event(Any())
+    progress = Event()
 
     # Private methods #########################################################
 
@@ -118,7 +117,7 @@ class BackgroundProgress(HasStrictTraits):
     args = Tuple()
 
     #: Named arguments to be passed to the callable.
-    kwargs = Dict(Str(), Any())
+    kwargs = Dict(Str())
 
     #: Factory for futures.
     future = ProgressFuture
