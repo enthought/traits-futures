@@ -5,7 +5,7 @@
 Tests for the TraitsExecutor class.
 """
 import contextlib
-import unittest
+import unittest.mock
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
 from traits_futures.tests.traits_executor_tests import (
@@ -99,6 +99,18 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             # Check that the the shared worker pool is still usable.
             cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
+
+    def test_no_message_router_created_at_shutdown(self):
+        # Regression test for enthought/traits-futures#
+        executor = TraitsExecutor()
+        router_mocker = unittest.mock.patch.object(
+            executor._context, "message_router"
+        )
+        with router_mocker as mock_message_router:
+            executor.stop()
+            self.wait_until_stopped(executor)
+
+        mock_message_router.assert_not_called()
 
     def wait_until_stopped(self, executor):
         """"
