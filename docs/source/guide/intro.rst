@@ -2,8 +2,8 @@
    (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
    All rights reserved.
 
-User guide
-==========
+Introduction
+============
 
 In this guide we'll introduce the key players in the |traits_futures|
 package. All classes and data items mentioned here can be imported directly
