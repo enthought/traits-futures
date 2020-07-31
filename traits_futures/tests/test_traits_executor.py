@@ -133,8 +133,13 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             executor.stop()
             self.wait_until_stopped(executor)
 
-            self.assertFalse(executor._message_router_created)
-            self.assertFalse(executor._context_created)
+        self.assertFalse(
+            executor._message_router_created,
+            msg="Message router unexpectedly created",
+        )
+        self.assertFalse(
+            executor._context_created, msg="Context unexpectedly created",
+        )
 
     def wait_until_stopped(self, executor):
         """"
