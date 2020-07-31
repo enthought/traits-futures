@@ -289,6 +289,9 @@ class TraitsExecutor(HasStrictTraits):
     #: and foreground futures.
     _message_router = Any()
 
+    #: True if we've created a message router, and need to shut it down.
+    _have_message_router = Bool(False)
+
     #: Wrappers for currently-executing futures.
     _wrappers = Dict(Any(), Any())
 
@@ -315,6 +318,7 @@ class TraitsExecutor(HasStrictTraits):
         # Toolkit-specific message router.
         router = self._context.message_router()
         router.connect()
+        self._have_message_router = True
         return router
 
     def __context_default(self):
@@ -338,8 +342,10 @@ class TraitsExecutor(HasStrictTraits):
         Go to STOPPED state, and shut down the worker pool if we own it.
         """
         assert self.state == STOPPING
-        self._message_router.disconnect()
-        self._message_router = None
+
+        if self._have_message_router:
+            self._message_router.disconnect()
+            self._message_router = None
 
         if self._own_worker_pool:
             self._worker_pool.shutdown()

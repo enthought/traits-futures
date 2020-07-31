@@ -54,8 +54,8 @@ result when it arrives.
 .. literalinclude:: examples/quick_start.py
 
 
-User Documentation
-==================
+User Guide
+==========
 
 .. toctree::
    :maxdepth: 4
