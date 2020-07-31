@@ -21,11 +21,11 @@ modified. Fortunately, that modification can be very simple.
 
 This section describes how to modify the callable for a background task to make
 it possible to cancel mid-calculation. In brief, you turn your callable into a
-generator function by inserting ``yield`` statements at possible cancellation
-points, and then execute that callable using |submit_iteration| instead of
-|submit_call|. In addition, the ``yield`` can optionally be used to provide
-progress information to the future. The following goes into this in more
-detail.
+generator function by inserting ``yield`` statements representing possible
+cancellation points, and then execute that callable using |submit_iteration|
+instead of |submit_call|. In addition, the ``yield`` can optionally be used to
+provide progress information to the future. The following goes into this in
+more detail.
 
 Example: approximating π
 ------------------------
@@ -132,11 +132,11 @@ Here's a version of the approximation code that yields partial results at each
    substitutions
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
+.. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
-.. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
 .. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
-.. |result_event| replace:: :attr:`~traits_futures.background_iteration.IterationFuture.result_event`
 .. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
+.. |result_event| replace:: :attr:`~traits_futures.background_iteration.IterationFuture.result_event`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
