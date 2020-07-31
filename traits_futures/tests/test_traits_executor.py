@@ -5,7 +5,9 @@
 Tests for the TraitsExecutor class.
 """
 import contextlib
-import unittest.mock
+import unittest
+
+from traits.api import Bool
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
 from traits_futures.tests.traits_executor_tests import (
@@ -15,6 +17,29 @@ from traits_futures.tests.traits_executor_tests import (
 from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
+
+
+class TrackingTraitsExecutor(TraitsExecutor):
+    """
+    Version of TraitsExecutor that keeps track of whether the default
+    methods have been called, for testing purposes.
+    """
+
+    #: Have we created a message router?
+    _message_router_created = Bool(False)
+
+    def __message_router_default(self):
+        self._message_router_created = True
+        router = TraitsExecutor._TraitsExecutor__message_router_default(self)
+        return router
+
+    #: Have we created a context?
+    _context_created = Bool(False)
+
+    def __context_default(self):
+        self._context_created = True
+        context = TraitsExecutor._TraitsExecutor__context_default(self)
+        return context
 
 
 class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
@@ -100,17 +125,16 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
 
-    def test_no_message_router_created_at_shutdown(self):
-        # Regression test for enthought/traits-futures#
-        executor = TraitsExecutor()
-        router_mocker = unittest.mock.patch.object(
-            executor._context, "message_router"
-        )
-        with router_mocker as mock_message_router:
+    def test_no_objects_created_at_shutdown(self):
+        # An executor that has no jobs submitted to it should not
+        # need to instantiate either the context or the message router.
+        with self.temporary_worker_pool() as worker_pool:
+            executor = TrackingTraitsExecutor(worker_pool=worker_pool)
             executor.stop()
             self.wait_until_stopped(executor)
 
-        mock_message_router.assert_not_called()
+            self.assertFalse(executor._message_router_created)
+            self.assertFalse(executor._context_created)
 
     def wait_until_stopped(self, executor):
         """"
