@@ -81,7 +81,7 @@ second on my machine). It adds just two lines to the original function.
        # counting the proportion that land in the quarter circle.
        inside = total = 0
        for i in range(num_points):
-           if i % 10**5 == 0:
+           if i % 10 ** 5 == 0:
                yield  # <- allow cancellation here
            x, y = random.random(), random.random()
            inside += x * x + y * y < 1
@@ -113,20 +113,24 @@ Here's a version of the approximation code that yields partial results at each
 ``yield`` point.
 
 .. code-block:: python
-   :emphasize-lines: 7
+   :emphasize-lines: 6-7
 
    def approximate_pi(num_points=10 ** 8):
        # approximate pi/4 by throwing points at a unit square and
        # counting the proportion that land in the quarter circle.
        inside = total = 0
        for i in range(num_points):
-           if i % 10**5 == 0:
+           if i > 0 and i % 10 ** 5 == 0:
                yield 4 * inside / total  # <- partial result
            x, y = random.random(), random.random()
            inside += x * x + y * y < 1
            total += 1
        return 4 * inside / total
 
+
+Here's a complete TraitsUI example making use of the above.
+
+.. literalinclude:: examples/cancellable_task.py
 
 ..
    substitutions
