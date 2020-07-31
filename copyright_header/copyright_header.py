@@ -173,10 +173,15 @@ class CopyrightHeaderExtension(object):
     @classmethod
     def add_options(cls, option_manager):
         option_manager.add_option(
-            '--copyright-end-year', type='int', metavar="year",
+            "--copyright-end-year",
+            type="int",
+            metavar="year",
             default=datetime.datetime.today().year,
             parse_from_config=True,
-            help="Expected end year in copyright statements",
+            help=(
+                "Expected end year in copyright statements "
+                "(default is the current year)"
+            ),
         )
 
     @classmethod
