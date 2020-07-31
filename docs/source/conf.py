@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
+# (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+# All rights reserved.
+
 # Traits Futures documentation build configuration file, created by
 # sphinx-quickstart on Sun Jul 29 10:49:55 2018.
 #
