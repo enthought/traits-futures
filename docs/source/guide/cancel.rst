@@ -71,19 +71,22 @@ Making the approximation cancellable
 
 Here's a modification of the above function that checks for cancellation
 every 100 thousand iterations (which works out to around every 50th of a
-second on my machine). It adds just two lines to the original function.::
+second on my machine). It adds just two lines to the original function.
 
-    def approximate_pi(num_points=10 ** 8):
-        # approximate pi/4 by throwing points at a unit square and
-        # counting the proportion that land in the quarter circle.
-        inside = total = 0
-        for i in range(num_points):
-            if i % 10**5 == 0:
-                yield  # <- allow cancellation here
-            x, y = random.random(), random.random()
-            inside += x * x + y * y < 1
-            total += 1
-        return 4 * inside / total
+.. code-block:: python
+   :emphasize-lines: 6-7
+
+   def approximate_pi(num_points=10 ** 8):
+       # approximate pi/4 by throwing points at a unit square and
+       # counting the proportion that land in the quarter circle.
+       inside = total = 0
+       for i in range(num_points):
+           if i % 10**5 == 0:
+               yield  # <- allow cancellation here
+           x, y = random.random(), random.random()
+           inside += x * x + y * y < 1
+           total += 1
+       return 4 * inside / total
 
 Adding the ``yield`` changes the function type: it's now a Python generator
 function, returning a generator when called. So we need to use
@@ -107,19 +110,22 @@ object you yield should be both immutable and pickleable). Every time you do a
 for those results.
 
 Here's a version of the approximation code that yields partial results at each
-``yield`` point::
+``yield`` point.
 
-    def approximate_pi(num_points=10 ** 8):
-        # approximate pi/4 by throwing points at a unit square and
-        # counting the proportion that land in the quarter circle.
-        inside = total = 0
-        for i in range(num_points):
-            if i % 10**5 == 0:
-                yield 4 * inside / total  # <- partial result
-            x, y = random.random(), random.random()
-            inside += x * x + y * y < 1
-            total += 1
-        return 4 * inside / total
+.. code-block:: python
+   :emphasize-lines: 7
+
+   def approximate_pi(num_points=10 ** 8):
+       # approximate pi/4 by throwing points at a unit square and
+       # counting the proportion that land in the quarter circle.
+       inside = total = 0
+       for i in range(num_points):
+           if i % 10**5 == 0:
+               yield 4 * inside / total  # <- partial result
+           x, y = random.random(), random.random()
+           inside += x * x + y * y < 1
+           total += 1
+       return 4 * inside / total
 
 
 ..
