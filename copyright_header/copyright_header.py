@@ -8,10 +8,8 @@
 #
 # Thanks for using Enthought open source!
 
+import datetime
 import re
-
-# Minimum end year for the copyright statement.
-MINIMUM_END_YEAR = 2020
 
 # Regular expression to match things of the form "1985" or of the form
 # "1985-1999".
@@ -101,27 +99,27 @@ class MissingCopyrightHeaderError(HeaderError):
     )
 
 
-class OutdatedCopyrightYearError(HeaderError):
+class BadCopyrightEndYearError(HeaderError):
     """
     Error reported if the copyright header doesn't have the correct
     year information in it.
     """
 
-    code = "H104"
+    code = "H102"
 
-    def __init__(self, lineno, col_offset, end_year):
+    def __init__(self, lineno, col_offset, actual_end_year, expected_end_year):
         super().__init__(lineno=lineno, col_offset=col_offset)
-        self.end_year = end_year
+        self.actual_end_year = actual_end_year
+        self.expected_end_year = expected_end_year
 
     @property
     def message(self):
-        return (
-            "Copyright end year ({}) out of date. The year should be at "
-            "least {}.".format(self.end_year, MINIMUM_END_YEAR)
+        return "Copyright end year ({}) should be {}.".format(
+            self.actual_end_year, self.expected_end_year
         )
 
 
-def copyright_header(lines, minimum_end_year):
+def copyright_header(lines, end_year):
     """
     Check copyright header presence in a Python file.
 
@@ -130,8 +128,8 @@ def copyright_header(lines, minimum_end_year):
     lines : list of string
         The individual lines from the Python file, each terminated with
         a newline character.
-    minimum_end_year : int
-        Minimum end year, for example 2020.
+    end_year : int
+        Expected end year, for example 2020.
 
     Yields
     ------
@@ -151,10 +149,13 @@ def copyright_header(lines, minimum_end_year):
         return
 
     # Check the year range in the header.
-    _, end_year, match_pos = parse_year_range(lines[0])
-    if end_year < MINIMUM_END_YEAR:
-        yield OutdatedCopyrightYearError(
-            lineno=1, col_offset=match_pos, end_year=end_year,
+    _, actual_end_year, match_pos = parse_year_range(lines[0])
+    if actual_end_year != end_year:
+        yield BadCopyrightEndYearError(
+            lineno=1,
+            col_offset=match_pos,
+            actual_end_year=actual_end_year,
+            expected_end_year=end_year,
         )
 
 
@@ -164,15 +165,27 @@ class CopyrightHeaderExtension(object):
     """
 
     name = "headers"
-    version = "1.1.0"
+    version = "1.2.0"
 
     def __init__(self, tree, lines):
         self.lines = lines
 
+    @classmethod
+    def add_options(cls, option_manager):
+        option_manager.add_option(
+            '--copyright-end-year', type='int', metavar="year",
+            default=datetime.datetime.today().year,
+            parse_from_config=True,
+            help="Expected end year in copyright statements",
+        )
+
+    @classmethod
+    def parse_options(cls, options):
+        cls.copyright_end_year = options.copyright_end_year
+
     def run(self):
-        for error in copyright_header(
-            self.lines, minimum_end_year=MINIMUM_END_YEAR
-        ):
+        end_year = self.copyright_end_year
+        for error in copyright_header(self.lines, end_year=end_year):
             yield (
                 error.lineno,
                 error.col_offset,

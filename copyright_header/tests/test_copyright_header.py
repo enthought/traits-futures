@@ -11,9 +11,9 @@
 import unittest
 
 from copyright_header import (
+    BadCopyrightEndYearError,
     copyright_header,
     MissingCopyrightHeaderError,
-    OutdatedCopyrightYearError,
 )
 
 
@@ -31,13 +31,13 @@ class TestCopyrightHeader(unittest.TestCase):
 # Thanks for using Enthought open source!
 """
         lines = file_contents.splitlines(keepends=True)
-        errors = list(copyright_header(lines, minimum_end_year=2020))
+        errors = list(copyright_header(lines, end_year=2020))
         self.assertEqual(len(errors), 0)
 
     def test_empty_file(self):
         file_contents = ""
         lines = file_contents.splitlines(keepends=True)
-        errors = list(copyright_header(lines, minimum_end_year=2020))
+        errors = list(copyright_header(lines, end_year=2020))
         self.assertEqual(len(errors), 0)
 
     def test_missing_copyright(self):
@@ -49,7 +49,7 @@ import math
 x = math.sqrt(1729)
 """
         lines = file_contents.splitlines(keepends=True)
-        errors = list(copyright_header(lines, minimum_end_year=2020))
+        errors = list(copyright_header(lines, end_year=2020))
         self.assertEqual(len(errors), 1)
         error = errors[0]
         self.assertIsInstance(error, MissingCopyrightHeaderError)
@@ -62,7 +62,7 @@ x = math.sqrt(1729)
             "header is missing, or doesn't match", error.full_message
         )
 
-    def test_well_formed_copyright_with_out_of_date_year(self):
+    def test_well_formed_copyright_with_wrong_end_year(self):
         file_contents = """\
 # (C) Copyright 2005-2010 Enthought, Inc., Austin, TX
 # All rights reserved.
@@ -75,13 +75,13 @@ x = math.sqrt(1729)
 # Thanks for using Enthought open source!
 """
         lines = file_contents.splitlines(keepends=True)
-        errors = list(copyright_header(lines, minimum_end_year=2020))
+        errors = list(copyright_header(lines, end_year=2020))
         self.assertEqual(len(errors), 1)
         error = errors[0]
-        self.assertIsInstance(error, OutdatedCopyrightYearError)
+        self.assertIsInstance(error, BadCopyrightEndYearError)
         self.assertEqual(error.lineno, 1)
         self.assertEqual(error.col_offset, 16)
         self.assertTrue(
-            error.full_message.startswith(OutdatedCopyrightYearError.code)
+            error.full_message.startswith(BadCopyrightEndYearError.code)
         )
-        self.assertIn("end year (2010) out of date", error.full_message)
+        self.assertIn("end year (2010) should be 2020", error.full_message)

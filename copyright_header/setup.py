@@ -14,7 +14,7 @@ import setuptools
 if __name__ == "__main__":
     setuptools.setup(
         name="copyright_header",
-        version="1.0.5",
+        version="1.2.0",
         description="flake8 plugin for checking copyright headers",
         install_requires=["flake8"],
         py_modules=["copyright_header"],
