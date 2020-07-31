@@ -30,16 +30,14 @@ class TrackingTraitsExecutor(TraitsExecutor):
 
     def __message_router_default(self):
         self._message_router_created = True
-        router = TraitsExecutor._TraitsExecutor__message_router_default(self)
-        return router
+        return TraitsExecutor._TraitsExecutor__message_router_default(self)
 
     #: Have we created a context?
     _context_created = Bool(False)
 
     def __context_default(self):
         self._context_created = True
-        context = TraitsExecutor._TraitsExecutor__context_default(self)
-        return context
+        return TraitsExecutor._TraitsExecutor__context_default(self)
 
 
 class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
