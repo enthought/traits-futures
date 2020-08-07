@@ -2,11 +2,13 @@
 # All rights reserved.
 
 """
-Using Traits Futures to execute the slow computation
-in the background.
+Use Traits Futures to approximate π in the background.
 
-Background task is now cancellable _and_ provides
-partial results.
+Compare with the code in cancellable_task.py.
+
+In this version of the code, an already executing computation can't be
+interrupted: when the user cancels, the future doesn't move from CANCELLING to
+CANCELLED state until the background computation is complete.
 """
 
 import random
