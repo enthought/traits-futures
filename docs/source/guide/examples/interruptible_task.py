@@ -6,9 +6,9 @@ Use Traits Futures to approximate π in the background.
 
 Compare with the code in non_interruptible_task.py.
 
-In this version of the code, an already executing computation can't be
-interrupted: when the user cancels, the future doesn't move from CANCELLING to
-CANCELLED state until the background computation is complete.
+In this version of the code, pressing the "Cancel" button interrupts the
+background task. In addition, the background task provides ongoing progress
+information to the UI.
 """
 
 import random
