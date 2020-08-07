@@ -2,8 +2,8 @@
    (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
    All rights reserved.
 
-Making tasks cancellable
-========================
+Making tasks interruptible
+==========================
 
 All background tasks are cancellable in some form: calling the |cancel| method
 on the future for the task requests cancellation of the background task.
@@ -15,14 +15,14 @@ unilaterally interrupt it. So if cancellation occurs after execution starts,
 the callable still runs to completion, and only once it's completed does the
 state of the corresponding future change from |CANCELLING| to |CANCELLED|.
 
-To allow cancellation to interrupt a background task mid-calculation, the
+To allow cancellation to *interrupt* a background task mid-calculation, the
 background task must cooperate, meaning that the code for that task must be
 modified. Fortunately, that modification can be very simple.
 
 This section describes how to modify the callable for a background task to make
-it possible to cancel mid-calculation. In brief, you turn your callable into a
-generator function by inserting ``yield`` statements representing possible
-cancellation points, and then execute that callable using |submit_iteration|
+it possible to interrupt mid-calculation. In brief, you turn your callable into
+a generator function by inserting ``yield`` statements representing possible
+interruption points, and then execute that callable using |submit_iteration|
 instead of |submit_call|. In addition, the ``yield`` can optionally be used to
 provide progress information to the future. The following goes into this in
 more detail.
@@ -59,7 +59,7 @@ Here's a complete TraitsUI application that demonstrates this behaviour.
 However, with two simple changes, we can allow the ``approximate_pi`` function
 to cancel mid-calculation. Those two changes are:
 
-- insert a ``yield`` statement at possible cancellation points
+- insert a ``yield`` statement at possible interruption points
 - submit the background task via |submit_iteration| instead of |submit_call|.
 
 The implementation of |submit_iteration| not only checks for cancellation,
@@ -87,7 +87,7 @@ the original function.
        inside = total = 0
        for i in range(num_points):
            if i % 10 ** 5 == 0:
-               yield  # <- allow cancellation here
+               yield  # <- allow interruption here
            x, y = random.random(), random.random()
            inside += x * x + y * y < 1
            total += 1
