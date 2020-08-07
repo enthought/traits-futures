@@ -35,7 +35,7 @@ from traits_futures.api import (
 )
 
 
-def approximate_pi(num_points=10 ** 7):
+def approximate_pi(num_points=10 ** 8):
     # approximate pi/4 by throwing points at a unit square and
     # counting the proportion that land in the quarter circle.
     inside = total = 0
@@ -56,7 +56,7 @@ class CancellableTaskExample(HasStrictTraits):
     future = Instance(IFuture)
 
     #: Number of points to use.
-    sample_count = Int(10 ** 7)
+    sample_count = Int(10 ** 8)
 
     #: Message about state of calculation.
     message = Str("No previous calculation runs")
