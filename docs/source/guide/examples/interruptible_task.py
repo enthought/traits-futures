@@ -35,11 +35,11 @@ from traits_futures.api import (
 )
 
 
-def approximate_pi(num_points=10 ** 8):
+def approximate_pi(sample_count=10 ** 8):
     # approximate pi/4 by throwing points at a unit square and
     # counting the proportion that land in the quarter circle.
     inside = total = 0
-    for i in range(num_points):
+    for i in range(sample_count):
         if i > 0 and i % 10 ** 5 == 0:
             yield 4 * inside / total  # <- partial result
         x, y = random.random(), random.random()
@@ -48,7 +48,7 @@ def approximate_pi(num_points=10 ** 8):
     return 4 * inside / total
 
 
-class CancellableTaskExample(HasStrictTraits):
+class InterruptibleTaskExample(HasStrictTraits):
     #: The executor to submit tasks to.
     executor = Instance(TraitsExecutor, ())
 
@@ -117,4 +117,4 @@ class CancellableTaskExample(HasStrictTraits):
 
 
 if __name__ == "__main__":
-    CancellableTaskExample().configure_traits()
+    InterruptibleTaskExample().configure_traits()
