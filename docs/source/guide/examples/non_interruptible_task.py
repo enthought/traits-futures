@@ -4,7 +4,7 @@
 """
 Use Traits Futures to approximate π in the background.
 
-Compare with the code in non_cancellable_task.py.
+Compare with the code in interruptible_task.py.
 
 In this version of the code, pressing the "Cancel" button interrupts the
 background task. In addition, the background task provides ongoing progress

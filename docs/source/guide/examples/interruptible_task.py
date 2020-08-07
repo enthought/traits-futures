@@ -4,7 +4,7 @@
 """
 Use Traits Futures to approximate π in the background.
 
-Compare with the code in cancellable_task.py.
+Compare with the code in non_interruptible_task.py.
 
 In this version of the code, an already executing computation can't be
 interrupted: when the user cancels, the future doesn't move from CANCELLING to
