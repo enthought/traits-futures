@@ -52,6 +52,10 @@ user after execution has started, the future may not move from |CANCELLING| to
 |CANCELLED| state until several seconds after cancellation is requested. Note,
 however, that the GUI will remain responsive and usable during those seconds.
 
+Here's a complete TraitsUI application that demonstrates this behaviour.
+
+.. literalinclude:: examples/non_cancellable_task.py
+
 However, with two simple changes, we can allow the ``approximate_pi`` function
 to cancel mid-calculation. Those two changes are:
 
