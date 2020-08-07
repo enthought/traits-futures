@@ -54,7 +54,7 @@ however, that the GUI will remain responsive and usable during those seconds.
 
 Here's a complete TraitsUI application that demonstrates this behaviour.
 
-.. literalinclude:: examples/non_cancellable_task.py
+.. literalinclude:: examples/non_interruptible_task.py
 
 However, with two simple changes, we can allow the ``approximate_pi`` function
 to cancel mid-calculation. Those two changes are:
@@ -135,7 +135,7 @@ Here's a version of the approximation code that yields partial results at each
 
 Here's a complete TraitsUI example making use of the above.
 
-.. literalinclude:: examples/cancellable_task.py
+.. literalinclude:: examples/interruptible_task.py
 
 ..
    substitutions
