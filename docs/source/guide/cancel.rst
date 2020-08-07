@@ -21,9 +21,9 @@ modified. Fortunately, that modification can be very simple.
 
 This section describes how to modify the callable for a background task to make
 it possible to interrupt mid-calculation. In brief, you turn your callable into
-a generator function by inserting ``yield`` statements representing possible
+a |generator function| by inserting |yield| statements representing possible
 interruption points, and then execute that callable using |submit_iteration|
-instead of |submit_call|. In addition, the ``yield`` can optionally be used to
+instead of |submit_call|. In addition, each |yield| statement can be used to
 provide progress information to the future. The following goes into this in
 more detail.
 
@@ -61,16 +61,15 @@ Here's a complete TraitsUI application that demonstrates this behaviour.
 However, with two simple changes, we can allow the ``approximate_pi`` function
 to cancel mid-calculation. Those two changes are:
 
-- insert a ``yield`` statement at possible interruption points
+- insert a |yield| statement at possible interruption points
 - submit the background task via |submit_iteration| instead of |submit_call|.
 
-The implementation of |submit_iteration| not only checks for cancellation,
-but also sends a message to the future at every ``yield`` point. For that
-reason, you don't want to ``yield`` too often - as a guide, sending a message
-more than 100 times per second is likely be inefficient. But conversely,
-if you ``yield`` too rarely, then the checks for cancellation will be
-spaced further apart, so you increase the latency for a response to a
-cancellation request.
+The implementation of |submit_iteration| not only checks for cancellation, but
+also sends a message to the future at every |yield| point. For that reason, you
+don't want to yield too often - as a guide, sending a message more than 100
+times per second is likely be inefficient. But conversely, if you yield too
+rarely, then the checks for cancellation will be spaced further apart, so you
+increase the latency for a response to a cancellation request.
 
 Making the approximation cancellable
 ------------------------------------
@@ -95,8 +94,8 @@ the original function.
             total += 1
         return 4 * inside / total
 
-Adding the ``yield`` changes the function type: it's now a Python generator
-function, returning a generator when called. So we need to use
+Adding the |yield| changes the function type: it's now a Python |generator
+function|, returning a |generator| when called. So we need to use
 |submit_iteration| instead of |submit_call| to send this function to the
 executor, and we get an |IterationFuture| instead of a |CallFuture| in return.
 Just as with the |CallFuture|, the eventual result of the ``approximate_pi``
@@ -106,9 +105,9 @@ Sending partial results
 -----------------------
 
 As we mentioned above, |submit_iteration| also sends a message to the
-|IterationFuture| whenever it encounters a ``yield``. That message carries
+|IterationFuture| whenever it encounters a |yield|. That message carries
 whatever was yielded as a payload. That means that we can replace the plain
-``yield`` to yield an expression, providing information to the future. That
+|yield| to yield an expression, providing information to the future. That
 information could contain progress information, partial results, log messages,
 or any useful information you want to provide (though ideally, whatever Python
 object you yield should be both immutable and pickleable). Every time you do a
@@ -117,7 +116,7 @@ object you yield should be both immutable and pickleable). Every time you do a
 for those results.
 
 Here's a version of the approximation code that yields partial results at each
-``yield`` point.
+|yield| point.
 
 .. code-block:: python
     :emphasize-lines: 6-7
@@ -146,8 +145,11 @@ Here's a complete TraitsUI example making use of the above.
 .. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
+.. |generator| replace:: :term:`generator <generator iterator>`
+.. |generator function| replace:: :term:`generator function <generator>`
 .. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
 .. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
 .. |result_event| replace:: :attr:`~traits_futures.background_iteration.IterationFuture.result_event`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
+.. |yield| replace:: :ref:`yield <yield>`
