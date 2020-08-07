@@ -37,11 +37,11 @@ Carlo algorithm to compute (slowly and inefficiently) an approximation to π.
 
     import random
 
-    def approximate_pi(num_points=10 ** 8):
+    def approximate_pi(sample_count=10 ** 8):
         # approximate pi/4 by throwing points at a unit square and
         # counting the proportion that land in the quarter circle.
         inside = total = 0
-        for _ in range(num_points):
+        for _ in range(sample_count):
             x, y = random.random(), random.random()
             inside += x * x + y * y < 1
             total += 1
@@ -83,11 +83,11 @@ the original function.
 .. code-block:: python
     :emphasize-lines: 6-7
 
-    def approximate_pi(num_points=10 ** 8):
+    def approximate_pi(sample_count=10 ** 8):
         # approximate pi/4 by throwing points at a unit square and
         # counting the proportion that land in the quarter circle.
         inside = total = 0
-        for i in range(num_points):
+        for i in range(sample_count):
             if i % 10 ** 5 == 0:
                 yield  # <- allow interruption here
             x, y = random.random(), random.random()
@@ -122,11 +122,11 @@ Here's a version of the approximation code that yields partial results at each
 .. code-block:: python
     :emphasize-lines: 6-7
 
-    def approximate_pi(num_points=10 ** 8):
+    def approximate_pi(sample_count=10 ** 8):
         # approximate pi/4 by throwing points at a unit square and
         # counting the proportion that land in the quarter circle.
         inside = total = 0
-        for i in range(num_points):
+        for i in range(sample_count):
             if i > 0 and i % 10 ** 5 == 0:
                 yield 4 * inside / total  # <- partial result
             x, y = random.random(), random.random()
