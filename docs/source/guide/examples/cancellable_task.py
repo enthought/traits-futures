@@ -25,6 +25,8 @@ from traitsui.api import HGroup, Item, UItem, View
 
 from traits_futures.api import (
     CANCELLED,
+    COMPLETED,
+    FAILED,
     IFuture,
     submit_iteration,
     TraitsExecutor,
@@ -51,8 +53,8 @@ class CancellableTaskExample(HasStrictTraits):
     #: The future object returned on task submission.
     future = Instance(IFuture)
 
-    #: Number of iterations to use.
-    iterations = Int(10 ** 7)
+    #: Number of points to use.
+    sample_count = Int(10 ** 7)
 
     #: Message about state of calculation.
     message = Str("No previous calculation runs")
@@ -69,7 +71,7 @@ class CancellableTaskExample(HasStrictTraits):
     def _submit_calculation(self, event):
         self.message = "Calculating π"
         self.future = submit_iteration(
-            self.executor, approximate_pi, self.iterations
+            self.executor, approximate_pi, self.sample_count
         )
 
     @observe("cancel")
@@ -79,12 +81,16 @@ class CancellableTaskExample(HasStrictTraits):
 
     @observe("future:done")
     def _report_result(self, event):
-        print("self.future.state: ", self.future.state)
-        print("self.future.done: ", self.future.done)
         if self.future.state == CANCELLED:
             self.message = "Cancelled"
-        else:
+        elif self.future.state == FAILED:
+            self.message = f"Unexpected error: {self.future.exception[1]}"
+        elif self.future.state == COMPLETED:
             self.message = f"Complete: π ≈ {self.future.result:.6f}"
+        else:
+            # Shouldn't ever get here: CANCELLED, FAILED and COMPLETED
+            # are the only possible final states of a future.
+            raise RuntimeError(f"Unexpected state: {self.future.state}")
         self.future = None
 
     @observe("future:result_event")
@@ -98,7 +104,7 @@ class CancellableTaskExample(HasStrictTraits):
         return self.future is not None and self.future.cancellable
 
     traits_view = View(
-        Item("iterations"),
+        Item("sample_count"),
         UItem("message", style="readonly"),
         HGroup(
             UItem("calculate", enabled_when="can_calculate"),

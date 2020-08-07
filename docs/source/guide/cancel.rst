@@ -69,9 +69,10 @@ cancellation request.
 Making the approximation cancellable
 ------------------------------------
 
-Here's a modification of the above function that checks for cancellation
-every 100 thousand iterations (which works out to around every 50th of a
-second on my machine). It adds just two lines to the original function.
+Here's a modification of the above function that checks for cancellation every
+100 thousand iterations (which, for reference, worked out to around every 50th
+of a second when tested on a high-end 2018 laptop). It adds just two lines to
+the original function.
 
 .. code-block:: python
    :emphasize-lines: 6-7
