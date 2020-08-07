@@ -31,7 +31,9 @@ Example: approximating π
 ------------------------
 
 We use a simplistic example to illustrate. The following code uses a Monte
-Carlo algorithm to compute (slowly and inefficiently) an approximation to π.::
+Carlo algorithm to compute (slowly and inefficiently) an approximation to π.
+
+.. code-block:: python
 
     import random
 
@@ -79,19 +81,19 @@ of a second when tested on a high-end 2018 laptop). It adds just two lines to
 the original function.
 
 .. code-block:: python
-   :emphasize-lines: 6-7
+    :emphasize-lines: 6-7
 
-   def approximate_pi(num_points=10 ** 8):
-       # approximate pi/4 by throwing points at a unit square and
-       # counting the proportion that land in the quarter circle.
-       inside = total = 0
-       for i in range(num_points):
-           if i % 10 ** 5 == 0:
-               yield  # <- allow interruption here
-           x, y = random.random(), random.random()
-           inside += x * x + y * y < 1
-           total += 1
-       return 4 * inside / total
+    def approximate_pi(num_points=10 ** 8):
+        # approximate pi/4 by throwing points at a unit square and
+        # counting the proportion that land in the quarter circle.
+        inside = total = 0
+        for i in range(num_points):
+            if i % 10 ** 5 == 0:
+                yield  # <- allow interruption here
+            x, y = random.random(), random.random()
+            inside += x * x + y * y < 1
+            total += 1
+        return 4 * inside / total
 
 Adding the ``yield`` changes the function type: it's now a Python generator
 function, returning a generator when called. So we need to use
@@ -118,19 +120,19 @@ Here's a version of the approximation code that yields partial results at each
 ``yield`` point.
 
 .. code-block:: python
-   :emphasize-lines: 6-7
+    :emphasize-lines: 6-7
 
-   def approximate_pi(num_points=10 ** 8):
-       # approximate pi/4 by throwing points at a unit square and
-       # counting the proportion that land in the quarter circle.
-       inside = total = 0
-       for i in range(num_points):
-           if i > 0 and i % 10 ** 5 == 0:
-               yield 4 * inside / total  # <- partial result
-           x, y = random.random(), random.random()
-           inside += x * x + y * y < 1
-           total += 1
-       return 4 * inside / total
+    def approximate_pi(num_points=10 ** 8):
+        # approximate pi/4 by throwing points at a unit square and
+        # counting the proportion that land in the quarter circle.
+        inside = total = 0
+        for i in range(num_points):
+            if i > 0 and i % 10 ** 5 == 0:
+                yield 4 * inside / total  # <- partial result
+            x, y = random.random(), random.random()
+            inside += x * x + y * y < 1
+            total += 1
+        return 4 * inside / total
 
 
 Here's a complete TraitsUI example making use of the above.
