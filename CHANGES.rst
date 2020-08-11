@@ -25,6 +25,10 @@ Changes
   ``worker_pool``. The old name ``thread_pool`` continues to work, but its
   use is deprecated.
 
+- The ``submit_call``, ``submit_iteration`` and ``submit_progress`` methods
+  on the ``TraitsExecutor`` have been deprecated. Use the new top-level
+  convenience functions with the same names instead.
+
 - The default number of workers in the worker pool has changed. Previously
   it was hard-coded as ``4``. Now it defaults to whatever Python's
   ``concurrent.futures`` executors give (but it can be controlled by
