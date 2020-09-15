@@ -2,21 +2,23 @@
 # All rights reserved.
 
 """
-Example of a custom background job type.
-
-See the "advanced" section of the user guide for accompanying documentation.
+Example of a user-created background task type.
 """
 
-# Note: because we're using pieces from this file for documentation snippets,
-# the overall structure of this file is a little odd, and doesn't follow
-# standard style guidelines. For example in normal use, all the imports would
-# be at the top of the module.
+# This Python file provides supporting code for the "advanced" section of the
+# user guide. Because we're using pieces of the file for documentation
+# snippets, the overall structure of this file is a little odd, and doesn't
+# follow standard style guidelines (for example, placing imports at the top
+# of the file). The various '# -- start' and '# -- end' markers are there
+# to allow the documentation build to extract the appropriate pieces.
+
 
 # -- start message types
 FIZZ = "fizz"
 BUZZ = "buzz"
 FIZZ_BUZZ = "fizz_buzz"
 # -- end message types
+
 
 # -- start fizz_buzz --
 import time
@@ -61,6 +63,7 @@ def fizz_buzz(send, cancelled):
 from traits.api import Event, Int
 from traits_futures.api import BaseFuture
 
+
 class FizzBuzzFuture(BaseFuture):
     """
     Object representing the front-end handle to a running fizz_buzz call.
@@ -89,8 +92,10 @@ class FizzBuzzFuture(BaseFuture):
         self.fizz_buzz = n
 # -- end FizzBuzzFuture --
 
+
 # -- start BackgroundFizzBuzz --
 from traits_futures.api import ITaskSpecification
+
 
 @ITaskSpecification.register
 class BackgroundFizzBuzz:
