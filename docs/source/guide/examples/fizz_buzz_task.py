@@ -12,8 +12,6 @@ See the "advanced" section of the user guide for accompanying documentation.
 # standard style guidelines. For example in normal use, all the imports would
 # be at the top of the module.
 
-from traits_futures.api import ITaskSpecification
-
 # -- start message types
 FIZZ = "fizz"
 BUZZ = "buzz"
@@ -128,3 +126,14 @@ class BackgroundFizzBuzz:
         """
         return fizz_buzz
 # -- end BackgroundFizzBuzz
+
+
+# -- start submit_fizz_buzz
+def submit_fizz_buzz(executor):
+    """
+    Convenience function to submit a Fizz buzz task to an executor.
+    """
+    task = BackgroundFizzBuzz()
+    future = executor.submit(task)
+    return future
+# -- end submit_fizz_buzz

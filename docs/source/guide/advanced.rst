@@ -50,7 +50,7 @@ usually be pickleable and immutable).
 Message types
 ~~~~~~~~~~~~~
 
-We'll define three message types: one for FIZZ messages, one for BUZZ messages
+We define three message types: one for FIZZ messages, one for BUZZ messages
 and one for FIZZ BUZZ messages.
 
 .. literalinclude:: examples/fizz_buzz_task.py
@@ -122,19 +122,17 @@ callable. So our task specification simply looks like this:
     :end-before: end BackgroundFizzBuzz
 
 
-With all of the above in place, a Fizz buzz background task can be submitted
-to a |TraitsExecutor| simply by doing:
-
-.. code-block:: python
-
-    task = BackgroundFizzBuzz()
-    future = executor.submit(task)
-
-Putting everything together, here's the complete code:
+With all of the above in place, a Fizz buzz background task can be submitted to
+a |TraitsExecutor| ``executor`` simply by passing an instance of
+``BackgroundFizzBuzz`` to ``executor.submit``. For convenience, we can
+encapsulate that operation in a function:
 
 .. literalinclude:: examples/fizz_buzz_task.py
+    :start-after: start submit_fizz_buzz
+    :end-before: end submit_fizz_buzz
 
-And here's an example GUI that makes use of the new background task type:
+Putting everything together, here's an example GUI that makes use of the new
+background task type:
 
 .. literalinclude:: examples/fizz_buzz_ui.py
 
