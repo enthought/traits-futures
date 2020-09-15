@@ -62,6 +62,7 @@ User Guide
 
    guide/intro.rst
    guide/cancel.rst
+   guide/advanced.rst
 
 
 API Documentation
