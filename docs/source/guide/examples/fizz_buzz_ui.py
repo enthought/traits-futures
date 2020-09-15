@@ -17,7 +17,7 @@ from traits.api import (
 from traits_futures.api import TraitsExecutor
 from traitsui.api import HGroup, UItem, View
 
-from fizzbuzz_task import BackgroundFizzBuzz, FizzBuzzFuture
+from fizz_buzz_task import BackgroundFizzBuzz, FizzBuzzFuture
 
 
 class FizzBuzzUI(HasStrictTraits):

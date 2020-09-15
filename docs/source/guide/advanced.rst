@@ -38,7 +38,7 @@ Worked example: Fizz buzz!
 --------------------------
 
 In this section we'll create an example new background task type, based on the
-well-known `Fizz buzz <fizzbuzz>`_ game. We'll create a background task that
+well-known `Fizz buzz <fizz_buzz>`_ game. We'll create a background task that
 counts slowly from 1, sending messages to the foreground on multiples of 3, 5
 and 15.
 
@@ -53,7 +53,7 @@ Message types
 We'll define three message types: one for FIZZ messages, one for BUZZ messages
 and one for FIZZ BUZZ messages.
 
-.. literalinclude:: examples/fizzbuzz_task.py
+.. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start message types
     :end-before: end message types
 
@@ -72,7 +72,7 @@ messages to the foreground. The ``cancelled`` object is a zero-argument
 callable which can be used to check for cancellation requests. Here's the
 ``fizz_buzz`` callable.
 
-.. literalinclude:: examples/fizzbuzz_task.py
+.. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start fizz_buzz
     :end-before: end fizz_buzz
 
@@ -103,7 +103,7 @@ dispatch mechanism, so all we need to do is to define methods
 messages of types ``FIZZ``, ``BUZZ`` and ``FIZZ_BUZZ`` respectively. We choose
 to process each message by firing a corresponding event on the future.
 
-.. literalinclude:: examples/fizzbuzz_task.py
+.. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start FizzBuzzFuture
     :end-before: end FizzBuzzFuture
 
@@ -117,7 +117,7 @@ specification, the |TraitsExecutor| calls ``task.future(_cancel=cancel_event)``
 to create the future, and ``task.background_task()`` to create the background
 callable. So our task specification simply looks like this:
 
-.. literalinclude:: examples/fizzbuzz_task.py
+.. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start BackgroundFizzBuzz
     :end-before: end BackgroundFizzBuzz
 
@@ -132,17 +132,17 @@ to a |TraitsExecutor| simply by doing:
 
 Putting everything together, here's the complete code:
 
-.. literalinclude:: examples/fizzbuzz_task.py
+.. literalinclude:: examples/fizz_buzz_task.py
 
 And here's an example GUI that makes use of the new background task type:
 
-.. literalinclude:: examples/fizzbuzz_ui.py
+.. literalinclude:: examples/fizz_buzz_ui.py
 
 
 ..
    external links
 
-.. _fizzbuzz: https://en.wikipedia.org/wiki/Fizz_buzz
+.. _fizz_buzz: https://en.wikipedia.org/wiki/Fizz_buzz
 
 
 ..
