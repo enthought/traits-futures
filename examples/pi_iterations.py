@@ -114,7 +114,7 @@ class PiIterator(Handler):
     def closed(self, info, is_ok):
         # Stopping the executor cancels any running future.
         self.traits_executor.stop()
-        super(PiIterator, self).closed(info, is_ok)
+        super().closed(info, is_ok)
 
     def _approximate_fired(self):
         self.future = submit_iteration(
