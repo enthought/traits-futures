@@ -121,7 +121,6 @@ callable. So our task specification simply looks like this:
     :start-after: start BackgroundFizzBuzz
     :end-before: end BackgroundFizzBuzz
 
-
 With all of the above in place, a Fizz buzz background task can be submitted to
 a |TraitsExecutor| ``executor`` simply by passing an instance of
 ``BackgroundFizzBuzz`` to ``executor.submit``. For convenience, we can
