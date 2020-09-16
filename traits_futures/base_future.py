@@ -196,7 +196,8 @@ class BaseFuture(HasStrictTraits):
         that method. Subclasses then only need to provide the appropriate
         ``_process_<msgtype>`` methods.
 
-        If the future is already in CANCELLING state, no message is dispatched.
+        If the future is already in ``CANCELLING`` state, no message is
+        dispatched.
         """
         if self._state == CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
@@ -267,7 +268,8 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when the user requests cancellation.
 
-        A future in WAITING or EXECUTING state moves to CANCELLING state.
+        A future in ``WAITING`` or ``EXECUTING`` state moves to ``CANCELLING``
+        state.
         """
         if self._state == WAITING:
             self._cancel = None
