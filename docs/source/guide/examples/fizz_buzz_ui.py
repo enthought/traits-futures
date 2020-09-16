@@ -27,6 +27,7 @@ class FizzBuzzUI(HasStrictTraits):
     #: The future object returned on task submission.
     future = Instance(FizzBuzzFuture)
 
+    #: Status message showing current state or the last-received result.
     message = Str("Ready")
 
     #: Button to calculate, plus its enabled state.
