@@ -78,6 +78,7 @@ class FizzBuzzFuture(BaseFuture):
     buzz = Event(Int)
 
     #: Event fired whenever a FIZZ_BUZZ arrives from the background.
+    #: The payload is the corresponding integer.
     fizz_buzz = Event(Int)
 
     # Private methods #########################################################
@@ -137,6 +138,17 @@ class BackgroundFizzBuzz:
 def submit_fizz_buzz(executor):
     """
     Convenience function to submit a Fizz buzz task to an executor.
+
+    Parameters
+    ----------
+    executor : TraitsExecutor
+        The executor to submit the task to.
+
+    Returns
+    -------
+    future : FizzBuzzFuture
+        The future for the background task, allowing monitoring and
+        cancellation of the background task.
     """
     task = BackgroundFizzBuzz()
     future = executor.submit(task)

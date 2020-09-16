@@ -39,19 +39,21 @@ Worked example: Fizz buzz!
 
 In this section we'll create an example new background task type, based on the
 well-known `Fizz buzz <fizz_buzz_>`_ game. We'll create a background task that
-counts slowly from 1, sending messages to the foreground on multiples of 3, 5
-and 15.
+counts slowly from 1, sending three different types of messages to the
+foreground: it sends "Fizz" messages on multiples of 3, "Buzz" messages on
+multiples of 5, and "Fizz Buzz" messages on multiples of 15. Each message
+is accompanied by the corresponding number.
+
+Message types
+~~~~~~~~~~~~~
 
 In general, a message sent from the background to the foreground has two parts:
 a message type, and an optional message argument. The message type should be a
 string, while the message argument can be any Python object (though it should
 usually be pickleable and immutable).
 
-Message types
-~~~~~~~~~~~~~
-
-We define three message types: one for FIZZ messages, one for BUZZ messages
-and one for FIZZ BUZZ messages.
+We first define named constants representing our three message types. This
+isn't strictly necessary, but it makes the code cleaner.
 
 .. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start message types
@@ -124,14 +126,20 @@ looks like this:
     :start-after: start BackgroundFizzBuzz
     :end-before: end BackgroundFizzBuzz
 
+Submitting the new task
+~~~~~~~~~~~~~~~~~~~~~~~
+
 With all of the above in place, a Fizz buzz background task can be submitted to
-a |TraitsExecutor| ``executor`` simply by passing an instance of
+a |TraitsExecutor| ``executor`` by passing an instance of
 ``BackgroundFizzBuzz`` to ``executor.submit``. For convenience, we can
 encapsulate that operation in a function:
 
 .. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start submit_fizz_buzz
     :end-before: end submit_fizz_buzz
+
+An example GUI
+~~~~~~~~~~~~~~
 
 Putting everything together, here's an example GUI that makes use of the new
 background task type:
