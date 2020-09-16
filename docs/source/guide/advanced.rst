@@ -115,7 +115,10 @@ submitted to the |TraitsExecutor|. This object needs to have two attributes:
 ``future`` and ``background_task``. Given an instance ``task`` of a task
 specification, the |TraitsExecutor| calls ``task.future(_cancel=cancel_event)``
 to create the future, and ``task.background_task()`` to create the background
-callable. So our task specification simply looks like this:
+callable. For the background task, we want to return (but not call!) the
+``fizz_buzz`` function that we defined above. For the future, we create and
+return a new ``FizzBuzzFuture`` instance. So our task specification
+looks like this:
 
 .. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start BackgroundFizzBuzz
