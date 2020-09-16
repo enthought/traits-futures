@@ -38,7 +38,7 @@ Worked example: Fizz buzz!
 --------------------------
 
 In this section we'll create an example new background task type, based on the
-well-known `Fizz buzz <fizz_buzz>`_ game. We'll create a background task that
+well-known `Fizz buzz <fizz_buzz_>`_ game. We'll create a background task that
 counts slowly from 1, sending messages to the foreground on multiples of 3, 5
 and 15.
 
