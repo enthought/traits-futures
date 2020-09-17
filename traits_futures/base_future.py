@@ -36,6 +36,14 @@ from traits_futures.i_future import IFuture
 # These extra states let us detect the error of calling _task_started
 # a second time following cancellation.
 
+#: Extra internal state: WAITING but not yet initialized. Maps to the
+#: WAITING public state.
+NOT_INITIALIZED = "not_initialized"
+
+#: Extra internal state: WAITING and initialized. Maps to the WAITING
+#: public state.
+INITIALIZED = "initialized"
+
 #: Extra internal state: CANCELLING before STARTED
 CANCELLING_BEFORE_STARTED = "cancelling_before_started"
 
@@ -47,7 +55,8 @@ CANCELLING_AFTER_STARTED = "cancelling_after_started"
 #: user-facing CANCELLING state into two substates: CANCELLING_BEFORE_STARTED
 #: and CANCELLING_AFTER_STARTED.
 InternalState = Enum(
-    WAITING,
+    NOT_INITIALIZED,
+    INITIALIZED,
     EXECUTING,
     COMPLETED,
     FAILED,
@@ -63,6 +72,8 @@ def _state_from_internal_state(internal_state):
     """
     if internal_state in (CANCELLING_AFTER_STARTED, CANCELLING_BEFORE_STARTED):
         return CANCELLING
+    elif internal_state in (NOT_INITIALIZED, INITIALIZED):
+        return WAITING
     else:
         return internal_state
 
@@ -221,7 +232,7 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when the background task has started processing.
         """
-        if self._state == WAITING:
+        if self._state == INITIALIZED:
             self._state = EXECUTING
         elif self._state == CANCELLING_BEFORE_STARTED:
             self._state = CANCELLING_AFTER_STARTED
@@ -271,7 +282,7 @@ class BaseFuture(HasStrictTraits):
         A future in ``WAITING`` or ``EXECUTING`` state moves to ``CANCELLING``
         state.
         """
-        if self._state == WAITING:
+        if self._state == INITIALIZED:
             self._cancel = None
             self._state = CANCELLING_BEFORE_STARTED
         elif self._state == EXECUTING:
@@ -282,6 +293,24 @@ class BaseFuture(HasStrictTraits):
                 "Unexpected 'cancelled' message in state {!r}".format(
                     self._state
                 )
+            )
+
+    def _executor_initialized(self, cancel):
+        """
+        Update state when the executor initializes the future.
+
+        Parameters
+        ----------
+        cancel : callable
+            The callback to be called when the user requests cancellation.
+            The callback accepts no arguments, and has no return value.
+        """
+        if self._state == NOT_INITIALIZED:
+            self._cancel = cancel
+            self._state = INITIALIZED
+        else:
+            raise StateTransitionError(
+                "Unexpected initialization in state {!r}".format(self._state)
             )
 
     # Private traits ##########################################################
@@ -305,10 +334,10 @@ class BaseFuture(HasStrictTraits):
         return _state_from_internal_state(self._state)
 
     def _get_cancellable(self):
-        return self._state in CANCELLABLE_STATES
+        return _state_from_internal_state(self._state) in CANCELLABLE_STATES
 
     def _get_done(self):
-        return self._state in DONE_STATES
+        return _state_from_internal_state(self._state) in DONE_STATES
 
     def __state_changed(self, old__state, new__state):
         old_state = _state_from_internal_state(old__state)
@@ -316,14 +345,14 @@ class BaseFuture(HasStrictTraits):
         if old_state != new_state:
             self.trait_property_changed("state", old_state, new_state)
 
-        old_cancellable = old__state in CANCELLABLE_STATES
-        new_cancellable = new__state in CANCELLABLE_STATES
+        old_cancellable = old_state in CANCELLABLE_STATES
+        new_cancellable = new_state in CANCELLABLE_STATES
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable
             )
 
-        old_done = old__state in DONE_STATES
-        new_done = new__state in DONE_STATES
+        old_done = old_state in DONE_STATES
+        new_done = new_state in DONE_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
