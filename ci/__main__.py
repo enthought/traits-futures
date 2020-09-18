@@ -82,19 +82,19 @@ def build(python_version, toolkit, mode):
     pyenv.create()
     pyenv.install(dependencies)
 
-    # Install the copyright header checker.
-    copyright_checker_install_cmd = [
-        "-m", "pip", "install", "copyright_header/"
-    ]
-    pyenv.python(copyright_checker_install_cmd)
-
-    # Install the local package, ignoring dependencies declared in its
-    # setup.py.
-    pip_cmd = ["-m", "pip", "install", "--no-deps"]
-    if mode == "develop":
-        pip_cmd.append("--editable")
-    pip_cmd.append(".")
-    pyenv.python(pip_cmd)
+    # Install local packages.
+    local_packages = ["./", "copyright_header/"]
+    pip_options = ["--editable"] if mode == "develop" else []
+    for package in local_packages:
+        install_cmd = [
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            *pip_options,
+            package,
+        ]
+        pyenv.python(install_cmd)
 
     click.echo(
         "Created environment with name {}".format(pyenv.environment_name)
@@ -126,34 +126,40 @@ def coverage(python_version, toolkit, verbose, branch, html, report):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    test_cmd = ["-m", "unittest", "discover"]
-    if verbose:
-        test_cmd.append("--verbose")
-    test_cmd.append(cfg.PACKAGE_NAME)
+    test_packages = [cfg.PACKAGE_NAME, "copyright_header"]
+    test_options = ["--verbose"] if verbose else []
+    coverage_options = ["--branch"] if branch else []
 
-    coverage_cmd = [
-        "-m",
-        "coverage",
-        "run",
-        "--source",
-        cfg.PACKAGE_NAME,
-    ]
-    if branch:
-        coverage_cmd.append("--branch")
-
-    # Run coverage from an empty directory.
+    failed_packages = []
     with in_coverage_directory():
-        return_code = pyenv.python_return_code(coverage_cmd + test_cmd)
-        if html:
-            pyenv.python(["-m", "coverage", "html"])
-        if report:
-            pyenv.python(["-m", "coverage", "report"])
-            click.echo()
+        for package in test_packages:
+            test_cmd = ["-m", "unittest", "discover", *test_options, package]
+            coverage_cmd = [
+                "-m",
+                "coverage",
+                "run",
+                "--source",
+                package,
+                "--append",
+                *coverage_options,
+                *test_cmd,
+            ]
+            return_code = pyenv.python_return_code(coverage_cmd)
+            if return_code:
+                failed_packages.append(package)
 
-    if return_code:
-        raise click.ClickException("There were test failures.")
-    else:
-        click.echo("All tests passed.")
+        if failed_packages:
+            raise click.ClickException(
+                "The following packages had test failures: {}".format(
+                    failed_packages
+                )
+            )
+        else:
+            if html:
+                pyenv.python(["-m", "coverage", "html"])
+            if report:
+                pyenv.python(["-m", "coverage", "report"])
+                click.echo()
 
 
 @cli.command()
@@ -233,21 +239,29 @@ def test(python_version, toolkit, verbose):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    test_cmd = ["-m", "unittest", "discover"]
-    if verbose:
-        test_cmd.append("--verbose")
-    test_cmd.append(cfg.PACKAGE_NAME)
+    test_packages = [cfg.PACKAGE_NAME, "copyright_header"]
+    test_options = ["--verbose"] if verbose else []
 
-    # Run tests from an empty directory to avoid picking up
-    # code directly from the repository instead of the target
-    # environment.
-    with in_test_directory():
-        return_code = pyenv.python_return_code(test_cmd)
+    failed_packages = []
+    for package in test_packages:
+        test_cmd = ["-m", "unittest", "discover", *test_options, package]
 
-    if return_code:
-        raise click.ClickException("There were test failures.")
-    else:
-        click.echo("All tests passed.")
+        # Run tests from an empty directory to avoid picking up
+        # code directly from the repository instead of the target
+        # environment.
+        with in_test_directory():
+            return_code = pyenv.python_return_code(test_cmd)
+        if return_code:
+            failed_packages.append(package)
+
+    if failed_packages:
+        raise click.ClickException(
+            "There were test failures in the following packages: {}".format(
+                failed_packages
+            )
+        )
+
+    click.echo("All tests passed.")
 
 
 # Helper functions ############################################################
