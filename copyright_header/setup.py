@@ -17,7 +17,7 @@ if __name__ == "__main__":
         version="1.2.0",
         description="flake8 plugin for checking copyright headers",
         install_requires=["flake8"],
-        py_modules=["copyright_header"],
+        packages=["copyright_header", "copyright_header.tests"],
         entry_points={
             "flake8.extension": [
                 "H = copyright_header:CopyrightHeaderExtension",
