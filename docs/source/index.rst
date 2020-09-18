@@ -61,6 +61,7 @@ User Guide
    :maxdepth: 4
 
    guide/intro.rst
+   guide/cancel.rst
 
 
 API Documentation
