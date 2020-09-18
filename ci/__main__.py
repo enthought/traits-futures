@@ -82,6 +82,12 @@ def build(python_version, toolkit, mode):
     pyenv.create()
     pyenv.install(dependencies)
 
+    # Install the copyright header checker.
+    copyright_checker_install_cmd = [
+        "-m", "pip", "install", "copyright_header/"
+    ]
+    pyenv.python(copyright_checker_install_cmd)
+
     # Install the local package, ignoring dependencies declared in its
     # setup.py.
     pip_cmd = ["-m", "pip", "install", "--no-deps"]
