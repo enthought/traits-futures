@@ -13,7 +13,6 @@ Context providing multithreading-friendly worker pools, events, and routers.
 """
 
 import concurrent.futures
-import queue
 import threading
 
 from traits_futures.i_parallel_context import IParallelContext
@@ -54,17 +53,6 @@ class MultithreadingContext(IParallelContext):
             An event that can be shared safely with workers.
         """
         return threading.Event()
-
-    def queue(self):
-        """
-        Return a shareable queue suitable for this context.
-
-        Returns
-        -------
-        queue : queue-like
-            A queue that can be shared safely with workers.
-        """
-        return queue.Queue()
 
     def message_router(self):
         """

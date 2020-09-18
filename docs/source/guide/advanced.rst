@@ -163,7 +163,7 @@ background task type:
    substitutions
 
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
-.. |dispatch_message| replace:: :meth:`~.BaseFuture.dispatch_message`
+.. |dispatch_message| replace:: :meth:`~.BaseFuture._dispatch_message`
 .. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`
