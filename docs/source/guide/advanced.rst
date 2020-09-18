@@ -122,7 +122,7 @@ Putting it all together: the task specification
 The last piece we need is a task specification, which is the object that can be
 submitted to the |TraitsExecutor|. This object needs to have two attributes:
 ``future`` and ``background_task``. Given an instance ``task`` of a task
-specification, the |TraitsExecutor| calls ``task.future(_cancel=cancel_event)``
+specification, the |TraitsExecutor| calls ``task.future()``
 to create the future, and ``task.background_task()`` to create the background
 callable. For the background task, we want to return (but not call!) the
 ``fizz_buzz`` function that we defined above. For the future, we create and

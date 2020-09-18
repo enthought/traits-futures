@@ -111,31 +111,28 @@ class BackgroundFizzBuzz:
     Task specification for Fizz Buzz background tasks.
     """
 
-    def future(self, _cancel):
+    def future(self):
         """
-        Factory method for creating futures.
-
-        Parameters
-        ----------
-        cancel : callable
-            Zero-argument callable that's invoked when the user requests
-            cancellation of this future.
+        Return a Future for the background task.
 
         Returns
         -------
-        IFuture
+        FizzBuzzFuture
+            Future object that can be used to monitor the status of the
+            background task.
         """
-        return FizzBuzzFuture(_cancel=_cancel)
+        return FizzBuzzFuture()
 
     def background_task(self):
         """
-        Factory method for creating background tasks.
+        Return a background callable for this task specification.
 
         Returns
         -------
-        callable
-            Callable representing the background task, and accepting ``send``
-            and ``cancelled`` arguments.
+        collections.abc.Callable
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled`` to
+            check whether cancellation has been requested.
         """
         return fizz_buzz
 # -- end BackgroundFizzBuzz
