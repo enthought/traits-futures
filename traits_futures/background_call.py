@@ -53,8 +53,17 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str())
 
-    #: Factory for futures
-    future = CallFuture
+    def future(self):
+        """
+        Return a Future for the background task.
+
+        Returns
+        -------
+        future : CallFuture
+            Future object that can be used to monitor the status of the
+            background task.
+        """
+        return CallFuture()
 
     def background_task(self):
         """
