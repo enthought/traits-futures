@@ -48,6 +48,8 @@ class CommonFutureTests:
 
         # Record state when any of the three traits changes.
         future = self.future_class()
+        future._executor_initialized(lambda: None)
+
         future.on_trait_change(record_states, "cancellable")
         future.on_trait_change(record_states, "done")
         future.on_trait_change(record_states, "state")
@@ -65,6 +67,8 @@ class CommonFutureTests:
 
     def test_cancellable_and_done_success(self):
         future = self.future_class()
+        future._executor_initialized(lambda: None)
+
         listener = FutureListener(future=future)
 
         future._task_started(None)
@@ -75,6 +79,8 @@ class CommonFutureTests:
 
     def test_cancellable_and_done_failure(self):
         future = self.future_class()
+        future._executor_initialized(lambda: None)
+
         listener = FutureListener(future=future)
 
         future._task_started(None)
@@ -85,6 +91,8 @@ class CommonFutureTests:
 
     def test_cancellable_and_done_cancellation(self):
         future = self.future_class()
+        future._executor_initialized(lambda: None)
+
         listener = FutureListener(future=future)
 
         future._task_started(None)
@@ -96,6 +104,8 @@ class CommonFutureTests:
 
     def test_cancellable_and_done_early_cancellation(self):
         future = self.future_class()
+        future._executor_initialized(lambda: None)
+
         listener = FutureListener(future=future)
 
         future._user_cancelled()
