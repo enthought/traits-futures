@@ -159,7 +159,6 @@ background task type:
 
 .. _fizz_buzz: https://en.wikipedia.org/wiki/Fizz_buzz
 
-
 ..
    substitutions
 
