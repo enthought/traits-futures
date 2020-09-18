@@ -8,15 +8,23 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+Copyright header checker
+
+This file provides a checker for the presence and accuracy of the Enthought
+open source copyright header in all Python source files, along with
+a flake8 wrapper that makes the check available as a flake8 plugin.
+"""
+
 import datetime
 import re
 
-# Regular expression to match things of the form "1985" or of the form
-# "1985-1999".
+#: Regular expression to match things of the form "1985" or of the form
+#: "1985-1999".
 YEAR_RANGE = r"(?P<start_year>\d{4})(?:\-(?P<end_year>\d{4}))?"
 
-# Template for a regular expression for the copyright header.
-PRODUCT_CODE_HEADER_TEMPLATE = r"""
+#: Pattern (as a regular expression) for the ETS copyright header.
+ETS_COPYRIGHT_HEADER_PATTERN = r"""
 # \(C\) Copyright {year_range} Enthought, Inc\., Austin, TX
 # All rights reserved\.
 #
@@ -30,14 +38,12 @@ PRODUCT_CODE_HEADER_TEMPLATE = r"""
     year_range=YEAR_RANGE
 ).lstrip()
 
-ETS_PRODUCT_CODE_HEADER = re.compile(PRODUCT_CODE_HEADER_TEMPLATE)
-
 
 def parse_year_range(header_text):
     """
     Parse a copyright year range from a header string.
 
-    Looks for a year range of the form "2019" or "2010-2019", and
+    Looks for a year range of the form "1985" or "1985-1999", and
     returns the start and end year.
 
     If there are multiple year ranges, parses only the first.
@@ -53,7 +59,8 @@ def parse_year_range(header_text):
     start_year, end_year : int
         Start year and end year described by the range.
     match_pos : int
-        Position within the string at which the match occurred.
+        Position within the string at which the match occurred. This
+        is useful for error reporting.
 
     Raises
     ------
@@ -143,7 +150,7 @@ def copyright_header(lines, end_year):
         return
 
     # Check that the file starts with the right copyright statement.
-    header_match = ETS_PRODUCT_CODE_HEADER.match(file_contents)
+    header_match = re.match(ETS_COPYRIGHT_HEADER_PATTERN, file_contents)
     if header_match is None:
         yield MissingCopyrightHeaderError(lineno=1, col_offset=0)
         return
