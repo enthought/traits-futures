@@ -111,6 +111,21 @@ def build(python_version, toolkit, mode):
 @cli.command()
 @python_version_option
 @toolkit_option
+def shell(python_version, toolkit):
+    pyenv = _get_devenv(python_version, toolkit)
+    environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
+        prefix=cfg.PREFIX, python_version=python_version, toolkit=toolkit,
+    )
+
+    shell_cmd = [
+        "shell", "-e", environment_name
+    ]
+    pyenv.edm(shell_cmd)
+
+
+@cli.command()
+@python_version_option
+@toolkit_option
 @verbose_option
 @click.option(
     "--branch/--no-branch",
