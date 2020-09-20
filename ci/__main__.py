@@ -113,12 +113,8 @@ def build(python_version, toolkit, mode):
 @toolkit_option
 def shell(python_version, toolkit):
     pyenv = _get_devenv(python_version, toolkit)
-    environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
-        prefix=cfg.PREFIX, python_version=python_version, toolkit=toolkit,
-    )
-
     shell_cmd = [
-        "shell", "-e", environment_name
+        "shell", "-e", pyenv.environment_name
     ]
     pyenv.edm(shell_cmd)
 
