@@ -72,15 +72,12 @@ class FutureWrapper(HasStrictTraits):
         message_kind, message = message
 
         if message_kind == CUSTOM:
-            self.future.message = message
-        elif message_kind == CONTROL:
+            self.future._dispatch_message(message)
+        else:
+            assert message_kind == CONTROL
             message_type, message_arg = message
             method_name = "_task_{}".format(message_type)
             getattr(self.future, method_name)(message_arg)
-        else:
-            raise RuntimeError(
-                "Unrecognised message kind: {}".format(message_kind)
-            )
 
 
 class BackgroundTaskWrapper:
