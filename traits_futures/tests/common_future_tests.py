@@ -14,7 +14,7 @@ Test methods run for all future types.
 from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
 
 from traits_futures.api import IFuture
-from traits_futures.base_future import StateTransitionError
+from traits_futures.base_future import _StateTransitionError
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import CANCELLABLE_STATES, DONE_STATES
 
@@ -167,7 +167,7 @@ class CommonFutureTests:
         # Check that all invalid sequences raise StateTransitionError
         for sequence in invalid_sequences:
             with self.subTest(sequence=sequence):
-                with self.assertRaises(StateTransitionError):
+                with self.assertRaises(_StateTransitionError):
                     self.send_message_sequence(sequence)
 
         # Check all complete valid sequences.

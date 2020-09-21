@@ -16,7 +16,7 @@ import unittest
 
 from traits.api import Int, List
 
-from traits_futures.base_future import BaseFuture, StateTransitionError
+from traits_futures.base_future import _StateTransitionError, BaseFuture
 from traits_futures.tests.common_future_tests import CommonFutureTests
 
 
@@ -76,18 +76,18 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
 
         future = self.future_class()
 
-        with self.assertRaises(StateTransitionError):
+        with self.assertRaises(_StateTransitionError):
             future._dispatch_message(message)
 
         future._executor_initialized(dummy_cancel_callback)
 
-        with self.assertRaises(StateTransitionError):
+        with self.assertRaises(_StateTransitionError):
             future._dispatch_message(message)
 
         future._task_started(None)
         future._task_returned(1729)
 
-        with self.assertRaises(StateTransitionError):
+        with self.assertRaises(_StateTransitionError):
             future._dispatch_message(message)
 
     def test_impossible_ping_cancelled_task(self):
@@ -98,5 +98,5 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
 
         future._user_cancelled()
 
-        with self.assertRaises(StateTransitionError):
+        with self.assertRaises(_StateTransitionError):
             future._dispatch_message(message)
