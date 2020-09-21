@@ -217,7 +217,8 @@ class PrimeCounter(Handler):
         self.result_message = "Counting ..."
 
         dialog = ProgressDialog(
-            title="Counting primes\N{HORIZONTAL ELLIPSIS}", future=self.future,
+            title="Counting primes\N{HORIZONTAL ELLIPSIS}",
+            future=self.future,
         )
         dialog.open()
 
@@ -228,7 +229,8 @@ class PrimeCounter(Handler):
     def _report_result(self, future, name, done):
         if future.state == COMPLETED:
             self.result_message = "There are {} primes smaller than {}".format(
-                future.result, self._last_limit,
+                future.result,
+                self._last_limit,
             )
         elif future.state == CANCELLED:
             self.result_message = "Run cancelled"

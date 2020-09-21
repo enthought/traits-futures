@@ -95,7 +95,8 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
 
         # Send messages from a background thread.
         worker = threading.Thread(
-            target=send_messages, args=(sender, messages),
+            target=send_messages,
+            args=(sender, messages),
         )
         worker.start()
         worker.join()
@@ -128,7 +129,8 @@ class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
             listeners.append(ReceiverListener(receiver=receiver))
             workers.append(
                 threading.Thread(
-                    target=send_messages, args=(sender, messages),
+                    target=send_messages,
+                    args=(sender, messages),
                 )
             )
 

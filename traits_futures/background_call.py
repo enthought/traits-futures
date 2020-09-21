@@ -77,7 +77,9 @@ class BackgroundCall(HasStrictTraits):
             check whether cancellation has been requested.
         """
         return CallBackgroundTask(
-            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
+            callable=self.callable,
+            args=self.args,
+            kwargs=self.kwargs.copy(),
         )
 
 

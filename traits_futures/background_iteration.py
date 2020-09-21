@@ -113,7 +113,9 @@ class BackgroundIteration(HasStrictTraits):
             check whether cancellation has been requested.
         """
         return IterationBackgroundTask(
-            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
+            callable=self.callable,
+            args=self.args,
+            kwargs=self.kwargs.copy(),
         )
 
 

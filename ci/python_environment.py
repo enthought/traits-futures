@@ -283,7 +283,8 @@ def current_platform():
 
 
 def _edm_version():
-    """ Determine the EDM version.
+    """
+    Determine the EDM version.
 
     Returns the EDM version as a tuple of integers.
     """

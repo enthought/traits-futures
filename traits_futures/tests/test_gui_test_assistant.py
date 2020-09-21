@@ -67,14 +67,19 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
 
         executor.stop()
         self.run_until(
-            executor, "stopped", condition=lambda executor: executor.stopped,
+            executor,
+            "stopped",
+            condition=lambda executor: executor.stopped,
         )
 
     def test_run_until_timeout_with_true_condition(self):
         # Trait never fired, but condition true anyway.
         dummy = Dummy()
         self.run_until(
-            dummy, "never_fired", condition=lambda object: True, timeout=10.0,
+            dummy,
+            "never_fired",
+            condition=lambda object: True,
+            timeout=10.0,
         )
 
     def test_run_until_success(self):
@@ -84,13 +89,17 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
         # Case 1: condition true on second trait change event.
         future = submit_call(executor, slow_return)
         self.run_until(
-            future, "state", condition=lambda future: future.done,
+            future,
+            "state",
+            condition=lambda future: future.done,
         )
         self.assertTrue(future.done)
 
         # Case 2: condition true on the first trait firing.
         executor.stop()
         self.run_until(
-            executor, "stopped", condition=lambda executor: executor.stopped,
+            executor,
+            "stopped",
+            condition=lambda executor: executor.stopped,
         )
         self.assertTrue(executor.stopped)

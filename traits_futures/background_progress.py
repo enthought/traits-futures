@@ -153,7 +153,9 @@ class BackgroundProgress(HasStrictTraits):
             raise TypeError("progress may not be passed as a named argument")
 
         return ProgressBackgroundTask(
-            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
+            callable=self.callable,
+            args=self.args,
+            kwargs=self.kwargs.copy(),
         )
 
 

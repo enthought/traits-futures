@@ -137,7 +137,8 @@ class SquaringHelper(Handler):
                     UItem(
                         "current_futures",
                         editor=TabularEditor(
-                            adapter=JobTabularAdapter(), auto_update=True,
+                            adapter=JobTabularAdapter(),
+                            auto_update=True,
                         ),
                     ),
                 ),
