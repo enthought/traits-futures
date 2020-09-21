@@ -39,7 +39,6 @@ class PingFuture(BaseFuture):
         Process a 'ping' message.
         """
         self.pings.append(arg)
-        pass
 
 
 class TestBaseFuture(CommonFutureTests, unittest.TestCase):
