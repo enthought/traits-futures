@@ -95,7 +95,7 @@ def _state_from_internal_state(internal_state):
 #: Exception used to indicate a bad state transition. This should
 #: never happen as a result of user error, only as a result of
 #: a coding error in this repository.
-class StateTransitionError(Exception):
+class _StateTransitionError(Exception):
     pass
 
 
@@ -232,7 +232,7 @@ class BaseFuture(HasStrictTraits):
             method_name = "_process_{}".format(message_type)
             getattr(self, method_name)(message_arg)
         else:
-            raise StateTransitionError(
+            raise _StateTransitionError(
                 "Unexpected custom message in state {!r}".format(self._state)
             )
 
@@ -251,7 +251,7 @@ class BaseFuture(HasStrictTraits):
         elif self._state == _CANCELLING_BEFORE_STARTED:
             self._state = _CANCELLING_AFTER_STARTED
         else:
-            raise StateTransitionError(
+            raise _StateTransitionError(
                 "Unexpected 'started' message in state {!r}".format(
                     self._state
                 )
@@ -268,7 +268,7 @@ class BaseFuture(HasStrictTraits):
         elif self._state == _CANCELLING_AFTER_STARTED:
             self._state = CANCELLED
         else:
-            raise StateTransitionError(
+            raise _StateTransitionError(
                 "Unexpected 'returned' message in state {!r}".format(
                     self._state
                 )
@@ -285,7 +285,7 @@ class BaseFuture(HasStrictTraits):
         elif self._state == _CANCELLING_AFTER_STARTED:
             self._state = CANCELLED
         else:
-            raise StateTransitionError(
+            raise _StateTransitionError(
                 "Unexpected 'raised' message in state {!r}".format(self._state)
             )
 
@@ -303,7 +303,7 @@ class BaseFuture(HasStrictTraits):
             self._cancel = None
             self._state = _CANCELLING_AFTER_STARTED
         else:
-            raise StateTransitionError(
+            raise _StateTransitionError(
                 "Unexpected 'cancelled' message in state {!r}".format(
                     self._state
                 )
@@ -323,7 +323,7 @@ class BaseFuture(HasStrictTraits):
             self._cancel = cancel
             self._state = _INITIALIZED
         else:
-            raise StateTransitionError(
+            raise _StateTransitionError(
                 "Unexpected initialization in state {!r}".format(self._state)
             )
 
