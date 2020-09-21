@@ -17,9 +17,7 @@ from traits.api import (
     Bool,
     Callable,
     Enum,
-    Event,
     HasStrictTraits,
-    on_trait_change,
     Property,
     provides,
     Str,
@@ -116,12 +114,6 @@ class BaseFuture(HasStrictTraits):
     #: it will be consistent with the ``state``.
     done = Property(Bool())
 
-    #: Event trait providing custom messages from the background task.
-    #: Subclasses of ``BaseFuture`` can listen to this trait and interpret
-    #: the messages in whatever way they like. Each message takes the
-    #: form ``(message_type, message_args)``.
-    message = Event(Tuple(Str(), Any()))
-
     @property
     def result(self):
         """
@@ -142,11 +134,11 @@ class BaseFuture(HasStrictTraits):
             If the task is still executing, or was cancelled, or raised an
             exception instead of returning a result.
         """
-        if self._state != COMPLETED:
+        if self.state != COMPLETED:
             raise AttributeError(
                 "No result available. Task has not yet completed, "
                 "or was cancelled, or failed with an exception. "
-                "Task state is {}".format(self._state)
+                "Task state is {}".format(self.state)
             )
         return self._result
 
@@ -171,7 +163,7 @@ class BaseFuture(HasStrictTraits):
             If the task is still executing, or was cancelled, or completed
             without raising an exception.
         """
-        if self._state != FAILED:
+        if self.state != FAILED:
             raise AttributeError(
                 "No exception information available. Task has "
                 "not yet completed, or was cancelled, or completed "
@@ -199,11 +191,15 @@ class BaseFuture(HasStrictTraits):
                 "Can only cancel a waiting or executing task. "
                 "Task state is {}".format(self.state)
             )
-        self._cancel()
         self._user_cancelled()
 
-    @on_trait_change("message")
-    def dispatch_message(self, message):
+    # Semi-private methods ####################################################
+
+    # These methods represent the state transitions in response to external
+    # events. They're used by the FutureWrapper, but are not intended for use
+    # by the users of Traits Futures.
+
+    def _dispatch_message(self, message):
         """
         Automate dispatch of different types of message.
 
@@ -216,7 +212,14 @@ class BaseFuture(HasStrictTraits):
 
         If the future is already in ``CANCELLING`` state, no message is
         dispatched.
+
+        Parameters
+        ----------
+        message : tuple(str, object)
+            Message from the background task, in the form (message_type,
+            message_args).
         """
+
         if self._state == CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
             return
@@ -228,12 +231,6 @@ class BaseFuture(HasStrictTraits):
             raise StateTransitionError(
                 "Unexpected custom message in state {!r}".format(self._state)
             )
-
-    # Semi-private methods ####################################################
-
-    # These methods represent the state transitions in response to external
-    # events. They're used by the FutureWrapper, but are not intended for use
-    # by the users of Traits Futures.
 
     def _task_started(self, none):
         """
@@ -290,9 +287,11 @@ class BaseFuture(HasStrictTraits):
         state.
         """
         if self._state == INITIALIZED:
+            self._cancel()
             self._cancel = None
             self._state = CANCELLING_BEFORE_STARTED
         elif self._state == EXECUTING:
+            self._cancel()
             self._cancel = None
             self._state = CANCELLING_AFTER_STARTED
         else:

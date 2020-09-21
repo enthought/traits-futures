@@ -53,10 +53,6 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         self._context = MultithreadingContext()
 
     def tearDown(self):
-        if hasattr(self, "executor"):
-            self.executor.stop()
-            self.wait_until_stopped(self.executor)
-            del self.executor
         self._context.close()
         GuiTestAssistant.tearDown(self)
 

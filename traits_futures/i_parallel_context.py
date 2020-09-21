@@ -58,18 +58,6 @@ class IParallelContext(abc.ABC):
         """
 
     @abc.abstractmethod
-    def queue(self):
-        """
-        Return a shareable queue suitable for this context.
-
-        Returns
-        -------
-        queue : queue-like
-            A queue that can be shared safely with workers. This package
-            relies only on the ``put`` and ``get`` methods of the queue.
-        """
-
-    @abc.abstractmethod
     def message_router(self):
         """
         Return a message router suitable for use in this context.
