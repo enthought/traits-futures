@@ -31,6 +31,7 @@ class PingFuture(BaseFuture):
     BaseFuture subclass that interpretes "ping"
     messages from the background.
     """
+
     #: Accumulate ping messages
     pings = List(Int)
 

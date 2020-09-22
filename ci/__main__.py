@@ -65,7 +65,9 @@ def cli():
 @python_version_option
 @toolkit_option
 @click.argument(
-    "mode", type=click.Choice(["ci", "develop"]), default="develop",
+    "mode",
+    type=click.Choice(["ci", "develop"]),
+    default="develop",
 )
 def build(python_version, toolkit, mode):
     """
@@ -113,9 +115,7 @@ def build(python_version, toolkit, mode):
 @toolkit_option
 def shell(python_version, toolkit):
     pyenv = _get_devenv(python_version, toolkit)
-    shell_cmd = [
-        "shell", "-e", pyenv.environment_name
-    ]
+    shell_cmd = ["shell", "-e", pyenv.environment_name]
     pyenv.edm(shell_cmd)
 
 
@@ -219,7 +219,8 @@ def doc(python_version, toolkit):
 @python_version_option
 @toolkit_option
 @click.argument(
-    "example-name", type=click.Choice(cfg.EXAMPLES),
+    "example-name",
+    type=click.Choice(cfg.EXAMPLES),
 )
 def example(python_version, toolkit, example_name):
     """
@@ -303,7 +304,9 @@ def _get_devenv(python_version, toolkit):
 
     runtime_version = cfg.RUNTIME_VERSION[python_version]
     environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
-        prefix=cfg.PREFIX, python_version=python_version, toolkit=toolkit,
+        prefix=cfg.PREFIX,
+        python_version=python_version,
+        toolkit=toolkit,
     )
 
     return PythonEnvironment(

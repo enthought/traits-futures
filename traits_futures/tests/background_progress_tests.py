@@ -184,7 +184,8 @@ class BackgroundProgressTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_background_task_starts(self):
