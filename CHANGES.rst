@@ -20,19 +20,31 @@ Release date: 2020-09-24
 This is a feature release of Traits Futures. The main features of this
 release are:
 
-* Better support for user-defined background task types.
-* Easier creation of background calls that can be cancelled mid-calculation.
+* Improved support for user-defined background task types.
+* Easier creation of background calculations that can be (cooperatively)
+  cancelled mid-calculation.
 * Significant internal refactoring and cleanup, aimed at eventual support
-  for alternative front ends and back ends (e.g., multiprocessing).
-* Significantly improved and expanded documentation.
+  for alternative front ends (GUI event loops other than the Qt event
+  loop) and back ends (e.g., multiprocessing).
+* Improved and expanded documentation.
 
+There are no immediately API-breaking changes in this release: existing working
+code using Traits Futures 0.1.1 should continue to work with no changes
+required. However, some parts of the existing API have been deprecated, and
+will be removed in a future release. See the Changes section below for more
+details.
+
+Detailed changes follow. Note that the list below is not exhaustive: many
+more minor PRs have been omitted.
 
 Features
 ~~~~~~~~
 
 * Users can now easily create their own background task types to supplement
   the provided task types (background calls, background iterations and
-  background progress). (#198)
+  background progress). A combination of a new :class:`ITaskSpecification`
+  interface and a convenience :class:`BaseFuture` base class support this.
+  (#198)
 * The :func:`submit_iteration` function now supports generator functions that
   return a result. This provides an easy way to submit background computations
   that can be cancelled mid-calculation. (#167)
@@ -43,27 +55,32 @@ Features
   :func:`submit_iteration` and :func:`submit_progress`. These functions replace
   the eponymous existing :class:`TraitsExecutor` methods, which are now
   deprecated. (#166)
-* The :mod:`traits_futures.api` module has been expanded to include various
-  helpful interfaces and base classes: (#169)
-
-* Add ``IFuture`` interface class to ``api`` module. (#169)
+* There's a new :class:`IFuture` interface class in the
+  :mod:`traits_futures.api` module, to aid in typing and Trait declarations.
+  (#169)
+* A new :class:`IParallelContext` interface supports eventual addition
+  of alternative back ends. The new :class:`MultithreadingContext` class
+  implements this interface and provides the default threading back-end.
+  (#149)
 
 Changes
 ~~~~~~~
 
-* The default number of workers in the worker pool has changed. Previously
-  it was hard-coded as ``4``. Now it defaults to whatever Python's
-  ``concurrent.futures`` executors give (but it can be controlled by
-  passing the ``max_workers`` argument). (#125)
+* The default number of workers in an owned worker pool (that is, a worker pool
+  created by a :class:`TraitsExecutor`) has changed. Previously it was
+  hard-coded as ``4``. Now it defaults to whatever Python's
+  :mod:`concurrent.futures` executors give, but can be controlled by passing
+  the ``max_workers`` argument. (#125)
 * The ``submit_call``, ``submit_iteration`` and ``submit_progress``
   methods on the ``TraitsExecutor`` have been deprecated. Use the
   ``submit_call``, ``submit_iteration`` and ``submit_progress`` convenience
   functions instead. (#159)
 * The ``thread_pool`` argument to ``TraitsExecutor`` has been renamed
   to ``worker_pool``. The original name has been kept, for backwards
-  compatibility, but is deprecated. (#144, #148)
-* Python 2.7 is no longer supported. The package requires Python >= 3.5.
-  (#123, #130, #131, #132, #133, #138, #145)
+  compatibility, but its use is deprecated. (#144, #148)
+* Python 2.7 is no longer supported. Traits Futures requires Python >= 3.5,
+  and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
+  #132, #133, #138, #145)
 
 Fixes
 ~~~~~
@@ -75,42 +92,25 @@ Tests
 
 * Fix some intermittent test failures due to test interactions. (#176)
 * The 'null' backend that's used for testing in the absence of a Qt backend
-  now uses an asyncio-based event loop instead of a custom event loop. (#107, #179)
-* Rewrite the Qt ``GuiTestAssistant`` to react rather than polling. (#153)
+  now uses a :mod:`asyncio`-based event loop instead of a custom event loop.
+  (#107, #179)
+* Rewrite the Qt ``GuiTestAssistant`` to react rather than polling. This
+  significantly speeds up the test run. (#153)
 * Ensure that all tests properly stop the executors they create. (#108, #146)
-* Refactoring of the test structure in preparation for multiprocessing
+* Refactor the test structure in preparation for multiprocessing
   support. (#135, #141)
-* Test the ``GuiTestAssistant`` class.
+* Test the ``GuiTestAssistant`` class. (#109)
 
-Refactoring
-~~~~~~~~~~~
+Developer tooling
+~~~~~~~~~~~~~~~~~
 
-Many of the internal details have been significantly refactored. Those
-refactorings had two main goals:
-
-* Support user-defined background task types.
-* Support a multiprocessing back end.
-* Support front ends other than Qt. (Right now, only the 'null' toolkit is
-  supported. In future, there may be wx support.)
-
-Note that the multiprocessing back end is still work in progress.
-
-The externally-visible behaviour should not have changed as a result of these
-refactorings beyond what's already noted in the "Changes" section above.
-
-* Refactor and clean up code. (#134, #149, #150, #163, #172, #174, #180, #183, #192, #201, #202, #203,
-  #206)
-
-Developer tools
-~~~~~~~~~~~~~~~
-
-* Add a new ``shell`` click cmd. (#204)
+* Add a new ``python -m ci shell`` click cmd. (#204)
 * Update edm version in CI. (#205)
-* Add checks for missing or malformed copyright headers in Python files. (#193)
+* Add checks for missing or malformed copyright headers in Python files (and
+  fix existing copyright headers). (#193)
 * Add import order checks (and fix existing import order bugs). (#161)
 * Add separate "build" and "ci" modes for setting up the development
   environment. (#104)
-* Other maintenance and minor fixes. (#127, #160)
 * Don't pin dependent packages in the build environment. (#99)
 
 Documentation
@@ -123,9 +123,6 @@ Documentation
   under 'User Documentation'. (#191)
 * Document creation of new background task types. (#198)
 * Document use of ``submit_iteration`` for interruptible tasks. (#188)
-* Minor documentation fixes and enhancements. (#158, #168, #182, #186, #189, #196, #199)
-
-
 
 
 Release 0.1.1
