@@ -72,11 +72,11 @@ Changes
   :mod:`concurrent.futures` executors give, but can be controlled by passing
   the ``max_workers`` argument. (#125)
 * The ``submit_call``, ``submit_iteration`` and ``submit_progress``
-  methods on the ``TraitsExecutor`` have been deprecated. Use the
-  ``submit_call``, ``submit_iteration`` and ``submit_progress`` convenience
-  functions instead. (#159)
-* The ``thread_pool`` argument to ``TraitsExecutor`` has been renamed
-  to ``worker_pool``. The original name has been kept, for backwards
+  methods on the :class:`TraitsExecutor` have been deprecated. Use the
+  :func:`submit_call`, :func:`submit_iteration` and :func:`submit_progress`
+  convenience functions instead. (#159)
+* The ``thread_pool`` argument to :class:`TraitsExecutor` has been renamed
+  to ``worker_pool``. The original name is still available for backwards
   compatibility, but its use is deprecated. (#144, #148)
 * Python 2.7 is no longer supported. Traits Futures requires Python >= 3.5,
   and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
