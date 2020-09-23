@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Wrappers for the background task callable and the foreground future.
@@ -65,15 +72,12 @@ class FutureWrapper(HasStrictTraits):
         message_kind, message = message
 
         if message_kind == CUSTOM:
-            self.future.message = message
-        elif message_kind == CONTROL:
+            self.future._dispatch_message(message)
+        else:
+            assert message_kind == CONTROL
             message_type, message_arg = message
             method_name = "_task_{}".format(message_type)
             getattr(self.future, method_name)(message_arg)
-        else:
-            raise RuntimeError(
-                "Unrecognised message kind: {}".format(message_kind)
-            )
 
 
 class BackgroundTaskWrapper:

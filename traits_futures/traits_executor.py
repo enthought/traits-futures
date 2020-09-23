@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Executor to submit background tasks.
@@ -237,7 +244,8 @@ class TraitsExecutor(HasStrictTraits):
         sender, receiver = self._message_router.pipe()
         try:
             runner = task.background_task()
-            future = task.future(_cancel=cancel_event.set)
+            future = task.future()
+            future._executor_initialized(cancel_event.set)
         except Exception:
             self._message_router.close_pipe(sender, receiver)
             raise

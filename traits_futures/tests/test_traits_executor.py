@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Tests for the TraitsExecutor class.
@@ -46,10 +53,6 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         self._context = MultithreadingContext()
 
     def tearDown(self):
-        if hasattr(self, "executor"):
-            self.executor.stop()
-            self.wait_until_stopped(self.executor)
-            del self.executor
         self._context.close()
         GuiTestAssistant.tearDown(self)
 
@@ -136,11 +139,12 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             msg="Message router unexpectedly created",
         )
         self.assertFalse(
-            executor._context_created, msg="Context unexpectedly created",
+            executor._context_created,
+            msg="Context unexpectedly created",
         )
 
     def wait_until_stopped(self, executor):
-        """"
+        """
         Wait for the executor to reach STOPPED state.
         """
         self.run_until(executor, "stopped", lambda executor: executor.stopped)

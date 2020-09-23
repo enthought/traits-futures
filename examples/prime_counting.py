@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Example showing progress reporting from a background computation, with a
@@ -210,7 +217,8 @@ class PrimeCounter(Handler):
         self.result_message = "Counting ..."
 
         dialog = ProgressDialog(
-            title="Counting primes\N{HORIZONTAL ELLIPSIS}", future=self.future,
+            title="Counting primes\N{HORIZONTAL ELLIPSIS}",
+            future=self.future,
         )
         dialog.open()
 
@@ -221,7 +229,8 @@ class PrimeCounter(Handler):
     def _report_result(self, future, name, done):
         if future.state == COMPLETED:
             self.result_message = "There are {} primes smaller than {}".format(
-                future.result, self._last_limit,
+                future.result,
+                self._last_limit,
             )
         elif future.state == CANCELLED:
             self.result_message = "Run cancelled"

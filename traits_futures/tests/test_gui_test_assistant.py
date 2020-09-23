@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Tests for the GuiTestAssistant.
@@ -60,14 +67,19 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
 
         executor.stop()
         self.run_until(
-            executor, "stopped", condition=lambda executor: executor.stopped,
+            executor,
+            "stopped",
+            condition=lambda executor: executor.stopped,
         )
 
     def test_run_until_timeout_with_true_condition(self):
         # Trait never fired, but condition true anyway.
         dummy = Dummy()
         self.run_until(
-            dummy, "never_fired", condition=lambda object: True, timeout=10.0,
+            dummy,
+            "never_fired",
+            condition=lambda object: True,
+            timeout=10.0,
         )
 
     def test_run_until_success(self):
@@ -77,13 +89,17 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
         # Case 1: condition true on second trait change event.
         future = submit_call(executor, slow_return)
         self.run_until(
-            future, "state", condition=lambda future: future.done,
+            future,
+            "state",
+            condition=lambda future: future.done,
         )
         self.assertTrue(future.done)
 
         # Case 2: condition true on the first trait firing.
         executor.stop()
         self.run_until(
-            executor, "stopped", condition=lambda executor: executor.stopped,
+            executor,
+            "stopped",
+            condition=lambda executor: executor.stopped,
         )
         self.assertTrue(executor.stopped)

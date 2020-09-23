@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Background task that sends results from an iteration.
@@ -82,8 +89,17 @@ class BackgroundIteration(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str())
 
-    #: Factory for futures.
-    future = IterationFuture
+    def future(self):
+        """
+        Return a Future for the background task.
+
+        Returns
+        -------
+        future : IterationFuture
+            Future object that can be used to monitor the status of the
+            background task.
+        """
+        return IterationFuture()
 
     def background_task(self):
         """
@@ -97,7 +113,9 @@ class BackgroundIteration(HasStrictTraits):
             check whether cancellation has been requested.
         """
         return IterationBackgroundTask(
-            callable=self.callable, args=self.args, kwargs=self.kwargs.copy(),
+            callable=self.callable,
+            args=self.args,
+            kwargs=self.kwargs.copy(),
         )
 
 
