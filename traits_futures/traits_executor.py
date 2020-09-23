@@ -100,7 +100,7 @@ class TraitsExecutor(HasStrictTraits):
         context=None,
         **traits,
     ):
-        super(TraitsExecutor, self).__init__(**traits)
+        super().__init__(**traits)
 
         if thread_pool is not None:
             warnings.warn(

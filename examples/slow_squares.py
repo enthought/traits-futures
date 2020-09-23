@@ -108,7 +108,7 @@ class SquaringHelper(Handler):
     def closed(self, info, is_ok):
         # Cancel all jobs at shutdown.
         self.traits_executor.stop()
-        super(SquaringHelper, self).closed(info, is_ok)
+        super().closed(info, is_ok)
 
     def _square_fired(self):
         future = submit_call(self.traits_executor, slow_square, self.input)
