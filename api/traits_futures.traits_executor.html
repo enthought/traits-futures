@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.traits_executor module &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>traits_futures.traits_executor module &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,7 +31,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.version module" href="traits_futures.version.html" >
     <link rel="prev" title="traits_futures.toolkit_support module" href="traits_futures.toolkit_support.html" > 
@@ -48,9 +51,8 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
 	
-          <li class="active"><a href="modules.html" >API documentation</a></li>
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
               
@@ -83,161 +85,182 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <div class="section" id="module-traits_futures.traits_executor">
 <span id="traits-futures-traits-executor-module"></span><h1>traits_futures.traits_executor module<a class="headerlink" href="#module-traits_futures.traits_executor" title="Permalink to this headline">¶</a></h1>
-<p>Main-thread executor for submission of background tasks.</p>
+<p>Executor to submit background tasks.</p>
 <dl class="attribute">
 <dt id="traits_futures.traits_executor.ExecutorState">
-<code class="descclassname">traits_futures.traits_executor.</code><code class="descname">ExecutorState</code><em class="property"> = Enum(RUNNING, STOPPING, STOPPED)</em><a class="headerlink" href="#traits_futures.traits_executor.ExecutorState" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traits_futures.traits_executor.</code><code class="sig-name descname">ExecutorState</code><em class="property"> = Enum(RUNNING, STOPPING, STOPPED)</em><a class="headerlink" href="#traits_futures.traits_executor.ExecutorState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trait type representing the executor state.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="traits_futures.traits_executor.RUNNING">
-<code class="descclassname">traits_futures.traits_executor.</code><code class="descname">RUNNING</code><em class="property"> = 'running'</em><a class="headerlink" href="#traits_futures.traits_executor.RUNNING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traits_futures.traits_executor.</code><code class="sig-name descname">RUNNING</code><em class="property"> = 'running'</em><a class="headerlink" href="#traits_futures.traits_executor.RUNNING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executor is currently running (this is the initial state).</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="traits_futures.traits_executor.STOPPED">
-<code class="descclassname">traits_futures.traits_executor.</code><code class="descname">STOPPED</code><em class="property"> = 'stopped'</em><a class="headerlink" href="#traits_futures.traits_executor.STOPPED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traits_futures.traits_executor.</code><code class="sig-name descname">STOPPED</code><em class="property"> = 'stopped'</em><a class="headerlink" href="#traits_futures.traits_executor.STOPPED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executor is stopped.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="traits_futures.traits_executor.STOPPING">
-<code class="descclassname">traits_futures.traits_executor.</code><code class="descname">STOPPING</code><em class="property"> = 'stopping'</em><a class="headerlink" href="#traits_futures.traits_executor.STOPPING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traits_futures.traits_executor.</code><code class="sig-name descname">STOPPING</code><em class="property"> = 'stopping'</em><a class="headerlink" href="#traits_futures.traits_executor.STOPPING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executor has been requested to stop. In this state, no new
 jobs can be submitted, and we’re waiting for old ones to complete.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="traits_futures.traits_executor.TraitsExecutor">
-<em class="property">class </em><code class="descclassname">traits_futures.traits_executor.</code><code class="descname">TraitsExecutor</code><span class="sig-paren">(</span><em>thread_pool=None</em>, <em>**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.traits_executor.</code><code class="sig-name descname">TraitsExecutor</code><span class="sig-paren">(</span><em class="sig-param">thread_pool=None</em>, <em class="sig-param">*</em>, <em class="sig-param">worker_pool=None</em>, <em class="sig-param">max_workers=None</em>, <em class="sig-param">context=None</em>, <em class="sig-param">**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Executor to initiate and manage background tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thread_pool</strong> (<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.8)"><em>concurrent.futures.Executor</em></a><em>, </em><em>optional</em>) – <p>Deprecated alias for worker_pool.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use <code class="docutils literal notranslate"><span class="pre">worker_pool</span></code> instead.</p>
+</div>
+</p></li>
+<li><p><strong>worker_pool</strong> (<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.8)"><em>concurrent.futures.Executor</em></a><em>, </em><em>optional</em>) – If supplied, provides the underlying worker pool executor to use. In
+this case, the creator of the TraitsExecutor is responsible for
+shutting down the worker pool once it’s no longer needed. If not
+supplied, a new private worker pool will be created, and this object’s
+<code class="docutils literal notranslate"><span class="pre">stop</span></code> method will shut down that worker pool.</p></li>
+<li><p><strong>max_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – Maximum number of workers for the private worker pool. This parameter
+is mutually exclusive with <code class="docutils literal notranslate"><span class="pre">worker_pool</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+which delegates the choice of number of workers to Python’s
+<code class="docutils literal notranslate"><span class="pre">concurrent.futures</span></code> module.</p></li>
+<li><p><strong>context</strong> (<a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><em>IParallelContext</em></a><em>, </em><em>optional</em>) – Parallelism context, providing appropriate concurrent primitives
+and worker pools for a given choice of parallelism (for example
+multithreading or multiprocessing). If not given, assumes
+multithreading. Note that if both <code class="docutils literal notranslate"><span class="pre">context</span></code> and <code class="docutils literal notranslate"><span class="pre">worker_pool</span></code>
+are given, they must be compatible.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="traits_futures.traits_executor.TraitsExecutor.running">
-<code class="descname">running</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.running" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">running</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derived state: true if this executor is running; False if it’s
 stopped or stopping.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="traits_futures.traits_executor.TraitsExecutor.state">
-<code class="descname">state</code><em class="property"> = ExecutorState</em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.state" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">state</code><em class="property"> = ExecutorState</em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current state of this executor.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="traits_futures.traits_executor.TraitsExecutor.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate stop: cancel existing jobs and prevent new ones.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="traits_futures.traits_executor.TraitsExecutor.stopped">
-<code class="descname">stopped</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stopped" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stopped</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stopped" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derived state: true if this executor is stopped and it’s safe
-to dispose of related resources (like the thread pool).</p>
+to dispose of related resources (like the worker pool).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="traits_futures.traits_executor.TraitsExecutor.submit">
-<code class="descname">submit</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">submit</code><span class="sig-paren">(</span><em class="sig-param">task</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit a task to the executor, and return the corresponding future.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>task</strong> (<a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.BackgroundCall" title="traits_futures.background_call.BackgroundCall"><em>BackgroundCall</em></a><em>, </em><a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration" title="traits_futures.background_iteration.BackgroundIteration"><em>BackgroundIteration</em></a><em> or </em><a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress" title="traits_futures.background_progress.BackgroundProgress"><em>BackgroundProgress</em></a>) – The task to be executed.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>future</strong> – Future for this task.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="traits_futures.api.html#traits_futures.api.CallFuture" title="traits_futures.api.CallFuture">CallFuture</a>, <a class="reference internal" href="traits_futures.api.html#traits_futures.api.IterationFuture" title="traits_futures.api.IterationFuture">IterationFuture</a> or <a class="reference internal" href="traits_futures.api.html#traits_futures.api.ProgressFuture" title="traits_futures.api.ProgressFuture">ProgressFuture</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>task</strong> (<a class="reference internal" href="traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><em>ITaskSpecification</em></a>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Future for this task.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture">IFuture</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="traits_futures.traits_executor.TraitsExecutor.submit_call">
-<code class="descname">submit_call</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_call" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">submit_call</code><span class="sig-paren">(</span><em class="sig-param">callable</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background call.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>callable</strong> (<em>an arbitrary callable</em>) – Function to execute in the background.</li>
-<li><strong>*args</strong> – Positional arguments to pass to that function.</li>
-<li><strong>**kwargs</strong> – Named arguments to pass to that function.</li>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use the <a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a> function instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callable</strong> (<em>an arbitrary callable</em>) – Function to execute in the background.</p></li>
+<li><p><strong>*args</strong> – Positional arguments to pass to that function.</p></li>
+<li><p><strong>**kwargs</strong> – Named arguments to pass to that function.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>future</strong> – Object representing the state of the background call.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="traits_futures.api.html#traits_futures.api.CallFuture" title="traits_futures.api.CallFuture">CallFuture</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Object representing the state of the background call.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture">CallFuture</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="traits_futures.traits_executor.TraitsExecutor.submit_iteration">
-<code class="descname">submit_iteration</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">submit_iteration</code><span class="sig-paren">(</span><em class="sig-param">callable</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background iteration.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>callable</strong> (<em>an arbitrary callable</em>) – Function executed in the background to provide the iterable.</li>
-<li><strong>*args</strong> – Positional arguments to pass to that function.</li>
-<li><strong>**kwargs</strong> – Named arguments to pass to that function.</li>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use the <a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> function instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callable</strong> (<em>an arbitrary callable</em>) – Function executed in the background to provide the iterable.</p></li>
+<li><p><strong>*args</strong> – Positional arguments to pass to that function.</p></li>
+<li><p><strong>**kwargs</strong> – Named arguments to pass to that function.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>future</strong> – Object representing the state of the background iteration.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="traits_futures.api.html#traits_futures.api.IterationFuture" title="traits_futures.api.IterationFuture">IterationFuture</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Object representing the state of the background iteration.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture">IterationFuture</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="traits_futures.traits_executor.TraitsExecutor.submit_progress">
-<code class="descname">submit_progress</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_progress" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">submit_progress</code><span class="sig-paren">(</span><em class="sig-param">callable</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background progress call.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>callable</strong> (<em>callable accepting a &quot;progress&quot; named argument</em>) – Function executed in the background to provide the iterable. This
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use the <a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> function instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callable</strong> (<em>callable accepting a &quot;progress&quot; named argument</em>) – Function executed in the background to provide the iterable. This
 should accept a “progress” named argument. The callable can then
-call the “progress” object to report progress.</li>
-<li><strong>*args</strong> – Positional arguments to pass to that function.</li>
-<li><strong>**kwargs</strong> – Named arguments to pass to that function. These should not include
-“progress”.</li>
+call the “progress” object to report progress.</p></li>
+<li><p><strong>*args</strong> – Positional arguments to pass to that function.</p></li>
+<li><p><strong>**kwargs</strong> – Named arguments to pass to that function. These should not include
+“progress”.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>future</strong> – Object representing the state of the background task.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="traits_futures.api.html#traits_futures.api.ProgressFuture" title="traits_futures.api.ProgressFuture">ProgressFuture</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Object representing the state of the background task.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture">ProgressFuture</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -265,13 +288,11 @@ call the “progress” object to report progress.</li>
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -292,10 +313,19 @@ call the “progress” object to report progress.</li>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

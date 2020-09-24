@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>pyface.base_toolkit &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>pyface.base_toolkit &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,7 +31,7 @@
     <link rel="shortcut icon" href="../../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../../genindex.html" >
     <link rel="search" title="Search" href="../../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../../index.html" >
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../../index.html" >
     <link rel="up" title="Module code" href="../index.html" > 
   </head>
   <body>
@@ -46,7 +49,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../../index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="../../index.html">Traits Futures 0.2.0 documentation</a></li>
 	
           <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
     </ul>
@@ -72,10 +75,19 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for pyface.base_toolkit</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Common toolkit loading utilities and classes</span>
+<span></span><span class="c1"># (C) Copyright 2005-2020 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Common toolkit loading utilities and classes</span>
 
 <span class="sd">This module provides common code for ETS packages that need to do GUI toolkit</span>
 <span class="sd">discovery and loading.  The common patterns that ETS has settled on are that</span>
@@ -161,18 +173,14 @@
             <span class="k">yield</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="c1"># reset the toolkit state</span>
-            <span class="n">ETSConfig</span><span class="o">.</span><span class="n">_toolkit</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">ETSConfig</span><span class="o">.</span><span class="n">_toolkit</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">raise</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="n">TOOLKIT_PRIORITIES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;qt4&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
-    <span class="s1">&#39;wx&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;null&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
-<span class="p">}</span>
+<span class="n">TOOLKIT_PRIORITIES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;qt4&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;wx&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)}</span>
 <span class="n">default_priorities</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">plugin</span><span class="p">:</span> <span class="n">TOOLKIT_PRIORITIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 
@@ -195,10 +203,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">toolkit</span><span class="p">,</span> <span class="o">*</span><span class="n">packages</span><span class="p">,</span> <span class="o">**</span><span class="n">traits</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Toolkit</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">,</span>
-            <span class="n">toolkit</span><span class="o">=</span><span class="n">toolkit</span><span class="p">,</span>
-            <span class="n">packages</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">packages</span><span class="p">),</span>
-            <span class="o">**</span><span class="n">traits</span>
+            <span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">,</span> <span class="n">toolkit</span><span class="o">=</span><span class="n">toolkit</span><span class="p">,</span> <span class="n">packages</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">packages</span><span class="p">),</span> <span class="o">**</span><span class="n">traits</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -212,26 +217,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
 
-        <span class="n">mname</span><span class="p">,</span> <span class="n">oname</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
-            <span class="n">mname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">mname</span>
+        <span class="n">mname</span><span class="p">,</span> <span class="n">oname</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+            <span class="n">mname</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">mname</span>
 
         <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">mname</span><span class="p">,</span> <span class="n">package</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="c1"># is the error while trying to import package mname or not?</span>
-                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">part</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exc</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">mname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-                       <span class="k">if</span> <span class="n">part</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+                    <span class="n">part</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exc</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">mname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">part</span>
+                <span class="p">):</span>
                     <span class="c1"># something else went wrong - let the exception be raised</span>
                     <span class="k">raise</span>
 
                 <span class="c1"># Ignore *ANY* errors unless a debug ENV variable is set.</span>
-                <span class="k">if</span> <span class="s1">&#39;ETS_DEBUG&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;ETS_DEBUG&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
                     <span class="c1"># Attempt to only skip errors in importing the backend modules.</span>
                     <span class="c1"># The idea here is that this only happens when the last entry in</span>
                     <span class="c1"># the traceback&#39;s stack frame mentions the toolkit in question.</span>
                     <span class="kn">import</span> <span class="nn">traceback</span>
+
                     <span class="n">frames</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">extract_tb</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_traceback</span><span class="p">)</span>
                     <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">text</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">:</span>
@@ -257,7 +266,7 @@
         <span class="k">return</span> <span class="n">Unimplemented</span>
 
 
-<span class="k">def</span> <span class="nf">import_toolkit</span><span class="p">(</span><span class="n">toolkit_name</span><span class="p">,</span> <span class="n">entry_point</span><span class="o">=</span><span class="s1">&#39;pyface.toolkits&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">import_toolkit</span><span class="p">(</span><span class="n">toolkit_name</span><span class="p">,</span> <span class="n">entry_point</span><span class="o">=</span><span class="s2">&quot;pyface.toolkits&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Attempt to import an toolkit specified by an entry point.</span>
 
 <span class="sd">    Parameters</span>
@@ -280,13 +289,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">plugins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plugins</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No </span><span class="si">{}</span><span class="s1"> plugin found for toolkit </span><span class="si">{}</span><span class="s1">&#39;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No </span><span class="si">{}</span><span class="s2"> plugin found for toolkit </span><span class="si">{}</span><span class="s2">&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">plugins</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;multiple </span><span class="si">%r</span><span class="s2"> plugins found for toolkit </span><span class="si">%r</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">modules</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">module_name</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;multiple </span><span class="si">%r</span><span class="s2"> plugins found for toolkit </span><span class="si">%r</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span>
+        <span class="n">modules</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">module_name</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">,</span> <span class="n">modules</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">:</span>
@@ -298,7 +307,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No </span><span class="si">{}</span><span class="s1"> plugin could be loaded for </span><span class="si">{}</span><span class="s1">&#39;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No </span><span class="si">{}</span><span class="s2"> plugin could be loaded for </span><span class="si">{}</span><span class="s2">&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -340,7 +349,8 @@
         <span class="k">return</span> <span class="n">import_toolkit</span><span class="p">(</span><span class="n">ETSConfig</span><span class="o">.</span><span class="n">toolkit</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">)</span>
 
     <span class="n">entry_points</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">plugin</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point</span><span class="p">)</span>
+        <span class="n">plugin</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">toolkits</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">toolkits</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">entry_points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">priorities</span><span class="p">):</span>
@@ -354,8 +364,8 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># if all else fails, try to import the null toolkit.</span>
-    <span class="k">with</span> <span class="n">ETSConfig</span><span class="o">.</span><span class="n">provisional_toolkit</span><span class="p">(</span><span class="s1">&#39;null&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">import_toolkit</span><span class="p">(</span><span class="s1">&#39;null&#39;</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">ETSConfig</span><span class="o">.</span><span class="n">provisional_toolkit</span><span class="p">(</span><span class="s2">&quot;null&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">import_toolkit</span><span class="p">(</span><span class="s2">&quot;null&quot;</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">)</span>
 
     <span class="k">raise</span> <span class="n">TraitError</span><span class="p">(</span><span class="s2">&quot;Could not import any </span><span class="si">{}</span><span class="s2"> toolkit.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry_point</span><span class="p">))</span>
 </pre></div>
@@ -369,13 +379,11 @@
               <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
             </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -396,10 +404,19 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

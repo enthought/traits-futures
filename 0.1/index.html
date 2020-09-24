@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
+    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="_static/img/favicon.ico">
+    <link rel="index" title="Index" href="genindex.html" >
+    <link rel="search" title="Search" href="search.html" >
+    <link rel="top" title="Traits Futures 0.1.1 documentation" href="#" >
+    <link rel="next" title="User guide" href="guide/intro.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="guide/intro.html" title="User guide"
+           accesskey="N">next</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body">
+            
+  <div class="section" id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
+<h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Permalink to this headline">¶</a></h1>
+<p>Release v0.1.1.</p>
+<p>The <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> package provides a means to fire off a background
+calculation from a <a class="reference external" href="https://github.com/enthought/traitsui">TraitsUI</a> application, and later respond to the result(s)
+of that calculation, leaving the main UI responsive for user interactions while
+the background calculation is in progress.</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Supports simple calls, iterations, and progress-reporting functions. Can
+easily be extended to support other messaging patterns.</li>
+<li>Dispatching a background task returns a “future” object, which provides:<ul>
+<li>information about state changes (e.g., background task completion)</li>
+<li>facilities to (cooperatively) cancel a long-running background task</li>
+<li>access to result(s) arriving from the background task</li>
+</ul>
+</li>
+<li>Future objects are <code class="docutils literal notranslate"><span class="pre">HasTraits</span></code> instances, suitable for integration
+into a TraitsUI application.</li>
+<li>No need to be a threading expert! Incoming results arrive as trait changes in
+the main thread. This eliminates a large class of potential issues with
+traditional thread-based solutions (race conditions, deadlocks, and UI
+updates off the main thread).</li>
+<li>Cross-platform, and compatible with both Python 2 and Python 3.</li>
+</ul>
+</div>
+<div class="section" id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html">concurrent_futures</a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
+UI event loop to be running in order to process results.</li>
+<li>For the moment, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires Qt. Support for wxPython
+may arrive in a future release.</li>
+<li>No multiprocessing support yet. Maybe one day.</li>
+</ul>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<p>Here’s a complete example showing a minimal TraitsUI application that fires off
+a background computation when its “Calculate” button is pressed, and shows the
+result when it arrives.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2019 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">on_trait_change</span><span class="p">,</span> <span class="n">Str</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">View</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="k">import</span> <span class="n">CallFuture</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
+
+
+<span class="c1"># The target function that we plan to execute in the background.</span>
+<span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Square the given input, slowly. &quot;&quot;&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
+
+
+<span class="k">class</span> <span class="nc">QuickStartExample</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="c1">#: The executor to submit tasks to.</span>
+    <span class="n">executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="c1">#: The future object returned on task submission.</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">CallFuture</span><span class="p">)</span>
+
+    <span class="c1">#: Input for the calculation.</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="c1">#: Result, in string form.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;No result yet&quot;</span><span class="p">)</span>
+
+    <span class="c1">#: Button to start the calculation.</span>
+    <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Returns immediately.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">submit_call</span><span class="p">(</span><span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;Square is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">&quot;future is None or future.done&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="n">QuickStartExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="detailed-documentation">
+<h1>Detailed Documentation<a class="headerlink" href="#detailed-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guide/intro.html">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/intro.html#submitting-background-tasks">Submitting background tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/intro.html#working-with-future-objects">Working with future objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/intro.html#future-states">Future states</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/intro.html#getting-task-results">Getting task results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/intro.html#cancelling-the-background-task">Cancelling the background task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="guide/intro.html#stopping-the-executor">Stopping the executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/intro.html#using-a-shared-thread-pool">Using a shared thread pool</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.html">traits_futures package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.html">traits_futures.qt package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.init.html">traits_futures.qt.init module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.message_router.html">traits_futures.qt.message_router module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html">traits_futures.api module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_call.html">traits_futures.background_call module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html">traits_futures.background_iteration module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html">traits_futures.background_progress module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.exception_handling.html">traits_futures.exception_handling module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html">traits_futures.future_states module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.toolkit_support.html">traits_futures.toolkit_support module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.version.html">traits_futures.version module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Traits Futures: reactive background processing for Traits and TraitsUI</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#limitations">Limitations</a></li>
+<li><a class="reference internal" href="#quick-start">Quick start</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#detailed-documentation">Detailed Documentation</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="guide/intro.html"
+                        title="next chapter">User guide</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="_sources/index.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2019, Enthought
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

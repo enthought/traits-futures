@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.api module &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>traits_futures.api module &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,10 +31,10 @@
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.background_call module" href="traits_futures.background_call.html" >
-    <link rel="prev" title="traits_futures.qt.message_router module" href="traits_futures.qt.message_router.html" > 
+    <link rel="prev" title="traits_futures package" href="traits_futures.html" > 
   </head>
   <body>
   <div class="container">
@@ -48,9 +51,8 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
 	
-          <li class="active"><a href="modules.html" >API documentation</a></li>
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
               
@@ -69,7 +71,7 @@
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.qt.message_router.html" title="traits_futures.qt.message_router module"
+        <a href="traits_futures.html" title="traits_futures package"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -83,286 +85,73 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <div class="section" id="module-traits_futures.api">
 <span id="traits-futures-api-module"></span><h1>traits_futures.api module<a class="headerlink" href="#module-traits_futures.api" title="Permalink to this headline">¶</a></h1>
 <p>Core API for the traits_futures package.</p>
-<dl class="class">
-<dt id="traits_futures.api.CallFuture">
-<em class="property">class </em><code class="descclassname">traits_futures.api.</code><code class="descname">CallFuture</code><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallFuture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.CallFuture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></p>
-<p>Object representing the front-end handle to a background call.</p>
-<dl class="method">
-<dt id="traits_futures.api.CallFuture.cancel">
-<code class="descname">cancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallFuture.cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.CallFuture.cancel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that can be called from the main thread to
-indicate that the task should be cancelled (provided
-it hasn’t already started running).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.CallFuture.cancellable">
-<code class="descname">cancellable</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.CallFuture.cancellable" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if this task can be cancelled, else False.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.CallFuture.done">
-<code class="descname">done</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.CallFuture.done" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if we’ve received the final message from the background task,
-else False. <cite>True</cite> indicates either that the background task
-succeeded, or that it raised, or that it was cancelled.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.CallFuture.exception">
-<code class="descname">exception</code><em class="property"> = CANCELLING</em><a class="headerlink" href="#traits_futures.api.CallFuture.exception" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.CallFuture.result">
-<code class="descname">result</code><em class="property"> = CANCELLING</em><a class="headerlink" href="#traits_futures.api.CallFuture.result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.CallFuture.state">
-<code class="descname">state</code><em class="property"> = FutureState</em><a class="headerlink" href="#traits_futures.api.CallFuture.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>The state of the background call, to the best of the knowledge of
-this future.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="traits_futures.api.IterationFuture">
-<em class="property">class </em><code class="descclassname">traits_futures.api.</code><code class="descname">IterationFuture</code><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#IterationFuture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.IterationFuture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></p>
-<p>Foreground representation of an iteration executing in the
-background.</p>
-<dl class="method">
-<dt id="traits_futures.api.IterationFuture.cancel">
-<code class="descname">cancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#IterationFuture.cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.IterationFuture.cancel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method called from the main thread to request cancellation
-of the background job.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.IterationFuture.cancellable">
-<code class="descname">cancellable</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.IterationFuture.cancellable" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if this task can be cancelled, else False.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.IterationFuture.done">
-<code class="descname">done</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.IterationFuture.done" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if we’ve received the final message from the background iteration,
-else False. <cite>True</cite> indicates either that the background iteration
-succeeded, or that it raised, or that it was cancelled.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.IterationFuture.exception">
-<code class="descname">exception</code><em class="property"> = CANCELLING</em><a class="headerlink" href="#traits_futures.api.IterationFuture.exception" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.IterationFuture.result_event">
-<code class="descname">result_event</code><em class="property"> = Event(Any())</em><a class="headerlink" href="#traits_futures.api.IterationFuture.result_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event fired whenever a result arrives from the background
-iteration.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.IterationFuture.state">
-<code class="descname">state</code><em class="property"> = FutureState</em><a class="headerlink" href="#traits_futures.api.IterationFuture.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>The state of the background iteration, to the best of the knowledge of
-this future.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="traits_futures.api.ProgressFuture">
-<em class="property">class </em><code class="descclassname">traits_futures.api.</code><code class="descname">ProgressFuture</code><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressFuture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.ProgressFuture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></p>
-<p>Object representing the front-end handle to a ProgressBackgroundTask.</p>
-<dl class="method">
-<dt id="traits_futures.api.ProgressFuture.cancel">
-<code class="descname">cancel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressFuture.cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.ProgressFuture.cancel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that can be called from the main thread to
-indicate that the task should be cancelled (provided
-it hasn’t already started running).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.ProgressFuture.cancellable">
-<code class="descname">cancellable</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.ProgressFuture.cancellable" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if this task can be cancelled, else False.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.ProgressFuture.done">
-<code class="descname">done</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.ProgressFuture.done" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if we’ve received the final message from the background task,
-else False. <cite>True</cite> indicates either that the background task
-succeeded, or that it raised, or that it was cancelled.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.ProgressFuture.exception">
-<code class="descname">exception</code><em class="property"> = CANCELLING</em><a class="headerlink" href="#traits_futures.api.ProgressFuture.exception" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.ProgressFuture.progress">
-<code class="descname">progress</code><em class="property"> = Event(Any())</em><a class="headerlink" href="#traits_futures.api.ProgressFuture.progress" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event fired whenever a progress message arrives from the background.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.ProgressFuture.result">
-<code class="descname">result</code><em class="property"> = CANCELLING</em><a class="headerlink" href="#traits_futures.api.ProgressFuture.result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.ProgressFuture.state">
-<code class="descname">state</code><em class="property"> = FutureState</em><a class="headerlink" href="#traits_futures.api.ProgressFuture.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>The state of the background task, to the best of the knowledge of
-this future.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="traits_futures.api.TraitsExecutor">
-<em class="property">class </em><code class="descclassname">traits_futures.api.</code><code class="descname">TraitsExecutor</code><span class="sig-paren">(</span><em>thread_pool=None</em>, <em>**traits</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.TraitsExecutor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></p>
-<p>Executor to initiate and manage background tasks.</p>
-<dl class="attribute">
-<dt id="traits_futures.api.TraitsExecutor.running">
-<code class="descname">running</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.TraitsExecutor.running" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derived state: true if this executor is running; False if it’s
-stopped or stopping.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.TraitsExecutor.state">
-<code class="descname">state</code><em class="property"> = ExecutorState</em><a class="headerlink" href="#traits_futures.api.TraitsExecutor.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Current state of this executor.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="traits_futures.api.TraitsExecutor.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.TraitsExecutor.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiate stop: cancel existing jobs and prevent new ones.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="traits_futures.api.TraitsExecutor.stopped">
-<code class="descname">stopped</code><em class="property"> = Property(Bool())</em><a class="headerlink" href="#traits_futures.api.TraitsExecutor.stopped" title="Permalink to this definition">¶</a></dt>
-<dd><p>Derived state: true if this executor is stopped and it’s safe
-to dispose of related resources (like the thread pool).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="traits_futures.api.TraitsExecutor.submit">
-<code class="descname">submit</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.TraitsExecutor.submit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit a task to the executor, and return the corresponding future.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>task</strong> (<a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.BackgroundCall" title="traits_futures.background_call.BackgroundCall"><em>BackgroundCall</em></a><em>, </em><a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration" title="traits_futures.background_iteration.BackgroundIteration"><em>BackgroundIteration</em></a><em> or </em><a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress" title="traits_futures.background_progress.BackgroundProgress"><em>BackgroundProgress</em></a>) – The task to be executed.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>future</strong> – Future for this task.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#traits_futures.api.CallFuture" title="traits_futures.api.CallFuture">CallFuture</a>, <a class="reference internal" href="#traits_futures.api.IterationFuture" title="traits_futures.api.IterationFuture">IterationFuture</a> or <a class="reference internal" href="#traits_futures.api.ProgressFuture" title="traits_futures.api.ProgressFuture">ProgressFuture</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="traits_futures.api.TraitsExecutor.submit_call">
-<code class="descname">submit_call</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.TraitsExecutor.submit_call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function to submit a background call.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>callable</strong> (<em>an arbitrary callable</em>) – Function to execute in the background.</li>
-<li><strong>*args</strong> – Positional arguments to pass to that function.</li>
-<li><strong>**kwargs</strong> – Named arguments to pass to that function.</li>
+<p>This module represents the public API of the Traits Futures library. It
+contains everything you should need as a user of the library. No stability
+guarantees are made for imports from other modules or subpackages.</p>
+<p>This module re-exports the following constants, functions and classes:</p>
+<div class="section" id="executor">
+<h2>Executor<a class="headerlink" href="#executor" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a></p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>future</strong> – Object representing the state of the background call.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#traits_futures.api.CallFuture" title="traits_futures.api.CallFuture">CallFuture</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="traits_futures.api.TraitsExecutor.submit_iteration">
-<code class="descname">submit_iteration</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.TraitsExecutor.submit_iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function to submit a background iteration.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>callable</strong> (<em>an arbitrary callable</em>) – Function executed in the background to provide the iterable.</li>
-<li><strong>*args</strong> – Positional arguments to pass to that function.</li>
-<li><strong>**kwargs</strong> – Named arguments to pass to that function.</li>
+</div>
+<div class="section" id="task-submission-functions">
+<h2>Task submission functions<a class="headerlink" href="#task-submission-functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a></p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>future</strong> – Object representing the state of the background iteration.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#traits_futures.api.IterationFuture" title="traits_futures.api.IterationFuture">IterationFuture</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="traits_futures.api.TraitsExecutor.submit_progress">
-<code class="descname">submit_progress</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.api.TraitsExecutor.submit_progress" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function to submit a background progress call.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>callable</strong> (<em>callable accepting a &quot;progress&quot; named argument</em>) – Function executed in the background to provide the iterable. This
-should accept a “progress” named argument. The callable can then
-call the “progress” object to report progress.</li>
-<li><strong>*args</strong> – Positional arguments to pass to that function.</li>
-<li><strong>**kwargs</strong> – Named arguments to pass to that function. These should not include
-“progress”.</li>
+</div>
+<div class="section" id="types-of-futures">
+<h2>Types of futures<a class="headerlink" href="#types-of-futures" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a></p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>future</strong> – Object representing the state of the background task.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#traits_futures.api.ProgressFuture" title="traits_futures.api.ProgressFuture">ProgressFuture</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+</div>
+<div class="section" id="future-states">
+<h2>Future states<a class="headerlink" href="#future-states" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.FutureState" title="traits_futures.future_states.FutureState"><code class="xref py py-attr docutils literal notranslate"><span class="pre">FutureState</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.CANCELLED" title="traits_futures.future_states.CANCELLED"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLED</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.CANCELLING" title="traits_futures.future_states.CANCELLING"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLING</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.COMPLETED" title="traits_futures.future_states.COMPLETED"><code class="xref py py-data docutils literal notranslate"><span class="pre">COMPLETED</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.EXECUTING" title="traits_futures.future_states.EXECUTING"><code class="xref py py-data docutils literal notranslate"><span class="pre">EXECUTING</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.FAILED" title="traits_futures.future_states.FAILED"><code class="xref py py-data docutils literal notranslate"><span class="pre">FAILED</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.future_states.html#traits_futures.future_states.WAITING" title="traits_futures.future_states.WAITING"><code class="xref py py-data docutils literal notranslate"><span class="pre">WAITING</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="executor-states">
+<h2>Executor states<a class="headerlink" href="#executor-states" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.ExecutorState" title="traits_futures.traits_executor.ExecutorState"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ExecutorState</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.RUNNING" title="traits_futures.traits_executor.RUNNING"><code class="xref py py-data docutils literal notranslate"><span class="pre">RUNNING</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPING" title="traits_futures.traits_executor.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="support-for-user-defined-background-tasks">
+<h2>Support for user-defined background tasks<a class="headerlink" href="#support-for-user-defined-background-tasks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="parallelism-contexts">
+<h2>Parallelism contexts<a class="headerlink" href="#parallelism-contexts" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">IParallelContext</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext" title="traits_futures.multithreading_context.MultithreadingContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingContext</span></code></a></p></li>
+</ul>
+</div>
 </div>
 
 
@@ -374,9 +163,23 @@ call the “progress” object to report progress.</li>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">traits_futures.api module</a><ul>
+<li><a class="reference internal" href="#executor">Executor</a></li>
+<li><a class="reference internal" href="#task-submission-functions">Task submission functions</a></li>
+<li><a class="reference internal" href="#types-of-futures">Types of futures</a></li>
+<li><a class="reference internal" href="#future-states">Future states</a></li>
+<li><a class="reference internal" href="#executor-states">Executor states</a></li>
+<li><a class="reference internal" href="#support-for-user-defined-background-tasks">Support for user-defined background tasks</a></li>
+<li><a class="reference internal" href="#parallelism-contexts">Parallelism contexts</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.qt.message_router.html"
-                        title="previous chapter">traits_futures.qt.message_router module</a></p>
+  <p class="topless"><a href="traits_futures.html"
+                        title="previous chapter">traits_futures package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="traits_futures.background_call.html"
                         title="next chapter">traits_futures.background_call module</a></p>
@@ -386,13 +189,11 @@ call the “progress” object to report progress.</li>
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -413,10 +214,19 @@ call the “progress” object to report progress.</li>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

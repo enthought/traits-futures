@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.null.message_router module &mdash; Traits Futures 0.2.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures.null package" href="traits_futures.null.html" >
+    <link rel="next" title="traits_futures.qt package" href="traits_futures.qt.html" >
+    <link rel="prev" title="traits_futures.null.init module" href="traits_futures.null.init.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
+          <li class="active"><a href="traits_futures.null.html" accesskey="U">traits_futures.null package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.qt.html" title="traits_futures.qt package"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.null.init.html" title="traits_futures.null.init module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.null.message_router">
+<span id="traits-futures-null-message-router-module"></span><h1>traits_futures.null.message_router module<a class="headerlink" href="#module-traits_futures.null.message_router" title="Permalink to this headline">¶</a></h1>
+<p>Message routing for the Qt toolkit.</p>
+<dl class="class">
+<dt id="traits_futures.null.message_router.MessageReceiver">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.null.message_router.</code><code class="sig-name descname">MessageReceiver</code><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageReceiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageReceiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Main-thread object that receives messages from a MessageSender.</p>
+<dl class="attribute">
+<dt id="traits_futures.null.message_router.MessageReceiver.message">
+<code class="sig-name descname">message</code><em class="property"> = Event(Any())</em><a class="headerlink" href="#traits_futures.null.message_router.MessageReceiver.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event fired when a message is received from the paired sender.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="traits_futures.null.message_router.MessageRouter">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.null.message_router.</code><code class="sig-name descname">MessageRouter</code><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageRouter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Router for messages, sent by means of Qt signals and slots.</p>
+<p>Requires the event loop to be running in order for messages to arrive.</p>
+<dl class="method">
+<dt id="traits_futures.null.message_router.MessageRouter.close_pipe">
+<code class="sig-name descname">close_pipe</code><span class="sig-paren">(</span><em class="sig-param">sender</em>, <em class="sig-param">receiver</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageRouter.close_pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close an unused pipe.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="traits_futures.null.message_router.MessageRouter.connect">
+<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageRouter.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageRouter.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare router for routing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="traits_futures.null.message_router.MessageRouter.disconnect">
+<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageRouter.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageRouter.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undo any connections made by the <code class="docutils literal notranslate"><span class="pre">connect</span></code> call.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="traits_futures.null.message_router.MessageRouter.pipe">
+<code class="sig-name descname">pipe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageRouter.pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageRouter.pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a (sender, receiver) pair for sending messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>sender</strong> (<em>MessageSender</em>) – Object to be passed to the background task to send messages.</p></li>
+<li><p><strong>receiver</strong> (<em>MessageReceiver</em>) – Object to be kept in the foreground which reacts to messages.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="traits_futures.null.message_router.MessageRouter.receiver_done">
+<code class="sig-name descname">receiver_done</code><em class="property"> = Event(Instance(MessageReceiver))</em><a class="headerlink" href="#traits_futures.null.message_router.MessageRouter.receiver_done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event fired when a receiver is dropped from the routing table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="traits_futures.null.message_router.MessageSender">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.null.message_router.</code><code class="sig-name descname">MessageSender</code><span class="sig-paren">(</span><em class="sig-param">connection_id</em>, <em class="sig-param">asyncio_event_loop</em>, <em class="sig-param">route_message</em>, <em class="sig-param">message_queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageSender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageSender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Object allowing the worker to send messages.</p>
+<p>This class will be instantiated in the main thread, but passed to the
+worker thread to allow the worker to communicate back to the main
+thread.</p>
+<p>Only the worker thread should use the send method, and only
+inside a “with sender:” block.</p>
+<dl class="method">
+<dt id="traits_futures.null.message_router.MessageSender.send">
+<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/message_router.html#MessageSender.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.message_router.MessageSender.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to the router.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.null.init.html"
+                        title="previous chapter">traits_futures.null.init module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.qt.html"
+                        title="next chapter">traits_futures.qt package</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.null.message_router.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
