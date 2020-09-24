@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures package &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>traits_futures package &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,10 +31,9 @@
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../index.html" >
-    <link rel="up" title="API documentation" href="modules.html" >
-    <link rel="next" title="traits_futures.qt package" href="traits_futures.qt.html" >
-    <link rel="prev" title="API documentation" href="modules.html" > 
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
+    <link rel="next" title="traits_futures.api module" href="traits_futures.api.html" >
+    <link rel="prev" title="Advanced topics" href="../guide/advanced.html" > 
   </head>
   <body>
   <div class="container">
@@ -48,9 +50,8 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.1.1 documentation</a></li>
-	
-          <li class="active"><a href="modules.html" accesskey="U">API documentation</a></li> 
+        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
+	 
     </ul>
               
               
@@ -64,11 +65,11 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="traits_futures.qt.html" title="traits_futures.qt package"
+        <a href="traits_futures.api.html" title="traits_futures.api module"
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="modules.html" title="API documentation"
+        <a href="../guide/advanced.html" title="Advanced topics"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -82,29 +83,55 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="traits-futures-package">
-<h1>traits_futures package<a class="headerlink" href="#traits-futures-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-traits_futures">
+<span id="traits-futures-package"></span><h1>traits_futures package<a class="headerlink" href="#module-traits_futures" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.api.html">traits_futures.api module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#executor">Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#task-submission-functions">Task submission functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#types-of-futures">Types of futures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#future-states">Future states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#executor-states">Executor states</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#support-for-user-defined-background-tasks">Support for user-defined background tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.api.html#parallelism-contexts">Parallelism contexts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.background_call.html">traits_futures.background_call module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.background_iteration.html">traits_futures.background_iteration module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.background_progress.html">traits_futures.background_progress module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.base_future.html">traits_futures.base_future module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.exception_handling.html">traits_futures.exception_handling module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.future_states.html">traits_futures.future_states module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.i_future.html">traits_futures.i_future module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.i_parallel_context.html">traits_futures.i_parallel_context module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.i_task_specification.html">traits_futures.i_task_specification module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.multithreading_context.html">traits_futures.multithreading_context module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.toolkit_support.html">traits_futures.toolkit_support module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.version.html">traits_futures.version module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.wrappers.html">traits_futures.wrappers module</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="traits_futures.null.html">traits_futures.null package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.null.gui_test_assistant.html">traits_futures.null.gui_test_assistant module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.null.init.html">traits_futures.null.init module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.null.message_router.html">traits_futures.null.message_router module</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="traits_futures.qt.html">traits_futures.qt package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="traits_futures.qt.gui_test_assistant.html">traits_futures.qt.gui_test_assistant module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="traits_futures.qt.init.html">traits_futures.qt.init module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="traits_futures.qt.message_router.html">traits_futures.qt.message_router module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.api.html">traits_futures.api module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.background_call.html">traits_futures.background_call module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.background_iteration.html">traits_futures.background_iteration module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.background_progress.html">traits_futures.background_progress module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.exception_handling.html">traits_futures.exception_handling module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.future_states.html">traits_futures.future_states module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.toolkit_support.html">traits_futures.toolkit_support module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traits_futures.version.html">traits_futures.version module</a></li>
 </ul>
 </div>
-<span class="target" id="module-traits_futures"></span></div>
+</div>
 
 
           </div>
@@ -116,24 +143,22 @@
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="modules.html"
-                        title="previous chapter">API documentation</a></p>
+  <p class="topless"><a href="../guide/advanced.html"
+                        title="previous chapter">Advanced topics</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.qt.html"
-                        title="next chapter">traits_futures.qt package</a></p>
+  <p class="topless"><a href="traits_futures.api.html"
+                        title="next chapter">traits_futures.api module</a></p>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -154,10 +179,19 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

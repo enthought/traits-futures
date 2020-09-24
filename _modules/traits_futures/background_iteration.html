@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.background_iteration &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>traits_futures.background_iteration &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,7 +31,7 @@
     <link rel="shortcut icon" href="../../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../../genindex.html" >
     <link rel="search" title="Search" href="../../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../../index.html" >
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../../index.html" >
     <link rel="up" title="Module code" href="../index.html" > 
   </head>
   <body>
@@ -46,7 +49,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../../index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="../../index.html">Traits Futures 0.2.0 documentation</a></li>
 	
           <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
     </ul>
@@ -72,283 +75,91 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.background_iteration</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2019 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Background task that sends results from an iteration.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
-
-<span class="kn">import</span> <span class="nn">types</span>
 
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">Any</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span>
-    <span class="n">on_trait_change</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">)</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Event</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">Str</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.exception_handling</span> <span class="k">import</span> <span class="n">marshal_exception</span>
-<span class="kn">from</span> <span class="nn">traits_futures.future_states</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">CANCELLED</span><span class="p">,</span> <span class="n">CANCELLING</span><span class="p">,</span> <span class="n">EXECUTING</span><span class="p">,</span> <span class="n">FAILED</span><span class="p">,</span> <span class="n">COMPLETED</span><span class="p">,</span> <span class="n">WAITING</span><span class="p">,</span>
-    <span class="n">CANCELLABLE_STATES</span><span class="p">,</span> <span class="n">DONE_STATES</span><span class="p">,</span> <span class="n">FutureState</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="k">import</span> <span class="n">BaseFuture</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="k">import</span> <span class="n">ITaskSpecification</span>
 
-<span class="c1"># Message types for messages from IterationBackgroundTask to IterationFuture.</span>
-<span class="c1"># The background iteration will emit exactly one of the following</span>
-<span class="c1"># sequences of message types, where GENERATED* indicates zero-or-more</span>
-<span class="c1"># GENERATED messages.</span>
-<span class="c1">#</span>
-<span class="c1">#   [INTERRUPTED]</span>
-<span class="c1">#   [RAISED]</span>
-<span class="c1">#   [STARTED, GENERATED*, INTERRUPTED]</span>
-<span class="c1">#   [STARTED, GENERATED*, RAISED]</span>
-<span class="c1">#   [STARTED, GENERATED*, EXHAUSTED]</span>
-
-<span class="c1">#: Iteration was cancelled either before it started or during the</span>
-<span class="c1">#: iteration. No arguments.</span>
-<span class="n">INTERRUPTED</span> <span class="o">=</span> <span class="s2">&quot;interrupted&quot;</span>
-
-<span class="c1">#: Iteration started executing. No arguments.</span>
-<span class="n">STARTED</span> <span class="o">=</span> <span class="s2">&quot;started&quot;</span>
-
-<span class="c1">#: Iteration failed with an exception, or there was</span>
-<span class="c1">#: an exception on creation of the iterator. Argument gives</span>
-<span class="c1">#: exception information.</span>
-<span class="n">RAISED</span> <span class="o">=</span> <span class="s2">&quot;raised&quot;</span>
-
-<span class="c1">#: Iteration completed normally. No arguments.</span>
-<span class="n">EXHAUSTED</span> <span class="o">=</span> <span class="s2">&quot;exhausted&quot;</span>
 
 <span class="c1">#: Message sent whenever the iteration yields a result.</span>
-<span class="c1">#: Argument is the result generated.</span>
+<span class="c1">#: The message argument is the result generated.</span>
 <span class="n">GENERATED</span> <span class="o">=</span> <span class="s2">&quot;generated&quot;</span>
 
 
-<div class="viewcode-block" id="IterationBackgroundTask"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.api.IterationBackgroundTask">[docs]</a><span class="k">class</span> <span class="nc">IterationBackgroundTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="IterationBackgroundTask"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationBackgroundTask">[docs]</a><span class="k">class</span> <span class="nc">IterationBackgroundTask</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iteration to be executed in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">message_sender</span><span class="p">,</span> <span class="n">cancel_event</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callable</span> <span class="o">=</span> <span class="n">callable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message_sender</span> <span class="o">=</span> <span class="n">message_sender</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_event</span> <span class="o">=</span> <span class="n">cancel_event</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_sender</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">INTERRUPTED</span><span class="p">)</span>
-                <span class="k">return</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+        <span class="n">iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">STARTED</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cancelled</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span>
-            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">RAISED</span><span class="p">,</span> <span class="n">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-                <span class="k">del</span> <span class="n">e</span>
-                <span class="k">return</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># If the iteration returned a value, the StopIteration</span>
+                <span class="c1"># exception carries that value. Return it.</span>
+                <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
 
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-                    <span class="n">message</span><span class="p">,</span> <span class="n">message_args</span> <span class="o">=</span> <span class="n">INTERRUPTED</span><span class="p">,</span> <span class="kc">None</span>
-                    <span class="k">break</span>
-
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                    <span class="n">message</span><span class="p">,</span> <span class="n">message_args</span> <span class="o">=</span> <span class="n">EXHAUSTED</span><span class="p">,</span> <span class="kc">None</span>
-                    <span class="k">break</span>
-                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">message</span><span class="p">,</span> <span class="n">message_args</span> <span class="o">=</span> <span class="n">RAISED</span><span class="p">,</span> <span class="n">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="c1"># Make sure we&#39;re not keeping references to anything</span>
-                    <span class="c1"># in the exception details. Not needed on Python 3.</span>
-                    <span class="k">del</span> <span class="n">e</span>
-                    <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">GENERATED</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-                    <span class="c1"># Delete now, else we&#39;ll hang on to the reference to this</span>
-                    <span class="c1"># result until the next iteration, which could be some</span>
-                    <span class="c1"># arbitrary time in the future.</span>
-                    <span class="k">del</span> <span class="n">result</span>
-
-            <span class="c1"># If the iterable is a generator, close it before we send the final</span>
-            <span class="c1"># message. This ensures that any cleanup in the generator function</span>
-            <span class="c1"># (e.g., as a result of leaving a with block, or executing a</span>
-            <span class="c1"># finally clause) occurs promptly.</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">GeneratorType</span><span class="p">):</span>
-                <span class="n">iterable</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="c1"># Belt and braces: also delete the reference to the iterable.</span>
-            <span class="k">del</span> <span class="n">iterable</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">message_args</span><span class="p">)</span>
-
-<div class="viewcode-block" id="IterationBackgroundTask.send"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.api.IterationBackgroundTask.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">message_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Send a message to the linked IterationFuture.</span>
-
-<span class="sd">        Sends a pair consisting of a string giving the message type</span>
-<span class="sd">        along with an object providing any relevant arguments. The</span>
-<span class="sd">        interpretation of the arguments depends on the message type.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        message_type : string</span>
-<span class="sd">            Type of the message to be sent.</span>
-<span class="sd">        message_args : object, optional</span>
-<span class="sd">            Any arguments relevant to the message.  Ideally, should be</span>
-<span class="sd">            pickleable and immutable. If not provided, ``None`` is sent.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message_sender</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">message_type</span><span class="p">,</span> <span class="n">message_args</span><span class="p">))</span></div></div>
+            <span class="n">send</span><span class="p">(</span><span class="n">GENERATED</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="c1"># Don&#39;t keep a reference around until the next iteration.</span>
+            <span class="k">del</span> <span class="n">result</span></div>
 
 
-<span class="c1"># IterationFuture states. These represent the futures&#39; current state of</span>
-<span class="c1"># knowledge of the background iteration. An iteration starts out in WAITING</span>
-<span class="c1"># state and ends with one of COMPLETED, FAILED or CANCELLED. The possible</span>
-<span class="c1"># progressions of states are:</span>
-<span class="c1">#</span>
-<span class="c1"># WAITING -&gt; CANCELLING -&gt; CANCELLED</span>
-<span class="c1"># WAITING -&gt; EXECUTING -&gt; CANCELLING -&gt; CANCELLED</span>
-<span class="c1"># WAITING -&gt; EXECUTING -&gt; FAILED</span>
-<span class="c1"># WAITING -&gt; EXECUTING -&gt; COMPLETED</span>
-<span class="c1">#</span>
-<span class="c1"># The ``result`` trait will only be fired when the state is EXECUTING;</span>
-<span class="c1"># no results events will be fired after cancelling.</span>
-
-
-<div class="viewcode-block" id="IterationFuture"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.api.IterationFuture">[docs]</a><span class="k">class</span> <span class="nc">IterationFuture</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<div class="viewcode-block" id="IterationFuture"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture">[docs]</a><span class="k">class</span> <span class="nc">IterationFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Foreground representation of an iteration executing in the</span>
-<span class="sd">    background.</span>
+<span class="sd">    Foreground representation of an iteration executing in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">#: The state of the background iteration, to the best of the knowledge of</span>
-    <span class="c1">#: this future.</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="n">FutureState</span>
-
-    <span class="c1">#: True if this task can be cancelled, else False.</span>
-    <span class="n">cancellable</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
-
-    <span class="c1">#: True if we&#39;ve received the final message from the background iteration,</span>
-    <span class="c1">#: else False. `True` indicates either that the background iteration</span>
-    <span class="c1">#: succeeded, or that it raised, or that it was cancelled.</span>
-    <span class="n">done</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
 
     <span class="c1">#: Event fired whenever a result arrives from the background</span>
     <span class="c1">#: iteration.</span>
-    <span class="n">result_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Any</span><span class="p">())</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Information about any exception raised by the background call. Raises</span>
-<span class="sd">        an ``AttributeError`` on access if no exception was raised (because the</span>
-<span class="sd">        call succeeded, was cancelled, or has not yet completed).</span>
-
-<span class="sd">        Note: this is deliberately a regular Python property rather than a</span>
-<span class="sd">        Trait, to discourage users from attaching Traits listeners to</span>
-<span class="sd">        it. Listen to the state or its derived traits instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">FAILED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;No exception has been raised for this call.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span>
-
-<div class="viewcode-block" id="IterationFuture.cancel"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.api.IterationFuture.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method called from the main thread to request cancellation</span>
-<span class="sd">        of the background job.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># In the interests of catching coding errors early in client</span>
-        <span class="c1"># code, we&#39;re strict about what states we allow cancellation</span>
-        <span class="c1"># from. Some applications may want to weaken the error below</span>
-        <span class="c1"># to a warning, or just do nothing on an invalid cancellation.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancellable</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can only cancel a queued or executing task.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CANCELLING</span></div>
-
-    <span class="c1"># Private traits ##########################################################</span>
-
-    <span class="c1">#: Private event used to request cancellation of this task. Users</span>
-    <span class="c1">#: should call the cancel() method instead of using this event.</span>
-    <span class="n">_cancel_event</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
-
-    <span class="c1">#: Exception information from the background task.</span>
-    <span class="n">_exception</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">Unicode</span><span class="p">(),</span> <span class="n">Unicode</span><span class="p">(),</span> <span class="n">Unicode</span><span class="p">())</span>
-
-    <span class="c1">#: Object that receives messages from the background task.</span>
-    <span class="n">_message_receiver</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">)</span>
-
-    <span class="c1">#: Event fired when the background task is on the point of exiting.</span>
-    <span class="c1">#: This is mostly used for internal bookkeeping.</span>
-    <span class="n">_exiting</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+    <span class="n">result_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
 
     <span class="c1"># Private methods #########################################################</span>
 
-    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s1">&#39;_message_receiver:done&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_send_exiting_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exiting</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s1">&#39;_message_receiver:message&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_process_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_process_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_process_interrupted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">none</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">CANCELLING</span><span class="p">,)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CANCELLED</span>
-
-    <span class="k">def</span> <span class="nf">_process_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">none</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">WAITING</span><span class="p">,</span> <span class="n">CANCELLING</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">WAITING</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">EXECUTING</span>
-
-    <span class="k">def</span> <span class="nf">_process_raised</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception_info</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">WAITING</span><span class="p">,</span> <span class="n">EXECUTING</span><span class="p">,</span> <span class="n">CANCELLING</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">EXECUTING</span><span class="p">,</span> <span class="n">WAITING</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception_info</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">FAILED</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Don&#39;t record the exception if the job was already cancelled.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CANCELLED</span>
-
-    <span class="k">def</span> <span class="nf">_process_exhausted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">none</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">EXECUTING</span><span class="p">,</span> <span class="n">CANCELLING</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">COMPLETED</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">CANCELLED</span>
-
     <span class="k">def</span> <span class="nf">_process_generated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">(</span><span class="n">EXECUTING</span><span class="p">,</span> <span class="n">CANCELLING</span><span class="p">)</span>
-        <span class="c1"># Any results arriving after a cancellation request are ignored.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">result_event</span> <span class="o">=</span> <span class="n">result</span>
-
-    <span class="k">def</span> <span class="nf">_get_cancellable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="n">CANCELLABLE_STATES</span>
-
-    <span class="k">def</span> <span class="nf">_get_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="n">DONE_STATES</span>
-
-    <span class="k">def</span> <span class="nf">_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_state</span><span class="p">,</span> <span class="n">new_state</span><span class="p">):</span>
-        <span class="n">old_cancellable</span> <span class="o">=</span> <span class="n">old_state</span> <span class="ow">in</span> <span class="n">CANCELLABLE_STATES</span>
-        <span class="n">new_cancellable</span> <span class="o">=</span> <span class="n">new_state</span> <span class="ow">in</span> <span class="n">CANCELLABLE_STATES</span>
-        <span class="k">if</span> <span class="n">old_cancellable</span> <span class="o">!=</span> <span class="n">new_cancellable</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span>
-                <span class="s2">&quot;cancellable&quot;</span><span class="p">,</span> <span class="n">old_cancellable</span><span class="p">,</span> <span class="n">new_cancellable</span><span class="p">)</span>
-
-        <span class="n">old_done</span> <span class="o">=</span> <span class="n">old_state</span> <span class="ow">in</span> <span class="n">DONE_STATES</span>
-        <span class="n">new_done</span> <span class="o">=</span> <span class="n">new_state</span> <span class="ow">in</span> <span class="n">DONE_STATES</span>
-        <span class="k">if</span> <span class="n">old_done</span> <span class="o">!=</span> <span class="n">new_done</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">old_done</span><span class="p">,</span> <span class="n">new_done</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_event</span> <span class="o">=</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="BackgroundIteration"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.api.BackgroundIteration">[docs]</a><span class="k">class</span> <span class="nc">BackgroundIteration</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<div class="viewcode-block" id="BackgroundIteration"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration">[docs]</a><span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">BackgroundIteration</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object representing the background iteration to be executed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1">#: The callable to be executed. This should return something iterable.</span>
     <span class="n">callable</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">()</span>
 
@@ -356,48 +167,60 @@
     <span class="n">args</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">()</span>
 
     <span class="c1">#: Named arguments to be passed to the callable.</span>
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Str</span><span class="p">(),</span> <span class="n">Any</span><span class="p">())</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Str</span><span class="p">())</span>
 
-<div class="viewcode-block" id="BackgroundIteration.future_and_callable"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.api.BackgroundIteration.future_and_callable">[docs]</a>    <span class="k">def</span> <span class="nf">future_and_callable</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">cancel_event</span><span class="p">,</span> <span class="n">message_sender</span><span class="p">,</span> <span class="n">message_receiver</span><span class="p">):</span>
+<div class="viewcode-block" id="BackgroundIteration.future"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future">[docs]</a>    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a future and a linked background callable.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        cancel_event : threading.Event</span>
-<span class="sd">            Event used to request cancellation of the background job.</span>
-<span class="sd">        message_sender : MessageSender</span>
-<span class="sd">            Object used by the background job to send messages to the</span>
-<span class="sd">            UI. Supports the context manager protocol, and provides a</span>
-<span class="sd">            &#39;send&#39; method.</span>
-<span class="sd">        message_receiver : MessageReceiver</span>
-<span class="sd">            Object that remains in the main thread and receives messages sent</span>
-<span class="sd">            by the message sender. This is a HasTraits subclass with</span>
-<span class="sd">            a &#39;message&#39; Event trait that can be listened to for arriving</span>
-<span class="sd">            messages.</span>
+<span class="sd">        Return a Future for the background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        future : IterationFuture</span>
-<span class="sd">            Foreground object representing the state of the running</span>
-<span class="sd">            calculation.</span>
-<span class="sd">        runner : IterationBackgroundTask</span>
-<span class="sd">            Callable to be executed in the background.</span>
+<span class="sd">            Future object that can be used to monitor the status of the</span>
+<span class="sd">            background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">future</span> <span class="o">=</span> <span class="n">IterationFuture</span><span class="p">(</span>
-            <span class="n">_cancel_event</span><span class="o">=</span><span class="n">cancel_event</span><span class="p">,</span>
-            <span class="n">_message_receiver</span><span class="o">=</span><span class="n">message_receiver</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">runner</span> <span class="o">=</span> <span class="n">IterationBackgroundTask</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">IterationFuture</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BackgroundIteration.background_task"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.background_task">[docs]</a>    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a background callable for this task specification.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        collections.abc.Callable</span>
+<span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
+<span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
+<span class="sd">            check whether cancellation has been requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">IterationBackgroundTask</span><span class="p">(</span>
             <span class="n">callable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
-            <span class="c1"># Convert TraitsDict to a regular dict</span>
-            <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">),</span>
-            <span class="n">message_sender</span><span class="o">=</span><span class="n">message_sender</span><span class="p">,</span>
-            <span class="n">cancel_event</span><span class="o">=</span><span class="n">cancel_event</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">future</span><span class="p">,</span> <span class="n">runner</span></div></div>
+            <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="submit_iteration"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration">[docs]</a><span class="k">def</span> <span class="nf">submit_iteration</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convenience function to submit a background iteration to an executor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    executor : TraitsExecutor</span>
+<span class="sd">        Executor to submit the task to.</span>
+<span class="sd">    callable : collections.abc.Callable</span>
+<span class="sd">        Callable returning an iterator when called with the given arguments.</span>
+<span class="sd">    *args</span>
+<span class="sd">        Positional arguments to pass to the callable.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Named arguments to pass to the callable.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    future : IterationFuture</span>
+<span class="sd">        Object representing the state of the background iteration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundIteration</span><span class="p">(</span><span class="n">callable</span><span class="o">=</span><span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -409,13 +232,11 @@
               <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
             </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -436,10 +257,19 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

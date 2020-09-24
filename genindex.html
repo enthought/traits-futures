@@ -5,18 +5,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>Index &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>Index &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
     <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -29,7 +32,7 @@
     <link rel="shortcut icon" href="_static/img/favicon.ico">
     <link rel="index" title="Index" href="#" >
     <link rel="search" title="Search" href="search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="index.html" > 
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="index.html" > 
   </head>
   <body>
   <div class="container">
@@ -46,7 +49,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="index.html">Traits Futures 0.2.0 documentation</a></li>
 	 
     </ul>
               
@@ -71,7 +74,7 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
 
 <h1 id="index">Index</h1>
@@ -112,13 +115,27 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall">BackgroundCall (class in traits_futures.background_call)</a>
+      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.background_task">background_task() (traits_futures.background_call.BackgroundCall method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.background_task">(traits_futures.background_iteration.BackgroundIteration method)</a>
 </li>
+        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.background_task">(traits_futures.background_progress.BackgroundProgress method)</a>
+</li>
+        <li><a href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.background_task">(traits_futures.i_task_specification.ITaskSpecification method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall">BackgroundCall (class in traits_futures.background_call)</a>
+</li>
       <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration">BackgroundIteration (class in traits_futures.background_iteration)</a>
 </li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress">BackgroundProgress (class in traits_futures.background_progress)</a>
+</li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper">BackgroundTaskWrapper (class in traits_futures.wrappers)</a>
+</li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture">BaseFuture (class in traits_futures.base_future)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -136,49 +153,57 @@
       </ul></li>
       <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallBackgroundTask">CallBackgroundTask (class in traits_futures.background_call)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture">CallFuture (class in traits_futures.api)</a>
+      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture">CallFuture (class in traits_futures.background_call)</a>
+</li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel">cancel() (traits_futures.base_future.BaseFuture method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture">(class in traits_futures.background_call)</a>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.cancel">(traits_futures.i_future.IFuture method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture.cancel">cancel() (traits_futures.api.CallFuture method)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancellable">cancellable (traits_futures.base_future.BaseFuture attribute)</a>
 
       <ul>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture.cancel">(traits_futures.api.IterationFuture method)</a>
-</li>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.cancel">(traits_futures.api.ProgressFuture method)</a>
-</li>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture.cancel">(traits_futures.background_call.CallFuture method)</a>
-</li>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.cancel">(traits_futures.background_iteration.IterationFuture method)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.cancel">(traits_futures.background_progress.ProgressFuture method)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture.cancellable">cancellable (traits_futures.api.CallFuture attribute)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture.cancellable">(traits_futures.api.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.cancellable">(traits_futures.api.ProgressFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture.cancellable">(traits_futures.background_call.CallFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.cancellable">(traits_futures.background_iteration.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.cancellable">(traits_futures.background_progress.ProgressFuture attribute)</a>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.cancellable">(traits_futures.i_future.IFuture attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLABLE_STATES">CANCELLABLE_STATES (in module traits_futures.future_states)</a>
 </li>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED">CANCELLED (in module traits_futures.future_states)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLING">CANCELLING (in module traits_futures.future_states)</a>
 </li>
+      <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.close">close() (traits_futures.i_parallel_context.IParallelContext method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.close">(traits_futures.multithreading_context.MultithreadingContext method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageRouter.close_pipe">close_pipe() (traits_futures.null.message_router.MessageRouter method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.close_pipe">(traits_futures.qt.message_router.MessageRouter method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.closed">closed() (traits_futures.i_parallel_context.IParallelContext property)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.closed">(traits_futures.multithreading_context.MultithreadingContext property)</a>
+</li>
+      </ul></li>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.COMPLETED">COMPLETED (in module traits_futures.future_states)</a>
+</li>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageRouter.connect">connect() (traits_futures.null.message_router.MessageRouter method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.connect">(traits_futures.qt.message_router.MessageRouter method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.CONTROL">CONTROL (in module traits_futures.wrappers)</a>
+</li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.CUSTOM">CUSTOM (in module traits_futures.wrappers)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -186,24 +211,20 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture.done">done (traits_futures.api.CallFuture attribute)</a>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageRouter.disconnect">disconnect() (traits_futures.null.message_router.MessageRouter method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture.done">(traits_futures.api.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.done">(traits_futures.api.ProgressFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture.done">(traits_futures.background_call.CallFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.done">(traits_futures.background_iteration.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.done">(traits_futures.background_progress.ProgressFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageReceiver.done">(traits_futures.qt.message_router.MessageReceiver attribute)</a>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.disconnect">(traits_futures.qt.message_router.MessageRouter method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.done">done (traits_futures.base_future.BaseFuture attribute)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.done">(traits_futures.i_future.IFuture attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.DONE_STATES">DONE_STATES (in module traits_futures.future_states)</a>
 </li>
   </ul></td>
@@ -212,18 +233,16 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture.exception">exception (traits_futures.api.CallFuture attribute)</a>
+      <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.event">event() (traits_futures.i_parallel_context.IParallelContext method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture.exception">(traits_futures.api.IterationFuture attribute)</a>
+        <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.event">(traits_futures.multithreading_context.MultithreadingContext method)</a>
 </li>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.exception">(traits_futures.api.ProgressFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture.exception">(traits_futures.background_call.CallFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.exception">(traits_futures.background_iteration.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.exception">(traits_futures.background_progress.ProgressFuture attribute)</a>
+      </ul></li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception">exception() (traits_futures.base_future.BaseFuture property)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.exception">(traits_futures.i_future.IFuture property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -231,8 +250,6 @@
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.EXECUTING">EXECUTING (in module traits_futures.future_states)</a>
 </li>
       <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.ExecutorState">ExecutorState (in module traits_futures.traits_executor)</a>
-</li>
-      <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.EXHAUSTED">EXHAUSTED (in module traits_futures.background_iteration)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -242,17 +259,23 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.FAILED">FAILED (in module traits_futures.future_states)</a>
 </li>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.future_and_callable">future_and_callable() (traits_futures.background_call.BackgroundCall method)</a>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.future">future (traits_futures.wrappers.FutureWrapper attribute)</a>
+</li>
+      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.future">future() (traits_futures.background_call.BackgroundCall method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future_and_callable">(traits_futures.background_iteration.BackgroundIteration method)</a>
+        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future">(traits_futures.background_iteration.BackgroundIteration method)</a>
 </li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.future_and_callable">(traits_futures.background_progress.BackgroundProgress method)</a>
+        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.future">(traits_futures.background_progress.BackgroundProgress method)</a>
+</li>
+        <li><a href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future">(traits_futures.i_task_specification.ITaskSpecification method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.FutureState">FutureState (in module traits_futures.future_states)</a>
+</li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper">FutureWrapper (class in traits_futures.wrappers)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -263,29 +286,31 @@
       <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.GENERATED">GENERATED (in module traits_futures.background_iteration)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.null.gui_test_assistant.html#traits_futures.null.gui_test_assistant.GuiTestAssistant">GuiTestAssistant (class in traits_futures.null.gui_test_assistant)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant">(class in traits_futures.qt.gui_test_assistant)</a>
+</li>
+      </ul></li>
+  </ul></td>
 </tr></table>
 
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.INTERRUPTED">INTERRUPTED (in module traits_futures.background_call)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.INTERRUPTED">(in module traits_futures.background_iteration)</a>
+      <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture">IFuture (class in traits_futures.i_future)</a>
 </li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.INTERRUPTED">(in module traits_futures.background_progress)</a>
+      <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext">IParallelContext (class in traits_futures.i_parallel_context)</a>
 </li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification">ITaskSpecification (class in traits_futures.i_task_specification)</a>
+</li>
       <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationBackgroundTask">IterationBackgroundTask (class in traits_futures.background_iteration)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture">IterationFuture (class in traits_futures.api)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture">(class in traits_futures.background_iteration)</a>
+      <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture">IterationFuture (class in traits_futures.background_iteration)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -308,17 +333,41 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception">marshal_exception() (in module traits_futures.exception_handling)</a>
 </li>
-      <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageReceiver.message">message (traits_futures.qt.message_router.MessageReceiver attribute)</a>
+      <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.message">message (traits_futures.i_future.IFuture attribute)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageReceiver.message">(traits_futures.null.message_router.MessageReceiver attribute)</a>
 </li>
-      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.message_router_class">message_router_class() (in module traits_futures.toolkit_support)</a>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageReceiver.message">(traits_futures.qt.message_router.MessageReceiver attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.message_router">message_router() (traits_futures.i_parallel_context.IParallelContext method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router">(traits_futures.multithreading_context.MultithreadingContext method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageReceiver">MessageReceiver (class in traits_futures.qt.message_router)</a>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageReceiver">MessageReceiver (class in traits_futures.null.message_router)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageReceiver">(class in traits_futures.qt.message_router)</a>
 </li>
-      <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter">MessageRouter (class in traits_futures.qt.message_router)</a>
+      </ul></li>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageRouter">MessageRouter (class in traits_futures.null.message_router)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter">(class in traits_futures.qt.message_router)</a>
 </li>
-      <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageSender">MessageSender (class in traits_futures.qt.message_router)</a>
+      </ul></li>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageSender">MessageSender (class in traits_futures.null.message_router)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageSender">(class in traits_futures.qt.message_router)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext">MultithreadingContext (class in traits_futures.multithreading_context)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -326,26 +375,22 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.pipe">pipe() (traits_futures.qt.message_router.MessageRouter method)</a>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageRouter.pipe">pipe() (traits_futures.null.message_router.MessageRouter method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.pipe">(traits_futures.qt.message_router.MessageRouter method)</a>
 </li>
+      </ul></li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.PROGRESS">PROGRESS (in module traits_futures.background_progress)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.progress">progress (traits_futures.api.ProgressFuture attribute)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.progress">(traits_futures.background_progress.ProgressFuture attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.progress">progress (traits_futures.background_progress.ProgressFuture attribute)</a>
+</li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressBackgroundTask">ProgressBackgroundTask (class in traits_futures.background_progress)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture">ProgressFuture (class in traits_futures.api)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture">(class in traits_futures.background_progress)</a>
+      <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture">ProgressFuture (class in traits_futures.background_progress)</a>
 </li>
-      </ul></li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter">ProgressReporter (class in traits_futures.background_progress)</a>
 </li>
   </ul></td>
@@ -354,127 +399,97 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.RAISED">RAISED (in module traits_futures.background_call)</a>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.RAISED">RAISED (in module traits_futures.wrappers)</a>
+</li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.receiver">receiver (traits_futures.wrappers.FutureWrapper attribute)</a>
+</li>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageRouter.receiver_done">receiver_done (traits_futures.null.message_router.MessageRouter attribute)</a>
 
       <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.RAISED">(in module traits_futures.background_iteration)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.RAISED">(in module traits_futures.background_progress)</a>
+        <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageRouter.receiver_done">(traits_futures.qt.message_router.MessageRouter attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter.report">report() (traits_futures.background_progress.ProgressReporter method)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture.result">result (traits_futures.api.CallFuture attribute)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result">result() (traits_futures.base_future.BaseFuture property)</a>
 
       <ul>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.result">(traits_futures.api.ProgressFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture.result">(traits_futures.background_call.CallFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.result">(traits_futures.background_progress.ProgressFuture attribute)</a>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.result">(traits_futures.i_future.IFuture property)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture.result_event">result_event (traits_futures.api.IterationFuture attribute)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event">(traits_futures.background_iteration.IterationFuture attribute)</a>
+      <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event">result_event (traits_futures.background_iteration.IterationFuture attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.RETURNED">RETURNED (in module traits_futures.background_call)</a>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.RETURNED">RETURNED (in module traits_futures.wrappers)</a>
+</li>
+      <li><a href="api/traits_futures.null.gui_test_assistant.html#traits_futures.null.gui_test_assistant.GuiTestAssistant.run_until">run_until() (traits_futures.null.gui_test_assistant.GuiTestAssistant method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.RETURNED">(in module traits_futures.background_progress)</a>
+        <li><a href="api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant.run_until">(traits_futures.qt.gui_test_assistant.GuiTestAssistant method)</a>
 </li>
       </ul></li>
       <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.RUNNING">RUNNING (in module traits_futures.traits_executor)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.running">running (traits_futures.api.TraitsExecutor attribute)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.running">(traits_futures.traits_executor.TraitsExecutor attribute)</a>
+      <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.running">running (traits_futures.traits_executor.TraitsExecutor attribute)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallBackgroundTask.send">send() (traits_futures.background_call.CallBackgroundTask method)</a>
+      <li><a href="api/traits_futures.null.message_router.html#traits_futures.null.message_router.MessageSender.send">send() (traits_futures.null.message_router.MessageSender method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationBackgroundTask.send">(traits_futures.background_iteration.IterationBackgroundTask method)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressBackgroundTask.send">(traits_futures.background_progress.ProgressBackgroundTask method)</a>
-</li>
         <li><a href="api/traits_futures.qt.message_router.html#traits_futures.qt.message_router.MessageSender.send">(traits_futures.qt.message_router.MessageSender method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.STARTED">STARTED (in module traits_futures.background_call)</a>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper.send_control_message">send_control_message() (traits_futures.wrappers.BackgroundTaskWrapper method)</a>
+</li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message">send_custom_message() (traits_futures.wrappers.BackgroundTaskWrapper method)</a>
+</li>
+      <li><a href="api/traits_futures.null.gui_test_assistant.html#traits_futures.null.gui_test_assistant.GuiTestAssistant.setUp">setUp() (traits_futures.null.gui_test_assistant.GuiTestAssistant method)</a>
 
       <ul>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.STARTED">(in module traits_futures.background_iteration)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.STARTED">(in module traits_futures.background_progress)</a>
+        <li><a href="api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant.setUp">(traits_futures.qt.gui_test_assistant.GuiTestAssistant method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.CallFuture.state">state (traits_futures.api.CallFuture attribute)</a>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.STARTED">STARTED (in module traits_futures.wrappers)</a>
+</li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.state">state (traits_futures.base_future.BaseFuture attribute)</a>
 
       <ul>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.IterationFuture.state">(traits_futures.api.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.ProgressFuture.state">(traits_futures.api.ProgressFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.state">(traits_futures.api.TraitsExecutor attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture.state">(traits_futures.background_call.CallFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.state">(traits_futures.background_iteration.IterationFuture attribute)</a>
-</li>
-        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.state">(traits_futures.background_progress.ProgressFuture attribute)</a>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.state">(traits_futures.i_future.IFuture attribute)</a>
 </li>
         <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.state">(traits_futures.traits_executor.TraitsExecutor attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.stop">stop() (traits_futures.api.TraitsExecutor method)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop">(traits_futures.traits_executor.TraitsExecutor method)</a>
+      <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop">stop() (traits_futures.traits_executor.TraitsExecutor method)</a>
 </li>
-      </ul></li>
       <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED">STOPPED (in module traits_futures.traits_executor)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.stopped">stopped (traits_futures.api.TraitsExecutor attribute)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stopped">(traits_futures.traits_executor.TraitsExecutor attribute)</a>
+      <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stopped">stopped (traits_futures.traits_executor.TraitsExecutor attribute)</a>
 </li>
-      </ul></li>
       <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPING">STOPPING (in module traits_futures.traits_executor)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.submit">submit() (traits_futures.api.TraitsExecutor method)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit">(traits_futures.traits_executor.TraitsExecutor method)</a>
+      <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit">submit() (traits_futures.traits_executor.TraitsExecutor method)</a>
 </li>
-      </ul></li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.submit_call">submit_call() (traits_futures.api.TraitsExecutor method)</a>
+      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.submit_call">submit_call() (in module traits_futures.background_call)</a>
 
       <ul>
         <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_call">(traits_futures.traits_executor.TraitsExecutor method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.submit_iteration">submit_iteration() (traits_futures.api.TraitsExecutor method)</a>
+      <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration">submit_iteration() (in module traits_futures.background_iteration)</a>
 
       <ul>
         <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_iteration">(traits_futures.traits_executor.TraitsExecutor method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor.submit_progress">submit_progress() (traits_futures.api.TraitsExecutor method)</a>
+      <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress">submit_progress() (in module traits_futures.background_progress)</a>
 
       <ul>
         <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_progress">(traits_futures.traits_executor.TraitsExecutor method)</a>
@@ -486,7 +501,29 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.qt.init.html#traits_futures.qt.init.toolkit_object">toolkit_object (in module traits_futures.qt.init)</a>
+      <li><a href="api/traits_futures.null.gui_test_assistant.html#traits_futures.null.gui_test_assistant.GuiTestAssistant.tearDown">tearDown() (traits_futures.null.gui_test_assistant.GuiTestAssistant method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant.tearDown">(traits_futures.qt.gui_test_assistant.GuiTestAssistant method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.null.gui_test_assistant.html#traits_futures.null.gui_test_assistant.TIMEOUT">TIMEOUT (in module traits_futures.null.gui_test_assistant)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.TIMEOUT">(in module traits_futures.qt.gui_test_assistant)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.Toolkit">Toolkit (class in traits_futures.toolkit_support)</a>
+</li>
+      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.toolkit">toolkit (in module traits_futures.toolkit_support)</a>
+</li>
+      <li><a href="api/traits_futures.null.init.html#traits_futures.null.init.toolkit_object">toolkit_object (in module traits_futures.null.init)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.qt.init.html#traits_futures.qt.init.toolkit_object">(in module traits_futures.qt.init)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.Toolkit.toolkit_object">toolkit_object() (traits_futures.toolkit_support.Toolkit property)</a>
 </li>
       <li><a href="api/traits_futures.html#module-traits_futures">traits_futures (module)</a>
 </li>
@@ -498,13 +535,33 @@
 </li>
       <li><a href="api/traits_futures.background_progress.html#module-traits_futures.background_progress">traits_futures.background_progress (module)</a>
 </li>
+      <li><a href="api/traits_futures.base_future.html#module-traits_futures.base_future">traits_futures.base_future (module)</a>
+</li>
       <li><a href="api/traits_futures.exception_handling.html#module-traits_futures.exception_handling">traits_futures.exception_handling (module)</a>
 </li>
       <li><a href="api/traits_futures.future_states.html#module-traits_futures.future_states">traits_futures.future_states (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.i_future.html#module-traits_futures.i_future">traits_futures.i_future (module)</a>
+</li>
+      <li><a href="api/traits_futures.i_parallel_context.html#module-traits_futures.i_parallel_context">traits_futures.i_parallel_context (module)</a>
+</li>
+      <li><a href="api/traits_futures.i_task_specification.html#module-traits_futures.i_task_specification">traits_futures.i_task_specification (module)</a>
+</li>
+      <li><a href="api/traits_futures.multithreading_context.html#module-traits_futures.multithreading_context">traits_futures.multithreading_context (module)</a>
+</li>
+      <li><a href="api/traits_futures.null.html#module-traits_futures.null">traits_futures.null (module)</a>
+</li>
+      <li><a href="api/traits_futures.null.gui_test_assistant.html#module-traits_futures.null.gui_test_assistant">traits_futures.null.gui_test_assistant (module)</a>
+</li>
+      <li><a href="api/traits_futures.null.init.html#module-traits_futures.null.init">traits_futures.null.init (module)</a>
+</li>
+      <li><a href="api/traits_futures.null.message_router.html#module-traits_futures.null.message_router">traits_futures.null.message_router (module)</a>
+</li>
       <li><a href="api/traits_futures.qt.html#module-traits_futures.qt">traits_futures.qt (module)</a>
+</li>
+      <li><a href="api/traits_futures.qt.gui_test_assistant.html#module-traits_futures.qt.gui_test_assistant">traits_futures.qt.gui_test_assistant (module)</a>
 </li>
       <li><a href="api/traits_futures.qt.init.html#module-traits_futures.qt.init">traits_futures.qt.init (module)</a>
 </li>
@@ -516,12 +573,10 @@
 </li>
       <li><a href="api/traits_futures.version.html#module-traits_futures.version">traits_futures.version (module)</a>
 </li>
-      <li><a href="api/traits_futures.api.html#traits_futures.api.TraitsExecutor">TraitsExecutor (class in traits_futures.api)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor">(class in traits_futures.traits_executor)</a>
+      <li><a href="api/traits_futures.wrappers.html#module-traits_futures.wrappers">traits_futures.wrappers (module)</a>
 </li>
-      </ul></li>
+      <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor">TraitsExecutor (class in traits_futures.traits_executor)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -539,6 +594,14 @@
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.WAITING">WAITING (in module traits_futures.future_states)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.worker_pool">worker_pool() (traits_futures.i_parallel_context.IParallelContext method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.worker_pool">(traits_futures.multithreading_context.MultithreadingContext method)</a>
+</li>
+      </ul></li>
+  </ul></td>
 </tr></table>
 
 
@@ -552,13 +615,11 @@
               <img class="logo" src="_static/img/e-logo.png" alt="Logo">
             </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -579,10 +640,19 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

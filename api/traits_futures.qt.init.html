@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.qt.init module &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>traits_futures.qt.init module &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,10 +31,10 @@
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures.qt package" href="traits_futures.qt.html" >
     <link rel="next" title="traits_futures.qt.message_router module" href="traits_futures.qt.message_router.html" >
-    <link rel="prev" title="traits_futures.qt package" href="traits_futures.qt.html" > 
+    <link rel="prev" title="traits_futures.qt.gui_test_assistant module" href="traits_futures.qt.gui_test_assistant.html" > 
   </head>
   <body>
   <div class="container">
@@ -48,9 +51,8 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
 	
-          <li class="active"><a href="modules.html" >API documentation</a></li>
           <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
           <li class="active"><a href="traits_futures.qt.html" accesskey="U">traits_futures.qt package</a></li> 
     </ul>
@@ -70,7 +72,7 @@
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.qt.html" title="traits_futures.qt package"
+        <a href="traits_futures.qt.gui_test_assistant.html" title="traits_futures.qt.gui_test_assistant module"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -84,14 +86,14 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <div class="section" id="module-traits_futures.qt.init">
 <span id="traits-futures-qt-init-module"></span><h1>traits_futures.qt.init module<a class="headerlink" href="#module-traits_futures.qt.init" title="Permalink to this headline">¶</a></h1>
 <p>Entry point for finding toolkit-specific classes.</p>
 <dl class="data">
 <dt id="traits_futures.qt.init.toolkit_object">
-<code class="descclassname">traits_futures.qt.init.</code><code class="descname">toolkit_object</code><em class="property"> = &lt;pyface.base_toolkit.Toolkit object&gt;</em><a class="headerlink" href="#traits_futures.qt.init.toolkit_object" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traits_futures.qt.init.</code><code class="sig-name descname">toolkit_object</code><em class="property"> = &lt;pyface.base_toolkit.Toolkit object&gt;</em><a class="headerlink" href="#traits_futures.qt.init.toolkit_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>The toolkit object used to find toolkit-specific reources.</p>
 </dd></dl>
 
@@ -107,8 +109,8 @@
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.qt.html"
-                        title="previous chapter">traits_futures.qt package</a></p>
+  <p class="topless"><a href="traits_futures.qt.gui_test_assistant.html"
+                        title="previous chapter">traits_futures.qt.gui_test_assistant module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="traits_futures.qt.message_router.html"
                         title="next chapter">traits_futures.qt.message_router module</a></p>
@@ -118,13 +120,11 @@
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -145,10 +145,19 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

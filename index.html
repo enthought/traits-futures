@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
     <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,8 +31,8 @@
     <link rel="shortcut icon" href="_static/img/favicon.ico">
     <link rel="index" title="Index" href="genindex.html" >
     <link rel="search" title="Search" href="search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="#" >
-    <link rel="next" title="User guide" href="guide/intro.html" > 
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="#" >
+    <link rel="next" title="Introduction" href="guide/intro.html" > 
   </head>
   <body>
   <div class="container">
@@ -59,7 +62,7 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="guide/intro.html" title="User guide"
+        <a href="guide/intro.html" title="Introduction"
            accesskey="N">next</a>
       </li>
     </ul>
@@ -73,43 +76,45 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <div class="section" id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
 <h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Permalink to this headline">¶</a></h1>
-<p>Release v0.1.1.</p>
+<p>Release v0.2.0.</p>
 <p>The <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> package provides a means to fire off a background
-calculation from a <a class="reference external" href="https://github.com/enthought/traitsui">TraitsUI</a> application, and later respond to the result(s)
+calculation from a <a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI</a> application, and later respond to the result(s)
 of that calculation, leaving the main UI responsive for user interactions while
 the background calculation is in progress.</p>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Supports simple calls, iterations, and progress-reporting functions. Can
-easily be extended to support other messaging patterns.</li>
-<li>Dispatching a background task returns a “future” object, which provides:<ul>
-<li>information about state changes (e.g., background task completion)</li>
-<li>facilities to (cooperatively) cancel a long-running background task</li>
-<li>access to result(s) arriving from the background task</li>
+<li><p>Supports simple calls, iterations, and progress-reporting functions. Can
+easily be extended to support other messaging patterns.</p></li>
+<li><p>Dispatching a background task returns a “future” object, which provides:</p>
+<ul>
+<li><p>information about state changes (e.g., background task completion)</p></li>
+<li><p>facilities to (cooperatively) cancel a long-running background task</p></li>
+<li><p>access to result(s) arriving from the background task</p></li>
 </ul>
 </li>
-<li>Future objects are <code class="docutils literal notranslate"><span class="pre">HasTraits</span></code> instances, suitable for integration
-into a TraitsUI application.</li>
-<li>No need to be a threading expert! Incoming results arrive as trait changes in
+<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
+into a TraitsUI application.</p></li>
+<li><p>No need to be a threading expert! Incoming results arrive as trait changes in
 the main thread. This eliminates a large class of potential issues with
 traditional thread-based solutions (race conditions, deadlocks, and UI
-updates off the main thread).</li>
-<li>Cross-platform, and compatible with both Python 2 and Python 3.</li>
+updates off the main thread).</p></li>
+<li><p>Cross-platform.</p></li>
 </ul>
 </div>
 <div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html">concurrent_futures</a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
-UI event loop to be running in order to process results.</li>
-<li>For the moment, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires Qt. Support for wxPython
-may arrive in a future release.</li>
-<li>No multiprocessing support yet. Maybe one day.</li>
+<li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
+UI event loop to be running in order to process results.</p></li>
+<li><p>For the moment, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires Qt. Support for wxPython
+may arrive in a future release.</p></li>
+<li><p>No multiprocessing support yet. Maybe one day.</p></li>
+<li><p>Requires Python 3.5 or later.</p></li>
 </ul>
 </div>
 <div class="section" id="quick-start">
@@ -117,25 +122,40 @@ may arrive in a future release.</li>
 <p>Here’s a complete example showing a minimal TraitsUI application that fires off
 a background computation when its “Calculate” button is pressed, and shows the
 result when it arrives.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2019 Enthought, Inc., Austin, TX</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">on_trait_change</span><span class="p">,</span> <span class="n">Str</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Bool</span><span class="p">,</span>
+    <span class="n">Button</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">Int</span><span class="p">,</span>
+    <span class="n">on_trait_change</span><span class="p">,</span>
+    <span class="n">Property</span><span class="p">,</span>
+    <span class="n">Str</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="k">import</span> <span class="n">CallFuture</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="k">import</span> <span class="n">CallFuture</span><span class="p">,</span> <span class="n">submit_call</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
 
 
-<span class="c1"># The target function that we plan to execute in the background.</span>
 <span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Square the given input, slowly. &quot;&quot;&quot;</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
 
 
-<span class="k">class</span> <span class="nc">QuickStartExample</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">QuickStartExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
     <span class="n">executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
 
@@ -145,25 +165,42 @@ result when it arrives.</p>
     <span class="c1">#: Input for the calculation.</span>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="c1">#: Result, in string form.</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;No result yet&quot;</span><span class="p">)</span>
+    <span class="c1">#: Copy of the input for the last-run / currently-running calculation.</span>
+    <span class="n">input_for_calculation</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
+
+    <span class="c1">#: Message about state of calculation.</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;No previous calculation runs&quot;</span><span class="p">)</span>
 
     <span class="c1">#: Button to start the calculation.</span>
     <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
+    <span class="c1">#: Boolean used to decide whether to enable the &quot;calculate&quot; button.</span>
+    <span class="n">no_running_future</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+
     <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Returns immediately.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">submit_call</span><span class="p">(</span><span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating square of </span><span class="si">{}</span><span class="s2"> ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+        <span class="c1"># Keep a record so that we can present messages accurately.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="nb">input</span>
 
     <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;Square is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;The square of </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span><span class="p">,</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_no_running_future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">done</span>
 
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
         <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
-        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
-        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">&quot;future is None or future.done&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">&quot;no_running_future&quot;</span><span class="p">),</span>
+        <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
 
@@ -172,12 +209,11 @@ result when it arrives.</p>
 </div>
 </div>
 </div>
-<div class="section" id="detailed-documentation">
-<h1>Detailed Documentation<a class="headerlink" href="#detailed-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="guide/intro.html">User guide</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="guide/intro.html">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="guide/intro.html#submitting-background-tasks">Submitting background tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/intro.html#working-with-future-objects">Working with future objects</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="guide/intro.html#future-states">Future states</a></li>
@@ -186,25 +222,70 @@ result when it arrives.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="guide/intro.html#stopping-the-executor">Stopping the executor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guide/intro.html#using-a-shared-thread-pool">Using a shared thread pool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/intro.html#using-a-shared-worker-pool">Using a shared worker pool</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.html">traits_futures package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.html">traits_futures.qt package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.init.html">traits_futures.qt.init module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.message_router.html">traits_futures.qt.message_router module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/cancel.html">Making tasks interruptible</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/cancel.html#example-approximating">Example: approximating π</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/cancel.html#making-the-approximation-cancellable">Making the approximation cancellable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/cancel.html#sending-partial-results">Sending partial results</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html">traits_futures.api module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_call.html">traits_futures.background_call module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html">traits_futures.background_iteration module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html">traits_futures.background_progress module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.exception_handling.html">traits_futures.exception_handling module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html">traits_futures.future_states module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.toolkit_support.html">traits_futures.toolkit_support module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.version.html">traits_futures.version module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/advanced.html">Advanced topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/advanced.html#creating-your-own-background-task-type">Creating your own background task type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/advanced.html#worked-example-fizz-buzz">Worked example: Fizz buzz!</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="guide/advanced.html#message-types">Message types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/advanced.html#the-background-callable">The background callable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/advanced.html#the-foreground-future">The foreground Future</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/advanced.html#putting-it-all-together-the-task-specification">Putting it all together: the task specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/advanced.html#submitting-the-new-task">Submitting the new task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="guide/advanced.html#an-example-gui">An example GUI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/traits_futures.html">traits_futures package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.api.html">traits_futures.api module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#executor">Executor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#task-submission-functions">Task submission functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#types-of-futures">Types of futures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#future-states">Future states</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#executor-states">Executor states</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#support-for-user-defined-background-tasks">Support for user-defined background tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#parallelism-contexts">Parallelism contexts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_call.html">traits_futures.background_call module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_iteration.html">traits_futures.background_iteration module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_progress.html">traits_futures.background_progress module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.base_future.html">traits_futures.base_future module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.exception_handling.html">traits_futures.exception_handling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.future_states.html">traits_futures.future_states module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_future.html">traits_futures.i_future module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_parallel_context.html">traits_futures.i_parallel_context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_task_specification.html">traits_futures.i_task_specification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_context.html">traits_futures.multithreading_context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.toolkit_support.html">traits_futures.toolkit_support module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.version.html">traits_futures.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wrappers.html">traits_futures.wrappers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.null.html">traits_futures.null package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.gui_test_assistant.html">traits_futures.null.gui_test_assistant module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.init.html">traits_futures.null.init module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.message_router.html">traits_futures.null.message_router module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.qt.html">traits_futures.qt package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.gui_test_assistant.html">traits_futures.qt.gui_test_assistant module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.init.html">traits_futures.qt.init module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.message_router.html">traits_futures.qt.message_router module</a></li>
 </ul>
 </li>
 </ul>
@@ -215,9 +296,9 @@ result when it arrives.</p>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 
@@ -238,26 +319,25 @@ result when it arrives.</p>
 <li><a class="reference internal" href="#quick-start">Quick start</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#detailed-documentation">Detailed Documentation</a></li>
+<li><a class="reference internal" href="#user-guide">User Guide</a></li>
+<li><a class="reference internal" href="#api-documentation">API Documentation</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
   <h4>Next topic</h4>
   <p class="topless"><a href="guide/intro.html"
-                        title="next chapter">User guide</a></p>
+                        title="next chapter">Introduction</a></p>
   <h3>This Page</h3>
   <div>
     <a href="_sources/index.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -278,10 +358,19 @@ result when it arrives.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>

@@ -4,18 +4,21 @@
   <head>
     <meta charset="utf-8">
     
-    <title>Overview: module code &mdash; Traits Futures 0.1.1 documentation</title>
+    <title>Overview: module code &mdash; Traits Futures 0.2.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script>
@@ -28,7 +31,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.1.1 documentation" href="../index.html" > 
+    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" > 
   </head>
   <body>
   <div class="container">
@@ -45,7 +48,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.1.1 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
 	 
     </ul>
               
@@ -70,7 +73,7 @@
           <div class="span9">
             
         <div class="bodywrapper">
-          <div class="body" id="spc-section-body">
+          <div class="body" id="spc-section-body" role="main">
             
   <h1>All modules for which code is available</h1>
 <ul><li><a href="pyface/base_toolkit.html">pyface.base_toolkit</a></li>
@@ -78,10 +81,19 @@
 <li><a href="traits_futures/background_call.html">traits_futures.background_call</a></li>
 <li><a href="traits_futures/background_iteration.html">traits_futures.background_iteration</a></li>
 <li><a href="traits_futures/background_progress.html">traits_futures.background_progress</a></li>
+<li><a href="traits_futures/base_future.html">traits_futures.base_future</a></li>
 <li><a href="traits_futures/exception_handling.html">traits_futures.exception_handling</a></li>
+<li><a href="traits_futures/i_future.html">traits_futures.i_future</a></li>
+<li><a href="traits_futures/i_parallel_context.html">traits_futures.i_parallel_context</a></li>
+<li><a href="traits_futures/i_task_specification.html">traits_futures.i_task_specification</a></li>
+<li><a href="traits_futures/multithreading_context.html">traits_futures.multithreading_context</a></li>
+<li><a href="traits_futures/null/gui_test_assistant.html">traits_futures.null.gui_test_assistant</a></li>
+<li><a href="traits_futures/null/message_router.html">traits_futures.null.message_router</a></li>
+<li><a href="traits_futures/qt/gui_test_assistant.html">traits_futures.qt.gui_test_assistant</a></li>
 <li><a href="traits_futures/qt/message_router.html">traits_futures.qt.message_router</a></li>
 <li><a href="traits_futures/toolkit_support.html">traits_futures.toolkit_support</a></li>
 <li><a href="traits_futures/traits_executor.html">traits_futures.traits_executor</a></li>
+<li><a href="traits_futures/wrappers.html">traits_futures.wrappers</a></li>
 </ul>
 
           </div>
@@ -93,13 +105,11 @@
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -120,10 +130,19 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2019, Enthought
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
       </li>
     </ul>
     </div>
