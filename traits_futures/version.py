@@ -12,4 +12,4 @@
 Version information for the traits_futures package.
 """
 #: Version of the traits_futures package, as a string.
-version = "0.2.0.dev0"
+version = "0.2.0"
