@@ -112,7 +112,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             self.assertEqual(cf_future.result(), 0)
 
     def wait_until_stopped(self, executor):
-        """"
+        """
         Wait for the executor to reach STOPPED state.
         """
         self.run_until(executor, "stopped", lambda executor: executor.stopped)
