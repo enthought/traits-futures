@@ -98,9 +98,6 @@ class MessageProcessRouter(HasStrictTraits):
         # self._process_message_queue.join()
         self._manager.shutdown()
 
-    #: Event fired when a receiver is dropped from the routing table.
-    receiver_done = Event(Instance(MessageReceiver))
-
     def pipe(self):
         # XXX Docstring!
         connection_id = next(self._connection_ids)
