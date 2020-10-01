@@ -4,16 +4,30 @@
 """
 Support for routing message streams from background processes to their
 corresponding foreground receivers.
+
+This version of the module is for a multiprocessing back end and
+the null tookit (using the asyncio event loop) on the front end.
 """
 
+import asyncio
 import collections.abc
 import itertools
-import multiprocessing
+import multiprocessing.managers
+import queue
 import threading
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
-from traits_futures.null.package_globals import get_event_loop
+# Plan:
+
+# Components are:
+# - a multiprocessing queue, shared with all children
+# - a local queue
+# - a local thread which copies incoming messages from the multiprocessing
+#   queue to the local queue, and schedules an asyncio task to process the
+#   message from the local queue
+
+# This is an exact duplicate of the Qt version. Fix the duplication!
 
 
 class MessageSender:
@@ -25,15 +39,19 @@ class MessageSender:
         return self
 
     def __exit__(self, *exc_info):
-        done_message = "done", self.connection_id
-        self.message_queue.put(done_message)
+        self.message_queue.put(("done", self.connection_id))
 
     def send(self, message):
-        wrapped_message = "message", self.connection_id, message
-        self.message_queue.put(wrapped_message)
+        """
+        Send a message to the router.
 
-    def send_message(self, message_type, message_args=None):
-        self.send((message_type, message_args))
+        Parameters
+        ----------
+        message : object
+            Message to be sent to the corresponding foreground receiver.
+            via the router.
+        """
+        self.message_queue.put(("message", self.connection_id, message))
 
 
 # XXX Fix the repetition! MessageReceiver is the same regardless of
@@ -52,28 +70,42 @@ class MessageReceiver(HasStrictTraits):
 class MessageProcessRouter(HasStrictTraits):
     """
     Router for messages from background jobs to their corresponding futures.
+
+    Multiprocessing variant.
+
+    Requires the asyncio event loop to be running in order for messages
+    to arrive.
     """
 
     #: Event fired when a receiver is dropped from the routing table.
     receiver_done = Event(Instance(MessageReceiver))
 
-    def connect(self):
-        """
-        Connect to the current event loop.
-        """
-        self._event_loop = get_event_loop()
-        self._signallee = self._event_loop.async_caller(self._route_message)
+    def __init__(self, **traits):
+        super(MessageProcessRouter, self).__init__(**traits)
+
         self._manager = multiprocessing.Manager()
+        self._local_message_queue = queue.Queue()
         self._process_message_queue = self._manager.Queue()
+
+        self._event_loop = asyncio.get_event_loop()
+
         self._monitor_thread = threading.Thread(
             target=monitor_queue,
             args=(
                 self._process_message_queue,
+                self._local_message_queue,
+                self,
                 self._event_loop,
-                self._signallee,
             ),
         )
+        # XXX Need tests for shutdown.
         self._monitor_thread.start()
+
+    def connect(self):
+        """
+        Connect to the current event loop.
+        """
+        # XXX Move initialization here
 
     def disconnect(self):
         """
@@ -83,7 +115,6 @@ class MessageProcessRouter(HasStrictTraits):
         self._monitor_thread.join()
         # self._process_message_queue.join()
         self._manager.shutdown()
-        self._signallee.close()
         self._event_loop = None
 
     def pipe(self):
@@ -110,8 +141,8 @@ class MessageProcessRouter(HasStrictTraits):
     #: Queue receiving messages from child processes.
     _process_message_queue = Any()
 
-    #: The event loop used for message routing.
-    _event_loop = Any()
+    #: Local queue for messages to the UI thread.
+    _local_message_queue = Any()
 
     #: Thread transferring messages from the process queue to the local
     #: queue.
@@ -123,15 +154,16 @@ class MessageProcessRouter(HasStrictTraits):
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
-    #: Object called to place a process-message action on the event queue.
-    _signallee = Any()
-
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
 
+    #: The event loop used for message routing.
+    _event_loop = Any()
+
     # Private methods #########################################################
 
-    def _route_message(self, wrapped_message):
+    async def _route_message(self):
+        wrapped_message = self._local_message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message
             receiver = self._receivers[connection_id]
@@ -146,15 +178,24 @@ class MessageProcessRouter(HasStrictTraits):
         return itertools.count()
 
 
-def monitor_queue(process_queue, event_loop, route_message):
+def monitor_queue(process_queue, local_queue, router, asyncio_event_loop):
     """
-    Move incoming child process messages to the event loop.
+    Move incoming child process messages to the local queue.
+
+    Monitors the process queue for incoming messages, and transfers
+    those messages to the local queue, while also requesting that
+    the event loop eventually process that message.
     """
     while True:
+        # XXX Add a timeout?
         message = process_queue.get()
         if not isinstance(message, tuple):
             break
-        route_message(message)
+        local_queue.put(message)
         # Avoid hanging onto a reference to the message until the next
         # queue element arrives.
         del message
+        asyncio.run_coroutine_threadsafe(
+            router._route_message(),
+            asyncio_event_loop,
+        )
