@@ -1,28 +1,22 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
-Support for routing message streams from background processes to their
-corresponding foreground receivers.
+Message routing for the Qt toolkit.
 """
-from traits.api import Any, Event, HasStrictTraits, Instance
+import asyncio
+import collections.abc
+import itertools
+import queue
 
-from traits_futures.null.package_globals import get_event_loop
-
-
-class MessageReceiver(HasStrictTraits):
-    """
-    Main-thread object that receives messages from a MessageSender.
-    """
-
-    #: Event fired when a message is received from the paired sender.
-    message = Event(Any())
-
-    def _on_message(self, message):
-        """
-        Callback fired by the event loop on each message arrival.
-        """
-        self.message = message
+from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
 class MessageSender:
@@ -37,94 +31,122 @@ class MessageSender:
     inside a "with sender:" block.
     """
 
-    def __init__(self, async_message, async_done):
-        self.async_message = async_message
-        self.async_done = async_done
+    def __init__(
+        self, connection_id, asyncio_event_loop, route_message, message_queue
+    ):
+        self.connection_id = connection_id
+        self.asyncio_event_loop = asyncio_event_loop
+        self.route_message = route_message
+        self.message_queue = message_queue
 
     def __enter__(self):
         return self
 
     def __exit__(self, *exc_info):
-        self.async_done()
-        self.close()
-
-    def close(self):
-        """
-        Close this sender.
-        """
-        self.async_message.close()
-        self.async_done.close()
+        self.message_queue.put(("done", self.connection_id))
+        asyncio.run_coroutine_threadsafe(
+            self.route_message(), self.asyncio_event_loop
+        )
 
     def send(self, message):
         """
         Send a message to the router.
         """
-        self.async_message(message)
+        self.message_queue.put(("message", self.connection_id, message))
+        asyncio.run_coroutine_threadsafe(
+            self.route_message(), self.asyncio_event_loop
+        )
 
-    def send_message(self, message_type, message_args=None):
-        """
-        Send a message from the background task to the router.
 
-        Parameters
-        ----------
-        message_type : str
-            The type of the message
-        message_args : any, optional
-            Any arguments for the message; ideally, this should be an
-            immutable, pickleable object. If not given, ``None`` is used.
-        """
-        self.send((message_type, message_args))
+class MessageReceiver(HasStrictTraits):
+    """
+    Main-thread object that receives messages from a MessageSender.
+    """
+
+    #: Event fired when a message is received from the paired sender.
+    message = Event(Any())
 
 
 class MessageRouter(HasStrictTraits):
     """
-    Router for messages from background jobs to their corresponding futures.
+    Router for messages, sent by means of Qt signals and slots.
+
+    Requires the event loop to be running in order for messages to arrive.
     """
 
     #: Event fired when a receiver is dropped from the routing table.
     receiver_done = Event(Instance(MessageReceiver))
 
-    #: The event loop used for message routing.
-    _event_loop = Any()
-
-    def connect(self):
-        """
-        Connect to the current event loop.
-        """
-        self._event_loop = get_event_loop()
-
-    def disconnect(self):
-        """
-        Disconnect from the event loop.
-        """
-        self._event_loop = None
-
     def pipe(self):
         """
-        Create a (sender, receiver) pair for sending and receiving messages.
+        Create a (sender, receiver) pair for sending messages.
 
         Returns
         -------
         sender : MessageSender
-            Object used by the background threads to send messages.
+            Object to be passed to the background task to send messages.
         receiver : MessageReceiver
-            Object used to receive messages sent by the sender.
+            Object to be kept in the foreground which reacts to messages.
         """
-        event_loop = self._event_loop
-        receiver = MessageReceiver()
+        connection_id = next(self._connection_ids)
         sender = MessageSender(
-            async_message=event_loop.async_caller(receiver._on_message),
-            async_done=event_loop.async_caller(
-                lambda: self._on_done(receiver)
-            ),
+            connection_id=connection_id,
+            asyncio_event_loop=self._event_loop,
+            route_message=self._route_message,
+            message_queue=self._message_queue,
         )
+        receiver = MessageReceiver()
+        self._receivers[connection_id] = receiver
         return sender, receiver
 
     def close_pipe(self, sender, receiver):
         """
-        Discard an unused sender / receiver pair.
+        Close an unused pipe.
         """
-        sender.close()
+        connection_id = sender.connection_id
+        self._receivers.pop(connection_id)
 
-    def _on_done(self, receiver):
-        self.receiver_done = receiver
+    def connect(self):
+        """
+        Prepare router for routing.
+        """
+        self._event_loop = asyncio.get_event_loop()
+
+    def disconnect(self):
+        """
+        Undo any connections made by the ``connect`` call.
+        """
+
+    # Private traits ##########################################################
+
+    #: Internal queue for messages from all senders.
+    _message_queue = Any()
+
+    #: Source of new connection ids.
+    _connection_ids = Instance(collections.abc.Iterator)
+
+    #: Receivers, keyed by connection_id.
+    _receivers = Dict(Int(), Any())
+
+    #: The event loop used for message routing.
+    _event_loop = Any()
+
+    # Private methods #########################################################
+
+    async def _route_message(self):
+        wrapped_message = self._message_queue.get()
+        if wrapped_message[0] == "message":
+            _, connection_id, message = wrapped_message
+            receiver = self._receivers[connection_id]
+            receiver.message = message
+        else:
+            assert wrapped_message[0] == "done"
+            _, connection_id = wrapped_message
+            receiver = self._receivers.pop(connection_id)
+            self.receiver_done = receiver
+
+    def __message_queue_default(self):
+        return queue.Queue()
+
+    def __connection_ids_default(self):
+        return itertools.count()

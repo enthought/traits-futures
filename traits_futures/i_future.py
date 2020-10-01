@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Interface for futures returned by the executor.
@@ -7,7 +14,7 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import Bool, Interface, Property
+from traits.api import Any, Bool, Event, Interface, Property, Str, Tuple
 
 from traits_futures.future_states import FutureState
 
@@ -34,6 +41,12 @@ class IFuture(Interface):
     #: for changes: it will always fire exactly once, and when it fires
     #: it will be consistent with the ``state``.
     done = Property(Bool())
+
+    #: Event trait providing custom messages from the background task.
+    #: Subclasses of ``BaseFuture`` can listen to this trait and interpret
+    #: the messages in whatever way they like. Each message takes the
+    #: form ``(message_type, message_args)``.
+    message = Event(Tuple(Str(), Any()))
 
     @property
     @abc.abstractmethod

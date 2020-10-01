@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Common tests for TraitsExecutor behaviour. These will be exercised
@@ -194,13 +201,18 @@ class TraitsExecutorTests:
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
         self.assertIn(
-            "submit_call method is deprecated", str(warning_info.warning),
+            "submit_call method is deprecated",
+            str(warning_info.warning),
         )
 
     def test_submit_iteration_method(self):
         with self.assertWarns(DeprecationWarning) as warning_info:
             future = self.executor.submit_iteration(
-                test_iteration, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2",
+                test_iteration,
+                "arg1",
+                "arg2",
+                kwd1="kwd1",
+                kwd2="kwd2",
             )
 
         results = []
@@ -210,31 +222,39 @@ class TraitsExecutorTests:
 
         self.wait_until_done(future)
         self.assertEqual(
-            results, [("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}],
+            results,
+            [("arg1", "arg2"), {"kwd1": "kwd1", "kwd2": "kwd2"}],
         )
 
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
         self.assertIn(
-            "submit_iteration method is deprecated", str(warning_info.warning),
+            "submit_iteration method is deprecated",
+            str(warning_info.warning),
         )
 
     def test_submit_progress_method(self):
         with self.assertWarns(DeprecationWarning) as warning_info:
             future = self.executor.submit_progress(
-                test_progress, "arg1", "arg2", kwd1="kwd1", kwd2="kwd2",
+                test_progress,
+                "arg1",
+                "arg2",
+                kwd1="kwd1",
+                kwd2="kwd2",
             )
 
         self.wait_until_done(future)
 
         self.assertEqual(
-            future.result, ("arg1", "arg2", "kwd1", "kwd2"),
+            future.result,
+            ("arg1", "arg2", "kwd1", "kwd2"),
         )
 
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
         self.assertIn(
-            "submit_progress method is deprecated", str(warning_info.warning),
+            "submit_progress method is deprecated",
+            str(warning_info.warning),
         )
 
     def test_states_consistent(self):
@@ -311,7 +331,7 @@ class TraitsExecutorTests:
     # Helper methods and assertions ###########################################
 
     def wait_until_stopped(self, executor):
-        """"
+        """
         Wait for the executor to reach STOPPED state.
         """
         self.run_until(executor, "stopped", lambda executor: executor.stopped)

@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Tests for the background iteration functionality.
@@ -224,7 +231,8 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [1729])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_exhausted(self):
@@ -247,7 +255,8 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [1])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_start(self):
@@ -283,7 +292,8 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [1729])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_before_failure(self):
@@ -301,7 +311,8 @@ class BackgroundIterationTests:
         self.assertNoException(future)
         self.assertEqual(listener.results, [])
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancel_bad_job(self):

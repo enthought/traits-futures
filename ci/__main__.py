@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Utilities for setting up a development environment and running tests.  See
@@ -58,7 +65,9 @@ def cli():
 @python_version_option
 @toolkit_option
 @click.argument(
-    "mode", type=click.Choice(["ci", "develop"]), default="develop",
+    "mode",
+    type=click.Choice(["ci", "develop"]),
+    default="develop",
 )
 def build(python_version, toolkit, mode):
     """
@@ -82,17 +91,32 @@ def build(python_version, toolkit, mode):
     pyenv.create()
     pyenv.install(dependencies)
 
-    # Install the local package, ignoring dependencies declared in its
-    # setup.py.
-    pip_cmd = ["-m", "pip", "install", "--no-deps"]
-    if mode == "develop":
-        pip_cmd.append("--editable")
-    pip_cmd.append(".")
-    pyenv.python(pip_cmd)
+    # Install local packages.
+    local_packages = ["./", "copyright_header/"]
+    pip_options = ["--editable"] if mode == "develop" else []
+    for package in local_packages:
+        install_cmd = [
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            *pip_options,
+            package,
+        ]
+        pyenv.python(install_cmd)
 
     click.echo(
         "Created environment with name {}".format(pyenv.environment_name)
     )
+
+
+@cli.command()
+@python_version_option
+@toolkit_option
+def shell(python_version, toolkit):
+    pyenv = _get_devenv(python_version, toolkit)
+    shell_cmd = ["shell", "-e", pyenv.environment_name]
+    pyenv.edm(shell_cmd)
 
 
 @cli.command()
@@ -120,34 +144,40 @@ def coverage(python_version, toolkit, verbose, branch, html, report):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    test_cmd = ["-m", "unittest", "discover"]
-    if verbose:
-        test_cmd.append("--verbose")
-    test_cmd.append(cfg.PACKAGE_NAME)
+    test_packages = [cfg.PACKAGE_NAME, "copyright_header"]
+    test_options = ["--verbose"] if verbose else []
+    coverage_options = ["--branch"] if branch else []
 
-    coverage_cmd = [
-        "-m",
-        "coverage",
-        "run",
-        "--source",
-        cfg.PACKAGE_NAME,
-    ]
-    if branch:
-        coverage_cmd.append("--branch")
-
-    # Run coverage from an empty directory.
+    failed_packages = []
     with in_coverage_directory():
-        return_code = pyenv.python_return_code(coverage_cmd + test_cmd)
-        if html:
-            pyenv.python(["-m", "coverage", "html"])
-        if report:
-            pyenv.python(["-m", "coverage", "report"])
-            click.echo()
+        for package in test_packages:
+            test_cmd = ["-m", "unittest", "discover", *test_options, package]
+            coverage_cmd = [
+                "-m",
+                "coverage",
+                "run",
+                "--source",
+                package,
+                "--append",
+                *coverage_options,
+                *test_cmd,
+            ]
+            return_code = pyenv.python_return_code(coverage_cmd)
+            if return_code:
+                failed_packages.append(package)
 
-    if return_code:
-        raise click.ClickException("There were test failures.")
-    else:
-        click.echo("All tests passed.")
+        if failed_packages:
+            raise click.ClickException(
+                "The following packages had test failures: {}".format(
+                    failed_packages
+                )
+            )
+        else:
+            if html:
+                pyenv.python(["-m", "coverage", "html"])
+            if report:
+                pyenv.python(["-m", "coverage", "report"])
+                click.echo()
 
 
 @cli.command()
@@ -158,6 +188,23 @@ def doc(python_version, toolkit):
     Run documentation build.
     """
     pyenv = _get_devenv(python_version, toolkit)
+
+    # Use sphinx-apidoc to build API documentation.
+    docs_source_api = "docs/source/api"
+    template_dir = "docs/source/api/templates/"
+    apidoc_command = [
+        "-m",
+        "sphinx.ext.apidoc",
+        "--separate",
+        "--no-toc",
+        "-o",
+        docs_source_api,
+        "-t",
+        template_dir,
+        "traits_futures",
+        "*/tests",
+    ]
+    pyenv.python(apidoc_command)
 
     # Be nitpicky. This detects missing class references.
     sphinx_options = ["-n"]
@@ -172,7 +219,8 @@ def doc(python_version, toolkit):
 @python_version_option
 @toolkit_option
 @click.argument(
-    "example-name", type=click.Choice(cfg.EXAMPLES),
+    "example-name",
+    type=click.Choice(cfg.EXAMPLES),
 )
 def example(python_version, toolkit, example_name):
     """
@@ -210,21 +258,29 @@ def test(python_version, toolkit, verbose):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    test_cmd = ["-m", "unittest", "discover"]
-    if verbose:
-        test_cmd.append("--verbose")
-    test_cmd.append(cfg.PACKAGE_NAME)
+    test_packages = [cfg.PACKAGE_NAME, "copyright_header"]
+    test_options = ["--verbose"] if verbose else []
 
-    # Run tests from an empty directory to avoid picking up
-    # code directly from the repository instead of the target
-    # environment.
-    with in_test_directory():
-        return_code = pyenv.python_return_code(test_cmd)
+    failed_packages = []
+    for package in test_packages:
+        test_cmd = ["-m", "unittest", "discover", *test_options, package]
 
-    if return_code:
-        raise click.ClickException("There were test failures.")
-    else:
-        click.echo("All tests passed.")
+        # Run tests from an empty directory to avoid picking up
+        # code directly from the repository instead of the target
+        # environment.
+        with in_test_directory():
+            return_code = pyenv.python_return_code(test_cmd)
+        if return_code:
+            failed_packages.append(package)
+
+    if failed_packages:
+        raise click.ClickException(
+            "There were test failures in the following packages: {}".format(
+                failed_packages
+            )
+        )
+
+    click.echo("All tests passed.")
 
 
 # Helper functions ############################################################
@@ -248,7 +304,9 @@ def _get_devenv(python_version, toolkit):
 
     runtime_version = cfg.RUNTIME_VERSION[python_version]
     environment_name = cfg.ENVIRONMENT_TEMPLATE.format(
-        prefix=cfg.PREFIX, python_version=python_version, toolkit=toolkit,
+        prefix=cfg.PREFIX,
+        python_version=python_version,
+        toolkit=toolkit,
     )
 
     return PythonEnvironment(

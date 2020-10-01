@@ -1,12 +1,18 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Context providing multithreading-friendly worker pools, events, and routers.
 """
 
 import concurrent.futures
-import queue
 import threading
 
 from traits_futures.i_parallel_context import IParallelContext
@@ -47,17 +53,6 @@ class MultithreadingContext(IParallelContext):
             An event that can be shared safely with workers.
         """
         return threading.Event()
-
-    def queue(self):
-        """
-        Return a shareable queue suitable for this context.
-
-        Returns
-        -------
-        queue : queue-like
-            A queue that can be shared safely with workers.
-        """
-        return queue.Queue()
 
     def message_router(self):
         """

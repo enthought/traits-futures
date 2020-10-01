@@ -2,6 +2,13 @@
    (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
    All rights reserved.
 
+   This software is provided without warranty under the terms of the BSD
+   license included in LICENSE.txt and may be redistributed only under
+   the conditions described in the aforementioned license. The license
+   is also available online at http://www.enthought.com/licenses/BSD.txt
+
+   Thanks for using Enthought open source!
+
 Traits Futures: reactive background processing for Traits and TraitsUI
 ======================================================================
 
@@ -24,7 +31,7 @@ Features
   - facilities to (cooperatively) cancel a long-running background task
   - access to result(s) arriving from the background task
 
-- Future objects are ``HasTraits`` instances, suitable for integration
+- Future objects are |HasTraits| instances, suitable for integration
   into a TraitsUI application.
 - No need to be a threading expert! Incoming results arrive as trait changes in
   the main thread. This eliminates a large class of potential issues with
@@ -36,7 +43,7 @@ Features
 Limitations
 -----------
 
-- By design, and unlike `concurrent_futures`_, |traits_futures| requires the
+- By design, and unlike :mod:`concurrent.futures`, |traits_futures| requires the
   UI event loop to be running in order to process results.
 - For the moment, |traits_futures| requires Qt. Support for wxPython
   may arrive in a future release.
@@ -54,15 +61,24 @@ result when it arrives.
 .. literalinclude:: examples/quick_start.py
 
 
-Detailed Documentation
-======================
+User Guide
+==========
 
 .. toctree::
    :maxdepth: 4
-   :caption: Contents:
 
    guide/intro.rst
-   api/modules.rst
+   guide/cancel.rst
+   guide/advanced.rst
+
+
+API Documentation
+=================
+
+.. toctree::
+   :maxdepth: 4
+
+   api/traits_futures.rst
 
 
 Indices and tables
@@ -72,11 +88,13 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+..
+   external links
 
-.. _TraitsUI: https://github.com/enthought/traitsui
-.. _concurrent_futures: https://docs.python.org/3/library/concurrent.futures.html
+.. _TraitsUI: https://docs.enthought.com/traitsui
 
 ..
    substitutions
 
 .. |traits_futures| replace:: :mod:`traits_futures`
+.. |HasTraits| replace:: :class:`~traits.has_traits.HasTraits`

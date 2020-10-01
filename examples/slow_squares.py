@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 import random
 import time
@@ -101,7 +108,7 @@ class SquaringHelper(Handler):
     def closed(self, info, is_ok):
         # Cancel all jobs at shutdown.
         self.traits_executor.stop()
-        super(SquaringHelper, self).closed(info, is_ok)
+        super().closed(info, is_ok)
 
     def _square_fired(self):
         future = submit_call(self.traits_executor, slow_square, self.input)
@@ -130,7 +137,8 @@ class SquaringHelper(Handler):
                     UItem(
                         "current_futures",
                         editor=TabularEditor(
-                            adapter=JobTabularAdapter(), auto_update=True,
+                            adapter=JobTabularAdapter(),
+                            auto_update=True,
                         ),
                     ),
                 ),

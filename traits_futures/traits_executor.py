@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Executor to submit background tasks.
@@ -22,8 +29,8 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
-from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
 
 # Executor states.
@@ -40,15 +47,6 @@ STOPPED = "stopped"
 
 #: Trait type representing the executor state.
 ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
-
-
-def _background_job_wrapper(background_job, sender):
-    """
-    This is the callable that's actually submitted as a concurrent.futures
-    job.
-    """
-    with sender:
-        background_job(sender.send_message)
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -102,7 +100,7 @@ class TraitsExecutor(HasStrictTraits):
         context=None,
         **traits,
     ):
-        super(TraitsExecutor, self).__init__(**traits)
+        super().__init__(**traits)
 
         if thread_pool is not None:
             warnings.warn(
@@ -140,7 +138,7 @@ class TraitsExecutor(HasStrictTraits):
         Convenience function to submit a background call.
 
         .. deprecated:: 0.2
-           Use the :func:`submit_call` function instead.
+           Use the :func:`~.submit_call` function instead.
 
         Parameters
         ----------
@@ -169,7 +167,7 @@ class TraitsExecutor(HasStrictTraits):
         Convenience function to submit a background iteration.
 
         .. deprecated:: 0.2
-           Use the :func:`submit_iteration` function instead.
+           Use the :func:`~.submit_iteration` function instead.
 
         Parameters
         ----------
@@ -198,7 +196,7 @@ class TraitsExecutor(HasStrictTraits):
         Convenience function to submit a background progress call.
 
         .. deprecated:: 0.2
-           Use the :func:`submit_progress` function instead.
+           Use the :func:`~.submit_progress` function instead.
 
         Parameters
         ----------
@@ -231,8 +229,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        task : BackgroundCall, BackgroundIteration or BackgroundProgress
-            The task to be executed.
+        task : ITaskSpecification
 
         Returns
         -------
@@ -243,17 +240,22 @@ class TraitsExecutor(HasStrictTraits):
             raise RuntimeError("Can't submit task unless executor is running.")
 
         cancel_event = self._context.event()
+
         sender, receiver = self._message_router.pipe()
         try:
-            future, runner = task.future_and_callable(
-                cancel_event=cancel_event, message_receiver=receiver,
-            )
+            runner = task.background_task()
+            future = task.future()
+            future._executor_initialized(cancel_event.set)
         except Exception:
             self._message_router.close_pipe(sender, receiver)
             raise
 
-        self._worker_pool.submit(_background_job_wrapper, runner, sender)
-        self._futures[receiver] = future
+        background_task_wrapper = BackgroundTaskWrapper(
+            runner, sender, cancel_event
+        )
+        wrapper = FutureWrapper(future=future, receiver=receiver)
+        self._worker_pool.submit(background_task_wrapper)
+        self._wrappers[receiver] = wrapper
         return future
 
     def stop(self):
@@ -268,11 +270,12 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for _, future in self._futures.items():
+        for _, wrapper in self._wrappers.items():
+            future = wrapper.future
             if future.cancellable:
                 future.cancel()
 
-        if not self._futures:
+        if not self._wrappers:
             self._stop()
 
     # Private traits ##########################################################
@@ -294,9 +297,11 @@ class TraitsExecutor(HasStrictTraits):
     #: and foreground futures.
     _message_router = Any()
 
-    #: Currently executing futures: mapping from message receivers to
-    #: futures.
-    _futures = Dict(Any(), Instance(IFuture))
+    #: True if we've created a message router, and need to shut it down.
+    _have_message_router = Bool(False)
+
+    #: Wrappers for currently-executing futures.
+    _wrappers = Dict(Any(), Any())
 
     # Private methods #########################################################
 
@@ -321,6 +326,7 @@ class TraitsExecutor(HasStrictTraits):
         # Toolkit-specific message router.
         router = self._context.message_router()
         router.connect()
+        self._have_message_router = True
         return router
 
     def __context_default(self):
@@ -333,10 +339,10 @@ class TraitsExecutor(HasStrictTraits):
 
     @on_trait_change("_message_router:receiver_done")
     def _remove_future(self, receiver):
-        self._futures.pop(receiver)
+        self._wrappers.pop(receiver)
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
-        if self.state == STOPPING and not self._futures:
+        if self.state == STOPPING and not self._wrappers:
             self._stop()
 
     def _stop(self):
@@ -344,8 +350,10 @@ class TraitsExecutor(HasStrictTraits):
         Go to STOPPED state, and shut down the worker pool if we own it.
         """
         assert self.state == STOPPING
-        self._message_router.disconnect()
-        self._message_router = None
+
+        if self._have_message_router:
+            self._message_router.disconnect()
+            self._message_router = None
 
         if self._own_worker_pool:
             self._worker_pool.shutdown()

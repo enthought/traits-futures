@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Test support, providing the ability to run the event loop from tests.
@@ -32,7 +39,7 @@ class GuiTestAssistant:
 
         Parameters
         ----------
-        object : HasTraits
+        object : traits.has_traits.HasTraits
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
@@ -68,14 +75,16 @@ class GuiTestAssistant:
         try:
             # The condition may have become True before we
             # started listening to changes. So start with a check.
-            QTimer.singleShot(0, stop_if_condition)
-            timeout_timer.timeout.connect(stop_on_timeout)
-            timeout_timer.start()
-            try:
-                timed_out = qt_app.exec_()
-            finally:
-                timeout_timer.stop()
-                timeout_timer.timeout.disconnect(stop_on_timeout)
+            if condition(object):
+                timed_out = 0
+            else:
+                timeout_timer.timeout.connect(stop_on_timeout)
+                timeout_timer.start()
+                try:
+                    timed_out = qt_app.exec_()
+                finally:
+                    timeout_timer.stop()
+                    timeout_timer.timeout.disconnect(stop_on_timeout)
         finally:
             object.on_trait_change(stop_if_condition, trait, remove=True)
 

@@ -1,6 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+# All rights reserved.
 #
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
+
 # Traits Futures documentation build configuration file, created by
 # sphinx-quickstart on Sun Jul 29 10:49:55 2018.
 #
@@ -38,6 +45,8 @@ import traits_futures.version
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.githubpages",
+    "sphinx.ext.graphviz",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "traits.util.trait_documenter",
@@ -57,7 +66,17 @@ master_doc = "index"
 
 # General information about the project.
 project = "Traits Futures"
-copyright = "2018-2020, Enthought"
+copyright = """\
+(C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+"""
 author = "Enthought"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -89,6 +108,11 @@ todo_include_todos = False
 
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
+
+# -- Options for Graphviz extension ---------------------------------------
+
+# Output format when building HTML files
+graphviz_output_format = "svg"
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -173,3 +197,13 @@ texinfo_documents = [
         "Miscellaneous",
     ),
 ]
+
+# Options for intersphinx extension
+# ---------------------------------
+
+intersphinx_mapping = {
+    "pyface": ("https://docs.enthought.com/pyface", None),
+    "python": ("https://docs.python.org/3", None),
+    "traits": ("https://docs.enthought.com/traits", None),
+    "traitsui": ("https://docs.enthought.com/traitsui", None),
+}

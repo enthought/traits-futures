@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 from traits.api import HasStrictTraits, Instance, List, on_trait_change
 
@@ -72,7 +79,8 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, COMPLETED],
+            listener.states,
+            [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_failed_call(self):
@@ -84,7 +92,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, FAILED],
+            listener.states,
+            [WAITING, EXECUTING, FAILED],
         )
 
     def test_cancellation_vs_started_race_condition(self):
@@ -105,7 +114,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_execution(self):
@@ -122,7 +132,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_success(self):
@@ -145,7 +156,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cancellation_before_failure(self):
@@ -168,7 +180,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     def test_cannot_cancel_after_success(self):
@@ -184,7 +197,8 @@ class BackgroundCallTests:
         self.assertResult(future, 8)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, COMPLETED],
+            listener.states,
+            [WAITING, EXECUTING, COMPLETED],
         )
 
     def test_cannot_cancel_after_failure(self):
@@ -200,7 +214,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, FAILED],
+            listener.states,
+            [WAITING, EXECUTING, FAILED],
         )
 
     def test_cannot_cancel_after_cancel(self):
@@ -218,7 +233,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, CANCELLING, CANCELLED],
         )
 
     def test_double_cancel_variant(self):
@@ -246,7 +262,8 @@ class BackgroundCallTests:
         self.assertNoResult(future)
         self.assertNoException(future)
         self.assertEqual(
-            listener.states, [WAITING, EXECUTING, CANCELLING, CANCELLED],
+            listener.states,
+            [WAITING, EXECUTING, CANCELLING, CANCELLED],
         )
 
     # Helper functions

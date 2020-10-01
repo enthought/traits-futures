@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Support for a progress-reporting background call.
@@ -13,50 +20,20 @@ be cancelled.
 """
 
 from traits.api import (
-    Any,
-    Bool,
     Callable,
     Dict,
     Event,
     HasStrictTraits,
-    HasTraits,
-    Instance,
-    on_trait_change,
-    Property,
-    provides,
     Str,
     Tuple,
 )
 
-from traits_futures.exception_handling import marshal_exception
-from traits_futures.future_states import (
-    CANCELLABLE_STATES,
-    CANCELLED,
-    CANCELLING,
-    COMPLETED,
-    DONE_STATES,
-    EXECUTING,
-    FAILED,
-    FutureState,
-    WAITING,
-)
-from traits_futures.i_future import IFuture
+from traits_futures.base_future import BaseFuture
+from traits_futures.i_task_specification import ITaskSpecification
 
 
 # Message types for messages from ProgressBackgroundTask
 # to ProgressFuture.
-
-#: Task was cancelled before it started. No arguments.
-INTERRUPTED = "interrupted"
-
-#: Task started executing. No arguments.
-STARTED = "started"
-
-#: Task failed with an exception. Argument gives exception information.
-RAISED = "raised"
-
-#: Task succeeded and returned a result. Argument is the result.
-RETURNED = "returned"
 
 #: Task sends progress. Argument is a single object giving progress
 #: information. This module does not interpret the contents of the argument.
@@ -75,9 +52,9 @@ class ProgressReporter:
     Object used by the target callable to report progress.
     """
 
-    def __init__(self, send, cancel_event):
+    def __init__(self, send, cancelled):
         self.send = send
-        self.cancel_event = cancel_event
+        self.cancelled = cancelled
 
     def report(self, progress_info):
         """
@@ -92,7 +69,7 @@ class ProgressReporter:
             An arbitrary object representing progress. Ideally, this
             should be immutable and pickleable.
         """
-        if self.cancel_event.is_set():
+        if self.cancelled():
             raise _ProgressCancelled("Task was cancelled")
         self.send(PROGRESS, progress_info)
 
@@ -105,173 +82,36 @@ class ProgressBackgroundTask:
     sends messages to communicate with the ProgressFuture.
     """
 
-    def __init__(self, callable, args, kwargs, cancel_event):
+    def __init__(self, callable, args, kwargs):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
-        self.cancel_event = cancel_event
 
-    def __call__(self, send):
-        progress = ProgressReporter(send=send, cancel_event=self.cancel_event)
+    def __call__(self, send, cancelled):
+        progress = ProgressReporter(send=send, cancelled=cancelled)
         self.kwargs["progress"] = progress.report
 
-        if self.cancel_event.is_set():
-            send(INTERRUPTED)
-            return
-
-        send(STARTED)
         try:
-            result = self.callable(*self.args, **self.kwargs)
+            return self.callable(*self.args, **self.kwargs)
         except _ProgressCancelled:
-            send(INTERRUPTED)
-        except BaseException as e:
-            send(RAISED, marshal_exception(e))
-        else:
-            send(RETURNED, result)
+            return None
 
 
-@provides(IFuture)
-class ProgressFuture(HasStrictTraits):
+class ProgressFuture(BaseFuture):
     """
     Object representing the front-end handle to a ProgressBackgroundTask.
     """
 
-    #: The state of the background task, to the best of the knowledge of
-    #: this future.
-    state = FutureState
-
-    #: True if this task can be cancelled, else False.
-    cancellable = Property(Bool())
-
-    #: True if we've received the final message from the background task,
-    #: else False. `True` indicates either that the background task
-    #: succeeded, or that it raised, or that it was cancelled.
-    done = Property(Bool())
-
     #: Event fired whenever a progress message arrives from the background.
-    progress = Event(Any())
-
-    @property
-    def result(self):
-        """
-        Result of the background task. Raises an ``AttributeError`` on access
-        if no result is available (because the background task failed, was
-        cancelled, or has not yet completed).
-
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
-        """
-        if self.state != COMPLETED:
-            raise AttributeError("No result available for this call.")
-        return self._result
-
-    @property
-    def exception(self):
-        """
-        Information about any exception raised by the background call. Raises
-        an ``AttributeError`` on access if no exception was raised (because the
-        call succeeded, was cancelled, or has not yet completed).
-
-        Note: this is deliberately a regular Python property rather than a
-        Trait, to discourage users from attaching Traits listeners to
-        it. Listen to the state or its derived traits instead.
-        """
-        if self.state != FAILED:
-            raise AttributeError("No exception has been raised for this call.")
-        return self._exception
-
-    def cancel(self):
-        """
-        Method that can be called from the main thread to
-        indicate that the task should be cancelled (provided
-        it hasn't already started running).
-        """
-        # In the interests of catching coding errors early in client
-        # code, we're strict about what states we allow cancellation
-        # from. Some applications may want to weaken the error below
-        # to a warning, or just do nothing on an invalid cancellation.
-        if not self.cancellable:
-            raise RuntimeError(
-                "Can only cancel a queued or executing task. "
-                "Task state is {!r}".format(self.state)
-            )
-        self._cancel_event.set()
-        self.state = CANCELLING
-
-    # Private traits ##########################################################
-
-    #: Private event used to request cancellation of this task. Users
-    #: should call the cancel() method instead of using this event.
-    _cancel_event = Any()
-
-    #: Result from the background task.
-    _result = Any()
-
-    #: Exception information from the background task.
-    _exception = Tuple(Str(), Str(), Str())
-
-    #: Object that receives messages from the background task.
-    _message_receiver = Instance(HasTraits)
+    progress = Event()
 
     # Private methods #########################################################
 
-    @on_trait_change("_message_receiver:message")
-    def _process_message(self, message):
-        message_type, message_arg = message
-        method_name = "_process_{}".format(message_type)
-        getattr(self, method_name)(message_arg)
-
-    def _process_interrupted(self, none):
-        assert self.state in (CANCELLING,)
-        self.state = CANCELLED
-
-    def _process_started(self, none):
-        assert self.state in (WAITING, CANCELLING)
-        if self.state == WAITING:
-            self.state = EXECUTING
-
-    def _process_raised(self, exception_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._exception = exception_info
-            self.state = FAILED
-        else:
-            self.state = CANCELLED
-
-    def _process_returned(self, result):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self._result = result
-            self.state = COMPLETED
-        else:
-            self.state = CANCELLED
-
     def _process_progress(self, progress_info):
-        assert self.state in (EXECUTING, CANCELLING)
-        if self.state == EXECUTING:
-            self.progress = progress_info
-
-    def _get_cancellable(self):
-        return self.state in CANCELLABLE_STATES
-
-    def _get_done(self):
-        return self.state in DONE_STATES
-
-    def _state_changed(self, old_state, new_state):
-        old_cancellable = old_state in CANCELLABLE_STATES
-        new_cancellable = new_state in CANCELLABLE_STATES
-        if old_cancellable != new_cancellable:
-            self.trait_property_changed(
-                "cancellable", old_cancellable, new_cancellable
-            )
-
-        old_done = old_state in DONE_STATES
-        new_done = new_state in DONE_STATES
-        if old_done != new_done:
-            self.trait_property_changed("done", old_done, new_done)
+        self.progress = progress_info
 
 
+@ITaskSpecification.register
 class BackgroundProgress(HasStrictTraits):
     """
     Object representing the background task to be executed.
@@ -284,44 +124,39 @@ class BackgroundProgress(HasStrictTraits):
     args = Tuple()
 
     #: Named arguments to be passed to the callable.
-    kwargs = Dict(Str(), Any())
+    kwargs = Dict(Str())
 
-    def future_and_callable(self, cancel_event, message_receiver):
+    def future(self):
         """
-        Return a future and a linked background callable.
-
-        Parameters
-        ----------
-        cancel_event : threading.Event
-            Event used to request cancellation of the background task.
-        message_receiver : MessageReceiver
-            Object that remains in the main thread and receives messages sent
-            by the message sender. This is a HasTraits subclass with
-            a 'message' Event trait that can be listened to for arriving
-            messages.
+        Return a Future for the background task.
 
         Returns
         -------
         future : ProgressFuture
-            Foreground object representing the state of the running
-            calculation.
-        runner : ProgressBackgroundTask
-            Callable to be executed in the background.
+            Future object that can be used to monitor the status of the
+            background task.
+        """
+        return ProgressFuture()
+
+    def background_task(self):
+        """
+        Return a background callable for this task specification.
+
+        Returns
+        -------
+        collections.abc.Callable
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled`` to
+            check whether cancellation has been requested.
         """
         if "progress" in self.kwargs:
             raise TypeError("progress may not be passed as a named argument")
 
-        future = ProgressFuture(
-            _cancel_event=cancel_event, _message_receiver=message_receiver,
-        )
-        runner = ProgressBackgroundTask(
+        return ProgressBackgroundTask(
             callable=self.callable,
             args=self.args,
-            # Convert TraitsDict to a regular dict
-            kwargs=dict(self.kwargs),
-            cancel_event=cancel_event,
+            kwargs=self.kwargs.copy(),
         )
-        return future, runner
 
 
 def submit_progress(executor, callable, *args, **kwargs):
@@ -331,16 +166,17 @@ def submit_progress(executor, callable, *args, **kwargs):
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the call to.
-    callable : callable accepting a "progress" named argument
-        Function executed in the background to provide the iterable. This
-        should accept a "progress" named argument. The callable can then
-        call the "progress" object to report progress.
+        Executor to submit the task to.
+    callable : collections.abc.Callable
+        Callable that executes the progress-providing function. This callable
+        must accept a "progress" named argument, in addition to the provided
+        arguments. The callable may then call the "progress" argument to
+        report progress.
     *args
-        Positional arguments to pass to that function.
+        Positional arguments to pass to the callable.
     **kwargs
-        Named arguments to pass to that function. These should not include
-        "progress".
+        Named arguments other than "progress" to pass to the callable. These
+        must not include "progress".
 
     Returns
     -------

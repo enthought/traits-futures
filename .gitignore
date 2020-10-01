@@ -1,4 +1,6 @@
 *.pyc
+/docs/source/api/*.rst
+!/docs/source/api/traits_futures.api.rst
 /docs/build/
 /coverage/
-/*.egg-info/
+*.egg-info/

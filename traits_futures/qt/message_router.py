@@ -1,5 +1,12 @@
 # (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
 # All rights reserved.
+#
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Message routing for the Qt toolkit.
@@ -74,20 +81,6 @@ class MessageSender:
         """
         self.message_queue.put(("message", self.connection_id, message))
         self.signaller.message_sent.emit()
-
-    def send_message(self, message_type, message_args=None):
-        """
-        Send a message from the background task to the router.
-
-        Parameters
-        ----------
-        message_type : str
-            The type of the message
-        message_args : any, optional
-            Any arguments for the message; ideally, this should be an
-            immutable, pickleable object. If not given, ``None`` is used.
-        """
-        self.send((message_type, message_args))
 
 
 class MessageReceiver(HasStrictTraits):
