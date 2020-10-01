@@ -16,7 +16,8 @@ import threading
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
-# XXX Move these to a shared location.
+# XXX Move these to a shared location. They're common with the thread-based
+# version of the router.
 from traits_futures.qt.message_router import (
     _MessageSignallee,
     _MessageSignaller,
@@ -32,15 +33,19 @@ class MessageSender:
         return self
 
     def __exit__(self, *exc_info):
-        done_message = "done", self.connection_id
-        self.message_queue.put(done_message)
+        self.message_queue.put(("done", self.connection_id))
 
     def send(self, message):
-        wrapped_message = "message", self.connection_id, message
-        self.message_queue.put(wrapped_message)
+        """
+        Send a message to the router.
 
-    def send_message(self, message_type, message_args=None):
-        self.send((message_type, message_args))
+        Parameters
+        ----------
+        message : object
+            Message to be sent to the corresponding foreground receiver.
+            via the router.
+        """
+        self.message_queue.put(("message", self.connection_id, message))
 
 
 class MessageReceiver(HasStrictTraits):
