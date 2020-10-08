@@ -66,6 +66,9 @@ Features
 Changes
 ~~~~~~~
 
+* The ``state`` trait of ``CallFuture``, ``IterationFuture`` and
+  ``ProgressFuture`` used to be writable. It's now a read-only property
+  that reflects the internal state. (#???)
 * The default number of workers in an owned worker pool (that is, a worker pool
   created by a :class:`TraitsExecutor`) has changed. Previously it was
   hard-coded as ``4``. Now it defaults to whatever Python's
