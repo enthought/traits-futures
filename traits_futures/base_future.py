@@ -239,30 +239,30 @@ class BaseFuture(HasStrictTraits):
             message_args).
         """
 
-        if self._state == _CANCELLING_AFTER_STARTED:
+        if self._internal_state == _CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
             return
-        elif self._state == EXECUTING:
+        elif self._internal_state == EXECUTING:
             message_type, message_arg = message
             method_name = "_process_{}".format(message_type)
             getattr(self, method_name)(message_arg)
         else:
             raise _StateTransitionError(
-                "Unexpected custom message in state {!r}".format(self._state)
+                "Unexpected custom message in state {!r}".format(self._internal_state)
             )
 
     def _task_started(self, none):
         """
         Update state when the background task has started processing.
         """
-        if self._state == _INITIALIZED:
-            self._state = EXECUTING
-        elif self._state == _CANCELLING_BEFORE_STARTED:
-            self._state = _CANCELLING_AFTER_STARTED
+        if self._internal_state == _INITIALIZED:
+            self._internal_state = EXECUTING
+        elif self._internal_state == _CANCELLING_BEFORE_STARTED:
+            self._internal_state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
                 "Unexpected 'started' message in state {!r}".format(
-                    self._state
+                    self._internal_state
                 )
             )
 
@@ -270,16 +270,16 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when background task reports completing successfully.
         """
-        if self._state == EXECUTING:
+        if self._internal_state == EXECUTING:
             self._cancel = None
             self._result = result
-            self._state = COMPLETED
-        elif self._state == _CANCELLING_AFTER_STARTED:
-            self._state = CANCELLED
+            self._internal_state = COMPLETED
+        elif self._internal_state == _CANCELLING_AFTER_STARTED:
+            self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
                 "Unexpected 'returned' message in state {!r}".format(
-                    self._state
+                    self._internal_state
                 )
             )
 
@@ -287,15 +287,15 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when the background task reports completing with an error.
         """
-        if self._state == EXECUTING:
+        if self._internal_state == EXECUTING:
             self._cancel = None
             self._exception = exception_info
-            self._state = FAILED
-        elif self._state == _CANCELLING_AFTER_STARTED:
-            self._state = CANCELLED
+            self._internal_state = FAILED
+        elif self._internal_state == _CANCELLING_AFTER_STARTED:
+            self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
-                "Unexpected 'raised' message in state {!r}".format(self._state)
+                "Unexpected 'raised' message in state {!r}".format(self._internal_state)
             )
 
     def _user_cancelled(self):
@@ -305,16 +305,16 @@ class BaseFuture(HasStrictTraits):
         A future in ``WAITING`` or ``EXECUTING`` state moves to ``CANCELLING``
         state.
         """
-        if self._state == _INITIALIZED:
+        if self._internal_state == _INITIALIZED:
             self._cancel()
-            self._state = _CANCELLING_BEFORE_STARTED
-        elif self._state == EXECUTING:
+            self._internal_state = _CANCELLING_BEFORE_STARTED
+        elif self._internal_state == EXECUTING:
             self._cancel()
-            self._state = _CANCELLING_AFTER_STARTED
+            self._internal_state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
                 "Unexpected 'cancelled' message in state {!r}".format(
-                    self._state
+                    self._internal_state
                 )
             )
 
@@ -328,12 +328,12 @@ class BaseFuture(HasStrictTraits):
             The callback to be called when the user requests cancellation.
             The callback accepts no arguments, and has no return value.
         """
-        if self._state == _NOT_INITIALIZED:
+        if self._internal_state == _NOT_INITIALIZED:
             self._cancel = cancel
-            self._state = _INITIALIZED
+            self._internal_state = _INITIALIZED
         else:
             raise _StateTransitionError(
-                "Unexpected initialization in state {!r}".format(self._state)
+                "Unexpected initialization in state {!r}".format(self._internal_state)
             )
 
     # Private traits ##########################################################
@@ -343,7 +343,7 @@ class BaseFuture(HasStrictTraits):
     _cancel = Callable(allow_none=True)
 
     #: The internal state of the future.
-    _state = _InternalState
+    _internal_state = _InternalState
 
     #: Result from the background task.
     _result = Any()
@@ -354,17 +354,17 @@ class BaseFuture(HasStrictTraits):
     # Private methods #########################################################
 
     def _get_state(self):
-        return _INTERNAL_STATE_TO_STATE[self._state]
+        return _INTERNAL_STATE_TO_STATE[self._internal_state]
 
     def _get_cancellable(self):
-        return self._state in _CANCELLABLE_INTERNAL_STATES
+        return self._internal_state in _CANCELLABLE_INTERNAL_STATES
 
     def _get_done(self):
-        return self._state in _DONE_INTERNAL_STATES
+        return self._internal_state in _DONE_INTERNAL_STATES
 
-    def __state_changed(self, old__state, new__state):
-        old_state = _INTERNAL_STATE_TO_STATE[old__state]
-        new_state = _INTERNAL_STATE_TO_STATE[new__state]
+    def __internal_state_changed(self, old__internal_state, new__internal_state):
+        old_state = _INTERNAL_STATE_TO_STATE[old__internal_state]
+        new_state = _INTERNAL_STATE_TO_STATE[new__internal_state]
         if old_state != new_state:
             self.trait_property_changed("state", old_state, new_state)
 
