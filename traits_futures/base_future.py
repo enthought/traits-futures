@@ -248,7 +248,7 @@ class BaseFuture(HasStrictTraits):
             getattr(self, method_name)(message_arg)
         else:
             raise _StateTransitionError(
-                "Unexpected custom message in state {!r}".format(self._internal_state)
+                "Unexpected custom message in internal state {!r}".format(self._internal_state)
             )
 
     def _task_started(self, none):
@@ -261,7 +261,7 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
-                "Unexpected 'started' message in state {!r}".format(
+                "Unexpected 'started' message in internal state {!r}".format(
                     self._internal_state
                 )
             )
@@ -278,7 +278,7 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
-                "Unexpected 'returned' message in state {!r}".format(
+                "Unexpected 'returned' message in internal state {!r}".format(
                     self._internal_state
                 )
             )
@@ -295,7 +295,7 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
-                "Unexpected 'raised' message in state {!r}".format(self._internal_state)
+                "Unexpected 'raised' message in internal state {!r}".format(self._internal_state)
             )
 
     def _user_cancelled(self):
@@ -313,7 +313,7 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
-                "Unexpected 'cancelled' message in state {!r}".format(
+                "Unexpected 'cancelled' message in internal state {!r}".format(
                     self._internal_state
                 )
             )
@@ -333,7 +333,7 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = _INITIALIZED
         else:
             raise _StateTransitionError(
-                "Unexpected initialization in state {!r}".format(self._internal_state)
+                "Unexpected initialization in internal state {!r}".format(self._internal_state)
             )
 
     # Private traits ##########################################################
