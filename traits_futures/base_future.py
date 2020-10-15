@@ -307,11 +307,9 @@ class BaseFuture(HasStrictTraits):
         """
         if self._state == _INITIALIZED:
             self._cancel()
-            self._cancel = None
             self._state = _CANCELLING_BEFORE_STARTED
         elif self._state == EXECUTING:
             self._cancel()
-            self._cancel = None
             self._state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
