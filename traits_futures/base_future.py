@@ -110,7 +110,6 @@ class _StateTransitionError(Exception):
     sequence of operations received by the future from the background
     task, from the executor, or from the user.
     """
-    pass
 
 
 @provides(IFuture)
@@ -252,7 +251,9 @@ class BaseFuture(HasStrictTraits):
             getattr(self, method_name)(message_arg)
         else:
             raise _StateTransitionError(
-                "Unexpected custom message in internal state {!r}".format(self._internal_state)
+                "Unexpected custom message in internal state {!r}".format(
+                    self._internal_state
+                )
             )
 
     def _task_started(self, none):
@@ -299,7 +300,9 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
-                "Unexpected 'raised' message in internal state {!r}".format(self._internal_state)
+                "Unexpected 'raised' message in internal state {!r}".format(
+                    self._internal_state
+                )
             )
 
     def _user_cancelled(self):
@@ -337,7 +340,9 @@ class BaseFuture(HasStrictTraits):
             self._internal_state = _INITIALIZED
         else:
             raise _StateTransitionError(
-                "Unexpected initialization in internal state {!r}".format(self._internal_state)
+                "Unexpected initialization in internal state {!r}".format(
+                    self._internal_state
+                )
             )
 
     # Private traits ##########################################################
