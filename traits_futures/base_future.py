@@ -102,13 +102,6 @@ _CANCELLABLE_INTERNAL_STATES = {
 }
 
 
-def _state_from_internal_state(internal_state):
-    """
-    Convert an internal state to the corresponding future state.
-    """
-    return _INTERNAL_STATE_TO_STATE[internal_state]
-
-
 #: Exception used to indicate a bad state transition. This should
 #: never happen as a result of user error, only as a result of
 #: a coding error in this repository.
