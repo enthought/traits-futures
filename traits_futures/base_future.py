@@ -74,20 +74,25 @@ _InternalState = Enum(
     CANCELLED,
 )
 
+#: Mapping from each internal state to the corresponding user-visible
+#: state.
+_INTERNAL_STATE_TO_STATE = {
+    _NOT_INITIALIZED: WAITING,
+    _INITIALIZED: WAITING,
+    EXECUTING: EXECUTING,
+    COMPLETED: COMPLETED,
+    FAILED: FAILED,
+    _CANCELLING_BEFORE_STARTED: CANCELLING,
+    _CANCELLING_AFTER_STARTED: CANCELLING,
+    CANCELLED: CANCELLED,
+}
+
 
 def _state_from_internal_state(internal_state):
     """
     Convert an internal state to the corresponding future state.
     """
-    if internal_state in (
-        _CANCELLING_AFTER_STARTED,
-        _CANCELLING_BEFORE_STARTED,
-    ):
-        return CANCELLING
-    elif internal_state in (_NOT_INITIALIZED, _INITIALIZED):
-        return WAITING
-    else:
-        return internal_state
+    return _INTERNAL_STATE_TO_STATE[internal_state]
 
 
 #: Exception used to indicate a bad state transition. This should
