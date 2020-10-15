@@ -87,6 +87,20 @@ _INTERNAL_STATE_TO_STATE = {
     CANCELLED: CANCELLED,
 }
 
+#: Internal states corresponding to completed futures.
+_DONE_INTERNAL_STATES = {
+    internal_state
+    for internal_state, state in _INTERNAL_STATE_TO_STATE.items()
+    if state in DONE_STATES
+}
+
+#: Internal states corresponding to cancellable futures.
+_CANCELLABLE_INTERNAL_STATES = {
+    internal_state
+    for internal_state, state in _INTERNAL_STATE_TO_STATE.items()
+    if state in CANCELLABLE_STATES
+}
+
 
 def _state_from_internal_state(internal_state):
     """
@@ -352,10 +366,10 @@ class BaseFuture(HasStrictTraits):
         return _state_from_internal_state(self._state)
 
     def _get_cancellable(self):
-        return _state_from_internal_state(self._state) in CANCELLABLE_STATES
+        return self._state in _CANCELLABLE_INTERNAL_STATES
 
     def _get_done(self):
-        return _state_from_internal_state(self._state) in DONE_STATES
+        return self._state in _DONE_INTERNAL_STATES
 
     def __state_changed(self, old__state, new__state):
         old_state = _state_from_internal_state(old__state)
