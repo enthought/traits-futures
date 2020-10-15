@@ -372,8 +372,8 @@ class BaseFuture(HasStrictTraits):
         return self._state in _DONE_INTERNAL_STATES
 
     def __state_changed(self, old__state, new__state):
-        old_state = _state_from_internal_state(old__state)
-        new_state = _state_from_internal_state(new__state)
+        old_state = _INTERNAL_STATE_TO_STATE[old__state]
+        new_state = _INTERNAL_STATE_TO_STATE[new__state]
         if old_state != new_state:
             self.trait_property_changed("state", old_state, new_state)
 
