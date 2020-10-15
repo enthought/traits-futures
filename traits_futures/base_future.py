@@ -363,7 +363,7 @@ class BaseFuture(HasStrictTraits):
     # Private methods #########################################################
 
     def _get_state(self):
-        return _state_from_internal_state(self._state)
+        return _INTERNAL_STATE_TO_STATE[self._state]
 
     def _get_cancellable(self):
         return self._state in _CANCELLABLE_INTERNAL_STATES
