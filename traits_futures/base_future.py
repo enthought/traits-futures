@@ -372,14 +372,14 @@ class BaseFuture(HasStrictTraits):
         if old_state != new_state:
             self.trait_property_changed("state", old_state, new_state)
 
-        old_cancellable = old_state in CANCELLABLE_STATES
-        new_cancellable = new_state in CANCELLABLE_STATES
+        old_cancellable = old_internal_state in _CANCELLABLE_INTERNAL_STATES
+        new_cancellable = new_internal_state in _CANCELLABLE_INTERNAL_STATES
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable
             )
 
-        old_done = old_state in DONE_STATES
-        new_done = new_state in DONE_STATES
+        old_done = old_internal_state in _DONE_INTERNAL_STATES
+        new_done = new_internal_state in _DONE_INTERNAL_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
