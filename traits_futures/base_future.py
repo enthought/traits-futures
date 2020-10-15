@@ -102,10 +102,14 @@ _CANCELLABLE_INTERNAL_STATES = {
 }
 
 
-#: Exception used to indicate a bad state transition. This should
-#: never happen as a result of user error, only as a result of
-#: a coding error in this repository.
 class _StateTransitionError(Exception):
+    """
+    Exception used to indicate a bad state transition.
+
+    Users should never see this exception. It indicates an error in the
+    sequence of operations received by the future from the background
+    task, from the executor, or from the user.
+    """
     pass
 
 
