@@ -38,44 +38,31 @@ from traits_futures.future_states import (
 from traits_futures.i_future import IFuture
 
 
-# These extra states let us detect the error of calling _task_started
-# a second time following cancellation.
+# The BaseFuture class maintains an internal state. That internal state maps to
+# the user-facing state, but is more fine grained, allowing-the class to keep
+# track of the internal consistency and invariants. For example, the
+# user-facing CANCELLING state doesn't indicate whether the task has started
+# or not; if it *has* already started, then a "start" message from the
+# background task is invalid; otherwise, it's valid. So we split this into
+# two internal states: _CANCELLING_BEFORE_STARTED and _CANCELLING_AFTER_STARTED
+# to allow us to detect an invalid _task_started call.
 
-#: Extra internal state: WAITING but not yet initialized. Maps to the
-#: WAITING public state.
+
+#: Internal state: initial state, not yet initialized by the executor.
 _NOT_INITIALIZED = "not_initialized"
 
-#: Extra internal state: WAITING and initialized. Maps to the WAITING
-#: public state.
+#: Internal state: initialized by the executor, waiting for the task to start.
 _INITIALIZED = "initialized"
 
-#: Extra internal state: CANCELLING before STARTED
+#: Internal state attained when cancellation is requested before the task
+#: starts.
 _CANCELLING_BEFORE_STARTED = "cancelling_before_started"
 
-#: Extra internal state: CANCELLING after STARTED
+#: Internal state attained when cancellation is requested after the task
+#: starts.
 _CANCELLING_AFTER_STARTED = "cancelling_after_started"
 
-
-#: Trait type representing the internal state. The internal state maps
-#: directly to the user-facing state, but splits some of the user-facing
-#: states to provide more information, which can then be used in internal
-#: self-consistency checks. In particular, the user-facing CANCELLING state
-#: is split into substates _CANCELLING_BEFORE_STARTED and
-#: _CANCELLING_AFTER_STARTED, while the user-facing WAITING state is split
-#: into _NOT_INITIALIZED and _INITIALIZED states.
-_InternalState = Enum(
-    _NOT_INITIALIZED,
-    _INITIALIZED,
-    EXECUTING,
-    COMPLETED,
-    FAILED,
-    _CANCELLING_BEFORE_STARTED,
-    _CANCELLING_AFTER_STARTED,
-    CANCELLED,
-)
-
-#: Mapping from each internal state to the corresponding user-visible
-#: state.
+#: Mapping from each internal state to the corresponding user-visible state.
 _INTERNAL_STATE_TO_STATE = {
     _NOT_INITIALIZED: WAITING,
     _INITIALIZED: WAITING,
@@ -133,7 +120,7 @@ class BaseFuture(HasStrictTraits):
     #: This trait has value True if the ``state`` is one of ``COMPLETED``,
     #: ``FAILED``, or ``CANCELLED``. It's safe to listen to this trait
     #: for changes: it will always fire exactly once, and when it fires
-    #: it will be consistent with the ``state``.
+    #: its value will be consistent with that of the ``state`` trait.
     done = Property(Bool())
 
     @property
@@ -218,8 +205,9 @@ class BaseFuture(HasStrictTraits):
     # Semi-private methods ####################################################
 
     # These methods represent the state transitions in response to external
-    # events. They're used by the FutureWrapper, but are not intended for use
-    # by the users of Traits Futures.
+    # events. They're used by the FutureWrapper, and are potentially useful for
+    # unit testing, but are not intended for use by the users of Traits
+    # Futures.
 
     def _dispatch_message(self, message):
         """
@@ -352,7 +340,7 @@ class BaseFuture(HasStrictTraits):
     _cancel = Callable(allow_none=True)
 
     #: The internal state of the future.
-    _internal_state = _InternalState
+    _internal_state = Enum(_NOT_INITIALIZED, list(_INTERNAL_STATE_TO_STATE))
 
     #: Result from the background task.
     _result = Any()
