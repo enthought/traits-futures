@@ -247,6 +247,11 @@ class BaseFuture(HasStrictTraits):
     def _task_started(self, none):
         """
         Update state when the background task has started processing.
+
+        Parameters
+        ----------
+        none : NoneType
+            This parameter is unused.
         """
         if self._internal_state == _INITIALIZED:
             self._internal_state = EXECUTING
@@ -262,6 +267,11 @@ class BaseFuture(HasStrictTraits):
     def _task_returned(self, result):
         """
         Update state when background task reports completing successfully.
+
+        Parameters
+        ----------
+        result : any
+            The object returned by the background task.
         """
         if self._internal_state == EXECUTING:
             self._cancel = None
@@ -279,6 +289,12 @@ class BaseFuture(HasStrictTraits):
     def _task_raised(self, exception_info):
         """
         Update state when the background task reports completing with an error.
+
+        Parameters
+        ----------
+        exception_info : tuple(str, str, str)
+            Tuple containing exception information in string form:
+            (exception type, exception value, formatted traceback).
         """
         if self._internal_state == EXECUTING:
             self._cancel = None
