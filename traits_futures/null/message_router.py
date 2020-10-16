@@ -9,7 +9,9 @@
 # Thanks for using Enthought open source!
 
 """
-Message routing for the Qt toolkit.
+Message routing for the null toolkit.
+
+Messages are dispatched onto the asyncio event loop.
 """
 import asyncio
 import collections.abc
