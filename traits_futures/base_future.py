@@ -39,7 +39,7 @@ from traits_futures.i_future import IFuture
 
 
 # The BaseFuture class maintains an internal state. That internal state maps to
-# the user-facing state, but is more fine grained, allowing-the class to keep
+# the user-facing state, but is more fine-grained, allowing the class to keep
 # track of the internal consistency and invariants. For example, the
 # user-facing CANCELLING state doesn't indicate whether the task has started
 # or not; if it *has* already started, then a "start" message from the
