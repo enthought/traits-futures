@@ -209,7 +209,7 @@ class BaseFuture(HasStrictTraits):
     # unit testing, but are not intended for use by the users of Traits
     # Futures.
 
-    def _dispatch_message(self, message):
+    def _task_sent(self, message):
         """
         Automate dispatch of different types of message.
 

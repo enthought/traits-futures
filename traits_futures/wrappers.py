@@ -72,7 +72,7 @@ class FutureWrapper(HasStrictTraits):
         message_kind, message = message
 
         if message_kind == CUSTOM:
-            self.future._dispatch_message(message)
+            self.future._task_sent(message)
         else:
             assert message_kind == CONTROL
             message_type, message_arg = message
