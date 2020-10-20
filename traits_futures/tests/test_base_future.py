@@ -50,8 +50,8 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
         future = self.future_class()
         future._executor_initialized(dummy_cancel_callback)
         future._task_started(None)
-        future._dispatch_message(("ping", 123))
-        future._dispatch_message(("ping", 999))
+        future._task_sent(("ping", 123))
+        future._task_sent(("ping", 999))
         future._task_returned(1729)
 
         self.assertEqual(future.pings, [123, 999])
@@ -65,7 +65,7 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
         future._task_started(None)
         future._user_cancelled()
 
-        future._dispatch_message(message)
+        future._task_sent(message)
         future._task_returned(1729)
 
         self.assertEqual(future.pings, [])
@@ -78,18 +78,18 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
         future = self.future_class()
 
         with self.assertRaises(_StateTransitionError):
-            future._dispatch_message(message)
+            future._task_sent(message)
 
         future._executor_initialized(dummy_cancel_callback)
 
         with self.assertRaises(_StateTransitionError):
-            future._dispatch_message(message)
+            future._task_sent(message)
 
         future._task_started(None)
         future._task_returned(1729)
 
         with self.assertRaises(_StateTransitionError):
-            future._dispatch_message(message)
+            future._task_sent(message)
 
     def test_impossible_ping_cancelled_task(self):
         message = ("ping", 32)
@@ -100,4 +100,4 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
         future._user_cancelled()
 
         with self.assertRaises(_StateTransitionError):
-            future._dispatch_message(message)
+            future._task_sent(message)

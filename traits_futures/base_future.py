@@ -206,7 +206,7 @@ class BaseFuture(HasStrictTraits):
     # events. They're used by the FutureWrapper, but are not intended for use
     # by the users of Traits Futures.
 
-    def _dispatch_message(self, message):
+    def _task_sent(self, message):
         """
         Automate dispatch of different types of message.
 

@@ -98,14 +98,14 @@ Now we define a dedicated future class ``FizzBuzzFuture`` for this background
 task type. The most convenient way to do this is to inherit from the
 |BaseFuture| class, which is a |HasStrictTraits| subclass that provides the
 |IFuture| interface. Messages coming into the |BaseFuture| instance from the
-background task are processed by the |dispatch_message| method. The default
+background task are processed by the |task_sent| method. The default
 implementation of this method does a couple of things:
 
 - it dispatches the argument of each message to a method named
   ``_process_<message_type>``.
 - it suppresses any messages that arrive after cancellation has been requested
 
-The |dispatch_message| method can be safely overridden by subclasses if some
+The |task_sent| method can be safely overridden by subclasses if some
 other dispatch mechanism is wanted. For this example, we use the default
 dispatch mechanism, so all we need to do is to define methods
 ``_process_fizz``, ``_process_buzz`` and ``_process_fizz_buzz`` to handle
@@ -163,7 +163,6 @@ background task type:
    substitutions
 
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
-.. |dispatch_message| replace:: :meth:`~.BaseFuture._dispatch_message`
 .. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`
@@ -173,4 +172,5 @@ background task type:
 .. |submit_call| replace:: :func:`~.submit_call`
 .. |submit_iteration| replace:: :func:`~.submit_iteration`
 .. |submit_progress| replace:: :func:`~.submit_progress`
+.. |task_sent| replace:: :meth:`~.BaseFuture._task_sent`
 .. |TraitsExecutor| replace:: :class:`~.TraitsExecutor`
