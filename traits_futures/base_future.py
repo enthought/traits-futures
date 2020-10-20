@@ -38,63 +38,65 @@ from traits_futures.future_states import (
 from traits_futures.i_future import IFuture
 
 
-# These extra states let us detect the error of calling _task_started
-# a second time following cancellation.
+# The BaseFuture class maintains an internal state. That internal state maps to
+# the user-facing state, but is more fine-grained, allowing the class to keep
+# track of the internal consistency and invariants. For example, the
+# user-facing CANCELLING state doesn't indicate whether the task has started
+# or not; if it *has* already started, then a "start" message from the
+# background task is invalid; otherwise, it's valid. So we split this into
+# two internal states: _CANCELLING_BEFORE_STARTED and _CANCELLING_AFTER_STARTED
+# to allow us to detect an invalid _task_started call.
 
-#: Extra internal state: WAITING but not yet initialized. Maps to the
-#: WAITING public state.
+
+#: Internal state: initial state, not yet initialized by the executor.
 _NOT_INITIALIZED = "not_initialized"
 
-#: Extra internal state: WAITING and initialized. Maps to the WAITING
-#: public state.
+#: Internal state: initialized by the executor, waiting for the task to start.
 _INITIALIZED = "initialized"
 
-#: Extra internal state: CANCELLING before STARTED
+#: Internal state attained when cancellation is requested before the task
+#: starts.
 _CANCELLING_BEFORE_STARTED = "cancelling_before_started"
 
-#: Extra internal state: CANCELLING after STARTED
+#: Internal state attained when cancellation is requested after the task
+#: starts.
 _CANCELLING_AFTER_STARTED = "cancelling_after_started"
 
+#: Mapping from each internal state to the corresponding user-visible state.
+_INTERNAL_STATE_TO_STATE = {
+    _NOT_INITIALIZED: WAITING,
+    _INITIALIZED: WAITING,
+    EXECUTING: EXECUTING,
+    COMPLETED: COMPLETED,
+    FAILED: FAILED,
+    _CANCELLING_BEFORE_STARTED: CANCELLING,
+    _CANCELLING_AFTER_STARTED: CANCELLING,
+    CANCELLED: CANCELLED,
+}
 
-#: Trait type representing the internal state. The internal state maps
-#: directly to the user-facing state, but splits some of the user-facing
-#: states to provide more information, which can then be used in internal
-#: self-consistency checks. In particular, the user-facing CANCELLING state
-#: is split into substates _CANCELLING_BEFORE_STARTED and
-#: _CANCELLING_AFTER_STARTED, while the user-facing WAITING state is split
-#: into _NOT_INITIALIZED and _INITIALIZED states.
-_InternalState = Enum(
-    _NOT_INITIALIZED,
-    _INITIALIZED,
-    EXECUTING,
-    COMPLETED,
-    FAILED,
-    _CANCELLING_BEFORE_STARTED,
-    _CANCELLING_AFTER_STARTED,
-    CANCELLED,
-)
+#: Internal states corresponding to completed futures.
+_DONE_INTERNAL_STATES = {
+    internal_state
+    for internal_state, state in _INTERNAL_STATE_TO_STATE.items()
+    if state in DONE_STATES
+}
 
-
-def _state_from_internal_state(internal_state):
-    """
-    Convert an internal state to the corresponding future state.
-    """
-    if internal_state in (
-        _CANCELLING_AFTER_STARTED,
-        _CANCELLING_BEFORE_STARTED,
-    ):
-        return CANCELLING
-    elif internal_state in (_NOT_INITIALIZED, _INITIALIZED):
-        return WAITING
-    else:
-        return internal_state
+#: Internal states corresponding to cancellable futures.
+_CANCELLABLE_INTERNAL_STATES = {
+    internal_state
+    for internal_state, state in _INTERNAL_STATE_TO_STATE.items()
+    if state in CANCELLABLE_STATES
+}
 
 
-#: Exception used to indicate a bad state transition. This should
-#: never happen as a result of user error, only as a result of
-#: a coding error in this repository.
 class _StateTransitionError(Exception):
-    pass
+    """
+    Exception used to indicate a bad state transition.
+
+    Users should never see this exception. It indicates an error in the
+    sequence of operations received by the future from the background
+    task, from the executor, or from the user.
+    """
 
 
 @provides(IFuture)
@@ -118,7 +120,7 @@ class BaseFuture(HasStrictTraits):
     #: This trait has value True if the ``state`` is one of ``COMPLETED``,
     #: ``FAILED``, or ``CANCELLED``. It's safe to listen to this trait
     #: for changes: it will always fire exactly once, and when it fires
-    #: it will be consistent with the ``state``.
+    #: its value will be consistent with that of the ``state`` trait.
     done = Property(Bool())
 
     @property
@@ -203,8 +205,9 @@ class BaseFuture(HasStrictTraits):
     # Semi-private methods ####################################################
 
     # These methods represent the state transitions in response to external
-    # events. They're used by the FutureWrapper, but are not intended for use
-    # by the users of Traits Futures.
+    # events. They're used by the FutureWrapper, and are potentially useful for
+    # unit testing, but are not intended for use by the users of Traits
+    # Futures.
 
     def _task_sent(self, message):
         """
@@ -227,63 +230,83 @@ class BaseFuture(HasStrictTraits):
             message_args).
         """
 
-        if self._state == _CANCELLING_AFTER_STARTED:
+        if self._internal_state == _CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
             return
-        elif self._state == EXECUTING:
+        elif self._internal_state == EXECUTING:
             message_type, message_arg = message
             method_name = "_process_{}".format(message_type)
             getattr(self, method_name)(message_arg)
         else:
             raise _StateTransitionError(
-                "Unexpected custom message in state {!r}".format(self._state)
+                "Unexpected custom message in internal state {!r}".format(
+                    self._internal_state
+                )
             )
 
     def _task_started(self, none):
         """
         Update state when the background task has started processing.
+
+        Parameters
+        ----------
+        none : NoneType
+            This parameter is unused.
         """
-        if self._state == _INITIALIZED:
-            self._state = EXECUTING
-        elif self._state == _CANCELLING_BEFORE_STARTED:
-            self._state = _CANCELLING_AFTER_STARTED
+        if self._internal_state == _INITIALIZED:
+            self._internal_state = EXECUTING
+        elif self._internal_state == _CANCELLING_BEFORE_STARTED:
+            self._internal_state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
-                "Unexpected 'started' message in state {!r}".format(
-                    self._state
+                "Unexpected 'started' message in internal state {!r}".format(
+                    self._internal_state
                 )
             )
 
     def _task_returned(self, result):
         """
         Update state when background task reports completing successfully.
+
+        Parameters
+        ----------
+        result : any
+            The object returned by the background task.
         """
-        if self._state == EXECUTING:
+        if self._internal_state == EXECUTING:
             self._cancel = None
             self._result = result
-            self._state = COMPLETED
-        elif self._state == _CANCELLING_AFTER_STARTED:
-            self._state = CANCELLED
+            self._internal_state = COMPLETED
+        elif self._internal_state == _CANCELLING_AFTER_STARTED:
+            self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
-                "Unexpected 'returned' message in state {!r}".format(
-                    self._state
+                "Unexpected 'returned' message in internal state {!r}".format(
+                    self._internal_state
                 )
             )
 
     def _task_raised(self, exception_info):
         """
         Update state when the background task reports completing with an error.
+
+        Parameters
+        ----------
+        exception_info : tuple(str, str, str)
+            Tuple containing exception information in string form:
+            (exception type, exception value, formatted traceback).
         """
-        if self._state == EXECUTING:
+        if self._internal_state == EXECUTING:
             self._cancel = None
             self._exception = exception_info
-            self._state = FAILED
-        elif self._state == _CANCELLING_AFTER_STARTED:
-            self._state = CANCELLED
+            self._internal_state = FAILED
+        elif self._internal_state == _CANCELLING_AFTER_STARTED:
+            self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
-                "Unexpected 'raised' message in state {!r}".format(self._state)
+                "Unexpected 'raised' message in internal state {!r}".format(
+                    self._internal_state
+                )
             )
 
     def _user_cancelled(self):
@@ -293,18 +316,16 @@ class BaseFuture(HasStrictTraits):
         A future in ``WAITING`` or ``EXECUTING`` state moves to ``CANCELLING``
         state.
         """
-        if self._state == _INITIALIZED:
+        if self._internal_state == _INITIALIZED:
             self._cancel()
-            self._cancel = None
-            self._state = _CANCELLING_BEFORE_STARTED
-        elif self._state == EXECUTING:
+            self._internal_state = _CANCELLING_BEFORE_STARTED
+        elif self._internal_state == EXECUTING:
             self._cancel()
-            self._cancel = None
-            self._state = _CANCELLING_AFTER_STARTED
+            self._internal_state = _CANCELLING_AFTER_STARTED
         else:
             raise _StateTransitionError(
-                "Unexpected 'cancelled' message in state {!r}".format(
-                    self._state
+                "Unexpected 'cancelled' message in internal state {!r}".format(
+                    self._internal_state
                 )
             )
 
@@ -318,12 +339,14 @@ class BaseFuture(HasStrictTraits):
             The callback to be called when the user requests cancellation.
             The callback accepts no arguments, and has no return value.
         """
-        if self._state == _NOT_INITIALIZED:
+        if self._internal_state == _NOT_INITIALIZED:
             self._cancel = cancel
-            self._state = _INITIALIZED
+            self._internal_state = _INITIALIZED
         else:
             raise _StateTransitionError(
-                "Unexpected initialization in state {!r}".format(self._state)
+                "Unexpected initialization in internal state {!r}".format(
+                    self._internal_state
+                )
             )
 
     # Private traits ##########################################################
@@ -333,7 +356,7 @@ class BaseFuture(HasStrictTraits):
     _cancel = Callable(allow_none=True)
 
     #: The internal state of the future.
-    _state = _InternalState
+    _internal_state = Enum(_NOT_INITIALIZED, list(_INTERNAL_STATE_TO_STATE))
 
     #: Result from the background task.
     _result = Any()
@@ -344,28 +367,32 @@ class BaseFuture(HasStrictTraits):
     # Private methods #########################################################
 
     def _get_state(self):
-        return _state_from_internal_state(self._state)
+        """ Property getter for the "state" trait. """
+        return _INTERNAL_STATE_TO_STATE[self._internal_state]
 
     def _get_cancellable(self):
-        return _state_from_internal_state(self._state) in CANCELLABLE_STATES
+        """ Property getter for the "cancellable" trait. """
+        return self._internal_state in _CANCELLABLE_INTERNAL_STATES
 
     def _get_done(self):
-        return _state_from_internal_state(self._state) in DONE_STATES
+        """ Property getter for the "done" trait. """
+        return self._internal_state in _DONE_INTERNAL_STATES
 
-    def __state_changed(self, old__state, new__state):
-        old_state = _state_from_internal_state(old__state)
-        new_state = _state_from_internal_state(new__state)
+    def __internal_state_changed(self, old_internal_state, new_internal_state):
+        """ Trait change handler for the "_internal_state" trait. """
+        old_state = _INTERNAL_STATE_TO_STATE[old_internal_state]
+        new_state = _INTERNAL_STATE_TO_STATE[new_internal_state]
         if old_state != new_state:
             self.trait_property_changed("state", old_state, new_state)
 
-        old_cancellable = old_state in CANCELLABLE_STATES
-        new_cancellable = new_state in CANCELLABLE_STATES
+        old_cancellable = old_internal_state in _CANCELLABLE_INTERNAL_STATES
+        new_cancellable = new_internal_state in _CANCELLABLE_INTERNAL_STATES
         if old_cancellable != new_cancellable:
             self.trait_property_changed(
                 "cancellable", old_cancellable, new_cancellable
             )
 
-        old_done = old_state in DONE_STATES
-        new_done = new_state in DONE_STATES
+        old_done = old_internal_state in _DONE_INTERNAL_STATES
+        new_done = new_internal_state in _DONE_INTERNAL_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
