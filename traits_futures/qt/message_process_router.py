@@ -179,8 +179,8 @@ def monitor_queue(process_queue, local_queue, signallee):
     those messages to the local queue, while signalling Qt that there's
     a message to process.
     """
-    signaller = _MessageSignaller()
-    signaller.message_sent.connect(signallee.message_sent)
+    signaller = _MessageSignaller(signallee)
+    signaller.connect()
     try:
         while True:
             # XXX Add a timeout?
@@ -191,6 +191,6 @@ def monitor_queue(process_queue, local_queue, signallee):
             # Avoid hanging onto a reference to the message until the next
             # queue element arrives.
             del message
-            signaller.message_sent.emit()
+            signaller.ping()
     finally:
-        signaller.message_sent.disconnect(signallee.message_sent)
+        signaller.disconnect()

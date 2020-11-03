@@ -27,6 +27,29 @@ class _MessageSignaller(QObject):
 
     message_sent = Signal()
 
+    def __init__(self, signallee):
+        QObject.__init__(self)
+        self.signallee = signallee
+
+    def connect(self):
+        """
+        Connect to the receiver.
+        """
+        self.message_sent.connect(self.signallee.message_sent)
+
+    def ping(self):
+        """
+        Send a ping to the receiver.
+        """
+        self.message_sent.emit()
+
+    def disconnect(self):
+        """
+        Disconnect fom the receiver.
+        """
+        self.message_sent.disconnect(self.signallee.message_sent)
+        self.signallee = None
+
 
 class _MessageSignallee(QObject):
     """

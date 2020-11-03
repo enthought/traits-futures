@@ -21,7 +21,34 @@ import queue
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 
-class MessageSender:
+class AsyncioPinger:
+    def __init__(self, asyncio_event_loop, route_message):
+        self.asyncio_event_loop = asyncio_event_loop
+        self.route_message = route_message
+        pass
+
+    def connect(self):
+        """
+        Connect to the receiver.
+        """
+        pass
+
+    def disconnect(self):
+        """
+        Disconnect from the receiver.
+        """
+        pass
+
+    def ping(self):
+        """
+        Send a ping to the receiver.
+        """
+        asyncio.run_coroutine_threadsafe(
+            self.route_message(), self.asyncio_event_loop
+        )
+
+
+class MultithreadingSender:
     """
     Object allowing the worker to send messages.
 
@@ -33,31 +60,28 @@ class MessageSender:
     inside a "with sender:" block.
     """
 
-    def __init__(
-        self, connection_id, asyncio_event_loop, route_message, message_queue
-    ):
+    def __init__(self, connection_id, pinger, message_queue):
         self.connection_id = connection_id
-        self.asyncio_event_loop = asyncio_event_loop
-        self.route_message = route_message
+        self.pinger = pinger
         self.message_queue = message_queue
 
     def __enter__(self):
+        self.pinger.connect()
         return self
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        asyncio.run_coroutine_threadsafe(
-            self.route_message(), self.asyncio_event_loop
-        )
+        self.pinger.ping()
+
+        self.pinger.disconnect()
+        self.pinger = None
 
     def send(self, message):
         """
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        asyncio.run_coroutine_threadsafe(
-            self.route_message(), self.asyncio_event_loop
-        )
+        self.pinger.ping()
 
 
 class MessageReceiver(HasStrictTraits):
@@ -85,16 +109,18 @@ class MessageRouter(HasStrictTraits):
 
         Returns
         -------
-        sender : MessageSender
+        sender : MultithreadingSender
             Object to be passed to the background task to send messages.
         receiver : MessageReceiver
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        sender = MessageSender(
+        sender = MultithreadingSender(
             connection_id=connection_id,
-            asyncio_event_loop=self._event_loop,
-            route_message=self._route_message,
+            pinger=AsyncioPinger(
+                asyncio_event_loop=self._event_loop,
+                route_message=self._route_message,
+            ),
             message_queue=self._message_queue,
         )
         receiver = MessageReceiver()

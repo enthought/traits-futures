@@ -19,11 +19,11 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.qt.pinger import (
     _MessageSignallee,
-    _MessageSignaller,
+    _MessageSignaller as QtPinger,
 )
 
 
-class MessageSender:
+class MultithreadingSender:
     """
     Object allowing the worker to send messages.
 
@@ -35,30 +35,28 @@ class MessageSender:
     inside a "with sender:" block.
     """
 
-    def __init__(self, connection_id, signallee, message_queue):
+    def __init__(self, connection_id, pinger, message_queue):
         self.connection_id = connection_id
-        self.signallee = signallee
-        self.signaller = None
+        self.pinger = pinger
         self.message_queue = message_queue
 
     def __enter__(self):
-        self.signaller = _MessageSignaller()
-        self.signaller.message_sent.connect(self.signallee.message_sent)
+        self.pinger.connect()
         return self
 
     def __exit__(self, *exc_info):
         self.message_queue.put(("done", self.connection_id))
-        self.signaller.message_sent.emit()
+        self.pinger.ping()
 
-        self.signaller.message_sent.disconnect(self.signallee.message_sent)
-        self.signaller = None
+        self.pinger.disconnect()
+        self.pinger = None
 
     def send(self, message):
         """
         Send a message to the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-        self.signaller.message_sent.emit()
+        self.pinger.ping()
 
 
 class MessageReceiver(HasStrictTraits):
@@ -86,15 +84,15 @@ class MessageRouter(HasStrictTraits):
 
         Returns
         -------
-        sender : MessageSender
+        sender : MultithreadingSender
             Object to be passed to the background task to send messages.
         receiver : MessageReceiver
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        sender = MessageSender(
+        sender = MultithreadingSender(
             connection_id=connection_id,
-            signallee=self._signallee,
+            pinger=QtPinger(signallee=self._signallee),
             message_queue=self._message_queue,
         )
         receiver = MessageReceiver()
