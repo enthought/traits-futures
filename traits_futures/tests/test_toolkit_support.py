@@ -19,7 +19,10 @@ class TestToolkitSupport(unittest.TestCase):
         test_assistant = GuiTestAssistant()
         self.assertTrue(hasattr(test_assistant, "run_until"))
 
-    def test_message_router_class(self):
-        MessageRouter = toolkit("message_router:MessageRouter")
-        router = MessageRouter()
-        self.assertTrue(hasattr(router, "pipe"))
+    def test_pinger_class(self):
+        Pinger = toolkit("pinger:Pinger")
+        Pingee = toolkit("pinger:Pingee")
+
+        pingee = Pingee(on_message_sent=lambda: None)
+        pinger = Pinger(signallee=pingee)
+        self.assertTrue(hasattr(pinger, "ping"))
