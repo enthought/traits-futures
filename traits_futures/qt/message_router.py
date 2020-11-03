@@ -17,46 +17,11 @@ import queue
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.multithreading_sender import MultithreadingSender
 from traits_futures.qt.pinger import (
     _MessageSignallee,
     _MessageSignaller as QtPinger,
 )
-
-
-class MultithreadingSender:
-    """
-    Object allowing the worker to send messages.
-
-    This class will be instantiated in the main thread, but passed to the
-    worker thread to allow the worker to communicate back to the main
-    thread.
-
-    Only the worker thread should use the send method, and only
-    inside a "with sender:" block.
-    """
-
-    def __init__(self, connection_id, pinger, message_queue):
-        self.connection_id = connection_id
-        self.pinger = pinger
-        self.message_queue = message_queue
-
-    def __enter__(self):
-        self.pinger.connect()
-        return self
-
-    def __exit__(self, *exc_info):
-        self.message_queue.put(("done", self.connection_id))
-        self.pinger.ping()
-
-        self.pinger.disconnect()
-        self.pinger = None
-
-    def send(self, message):
-        """
-        Send a message to the router.
-        """
-        self.message_queue.put(("message", self.connection_id, message))
-        self.pinger.ping()
 
 
 class MessageReceiver(HasStrictTraits):
