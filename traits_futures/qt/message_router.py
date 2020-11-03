@@ -20,7 +20,7 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
 from traits_futures.qt.pinger import (
-    _MessageSignallee,
+    _MessageSignallee as QtPingee,
     _MessageSignaller as QtPinger,
 )
 
@@ -87,8 +87,8 @@ class MessageRouter(HasStrictTraits):
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
-    #: QObject providing slot for the "message_sent" signal.
-    _signallee = Instance(_MessageSignallee)
+    #: Receiver for the "message_sent" signal.
+    _signallee = Instance(QtPingee)
 
     # Private methods #########################################################
 
@@ -111,4 +111,4 @@ class MessageRouter(HasStrictTraits):
         return itertools.count()
 
     def __signallee_default(self):
-        return _MessageSignallee(on_message_sent=self._route_message)
+        return QtPingee(on_message_sent=self._route_message)

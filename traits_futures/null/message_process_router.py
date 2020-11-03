@@ -16,7 +16,6 @@ This version of the module is for a multiprocessing back end and
 the null tookit (using the asyncio event loop) on the front end.
 """
 
-import asyncio
 import collections.abc
 import itertools
 import multiprocessing.managers
@@ -26,7 +25,7 @@ import threading
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
-from traits_futures.null.pinger import AsyncioPinger
+from traits_futures.null.pinger import AsyncioPingee, AsyncioPinger
 
 # Plan:
 
@@ -88,15 +87,12 @@ class MessageProcessRouter(HasStrictTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self._manager.Queue()
 
-        self._event_loop = asyncio.get_event_loop()
-
         self._monitor_thread = threading.Thread(
             target=monitor_queue,
             args=(
                 self._process_message_queue,
                 self._local_message_queue,
-                self,
-                self._event_loop,
+                self._signallee,
             ),
         )
         # XXX Need tests for shutdown.
@@ -116,7 +112,6 @@ class MessageProcessRouter(HasStrictTraits):
         self._monitor_thread.join()
         # self._process_message_queue.join()
         self._manager.shutdown()
-        self._event_loop = None
 
     def pipe(self):
         # XXX Docstring!
@@ -155,15 +150,15 @@ class MessageProcessRouter(HasStrictTraits):
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
+    #: Receiver for the "message_sent" signal.
+    _signallee = Instance(AsyncioPingee)
+
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
 
-    #: The event loop used for message routing.
-    _event_loop = Any()
-
     # Private methods #########################################################
 
-    async def _route_message(self):
+    def _route_message(self):
         wrapped_message = self._local_message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message
@@ -178,8 +173,13 @@ class MessageProcessRouter(HasStrictTraits):
     def __connection_ids_default(self):
         return itertools.count()
 
+    def __signallee_default(self):
+        return AsyncioPingee(
+            on_message_sent=self._route_message,
+        )
 
-def monitor_queue(process_queue, local_queue, router, asyncio_event_loop):
+
+def monitor_queue(process_queue, local_queue, signallee):
     """
     Move incoming child process messages to the local queue.
 
@@ -187,7 +187,7 @@ def monitor_queue(process_queue, local_queue, router, asyncio_event_loop):
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
     """
-    pinger = AsyncioPinger(asyncio_event_loop, router._route_message)
+    pinger = AsyncioPinger(signallee=signallee)
     pinger.connect()
     try:
         while True:

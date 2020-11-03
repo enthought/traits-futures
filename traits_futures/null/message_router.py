@@ -13,7 +13,7 @@ Message routing for the null toolkit.
 
 Messages are dispatched onto the asyncio event loop.
 """
-import asyncio
+
 import collections.abc
 import itertools
 import queue
@@ -22,7 +22,7 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
-from traits_futures.null.pinger import AsyncioPinger
+from traits_futures.null.pinger import AsyncioPingee, AsyncioPinger
 
 
 class MessageRouter(HasStrictTraits):
@@ -47,10 +47,7 @@ class MessageRouter(HasStrictTraits):
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        pinger = AsyncioPinger(
-            asyncio_event_loop=self._event_loop,
-            route_message=self._route_message,
-        )
+        pinger = AsyncioPinger(signallee=self._signallee)
         sender = MultithreadingSender(
             connection_id=connection_id,
             pinger=pinger,
@@ -71,12 +68,13 @@ class MessageRouter(HasStrictTraits):
         """
         Prepare router for routing.
         """
-        self._event_loop = asyncio.get_event_loop()
+        pass
 
     def disconnect(self):
         """
         Undo any connections made by the ``connect`` call.
         """
+        pass
 
     # Private traits ##########################################################
 
@@ -89,12 +87,12 @@ class MessageRouter(HasStrictTraits):
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
-    #: The event loop used for message routing.
-    _event_loop = Any()
+    #: Receiver for the "message_sent" signal.
+    _signallee = Instance(AsyncioPingee)
 
     # Private methods #########################################################
 
-    async def _route_message(self):
+    def _route_message(self):
         wrapped_message = self._message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message
@@ -111,3 +109,6 @@ class MessageRouter(HasStrictTraits):
 
     def __connection_ids_default(self):
         return itertools.count()
+
+    def __signallee_default(self):
+        return AsyncioPingee(on_message_sent=self._route_message)

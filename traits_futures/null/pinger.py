@@ -12,10 +12,8 @@ import asyncio
 
 
 class AsyncioPinger:
-    def __init__(self, asyncio_event_loop, route_message):
-        self.asyncio_event_loop = asyncio_event_loop
-        self.route_message = route_message
-        pass
+    def __init__(self, signallee):
+        self.signallee = signallee
 
     def connect(self):
         """
@@ -33,6 +31,14 @@ class AsyncioPinger:
         """
         Send a ping to the receiver.
         """
-        asyncio.run_coroutine_threadsafe(
-            self.route_message(), self.asyncio_event_loop
-        )
+        event_loop = self.signallee.event_loop
+        event_loop.call_soon_threadsafe(self.signallee.on_message_sent)
+
+
+class AsyncioPingee:
+    def __init__(self, on_message_sent):
+        self.event_loop = asyncio.get_event_loop()
+        self.on_message_sent = on_message_sent
+
+    def message_sent(self):
+        self.on_message_sent()
