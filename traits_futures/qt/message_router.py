@@ -15,34 +15,12 @@ import collections.abc
 import itertools
 import queue
 
-from pyface.qt.QtCore import QObject, Signal, Slot
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
-
-class _MessageSignaller(QObject):
-    """
-    QObject used to tell the UI that a message is queued.
-
-    This class must be instantiated in the worker thread.
-    """
-
-    message_sent = Signal()
-
-
-class _MessageSignallee(QObject):
-    """
-    QObject providing a slot for the "message_sent" signal to connect to.
-
-    This object stays in the main thread.
-    """
-
-    def __init__(self, on_message_sent):
-        QObject.__init__(self)
-        self.on_message_sent = on_message_sent
-
-    @Slot()
-    def message_sent(self):
-        self.on_message_sent()
+from traits_futures.qt.pinger import (
+    _MessageSignallee,
+    _MessageSignaller,
+)
 
 
 class MessageSender:

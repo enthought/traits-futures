@@ -16,9 +16,7 @@ import threading
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
-# XXX Move these to a shared location. They're common with the thread-based
-# version of the router.
-from traits_futures.qt.message_router import (
+from traits_futures.qt.pinger import (
     _MessageSignallee,
     _MessageSignaller,
 )
