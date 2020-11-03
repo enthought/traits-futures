@@ -17,10 +17,7 @@ import threading
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
-from traits_futures.qt.pinger import (
-    _MessageSignallee,
-    _MessageSignaller as QtPinger,
-)
+from traits_futures.qt.pinger import QtPingee, QtPinger
 
 
 class MessageSender:
@@ -137,7 +134,7 @@ class MessageProcessRouter(HasStrictTraits):
     _receivers = Dict(Int(), Any())
 
     #: QObject providing slot for the "message_sent" signal.
-    _signallee = Instance(_MessageSignallee)
+    _signallee = Instance(QtPingee)
 
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
@@ -160,7 +157,7 @@ class MessageProcessRouter(HasStrictTraits):
         return itertools.count()
 
     def __signallee_default(self):
-        return _MessageSignallee(on_message_sent=self._route_message)
+        return QtPingee(on_message_sent=self._route_message)
 
 
 def monitor_queue(process_queue, local_queue, signallee):

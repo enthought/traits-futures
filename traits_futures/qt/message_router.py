@@ -20,8 +20,8 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
 from traits_futures.qt.pinger import (
-    _MessageSignallee as QtPingee,
-    _MessageSignaller as QtPinger,
+    QtPingee as QtPingee,
+    QtPinger as QtPinger,
 )
 
 
