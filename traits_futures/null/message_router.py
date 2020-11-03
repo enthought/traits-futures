@@ -21,33 +21,7 @@ import queue
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.multithreading_sender import MultithreadingSender
-
-
-class AsyncioPinger:
-    def __init__(self, asyncio_event_loop, route_message):
-        self.asyncio_event_loop = asyncio_event_loop
-        self.route_message = route_message
-        pass
-
-    def connect(self):
-        """
-        Connect to the receiver.
-        """
-        pass
-
-    def disconnect(self):
-        """
-        Disconnect from the receiver.
-        """
-        pass
-
-    def ping(self):
-        """
-        Send a ping to the receiver.
-        """
-        asyncio.run_coroutine_threadsafe(
-            self.route_message(), self.asyncio_event_loop
-        )
+from traits_futures.null.pinger import AsyncioPinger
 
 
 class MessageReceiver(HasStrictTraits):

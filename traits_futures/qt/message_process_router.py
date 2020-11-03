@@ -18,7 +18,7 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.qt.pinger import (
     _MessageSignallee,
-    _MessageSignaller,
+    _MessageSignaller as QtPinger,
 )
 
 
@@ -179,8 +179,8 @@ def monitor_queue(process_queue, local_queue, signallee):
     those messages to the local queue, while signalling Qt that there's
     a message to process.
     """
-    signaller = _MessageSignaller(signallee)
-    signaller.connect()
+    pinger = QtPinger(signallee)
+    pinger.connect()
     try:
         while True:
             # XXX Add a timeout?
@@ -191,6 +191,6 @@ def monitor_queue(process_queue, local_queue, signallee):
             # Avoid hanging onto a reference to the message until the next
             # queue element arrives.
             del message
-            signaller.ping()
+            pinger.ping()
     finally:
-        signaller.disconnect()
+        pinger.disconnect()

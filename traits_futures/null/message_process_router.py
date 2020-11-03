@@ -25,6 +25,8 @@ import threading
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.null.pinger import AsyncioPinger
+
 # Plan:
 
 # Components are:
@@ -193,16 +195,18 @@ def monitor_queue(process_queue, local_queue, router, asyncio_event_loop):
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
     """
-    while True:
-        # XXX Add a timeout?
-        message = process_queue.get()
-        if not isinstance(message, tuple):
-            break
-        local_queue.put(message)
-        # Avoid hanging onto a reference to the message until the next
-        # queue element arrives.
-        del message
-        asyncio.run_coroutine_threadsafe(
-            router._route_message(),
-            asyncio_event_loop,
-        )
+    pinger = AsyncioPinger(asyncio_event_loop, router._route_message)
+    pinger.connect()
+    try:
+        while True:
+            # XXX Add a timeout?
+            message = process_queue.get()
+            if not isinstance(message, tuple):
+                break
+            local_queue.put(message)
+            # Avoid hanging onto a reference to the message until the next
+            # queue element arrives.
+            del message
+            pinger.ping()
+    finally:
+        pinger.disconnect()
