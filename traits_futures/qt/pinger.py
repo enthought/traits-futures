@@ -8,6 +8,12 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+Qt cross-thread pinger functionality.
+
+This module provides a way for a background thread to signal to the main
+thread that there's something to process.
+"""
 
 from pyface.qt.QtCore import QObject, Signal, Slot
 
