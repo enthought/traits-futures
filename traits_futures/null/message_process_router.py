@@ -13,7 +13,7 @@ Support for routing message streams from background processes to their
 corresponding foreground receivers.
 
 This version of the module is for a multiprocessing back end and
-the null tookit (using the asyncio event loop) on the front end.
+the null toolkit (using the asyncio event loop) on the front end.
 """
 
 import collections.abc
@@ -26,17 +26,6 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.null.pinger import AsyncioPingee, AsyncioPinger
-
-# Plan:
-
-# Components are:
-# - a multiprocessing queue, shared with all children
-# - a local queue
-# - a local thread which copies incoming messages from the multiprocessing
-#   queue to the local queue, and schedules an asyncio task to process the
-#   message from the local queue
-
-# This is an exact duplicate of the Qt version. Fix the duplication!
 
 
 class MessageSender:
@@ -63,18 +52,13 @@ class MessageSender:
         self.message_queue.put(("message", self.connection_id, message))
 
 
-# XXX Fix the repetition! MessageReceiver is the same regardless of
-# parallelism and toolkit.
-
-
 class MessageProcessRouter(HasStrictTraits):
     """
     Router for messages from background jobs to their corresponding futures.
 
     Multiprocessing variant.
 
-    Requires the asyncio event loop to be running in order for messages
-    to arrive.
+    Requires the event loop to be running in order for messages to arrive.
     """
 
     #: Event fired when a receiver is dropped from the routing table.
@@ -100,13 +84,13 @@ class MessageProcessRouter(HasStrictTraits):
 
     def connect(self):
         """
-        Connect to the current event loop.
+        Prepare router for routing.
         """
-        # XXX Move initialization here
+        # XXX Move initialization here.
 
     def disconnect(self):
         """
-        Disconnect from the event loop.
+        Undo any connections made by the ``connect`` call.
         """
         self._process_message_queue.put(None)
         self._monitor_thread.join()
@@ -127,7 +111,7 @@ class MessageProcessRouter(HasStrictTraits):
 
     def close_pipe(self, sender, receiver):
         """
-        Discard an unused sender / receiver pair.
+        Close an unused pipe.
         """
         connection_id = sender.connection_id
         self._receivers.pop(connection_id)
@@ -174,9 +158,7 @@ class MessageProcessRouter(HasStrictTraits):
         return itertools.count()
 
     def __signallee_default(self):
-        return AsyncioPingee(
-            on_message_sent=self._route_message,
-        )
+        return AsyncioPingee(on_message_sent=self._route_message)
 
 
 def monitor_queue(process_queue, local_queue, signallee):

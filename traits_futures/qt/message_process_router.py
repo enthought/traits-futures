@@ -8,6 +8,14 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+Support for routing message streams from background processes to their
+corresponding foreground receivers.
+
+This version of the module is for a multiprocessing back end and
+the Qt toolkit on the front end.
+"""
+
 import collections.abc
 import itertools
 import multiprocessing.managers
@@ -46,7 +54,7 @@ class MessageSender:
 
 class MessageProcessRouter(HasStrictTraits):
     """
-    Router for messages, sent by means of Qt signals and slots.
+    Router for messages from background jobs to their corresponding futures.
 
     Multiprocessing variant.
 
@@ -79,7 +87,6 @@ class MessageProcessRouter(HasStrictTraits):
         Prepare router for routing.
         """
         # XXX Move initialization here.
-        pass
 
     def disconnect(self):
         """
@@ -109,12 +116,6 @@ class MessageProcessRouter(HasStrictTraits):
         connection_id = sender.connection_id
         self._receivers.pop(connection_id)
 
-    def event(self):
-        """
-        New event, for background process cancellation.
-        """
-        return self._manager.Event()
-
     # Private traits ##########################################################
 
     #: Queue receiving messages from child processes.
@@ -133,7 +134,7 @@ class MessageProcessRouter(HasStrictTraits):
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
-    #: QObject providing slot for the "message_sent" signal.
+    #: Receiver for the "message_sent" signal.
     _signallee = Instance(QtPingee)
 
     #: Manager, used to create cancellation Events and message queues.
@@ -165,8 +166,8 @@ def monitor_queue(process_queue, local_queue, signallee):
     Move incoming child process messages to the local queue.
 
     Monitors the process queue for incoming messages, and transfers
-    those messages to the local queue, while signalling Qt that there's
-    a message to process.
+    those messages to the local queue, while also requesting that
+    the event loop eventually process that message.
     """
     pinger = QtPinger(signallee)
     pinger.connect()
