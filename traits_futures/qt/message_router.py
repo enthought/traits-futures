@@ -19,10 +19,7 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
-from traits_futures.qt.pinger import (
-    QtPingee as QtPingee,
-    QtPinger as QtPinger,
-)
+from traits_futures.qt.pinger import QtPingee, QtPinger
 
 
 class MessageRouter(HasStrictTraits):
