@@ -11,7 +11,7 @@
 import asyncio
 
 
-class AsyncioPinger:
+class Pinger:
     def __init__(self, signallee):
         self.signallee = signallee
 
@@ -35,7 +35,7 @@ class AsyncioPinger:
         event_loop.call_soon_threadsafe(self.signallee.on_message_sent)
 
 
-class AsyncioPingee:
+class Pingee:
     def __init__(self, on_message_sent):
         self.event_loop = asyncio.get_event_loop()
         self.on_message_sent = on_message_sent

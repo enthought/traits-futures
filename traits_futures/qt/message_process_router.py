@@ -25,7 +25,7 @@ import threading
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
-from traits_futures.qt.pinger import QtPingee, QtPinger
+from traits_futures.qt.pinger import Pingee, Pinger
 
 
 class MessageSender:
@@ -135,7 +135,7 @@ class MessageProcessRouter(HasStrictTraits):
     _receivers = Dict(Int(), Any())
 
     #: Receiver for the "message_sent" signal.
-    _signallee = Instance(QtPingee)
+    _signallee = Instance(Pingee)
 
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
@@ -158,7 +158,7 @@ class MessageProcessRouter(HasStrictTraits):
         return itertools.count()
 
     def __signallee_default(self):
-        return QtPingee(on_message_sent=self._route_message)
+        return Pingee(on_message_sent=self._route_message)
 
 
 def monitor_queue(process_queue, local_queue, signallee):
@@ -169,7 +169,7 @@ def monitor_queue(process_queue, local_queue, signallee):
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
     """
-    pinger = QtPinger(signallee)
+    pinger = Pinger(signallee=signallee)
     pinger.connect()
     try:
         while True:

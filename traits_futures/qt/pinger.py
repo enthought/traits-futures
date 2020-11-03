@@ -18,7 +18,7 @@ thread that there's something to process.
 from pyface.qt.QtCore import QObject, Signal, Slot
 
 
-class QtPinger(QObject):
+class Pinger(QObject):
     """
     QObject used to tell the UI that a message is queued.
 
@@ -51,7 +51,7 @@ class QtPinger(QObject):
         self.signallee = None
 
 
-class QtPingee(QObject):
+class Pingee(QObject):
     """
     QObject providing a slot for the "message_sent" signal to connect to.
 

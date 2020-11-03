@@ -9,9 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Message routing for the null toolkit.
-
-Messages are dispatched onto the asyncio event loop.
+Message routing from background threads to the GUI event loop.
 """
 
 import collections.abc
@@ -22,12 +20,15 @@ from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
-from traits_futures.null.pinger import AsyncioPingee, AsyncioPinger
+from traits_futures.toolkit_support import toolkit
+
+Pingee = toolkit("pinger:Pingee")
+Pinger = toolkit("pinger:Pinger")
 
 
 class MessageRouter(HasStrictTraits):
     """
-    Router for messages, sent by means of Qt signals and slots.
+    Router for messages from a background thread.
 
     Requires the event loop to be running in order for messages to arrive.
     """
@@ -47,7 +48,7 @@ class MessageRouter(HasStrictTraits):
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        pinger = AsyncioPinger(signallee=self._signallee)
+        pinger = Pinger(signallee=self._signallee)
         sender = MultithreadingSender(
             connection_id=connection_id,
             pinger=pinger,
@@ -88,7 +89,7 @@ class MessageRouter(HasStrictTraits):
     _receivers = Dict(Int(), Any())
 
     #: Receiver for the "message_sent" signal.
-    _signallee = Instance(AsyncioPingee)
+    _signallee = Instance(Pingee)
 
     # Private methods #########################################################
 
@@ -111,4 +112,4 @@ class MessageRouter(HasStrictTraits):
         return itertools.count()
 
     def __signallee_default(self):
-        return AsyncioPingee(on_message_sent=self._route_message)
+        return Pingee(on_message_sent=self._route_message)
