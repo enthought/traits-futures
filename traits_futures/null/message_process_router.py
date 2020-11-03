@@ -25,6 +25,7 @@ import threading
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.message_receiver import MessageReceiver
 from traits_futures.null.pinger import AsyncioPinger
 
 # Plan:
@@ -65,15 +66,6 @@ class MessageSender:
 
 # XXX Fix the repetition! MessageReceiver is the same regardless of
 # parallelism and toolkit.
-
-
-class MessageReceiver(HasStrictTraits):
-    """
-    Main-thread object that receives messages from a MessageSender.
-    """
-
-    #: Event fired when a message is received from the paired sender.
-    message = Event(Any())
 
 
 class MessageProcessRouter(HasStrictTraits):

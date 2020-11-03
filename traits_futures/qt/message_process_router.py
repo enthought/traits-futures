@@ -16,6 +16,7 @@ import threading
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.message_receiver import MessageReceiver
 from traits_futures.qt.pinger import (
     _MessageSignallee,
     _MessageSignaller as QtPinger,
@@ -44,15 +45,6 @@ class MessageSender:
             via the router.
         """
         self.message_queue.put(("message", self.connection_id, message))
-
-
-class MessageReceiver(HasStrictTraits):
-    """
-    Main-thread object that receives messages from a MessageSender.
-    """
-
-    #: Event fired when a message is received from the paired sender.
-    message = Event(Any())
 
 
 class MessageProcessRouter(HasStrictTraits):

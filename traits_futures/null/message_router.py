@@ -20,17 +20,9 @@ import queue
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
 from traits_futures.null.pinger import AsyncioPinger
-
-
-class MessageReceiver(HasStrictTraits):
-    """
-    Main-thread object that receives messages from a MessageSender.
-    """
-
-    #: Event fired when a message is received from the paired sender.
-    message = Event(Any())
 
 
 class MessageRouter(HasStrictTraits):
@@ -55,12 +47,13 @@ class MessageRouter(HasStrictTraits):
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
+        pinger = AsyncioPinger(
+            asyncio_event_loop=self._event_loop,
+            route_message=self._route_message,
+        )
         sender = MultithreadingSender(
             connection_id=connection_id,
-            pinger=AsyncioPinger(
-                asyncio_event_loop=self._event_loop,
-                route_message=self._route_message,
-            ),
+            pinger=pinger,
             message_queue=self._message_queue,
         )
         receiver = MessageReceiver()
