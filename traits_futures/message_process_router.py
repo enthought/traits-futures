@@ -13,7 +13,7 @@ Support for routing message streams from background processes to their
 corresponding foreground receivers.
 
 This version of the module is for a multiprocessing back end and
-the null toolkit (using the asyncio event loop) on the front end.
+the Qt toolkit on the front end.
 """
 
 import collections.abc
@@ -25,7 +25,10 @@ import threading
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
-from traits_futures.null.pinger import Pingee, Pinger
+from traits_futures.toolkit_support import toolkit
+
+Pingee = toolkit("pinger:Pingee")
+Pinger = toolkit("pinger:Pinger")
 
 
 class MessageSender:

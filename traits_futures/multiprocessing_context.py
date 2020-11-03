@@ -16,7 +16,7 @@ import concurrent.futures
 import multiprocessing
 
 from traits_futures.i_parallel_context import IParallelContext
-from traits_futures.toolkit_support import toolkit
+from traits_futures.message_process_router import MessageProcessRouter
 
 
 class MultiprocessingContext(IParallelContext):
@@ -34,8 +34,7 @@ class MultiprocessingContext(IParallelContext):
         return self._manager.Queue()
 
     def message_router(self):
-        MessageRouter = toolkit("message_process_router:MessageProcessRouter")
-        return MessageRouter()
+        return MessageProcessRouter()
 
     def close(self):
         self._manager.shutdown()
