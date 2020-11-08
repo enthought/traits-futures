@@ -43,6 +43,8 @@ matrix:
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt"
   - os: osx
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt5"
+  - os: osx
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="wx"
 
 before_install:
   - mkdir -p "${HOME}/.cache/download"
