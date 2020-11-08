@@ -10,6 +10,9 @@
 
 """
 wxPython cross-thread pinger functionality.
+
+This module provides a way for a background thread to request that
+the main thread execute a (fixed, parameterless) callback.
 """
 
 import wx
