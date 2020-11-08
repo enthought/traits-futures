@@ -11,43 +11,45 @@
 """
 Qt cross-thread pinger functionality.
 
-This module provides a way for a background thread to signal to the main
-thread that there's something to process.
+This module provides a way for a background thread to request that
+the main thread execute a (fixed, parameterless) callback.
 """
 
 from pyface.qt.QtCore import QObject, Signal, Slot
 
 
-class Pinger(QObject):
+class _Signaller(QObject):
+    ping = Signal()
+
+
+class Pinger:
     """
     QObject used to tell the UI that a message is queued.
 
     This class must be instantiated in the worker thread.
     """
 
-    message_sent = Signal()
-
     def __init__(self, signallee):
-        QObject.__init__(self)
+        self.signaller = _Signaller()
         self.signallee = signallee
 
     def connect(self):
         """
         Connect to the receiver.
         """
-        self.message_sent.connect(self.signallee.message_sent)
+        self.signaller.ping.connect(self.signallee.message_sent)
 
     def ping(self):
         """
         Send a ping to the receiver.
         """
-        self.message_sent.emit()
+        self.signaller.ping.emit()
 
     def disconnect(self):
         """
         Disconnect fom the receiver.
         """
-        self.message_sent.disconnect(self.signallee.message_sent)
+        self.signaller.ping.disconnect(self.signallee.message_sent)
         self.signallee = None
 
 
