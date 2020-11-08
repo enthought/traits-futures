@@ -84,12 +84,24 @@ def build(python_version, toolkit, mode):
 
     if mode == "ci":
         dependencies = cfg.ci_dependencies(python_version, toolkit)
+        pip_dependencies = cfg.ci_pip_dependencies(python_version, toolkit)
     else:
         dependencies = cfg.develop_dependencies(python_version, toolkit)
+        pip_dependencies = cfg.ci_develop_dependencies(python_version, toolkit)
 
     # Create new environment and populate with dependent packages.
     pyenv.create()
     pyenv.install(dependencies)
+
+    if pip_dependencies:
+        pip_install_cmd = [
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            *pip_dependencies,
+        ]
+        pyenv.python(pip_install_cmd)
 
     # Install local packages.
     local_packages = ["./", "copyright_header/"]
