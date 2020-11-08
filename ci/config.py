@@ -125,14 +125,17 @@ ADDITIONAL_CI_DEPS = [
 TOOLKIT_CI_DEPS = {
     PYQT: ["pyqt", "traitsui"],
     PYQT5: ["pyqt5", "traitsui"],
-    PYSIDE2: ["pyside2", "traitsui"],
+    # We're having trouble with the version of PySide2 from EDM,
+    # so use pip for now.
+    PYSIDE2: ["traitsui"],
     # wxPython is not yet available through EDM, so it's part of the
-    # pip dependencies
+    # pip dependencies.
     WXPYTHON: ["traitsui"],
 }
 
 # Toolkit-specific ci dependencies
 TOOLKIT_CI_PIP_DEPS = {
+    PYSIDE2: ["PySide2"],
     WXPYTHON: ["wxPython"],
 }
 
