@@ -79,7 +79,7 @@ class MessageProcessRouter(HasStrictTraits):
             args=(
                 self._process_message_queue,
                 self._local_message_queue,
-                self._signallee,
+                self._pingee,
             ),
         )
         # XXX Need tests for shutdown.
@@ -138,7 +138,7 @@ class MessageProcessRouter(HasStrictTraits):
     _receivers = Dict(Int(), Any())
 
     #: Receiver for the "message_sent" signal.
-    _signallee = Instance(Pingee)
+    _pingee = Instance(Pingee)
 
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
@@ -160,11 +160,11 @@ class MessageProcessRouter(HasStrictTraits):
     def __connection_ids_default(self):
         return itertools.count()
 
-    def __signallee_default(self):
-        return Pingee(on_message_sent=self._route_message)
+    def __pingee_default(self):
+        return Pingee(on_ping=self._route_message)
 
 
-def monitor_queue(process_queue, local_queue, signallee):
+def monitor_queue(process_queue, local_queue, pingee):
     """
     Move incoming child process messages to the local queue.
 
@@ -172,7 +172,7 @@ def monitor_queue(process_queue, local_queue, signallee):
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
     """
-    pinger = Pinger(signallee=signallee)
+    pinger = Pinger(pingee=pingee)
     pinger.connect()
     try:
         while True:

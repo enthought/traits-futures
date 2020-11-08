@@ -35,12 +35,12 @@ class Pinger:
 
     Parameters
     ----------
-    signallee : Pingee
+    pingee : Pingee
         The corresponding ping receiver.
     """
 
-    def __init__(self, signallee):
-        self.signallee = signallee
+    def __init__(self, pingee):
+        self.pingee = pingee
 
     def connect(self):
         """
@@ -51,7 +51,7 @@ class Pinger:
 
     def disconnect(self):
         """
-        Disconnect from the ping receier. No pings should be sent
+        Disconnect from the ping receiver. No pings should be sent
         after calling this function.
         """
         pass
@@ -61,7 +61,7 @@ class Pinger:
         Send a ping to the ping receiver.
         """
         event = _PingEvent(-1)
-        wx.PostEvent(self.signallee, event)
+        wx.PostEvent(self.pingee, event)
 
 
 class Pingee(wx.EvtHandler):
@@ -70,14 +70,14 @@ class Pingee(wx.EvtHandler):
 
     Parameters
     ----------
-    on_message_sent : callable
+    on_ping : callable
         Zero-argument callable that's called on the main thread
         every time a ping is received.
     """
 
-    def __init__(self, on_message_sent):
+    def __init__(self, on_ping):
         wx.EvtHandler.__init__(self)
-        self._on_ping = on_message_sent
+        self._on_ping = on_ping
         self._binder = wx.PyEventBinder(_PING_EVENT_TYPE, 1)
         self.Bind(self._binder, self._on_ping_event)
 

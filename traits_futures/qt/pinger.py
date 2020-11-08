@@ -19,51 +19,64 @@ from pyface.qt.QtCore import QObject, Signal, Slot
 
 
 class _Signaller(QObject):
+    """
+    Private object used to send signals to the corresponding Qt receiver.
+    """
+
     ping = Signal()
 
 
 class Pinger:
     """
-    QObject used to tell the UI that a message is queued.
+    Ping emitter, which can emit pings in a thread-safe manner.
 
-    This class must be instantiated in the worker thread.
+    Parameters
+    ----------
+    pingee : Pingee
+        The corresponding ping receiver.
     """
 
-    def __init__(self, signallee):
-        self.signaller = _Signaller()
-        self.signallee = signallee
+    def __init__(self, pingee):
+        self._signaller = _Signaller()
+        self._pingee = pingee
 
     def connect(self):
         """
-        Connect to the receiver.
+        Connect to the ping receiver. No pings should be sent until
+        this function is called.
         """
-        self.signaller.ping.connect(self.signallee.message_sent)
+        self._signaller.ping.connect(self._pingee.message_sent)
 
     def ping(self):
         """
         Send a ping to the receiver.
         """
-        self.signaller.ping.emit()
+        self._signaller.ping.emit()
 
     def disconnect(self):
         """
-        Disconnect fom the receiver.
+        Disconnect from the ping receiver. No pings should be sent
+        after calling this function.
         """
-        self.signaller.ping.disconnect(self.signallee.message_sent)
-        self.signallee = None
+        self._signaller.ping.disconnect(self._pingee.message_sent)
+        self._pingee = None
 
 
 class Pingee(QObject):
     """
-    QObject providing a slot for the "message_sent" signal to connect to.
+    Receiver for pings.
 
-    This object stays in the main thread.
+    Parameters
+    ----------
+    on_ping : callable
+        Zero-argument callable that's called on the main thread
+        every time a ping is received.
     """
 
-    def __init__(self, on_message_sent):
+    def __init__(self, on_ping):
         QObject.__init__(self)
-        self.on_message_sent = on_message_sent
+        self.on_ping = on_ping
 
     @Slot()
     def message_sent(self):
-        self.on_message_sent()
+        self.on_ping()

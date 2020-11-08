@@ -12,8 +12,8 @@ import asyncio
 
 
 class Pinger:
-    def __init__(self, signallee):
-        self.signallee = signallee
+    def __init__(self, pingee):
+        self.pingee = pingee
 
     def connect(self):
         """
@@ -31,14 +31,14 @@ class Pinger:
         """
         Send a ping to the receiver.
         """
-        event_loop = self.signallee.event_loop
-        event_loop.call_soon_threadsafe(self.signallee.on_message_sent)
+        event_loop = self.pingee.event_loop
+        event_loop.call_soon_threadsafe(self.pingee.on_ping)
 
 
 class Pingee:
-    def __init__(self, on_message_sent):
+    def __init__(self, on_ping):
         self.event_loop = asyncio.get_event_loop()
-        self.on_message_sent = on_message_sent
+        self.on_ping = on_ping
 
     def message_sent(self):
-        self.on_message_sent()
+        self.on_ping()

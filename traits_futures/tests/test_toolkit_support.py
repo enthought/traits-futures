@@ -23,6 +23,6 @@ class TestToolkitSupport(unittest.TestCase):
         Pinger = toolkit("pinger:Pinger")
         Pingee = toolkit("pinger:Pingee")
 
-        pingee = Pingee(on_message_sent=lambda: None)
-        pinger = Pinger(signallee=pingee)
+        pingee = Pingee(on_ping=lambda: None)
+        pinger = Pinger(pingee=pingee)
         self.assertTrue(hasattr(pinger, "ping"))

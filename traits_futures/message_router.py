@@ -48,7 +48,7 @@ class MessageRouter(HasStrictTraits):
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        pinger = Pinger(signallee=self._signallee)
+        pinger = Pinger(pingee=self._pingee)
         sender = MultithreadingSender(
             connection_id=connection_id,
             pinger=pinger,
@@ -89,7 +89,7 @@ class MessageRouter(HasStrictTraits):
     _receivers = Dict(Int(), Any())
 
     #: Receiver for the "message_sent" signal.
-    _signallee = Instance(Pingee)
+    _pingee = Instance(Pingee)
 
     # Private methods #########################################################
 
@@ -111,5 +111,5 @@ class MessageRouter(HasStrictTraits):
     def __connection_ids_default(self):
         return itertools.count()
 
-    def __signallee_default(self):
-        return Pingee(on_message_sent=self._route_message)
+    def __pingee_default(self):
+        return Pingee(on_ping=self._route_message)
