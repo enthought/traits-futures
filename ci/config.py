@@ -33,7 +33,7 @@ NULL = "null"  # no GUI toolkit; an asyncio event loop is used for tests
 PYQT = "pyqt"  # Qt 4, PyQt
 PYQT5 = "pyqt5"  # Qt 5, PyQt
 PYSIDE2 = "pyside2"  # Qt 5, Qt for Python
-WXPYTHON = "wx"  # wxPython
+WXPYTHON = "wxpython"  # wxPython
 TOOLKITS = [NULL, PYQT, PYQT5, PYSIDE2, WXPYTHON]
 
 # Default Python version and toolkit.
@@ -128,15 +128,14 @@ TOOLKIT_CI_DEPS = {
     # We're having trouble with the version of PySide2 from EDM,
     # so use pip for now.
     PYSIDE2: ["traitsui"],
-    # wxPython is not yet available through EDM, so it's part of the
-    # pip dependencies.
+    # wxPython is not yet available through EDM, and needs special
+    # handling in the main script.
     WXPYTHON: ["traitsui"],
 }
 
 # Toolkit-specific ci dependencies
 TOOLKIT_CI_PIP_DEPS = {
     PYSIDE2: ["PySide2"],
-    WXPYTHON: ["wxPython"],
 }
 
 

@@ -36,7 +36,7 @@ matrix:
   - os: linux
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyside2"
   - os: linux
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="wx"
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="wxpython"
   - os: osx
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="null"
   - os: osx
@@ -44,7 +44,9 @@ matrix:
   - os: osx
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt5"
   - os: osx
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="wx"
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyside2"
+  - os: osx
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="wxpython"
 
 before_install:
   - mkdir -p "${HOME}/.cache/download"
