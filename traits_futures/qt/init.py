@@ -15,5 +15,5 @@ Entry point for finding toolkit-specific classes.
 from pyface.base_toolkit import Toolkit
 from pyface.qt import QtCore  # noqa: F401
 
-#: The toolkit object used to find toolkit-specific reources.
+#: The toolkit object used to find toolkit-specific resources.
 toolkit_object = Toolkit("traits_futures", "qt", "traits_futures.qt")

@@ -8,10 +8,13 @@
 #
 # Thanks for using Enthought open source!
 
-"""
-Entry point for finding toolkit specific classes.
-"""
-from pyface.base_toolkit import Toolkit
+from traits.api import Any, Event, HasStrictTraits
 
-#: The toolkit object used to find toolkit-specific resources.
-toolkit_object = Toolkit("traits_futures", "null", "traits_futures.null")
+
+class MessageReceiver(HasStrictTraits):
+    """
+    Main-thread object that receives messages from a MessageSender.
+    """
+
+    #: Event fired when a message is received from the paired sender.
+    message = Event(Any())
