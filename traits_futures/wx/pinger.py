@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-wxPython cross-thread pinger functionality.
+wxPython cross-thread pinger.
 
 This module provides a way for a background thread to request that
 the main thread execute a (fixed, parameterless) callback.

@@ -8,22 +8,56 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+asyncio cross-thread pinger.
+
+This module provides a way for a background thread to request that
+the main thread execute a (fixed, parameterless) callback.
+"""
+
 import asyncio
 
 
+class Pingee:
+    """
+    Receiver for pings.
+
+    Parameters
+    ----------
+    on_ping : callable
+        Zero-argument callable that's executed on the main thread as a
+        result of each ping.
+    """
+
+    def __init__(self, on_ping):
+        self._event_loop = asyncio.get_event_loop()
+        self._on_ping = on_ping
+
+
 class Pinger:
+    """
+    Ping emitter, which can emit pings in a thread-safe manner.
+
+    Parameters
+    ----------
+    pingee : Pingee
+        The corresponding ping receiver.
+    """
+
     def __init__(self, pingee):
         self.pingee = pingee
 
     def connect(self):
         """
-        Connect to the receiver.
+        Connect to the ping receiver. No pings should be sent until
+        this function is called.
         """
         pass
 
     def disconnect(self):
         """
-        Disconnect from the receiver.
+        Disconnect from the ping receiver. No pings should be sent
+        after calling this function.
         """
         pass
 
@@ -31,14 +65,5 @@ class Pinger:
         """
         Send a ping to the receiver.
         """
-        event_loop = self.pingee.event_loop
-        event_loop.call_soon_threadsafe(self.pingee.on_ping)
-
-
-class Pingee:
-    def __init__(self, on_ping):
-        self.event_loop = asyncio.get_event_loop()
-        self.on_ping = on_ping
-
-    def message_sent(self):
-        self.on_ping()
+        event_loop = self.pingee._event_loop
+        event_loop.call_soon_threadsafe(self.pingee._on_ping)

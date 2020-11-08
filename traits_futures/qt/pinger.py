@@ -9,13 +9,13 @@
 # Thanks for using Enthought open source!
 
 """
-Qt cross-thread pinger functionality.
+Qt cross-thread pinger.
 
 This module provides a way for a background thread to request that
 the main thread execute a (fixed, parameterless) callback.
 """
 
-from pyface.qt.QtCore import QObject, Signal, Slot
+from pyface.qt.QtCore import QObject, Qt, Signal, Slot
 
 
 class _Signaller(QObject):
@@ -24,6 +24,26 @@ class _Signaller(QObject):
     """
 
     ping = Signal()
+
+
+class Pingee(QObject):
+    """
+    Receiver for pings.
+
+    Parameters
+    ----------
+    on_ping : callable
+        Zero-argument callable that's executed on the main thread as a
+        result of each ping.
+    """
+
+    def __init__(self, on_ping):
+        QObject.__init__(self)
+        self._on_ping = on_ping
+
+    @Slot()
+    def _execute_ping_callback(self):
+        self._on_ping()
 
 
 class Pinger:
@@ -37,7 +57,6 @@ class Pinger:
     """
 
     def __init__(self, pingee):
-        self._signaller = _Signaller()
         self._pingee = pingee
 
     def connect(self):
@@ -45,38 +64,23 @@ class Pinger:
         Connect to the ping receiver. No pings should be sent until
         this function is called.
         """
-        self._signaller.ping.connect(self._pingee.message_sent)
-
-    def ping(self):
-        """
-        Send a ping to the receiver.
-        """
-        self._signaller.ping.emit()
+        self._signaller = _Signaller()
+        self._signaller.ping.connect(
+            self._pingee._execute_ping_callback,
+            Qt.QueuedConnection,
+        )
 
     def disconnect(self):
         """
         Disconnect from the ping receiver. No pings should be sent
         after calling this function.
         """
-        self._signaller.ping.disconnect(self._pingee.message_sent)
-        self._pingee = None
+        self._signaller.ping.disconnect(self._pingee._execute_ping_callback)
+        del self._signaller
+        del self._pingee
 
-
-class Pingee(QObject):
-    """
-    Receiver for pings.
-
-    Parameters
-    ----------
-    on_ping : callable
-        Zero-argument callable that's called on the main thread
-        every time a ping is received.
-    """
-
-    def __init__(self, on_ping):
-        QObject.__init__(self)
-        self.on_ping = on_ping
-
-    @Slot()
-    def message_sent(self):
-        self.on_ping()
+    def ping(self):
+        """
+        Send a ping to the receiver.
+        """
+        self._signaller.ping.emit()
