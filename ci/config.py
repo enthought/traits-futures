@@ -32,7 +32,8 @@ PYTHON_VERSIONS = [PYTHON36]
 NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
 PYQT = "pyqt"  # Qt 4, PyQt
 PYQT5 = "pyqt5"  # Qt 5, PyQt
-TOOLKITS = [NULL, PYQT, PYQT5]
+PYSIDE2 = "pyside2"  # Qt 5, Qt for Python
+TOOLKITS = [NULL, PYQT, PYQT5, PYSIDE2]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
@@ -92,6 +93,9 @@ PLATFORMS = [
     (MACOS, PYTHON36, PYQT5),
     (LINUX, PYTHON36, PYQT5),
     (WINDOWS, PYTHON36, PYQT5),
+    (MACOS, PYTHON36, PYSIDE2),
+    (LINUX, PYTHON36, PYSIDE2),
+    (WINDOWS, PYTHON36, PYSIDE2),
 ]
 
 # Dependencies needed for all platforms, toolkits and Python versions.
@@ -117,6 +121,7 @@ ADDITIONAL_CI_DEPS = [
 TOOLKIT_CI_DEPS = {
     PYQT: ["pyqt", "traitsui"],
     PYQT5: ["pyqt5", "traitsui"],
+    PYSIDE2: ["pyside2", "traitsui"],
 }
 
 # Additional packages needed for local development, examples.
