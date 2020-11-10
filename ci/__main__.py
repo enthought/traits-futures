@@ -92,7 +92,7 @@ def build(python_version, toolkit, mode):
     pyenv.install(dependencies)
 
     # Install local packages.
-    local_packages = ["./", "copyright_header/"]
+    local_packages = ["./"]
     pip_options = ["--editable"] if mode == "develop" else []
     for package in local_packages:
         install_cmd = [
@@ -144,7 +144,7 @@ def coverage(python_version, toolkit, verbose, branch, html, report):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    test_packages = [cfg.PACKAGE_NAME, "copyright_header"]
+    test_packages = [cfg.PACKAGE_NAME]
     test_options = ["--verbose"] if verbose else []
     coverage_options = ["--branch"] if branch else []
 
@@ -258,7 +258,7 @@ def test(python_version, toolkit, verbose):
     """
     pyenv = _get_devenv(python_version, toolkit)
 
-    test_packages = [cfg.PACKAGE_NAME, "copyright_header"]
+    test_packages = [cfg.PACKAGE_NAME]
     test_options = ["--verbose"] if verbose else []
 
     failed_packages = []
