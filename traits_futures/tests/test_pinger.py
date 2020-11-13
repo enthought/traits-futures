@@ -26,59 +26,10 @@ Pinger = toolkit("pinger:Pinger")
 SAFETY_TIMEOUT = 10.0
 
 
-class PingerThread(threading.Thread):
-    """
-    Subclass of thread that sends pings to a target.
-
-    Parameters
-    ----------
-    pingee : Pingee
-        Receiver for the pings.
-    ping_count : int, optional
-        Number of pings to send (default is 1).
-
-    """
-
-    def __init__(self, pingee, ping_count=1):
-        super(PingerThread, self).__init__()
-        self.pingee = pingee
-        self.ping_count = ping_count
-
-    def run(self):
-        pinger = Pinger(self.pingee)
-        pinger.connect()
-        try:
-            for _ in range(self.ping_count):
-                pinger.ping()
-        finally:
-            pinger.disconnect()
-
-
-def ping_sender(pingee, ping_request_queue):
-    """
-    Pinger task to be executed on a background thread.
-
-    This task receives ping requests on a queue, and pings the given
-    pingee the requested number of times.
-    """
-
-    pinger = Pinger(pingee)
-    pinger.connect()
-    try:
-        while True:
-            # Timeout should only occur when something's gone wrong.
-            ping_count = ping_request_queue.get(timeout=SAFETY_TIMEOUT)
-            if ping_count is None:
-                break
-            for _ in range(ping_count):
-                pinger.ping()
-    finally:
-        pinger.disconnect()
-
-
 class BackgroundPinger:
     """
-    Object that sends pings from a background thread.
+    Object allowing pings to be sent from a background thread to a given
+    ping receiver.
     """
 
     def __init__(self, pingee):
@@ -86,10 +37,7 @@ class BackgroundPinger:
 
     def __enter__(self):
         self.ping_request_queue = queue.Queue()
-        self.pinger_thread = threading.Thread(
-            target=ping_sender,
-            args=(self.pingee, self.ping_request_queue),
-        )
+        self.pinger_thread = threading.Thread(target=self._background_task)
         self.pinger_thread.start()
         return self
 
@@ -98,7 +46,39 @@ class BackgroundPinger:
         self.pinger_thread.join(timeout=SAFETY_TIMEOUT)
 
     def ping(self, ping_count=1):
+        """
+        Method called from the main thread to request the background
+        thread to send the given number of pings.
+
+        Parameters
+        ----------
+        ping_count : int, optional
+            Number of pings to send. Defaults to 1.
+        """
         self.ping_request_queue.put(ping_count)
+
+    def _background_task(self):
+        """
+        Code to be executed on the background thread.
+
+        Waits for ping requests on the ping_request_queue, and then sends
+        the appropriate number of pings to the pingee. Exits when the
+        value ``None`` is placed on the request queue.
+        """
+        request_queue = self.ping_request_queue
+
+        pinger = Pinger(self.pingee)
+        pinger.connect()
+        try:
+            while True:
+                # Timeout should only occur when something's gone wrong.
+                ping_count = request_queue.get(timeout=SAFETY_TIMEOUT)
+                if ping_count is None:
+                    break
+                for _ in range(ping_count):
+                    pinger.ping()
+        finally:
+            pinger.disconnect()
 
 
 class PingListener(HasStrictTraits):
@@ -166,6 +146,8 @@ class TestPinger(GuiTestAssistant, unittest.TestCase):
 
             self.assertEventuallyPinged(ping_count=15)
 
+        self.assertEqual(self.listener.ping_count, 15)
+
     def test_background_threads_finish_before_event_loop_starts(self):
         # Previous tests keep the background threads running until we've
         # received the expected number of pings. But that shouldn't be
@@ -187,6 +169,7 @@ class TestPinger(GuiTestAssistant, unittest.TestCase):
         # Note: threads have all already completed and exited before we start
         # running the event loop.
         self.assertEventuallyPinged(ping_count=15)
+        self.assertEqual(self.listener.ping_count, 15)
 
     def assertEventuallyPinged(self, ping_count=1):
         """
