@@ -28,6 +28,11 @@ from ci.python_environment import (
 )
 
 
+# Ensure that "-h" is supported for getting help.
+CONTEXT_SETTINGS = dict(
+    help_option_names=["-h", "--help"],
+)
+
 # Common options for the commands.
 python_version_option = click.option(
     "--python-version",
@@ -53,7 +58,7 @@ verbose_option = click.option(
 
 
 # All commands are implemented as subcommands of the cli group.
-@click.group()
+@click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
     """
     Development and continuous integration helpers for Traits Futures.
