@@ -54,7 +54,13 @@ class IterationBackgroundTask:
                 # exception carries that value. Return it.
                 return e.value
 
-            send(GENERATED, result)
+            # A plain yield without an argument should not send a message; it's
+            # used purely to mark a possible cancellation point. This also
+            # means that it's not possible to send `None` as an iteration
+            # result.
+            if result is not None:
+                send(GENERATED, result)
+
             # Don't keep a reference around until the next iteration.
             del result
 
@@ -122,6 +128,22 @@ class BackgroundIteration(HasStrictTraits):
 def submit_iteration(executor, callable, *args, **kwargs):
     """
     Convenience function to submit a background iteration to an executor.
+
+    The submitted callable should return an iterator when called with the given
+    positional and keyword arguments. The background task iterates through that
+    iterator, passing each non-None value produced by the iterator to the
+    corresponding future's ``result_event`` trait, and passing any final
+    result returned (via the value of the iterator's ``StopIteration``
+    exception) to the future's ``result`` property.
+
+    Note that any ``None`` value produced by the iterator will not be passed on
+    to the future. This allows the iterator to produce a ``None`` simply to
+    indicate a potential interruption point of the background calculation,
+    without incurring the overhead of passing a message to the main thread.
+
+    .. versionchanged:: 0.3.0
+        Non-None values simply mark possible cancellation points, and
+        are no longer passed to the future.
 
     Parameters
     ----------

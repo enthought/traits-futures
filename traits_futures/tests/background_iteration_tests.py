@@ -117,6 +117,17 @@ def iteration_with_result():
     return 45
 
 
+def iteration_with_plain_yields():
+    """
+    Iteration using plain yields to mark cancellation points.
+    """
+    yield 17
+    yield
+    yield None  # same as plain yield
+    yield 29
+    yield
+
+
 class IterationFutureListener(HasStrictTraits):
     #: The object we're listening to.
     future = Instance(IterationFuture)
@@ -418,6 +429,17 @@ class BackgroundIterationTests:
         self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
         self.assertEqual(listener.results, [1, 2])
         self.assertResult(future, 45)
+        self.assertNoException(future)
+
+    def test_plain_yields_dont_send_a_message(self):
+        future = submit_iteration(self.executor, iteration_with_plain_yields)
+        listener = IterationFutureListener(future=future)
+
+        self.wait_until_done(future)
+
+        self.assertEqual(listener.states, [WAITING, EXECUTING, COMPLETED])
+        self.assertEqual(listener.results, [17, 29])
+        self.assertResult(future, None)
         self.assertNoException(future)
 
     # Helper functions

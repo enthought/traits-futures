@@ -12,6 +12,19 @@
 Changelog for Traits Futures
 ============================
 
+Release 0.3.0
+-------------
+
+Changes
+~~~~~~~
+
+* For an iteration submitted via ``submit_iteration``, a plain ``yield``
+  statement in the submitted iterator marks a cancellation point (as before)
+  but no longer sends a ``None`` value to the future. A ``yield expr``
+  statement with a non-``None`` value both marks a cancellation point and
+  sends a value to the future, as before.
+
+
 Release 0.2.0
 -------------
 

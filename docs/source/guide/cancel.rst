@@ -71,12 +71,18 @@ to cancel mid-calculation. Those two changes are:
 - insert a |yield| statement at possible interruption points
 - submit the background task via |submit_iteration| instead of |submit_call|.
 
-The implementation of |submit_iteration| not only checks for cancellation, but
-also sends a message to the future at every |yield| point. For that reason, you
-don't want to yield too often - as a guide, sending a message more than 100
-times per second is likely be inefficient. But conversely, if you yield too
-rarely, then the checks for cancellation will be spaced further apart, so you
-increase the latency for a response to a cancellation request.
+In the simplest case, plain |yield| statements are added; these simply mark
+cancellation points. But the |yield| statement can also yield values: a |yield|
+with a non-None value also marks a cancellation point, but in addition it sends
+a message containing that value to the ``result_value`` trait of the foreground
+future; this can be used to send progress information or partial results to the
+future.
+
+When yielding values, there are tradeoffs to consider when deciding how
+frequently to yield. As a guide, sending a value more than 100 times per
+second is likely be inefficient. But conversely, if you yield too rarely, then
+the checks for cancellation will be spaced further apart, so you increase the
+latency for a response to a cancellation request.
 
 Making the approximation cancellable
 ------------------------------------
@@ -112,9 +118,9 @@ Sending partial results
 -----------------------
 
 As we mentioned above, |submit_iteration| also sends a message to the
-|IterationFuture| whenever it encounters a |yield|. That message carries
-whatever was yielded as a payload. That means that we can replace the plain
-|yield| to yield an expression, providing information to the future. That
+|IterationFuture| whenever it encounters a |yield| with a value. That message
+carries whatever was yielded as a payload. That means that we can replace the
+plain |yield| to yield an expression, providing information to the future. That
 information could contain progress information, partial results, log messages,
 or any useful information you want to provide (though ideally, whatever Python
 object you yield should be both immutable and pickleable). Every time you do a
