@@ -31,7 +31,6 @@ def get_long_description():
 
 install_requires = [
     "pyface",
-    "setuptools",
     "traits",
 ]
 
@@ -66,6 +65,11 @@ setup(
             "qt4 = traits_futures.qt.init:toolkit_object",
             "qt = traits_futures.qt.init:toolkit_object",
         ],
+    },
+    extras_require={
+        ""
+
+
     },
     python_requires=">=3.5",
     license="BSD",
