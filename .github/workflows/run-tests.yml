@@ -37,8 +37,8 @@ jobs:
     - name: Create clean test directory
       run: |
         mkdir testdir
-    - name: Test Traits package
+    - name: Run the test suite
       uses: GabrielBB/xvfb-action@v1
       with:
         working-directory: testdir
-        run: python -m unittest discover -v traits-futures
+        run: python -m unittest discover -v traits_futures
