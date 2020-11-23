@@ -9,6 +9,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [3.6, 3.7, 3.8, 3.9]
+        gui: [null, pyside2, pyqt5]
 
     runs-on: ${{ matrix.os }}
 
@@ -33,7 +34,7 @@ jobs:
     - name: Install dependencies and local packages
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        python -m pip install .
+        python -m pip install .[${{ matrix.gui }}]
     - name: Create clean test directory
       run: |
         mkdir testdir
