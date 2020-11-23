@@ -67,9 +67,12 @@ setup(
         ],
     },
     extras_require={
-        ""
-
-
+        "pyqt5": [
+            "pyqt5",
+        ],
+        "pyside2": [
+            "pyside2",
+        ]
     },
     python_requires=">=3.5",
     license="BSD",
