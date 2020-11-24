@@ -31,7 +31,6 @@ def get_long_description():
 
 install_requires = [
     "pyface",
-    "setuptools",
     "traits",
 ]
 
@@ -47,6 +46,11 @@ setup(
     long_description_content_type="text/x-rst",
     keywords="background concurrency futures gui traits traitsui",
     install_requires=install_requires,
+    extras_require={
+        "null": [],
+        "pyqt5": ["pyqt5"],
+        "pyside2": ["pyside2"],
+    },
     packages=find_packages(exclude=["ci"]),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -54,7 +58,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -67,6 +70,6 @@ setup(
             "qt = traits_futures.qt.init:toolkit_object",
         ],
     },
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     license="BSD",
 )

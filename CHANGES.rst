@@ -12,6 +12,18 @@
 Changelog for Traits Futures
 ============================
 
+Release 0.3.0
+-------------
+
+Release date: XXX
+
+Changes
+-------
+
+* Python 3.5 is no longer supported. Traits Futures requires Python 3.6
+  or later.
+
+
 Release 0.2.0
 -------------
 
