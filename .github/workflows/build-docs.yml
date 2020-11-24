@@ -30,3 +30,8 @@ jobs:
         cd docs
         python -m sphinx.ext.apidoc -e -T -o source/api -t source/api/templates ../traits_futures ../*/tests
         python -m sphinx -b html source build
+    - name: Archive HTML documentation build
+      uses: actions/upload-artifact@v2
+      with:
+        name: documentation
+        path: docs/build/
