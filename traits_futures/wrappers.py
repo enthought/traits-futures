@@ -89,7 +89,7 @@ class BackgroundTaskWrapper:
     background_task : collections.abc.Callable
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled``.
-    sender : MessageSender
+    sender : traits_futures.qt.message_router.MessageSender
         Object used to send messages.
     cancelled : collections.abc.Callable
         Zero-argument callable returning bool. This can be called to check

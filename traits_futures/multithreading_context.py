@@ -60,7 +60,7 @@ class MultithreadingContext(IParallelContext):
 
         Returns
         -------
-        message_router : MessageRouter
+        message_router : traits_futures.qt.message_router.MessageRouter
         """
         router_class = toolkit("message_router:MessageRouter")
         return router_class()
