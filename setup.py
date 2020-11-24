@@ -58,7 +58,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -71,6 +70,6 @@ setup(
             "qt = traits_futures.qt.init:toolkit_object",
         ],
     },
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     license="BSD",
 )
