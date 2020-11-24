@@ -31,7 +31,6 @@ def get_long_description():
 
 install_requires = [
     "pyface",
-    "setuptools",
     "traits",
 ]
 
@@ -47,6 +46,11 @@ setup(
     long_description_content_type="text/x-rst",
     keywords="background concurrency futures gui traits traitsui",
     install_requires=install_requires,
+    extras_require={
+        "null": [],
+        "pyqt5": ["pyqt5"],
+        "pyside2": ["pyside2"],
+    },
     packages=find_packages(exclude=["ci"]),
     classifiers=[
         "Development Status :: 3 - Alpha",
