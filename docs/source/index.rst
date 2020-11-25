@@ -48,7 +48,7 @@ Limitations
 - For the moment, |traits_futures| requires Qt. Support for wxPython
   may arrive in a future release.
 - No multiprocessing support yet. Maybe one day.
-- Requires Python 3.5 or later.
+- Requires Python 3.6 or later.
 
 
 Quick start
