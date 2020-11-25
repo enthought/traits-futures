@@ -111,7 +111,7 @@ def build(python_version, toolkit, mode):
             "pip",
             "install",
             *wxpython_install_options,
-            "wxPython",
+            "wxPython<4.1",
         ]
         pyenv.python(wxpython_install_cmd)
 
