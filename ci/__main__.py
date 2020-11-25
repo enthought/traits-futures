@@ -96,6 +96,25 @@ def build(python_version, toolkit, mode):
     pyenv.create()
     pyenv.install(dependencies)
 
+    # wxPython installation needs special handling, especially on Linux
+    # Ref: https://wxpython.org/pages/downloads/
+    if toolkit == cfg.WXPYTHON and mode == "ci":
+        wxpython_install_options = []
+        if current_platform() == cfg.LINUX:
+            wxpython_install_options += [
+                "-f",
+                "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04",  # noqa: E501
+            ]
+
+        wxpython_install_cmd = [
+            "-m",
+            "pip",
+            "install",
+            *wxpython_install_options,
+            "wxPython",
+        ]
+        pyenv.python(wxpython_install_cmd)
+
     # Install local packages.
     local_packages = ["./"]
     pip_options = ["--editable"] if mode == "develop" else []
