@@ -100,22 +100,20 @@ def build(python_version, toolkit, mode):
     # Ref: https://wxpython.org/pages/downloads/
     platform = current_platform()
     if toolkit == cfg.WXPYTHON and mode == "ci":
+        wxpython_install_options = []
         if platform == cfg.LINUX:
-            wxpython_install_cmd = [
-                "-m",
-                "pip",
-                "install",
+            wxpython_install_options += [
                 "-f",
                 "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04",  # noqa: E501
-                "wxPython",
             ]
-        else:
-            wxpython_install_cmd = [
-                "-m",
-                "pip",
-                "install",
-                "wxPython",
-            ]
+
+        wxpython_install_cmd = [
+            "-m",
+            "pip",
+            "install",
+            *wxpython_install_options,
+            "wxPython",
+        ]
         pyenv.python(wxpython_install_cmd)
 
     # Install local packages.
