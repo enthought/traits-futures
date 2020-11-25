@@ -141,7 +141,7 @@ class GuiTestAssistant:
 
         wx_app = self.wx_app
 
-        timeout_timer = TimeoutTimer(TIMEOUT, lambda: wx_app.exit(1))
+        timeout_timer = TimeoutTimer(timeout, lambda: wx_app.exit(1))
 
         def stop_if_condition():
             if condition(object):
