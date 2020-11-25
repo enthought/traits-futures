@@ -15,6 +15,9 @@ addons:
     - libxcb-randr0
     - libxcb-render-util0
     - libxcb-xinerama0
+    - build-essential
+    - libgtk-3-dev
+    - libsdl2-2.0-0
 
 env:
   global:
