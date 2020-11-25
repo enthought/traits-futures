@@ -96,12 +96,11 @@ def build(python_version, toolkit, mode):
     pyenv.create()
     pyenv.install(dependencies)
 
-    # wxPython installation needs special handling.
+    # wxPython installation needs special handling, especially on Linux
     # Ref: https://wxpython.org/pages/downloads/
-    platform = current_platform()
     if toolkit == cfg.WXPYTHON and mode == "ci":
         wxpython_install_options = []
-        if platform == cfg.LINUX:
+        if current_platform() == cfg.LINUX:
             wxpython_install_options += [
                 "-f",
                 "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04",  # noqa: E501
