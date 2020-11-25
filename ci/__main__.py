@@ -122,7 +122,7 @@ def build(edm, python_version, toolkit, mode):
             "pip",
             "install",
             *wxpython_install_options,
-            "wxPython<4.1",
+            '"wxPython<4.1"',
         ]
         pyenv.python(wxpython_install_cmd)
 
