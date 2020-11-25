@@ -96,9 +96,6 @@ PLATFORMS = [
     (MACOS, PYTHON36, PYSIDE2),
     (LINUX, PYTHON36, PYSIDE2),
     (WINDOWS, PYTHON36, PYSIDE2),
-    (MACOS, PYTHON36, WXPYTHON),
-    (LINUX, PYTHON36, WXPYTHON),
-    (WINDOWS, PYTHON36, WXPYTHON),
 ]
 
 # Dependencies needed for all platforms, toolkits and Python versions.
