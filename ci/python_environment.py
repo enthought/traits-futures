@@ -26,13 +26,15 @@ class PythonEnvironment:
         self,
         name,
         runtime_version,
+        *,
+        edm_executable,
         edm_platform=None,
         edm_config=None,
         api_token=None,
     ):
 
         # Check that EDM is new enough.
-        edm_version = _edm_version()
+        edm_version = _edm_version(edm_executable)
         if edm_version < MINIMUM_EDM_VERSION:
             raise RuntimeError(
                 "ci-tools requires EDM version >= {minimum_version}. "
@@ -45,6 +47,7 @@ class PythonEnvironment:
         self.environment_name = name
         self.runtime_version = runtime_version
         self.edm_config = os.path.abspath(edm_config)
+        self.edm_executable = edm_executable
         self.api_token = api_token
 
         if edm_platform is None:
@@ -254,7 +257,7 @@ class PythonEnvironment:
         Base command for invoking EDM, specifying the appropriate config
         file and token.
         """
-        cmd = ["edm"]
+        cmd = [self.edm_executable]
         if self.edm_config is not None:
             cmd.extend(["--config", self.edm_config])
         if self.api_token is not None:
@@ -282,15 +285,15 @@ def current_platform():
         raise RuntimeError("platform {!r} not supported".format(platform))
 
 
-def _edm_version():
+def _edm_version(edm_executable):
     """
     Determine the EDM version.
 
     Returns the EDM version as a tuple of integers.
     """
-    edm_version_info = subprocess.check_output(["edm", "--version"]).decode(
-        "utf-8"
-    )
+    edm_version_info = subprocess.check_output(
+        [edm_executable, "--version"]
+    ).decode("utf-8")
     m = re.match(r"(?:EDM|edm) (?P<version>\d+\.\d+\.\d+)", edm_version_info)
     version = m.group("version")
     return tuple(int(piece) for piece in version.split("."))

@@ -17,6 +17,7 @@ import contextlib
 import os
 import shutil
 import stat
+import sys
 import tempfile
 
 import click
@@ -50,6 +51,15 @@ toolkit_option = click.option(
     show_default=True,
     envvar="CI_TOOLKIT",
 )
+edm_option = click.option(
+    "--edm",
+    help=(
+        "Path to the EDM executable to use. The default is to use the first "
+        "EDM found in the path. The EDM executable can also be specified "
+        "by setting the CI_EDM environment variable."
+    ),
+    envvar="CI_EDM",
+)
 verbose_option = click.option(
     "--verbose/--quiet",
     help="Run tests in verbose mode?  [default: --verbose]",
@@ -67,6 +77,7 @@ def cli():
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
 @click.argument(
@@ -74,14 +85,14 @@ def cli():
     type=click.Choice(["ci", "develop"]),
     default="develop",
 )
-def build(python_version, toolkit, mode):
+def build(edm, python_version, toolkit, mode):
     """
     Create an EDM-based development environment.
 
     The mode argument should be one of "ci" (for continuous integration)
     or "develop" (for local development). The default is "develop".
     """
-    pyenv = _get_devenv(python_version, toolkit)
+    pyenv = _get_devenv(edm, python_version, toolkit)
 
     # Destroy any existing environment.
     if pyenv.exists():
@@ -135,15 +146,17 @@ def build(python_version, toolkit, mode):
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
-def shell(python_version, toolkit):
-    pyenv = _get_devenv(python_version, toolkit)
+def shell(edm, python_version, toolkit):
+    pyenv = _get_devenv(edm, python_version, toolkit)
     shell_cmd = ["shell", "-e", pyenv.environment_name]
     pyenv.edm(shell_cmd)
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
 @verbose_option
@@ -162,11 +175,11 @@ def shell(python_version, toolkit):
     help="Output report to the console?  [default: --report]",
     default=True,
 )
-def coverage(python_version, toolkit, verbose, branch, html, report):
+def coverage(edm, python_version, toolkit, verbose, branch, html, report):
     """
     Run the test suite under coverage.
     """
-    pyenv = _get_devenv(python_version, toolkit)
+    pyenv = _get_devenv(edm, python_version, toolkit)
 
     test_packages = [cfg.PACKAGE_NAME]
     test_options = ["--verbose"] if verbose else []
@@ -205,13 +218,14 @@ def coverage(python_version, toolkit, verbose, branch, html, report):
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
-def doc(python_version, toolkit):
+def doc(edm, python_version, toolkit):
     """
     Run documentation build.
     """
-    pyenv = _get_devenv(python_version, toolkit)
+    pyenv = _get_devenv(edm, python_version, toolkit)
 
     # Use sphinx-apidoc to build API documentation.
     docs_source_api = "docs/source/api"
@@ -240,31 +254,33 @@ def doc(python_version, toolkit):
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
 @click.argument(
     "example-name",
     type=click.Choice(cfg.EXAMPLES),
 )
-def example(python_version, toolkit, example_name):
+def example(edm, python_version, toolkit, example_name):
     """
     Run one of the examples.
     """
-    pyenv = _get_devenv(python_version, toolkit)
+    pyenv = _get_devenv(edm, python_version, toolkit)
     example_script = os.path.join("examples", cfg.EXAMPLES[example_name])
     pyenv.python([example_script])
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
-def flake8(python_version, toolkit):
+def flake8(edm, python_version, toolkit):
     """
     Run flake8 on all Python files.
     """
     targets = cfg.FLAKE8_TARGETS
 
-    pyenv = _get_devenv(python_version, toolkit)
+    pyenv = _get_devenv(edm, python_version, toolkit)
     if pyenv.python_return_code(["-m", "flake8"] + targets):
         click.echo()
         raise click.ClickException("Flake8 check failed.")
@@ -273,14 +289,15 @@ def flake8(python_version, toolkit):
 
 
 @cli.command()
+@edm_option
 @python_version_option
 @toolkit_option
 @verbose_option
-def test(python_version, toolkit, verbose):
+def test(edm, python_version, toolkit, verbose):
     """
     Run the test suite.
     """
-    pyenv = _get_devenv(python_version, toolkit)
+    pyenv = _get_devenv(edm, python_version, toolkit)
 
     test_packages = [cfg.PACKAGE_NAME]
     test_options = ["--verbose"] if verbose else []
@@ -317,11 +334,48 @@ def test(python_version, toolkit, verbose):
 # Helper functions ############################################################
 
 
-def _get_devenv(python_version, toolkit):
+def locate_edm():
+    """
+    Locate an EDM executable if it exists, else raise an exception.
+
+    Returns the first EDM executable found on the path. On Windows, if that
+    executable turns out to be the "edm.bat" batch file, replaces it with the
+    executable that it wraps: the batch file adds another level of command-line
+    mangling that interferes with things like specifying version restrictions.
+
+    Returns
+    -------
+    edm : str
+        Path to the EDM executable to use.
+
+    Raises
+    ------
+    click.ClickException
+        If no EDM executable is found in the path.
+    """
+
+    edm = shutil.which("edm")
+    if edm is None:
+        raise click.ClickException(
+            "The ci package requires EDM, but no EDM executable "
+            "was found on the path."
+        )
+
+    # Resolve edm.bat on Windows.
+    if sys.platform == "win32" and os.path.basename(edm) == "edm.bat":
+        edm = os.path.join(os.path.dirname(edm), "embedded", "edm.exe")
+
+    return edm
+
+
+def _get_devenv(edm, python_version, toolkit):
     """
     Return a PythonEnvironment corresponding to the development environment for
     a given Python version and UI toolkit.
     """
+    if edm is None:
+        edm = locate_edm()
+
     platform = current_platform()
     if (platform, python_version, toolkit) not in cfg.PLATFORMS:
         raise click.ClickException(
@@ -341,6 +395,7 @@ def _get_devenv(python_version, toolkit):
     )
 
     return PythonEnvironment(
+        edm_executable=edm,
         edm_config=cfg.EDM_CONFIGURATION,
         name=environment_name,
         runtime_version=runtime_version,
