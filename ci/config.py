@@ -29,7 +29,7 @@ PYTHON36 = "py36"
 PYTHON_VERSIONS = [PYTHON36]
 
 # Toolkits
-NULL = "null"  # no GUI toolkit; an asyncio event loop is used for tests
+NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
 PYQT = "pyqt"  # Qt 4, PyQt
 PYQT5 = "pyqt5"  # Qt 5, PyQt
 PYSIDE2 = "pyside2"  # Qt 5, Qt for Python
