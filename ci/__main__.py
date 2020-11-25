@@ -98,7 +98,7 @@ def build(python_version, toolkit, mode):
 
     # wxPython installation needs special handling, especially on Linux
     # Ref: https://wxpython.org/pages/downloads/
-    if toolkit == cfg.WXPYTHON and mode == "ci":
+    if toolkit == cfg.WXPYTHON:
         wxpython_install_options = []
         if current_platform() == cfg.LINUX:
             wxpython_install_options += [
