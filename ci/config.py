@@ -132,9 +132,6 @@ TOOLKIT_CI_DEPS = {
     WXPYTHON: ["traitsui"],
 }
 
-# Toolkit-specific ci dependencies
-TOOLKIT_CI_PIP_DEPS = {}
-
 
 # Additional packages needed for local development, examples.
 ADDITIONAL_DEVELOP_DEPS = [
@@ -174,19 +171,4 @@ def develop_dependencies(python_version, toolkit):
     """
     dependencies = ci_dependencies(python_version, toolkit)
     dependencies.extend(ADDITIONAL_DEVELOP_DEPS)
-    return dependencies
-
-
-def ci_develop_dependencies(python_version, toolit):
-    """
-    Return develop dependencies that need to be pip-installed.
-    """
-    return []
-
-
-def ci_pip_dependencies(python_version, toolkit):
-    """
-    Return ci dependencies that need to be pip-installed.
-    """
-    dependencies = TOOLKIT_CI_PIP_DEPS.get(toolkit, [])
     return dependencies
