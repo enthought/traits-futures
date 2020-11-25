@@ -132,7 +132,6 @@ TOOLKIT_CI_DEPS = {
     WXPYTHON: ["traitsui"],
 }
 
-
 # Additional packages needed for local development, examples.
 ADDITIONAL_DEVELOP_DEPS = [
     "chaco",
