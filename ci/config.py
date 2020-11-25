@@ -33,8 +33,7 @@ NULL = "null"  # no GUI toolkit; an asyncio event loop is used for tests
 PYQT = "pyqt"  # Qt 4, PyQt
 PYQT5 = "pyqt5"  # Qt 5, PyQt
 PYSIDE2 = "pyside2"  # Qt 5, Qt for Python
-WXPYTHON = "wxpython"  # wxPython
-TOOLKITS = [NULL, PYQT, PYQT5, PYSIDE2, WXPYTHON]
+TOOLKITS = [NULL, PYQT, PYQT5, PYSIDE2]
 
 # Default Python version and toolkit.
 DEFAULT_PYTHON = PYTHON36
@@ -127,9 +126,6 @@ TOOLKIT_CI_DEPS = {
     PYQT: ["pyqt", "traitsui"],
     PYQT5: ["pyqt5", "traitsui"],
     PYSIDE2: ["pyside2", "traitsui"],
-    # wxPython is not yet available through EDM, and needs special
-    # handling in the main script.
-    WXPYTHON: ["traitsui"],
 }
 
 # Additional packages needed for local development, examples.
