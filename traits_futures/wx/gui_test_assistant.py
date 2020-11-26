@@ -18,6 +18,9 @@ import wx
 #: Default timeout, in seconds
 TIMEOUT = 10.0
 
+# XXX We should be using Pyface's own CallbackTimer instead of creating
+# our own, but we were running into segfaults.
+# xref: enthought/pyface#815, enthought/traits-futures#251
 
 class TimeoutTimer(wx.Timer):
     """
