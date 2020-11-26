@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.wrappers &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.wrappers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Wrappers for the background task callable and the foreground future.</span>
+
+<span class="sd">These are used by the TraitsExecutor machinery.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">HasTraits</span><span class="p">,</span>
+    <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">on_trait_change</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.exception_handling</span> <span class="kn">import</span> <span class="n">marshal_exception</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_future</span> <span class="kn">import</span> <span class="n">IFuture</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1">#: Prefix used for custom messages.</span>
+<span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span>
+
+<span class="c1">#: Prefix used for control messages.</span>
+<span class="n">CONTROL</span> <span class="o">=</span> <span class="s2">&quot;control&quot;</span>
+
+<span class="c1"># Control messages sent by the wrapper, and interpreted by the FutureWrapper.</span>
+
+<span class="c1">#: Control message sent before we start to process the target callable.</span>
+<span class="c1">#: The argument is always ``None``.</span>
+<span class="n">STARTED</span> <span class="o">=</span> <span class="s2">&quot;started&quot;</span>
+
+<span class="c1">#: Control message sent when an exception was raised by the background</span>
+<span class="c1">#: callable. The argument is a tuple containing exception information.</span>
+<span class="n">RAISED</span> <span class="o">=</span> <span class="s2">&quot;raised&quot;</span>
+
+<span class="c1">#: Control message sent to indicate that the background callable succeeded</span>
+<span class="c1">#: and returned a result. The argument is that result.</span>
+<span class="n">RETURNED</span> <span class="o">=</span> <span class="s2">&quot;returned&quot;</span>
+
+
+<div class="viewcode-block" id="FutureWrapper"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper">[docs]</a><span class="k">class</span> <span class="nc">FutureWrapper</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for the IFuture.</span>
+
+<span class="sd">    This wrapper handles control messages from the background task, and</span>
+<span class="sd">    delegates custom messages to the future.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Future being wrapped</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
+
+    <span class="c1">#: Object that receives messages from the background task.</span>
+    <span class="n">receiver</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">)</span>
+
+    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;receiver:message&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_receive_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pass on a message to the appropriate future.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message_kind</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+
+        <span class="k">if</span> <span class="n">message_kind</span> <span class="o">==</span> <span class="n">CUSTOM</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">_task_sent</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">message_kind</span> <span class="o">==</span> <span class="n">CONTROL</span>
+            <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
+            <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_task_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BackgroundTaskWrapper"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper">[docs]</a><span class="k">class</span> <span class="nc">BackgroundTaskWrapper</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for callables submitted to the underlying executor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    background_task : collections.abc.Callable</span>
+<span class="sd">        Callable representing the background task. This will be called</span>
+<span class="sd">        with arguments ``send`` and ``cancelled``.</span>
+<span class="sd">    sender : MessageSender</span>
+<span class="sd">        Object used to send messages.</span>
+<span class="sd">    cancelled : collections.abc.Callable</span>
+<span class="sd">        Zero-argument callable returning bool. This can be called to check</span>
+<span class="sd">        whether cancellation has been requested.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background_task</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancel_event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_background_task</span> <span class="o">=</span> <span class="n">background_task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sender</span> <span class="o">=</span> <span class="n">sender</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_event</span> <span class="o">=</span> <span class="n">cancel_event</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sender</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_control_message</span><span class="p">(</span><span class="n">STARTED</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="kc">None</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span>
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_background_task</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">send_custom_message</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_event</span><span class="o">.</span><span class="n">is_set</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">send_control_message</span><span class="p">(</span><span class="n">RAISED</span><span class="p">,</span> <span class="n">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">send_control_message</span><span class="p">(</span><span class="n">RETURNED</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+            <span class="c1"># We&#39;ll only ever get here in the case of a coding error. But in</span>
+            <span class="c1"># case that happens, it&#39;s useful to have the exception logged to</span>
+            <span class="c1"># help the developer.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unexpected exception in background task.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+<div class="viewcode-block" id="BackgroundTaskWrapper.send_control_message"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper.send_control_message">[docs]</a>    <span class="k">def</span> <span class="nf">send_control_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">message_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a control message from the background task to the future.</span>
+
+<span class="sd">        These messages apply to all futures, and are used to communicate</span>
+<span class="sd">        changes to the state of the future.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sender</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">CONTROL</span><span class="p">,</span> <span class="p">(</span><span class="n">message_type</span><span class="p">,</span> <span class="n">message_args</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="BackgroundTaskWrapper.send_custom_message"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message">[docs]</a>    <span class="k">def</span> <span class="nf">send_custom_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">message_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a custom message from the background task to the future.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message_type : str</span>
+<span class="sd">            The message type.</span>
+<span class="sd">        message_args : object, optional</span>
+<span class="sd">            Any arguments providing additional information for the message.</span>
+<span class="sd">            If not given, ``None`` is passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sender</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">CUSTOM</span><span class="p">,</span> <span class="p">(</span><span class="n">message_type</span><span class="p">,</span> <span class="n">message_args</span><span class="p">)))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

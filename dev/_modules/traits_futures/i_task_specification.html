@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.i_task_specification &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.i_task_specification</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Interface for a job specification. The job specification is the object</span>
+<span class="sd">that the TraitsExecutor knows how to deal with.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+
+<div class="viewcode-block" id="ITaskSpecification"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification">[docs]</a><span class="k">class</span> <span class="nc">ITaskSpecification</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specify background task callable and foreground future for a task.</span>
+
+<span class="sd">    An object implementing the ITaskSpecification interface describes how to</span>
+<span class="sd">    create a background task and a corresponding foreground future to execute a</span>
+<span class="sd">    particular type of background task. It&#39;s consumed by the TraitsExecutor</span>
+<span class="sd">    when submitting background tasks, and implemented by BackgroundCall,</span>
+<span class="sd">    BackgroundIteration and others.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ITaskSpecification.background_task"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.background_task">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the callable that will be invoked as the background task.</span>
+
+<span class="sd">        This callable should be pickleable and should have the signature</span>
+
+<span class="sd">            task(send, cancelled)</span>
+
+<span class="sd">        Any exception raised while executing the callable, or result returned</span>
+<span class="sd">        by the callable, will be recorded in the corresponding future.</span>
+
+<span class="sd">        The ``send`` argument can be used by the background task to send</span>
+<span class="sd">        messages back to the main thread of execution. It&#39;s a callable that can</span>
+<span class="sd">        be used either in the form ``send(message_type)`` or in the form</span>
+<span class="sd">        ``send(message_type, message_args)``. Here ``message_type`` is a simple</span>
+<span class="sd">        constant (typically a string), and ``message_args`` is a single Python</span>
+<span class="sd">        object containing optional arguments for the message. The arguments to</span>
+<span class="sd">        ``send`` should typically be both immutable and pickleable. ``send``</span>
+<span class="sd">        returns no useful result.</span>
+
+<span class="sd">        The ``cancelled`` argument may be used by the background task to check</span>
+<span class="sd">        whether cancellation has been requested. When called with no arguments,</span>
+<span class="sd">        it returns either ``True`` to indicate that cancellation has been</span>
+<span class="sd">        requested, or ``False``.</span>
+
+<span class="sd">        Note that there&#39;s no obligation for the background task to check the</span>
+<span class="sd">        cancellation status.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        task : callable</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="ITaskSpecification.future"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        future : IFuture</span>
+<span class="sd">            Future object that can be used to monitor the status of the</span>
+<span class="sd">            background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

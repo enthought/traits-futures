@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.future_states module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.i_future module" href="traits_futures.i_future.html" >
+    <link rel="prev" title="traits_futures.exception_handling module" href="traits_futures.exception_handling.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.i_future.html" title="traits_futures.i_future module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.exception_handling.html" title="traits_futures.exception_handling module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.future_states">
+<span id="traits-futures-future-states-module"></span><h1>traits_futures.future_states module<a class="headerlink" href="#module-traits_futures.future_states" title="Permalink to this headline">¶</a></h1>
+<p>Future states, used by the various future classes.</p>
+<dl class="py data">
+<dt id="traits_futures.future_states.CANCELLABLE_STATES">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">CANCELLABLE_STATES</code><em class="property"> = ('executing', 'waiting')</em><a class="headerlink" href="#traits_futures.future_states.CANCELLABLE_STATES" title="Permalink to this definition">¶</a></dt>
+<dd><p>States in which we’re permitted to cancel.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.CANCELLED">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">CANCELLED</code><em class="property"> = 'cancelled'</em><a class="headerlink" href="#traits_futures.future_states.CANCELLED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task cancelled.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.CANCELLING">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">CANCELLING</code><em class="property"> = 'cancelling'</em><a class="headerlink" href="#traits_futures.future_states.CANCELLING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancellation has been requested, awaiting response.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.COMPLETED">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">COMPLETED</code><em class="property"> = 'completed'</em><a class="headerlink" href="#traits_futures.future_states.COMPLETED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task completed without error.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.DONE_STATES">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">DONE_STATES</code><em class="property"> = ('cancelled', 'completed', 'failed')</em><a class="headerlink" href="#traits_futures.future_states.DONE_STATES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Final states. If the future is in one of these states,
+no more messages will be received from the background task.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.EXECUTING">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">EXECUTING</code><em class="property"> = 'executing'</em><a class="headerlink" href="#traits_futures.future_states.EXECUTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task is executing.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.FAILED">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">FAILED</code><em class="property"> = 'failed'</em><a class="headerlink" href="#traits_futures.future_states.FAILED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task failed, raising an exception.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.future_states.FutureState">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">FutureState</code><em class="property"> = Enum( …</em><a class="headerlink" href="#traits_futures.future_states.FutureState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trait type representing a future state.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.future_states.WAITING">
+<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">WAITING</code><em class="property"> = 'waiting'</em><a class="headerlink" href="#traits_futures.future_states.WAITING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task queued, waiting to be executed.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.exception_handling.html"
+                        title="previous chapter">traits_futures.exception_handling module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.i_future.html"
+                        title="next chapter">traits_futures.i_future module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.future_states.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

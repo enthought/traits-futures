@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.background_progress module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.base_future module" href="traits_futures.base_future.html" >
+    <link rel="prev" title="traits_futures.background_iteration module" href="traits_futures.background_iteration.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.base_future.html" title="traits_futures.base_future module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.background_iteration.html" title="traits_futures.background_iteration module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.background_progress">
+<span id="traits-futures-background-progress-module"></span><h1>traits_futures.background_progress module<a class="headerlink" href="#module-traits_futures.background_progress" title="Permalink to this headline">¶</a></h1>
+<p>Support for a progress-reporting background call.</p>
+<p>The code in this module supports an arbitrary callable that accepts a
+“progress” named argument, and can use that argument to submit progress
+information.</p>
+<p>Every progress submission also marks a point where the callable can
+be cancelled.</p>
+<dl class="py class">
+<dt id="traits_futures.background_progress.BackgroundProgress">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_progress.</code><code class="sig-name descname">BackgroundProgress</code><a class="reference internal" href="../_modules/traits_futures/background_progress.html#BackgroundProgress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.BackgroundProgress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Object representing the background task to be executed.</p>
+<dl class="py attribute">
+<dt id="traits_futures.background_progress.BackgroundProgress.args">
+<code class="sig-name descname">args</code><em class="property"> = Tuple()</em><a class="headerlink" href="#traits_futures.background_progress.BackgroundProgress.args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positional arguments to be passed to the callable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.background_progress.BackgroundProgress.background_task">
+<code class="sig-name descname">background_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#BackgroundProgress.background_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.BackgroundProgress.background_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a background callable for this task specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Callable accepting arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The
+callable can use <code class="docutils literal notranslate"><span class="pre">send</span></code> to send messages and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> to
+check whether cancellation has been requested.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.9)">collections.abc.Callable</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.background_progress.BackgroundProgress.callable">
+<code class="sig-name descname">callable</code><em class="property"> = Callable()</em><a class="headerlink" href="#traits_futures.background_progress.BackgroundProgress.callable" title="Permalink to this definition">¶</a></dt>
+<dd><p>The callable to be executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.background_progress.BackgroundProgress.future">
+<code class="sig-name descname">future</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#BackgroundProgress.future"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.BackgroundProgress.future" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Future for the background task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>future</strong> – Future object that can be used to monitor the status of the
+background task.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture">ProgressFuture</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.background_progress.BackgroundProgress.kwargs">
+<code class="sig-name descname">kwargs</code><em class="property"> = Dict(Str())</em><a class="headerlink" href="#traits_futures.background_progress.BackgroundProgress.kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Named arguments to be passed to the callable.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt id="traits_futures.background_progress.PROGRESS">
+<code class="sig-prename descclassname">traits_futures.background_progress.</code><code class="sig-name descname">PROGRESS</code><em class="property"> = 'progress'</em><a class="headerlink" href="#traits_futures.background_progress.PROGRESS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task sends progress. Argument is a single object giving progress
+information. This module does not interpret the contents of the argument.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.background_progress.ProgressBackgroundTask">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_progress.</code><code class="sig-name descname">ProgressBackgroundTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">callable</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressBackgroundTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressBackgroundTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Background portion of a progress background task.</p>
+<p>This provides the callable that will be submitted to the worker pool, and
+sends messages to communicate with the ProgressFuture.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.background_progress.ProgressFuture">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_progress.</code><code class="sig-name descname">ProgressFuture</code><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressFuture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressFuture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.base_future.BaseFuture</span></code></a></p>
+<p>Object representing the front-end handle to a ProgressBackgroundTask.</p>
+<dl class="py attribute">
+<dt id="traits_futures.background_progress.ProgressFuture.progress">
+<code class="sig-name descname">progress</code><em class="property"> = Event()</em><a class="headerlink" href="#traits_futures.background_progress.ProgressFuture.progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event fired whenever a progress message arrives from the background.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.background_progress.ProgressReporter">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_progress.</code><code class="sig-name descname">ProgressReporter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">send</span></em>, <em class="sig-param"><span class="n">cancelled</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressReporter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressReporter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Object used by the target callable to report progress.</p>
+<dl class="py method">
+<dt id="traits_futures.background_progress.ProgressReporter.report">
+<code class="sig-name descname">report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">progress_info</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressReporter.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressReporter.report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send progress information to the linked future.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">progress_info</span></code> object will eventually be sent to the
+corresponding future’s <code class="docutils literal notranslate"><span class="pre">progress</span></code> event trait.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>progress_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – An arbitrary object representing progress. Ideally, this
+should be immutable and pickleable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="traits_futures.background_progress.submit_progress">
+<code class="sig-prename descclassname">traits_futures.background_progress.</code><code class="sig-name descname">submit_progress</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">executor</span></em>, <em class="sig-param"><span class="n">callable</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#submit_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_progress.submit_progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function to submit a background progress call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>executor</strong> (<a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><em>TraitsExecutor</em></a>) – Executor to submit the task to.</p></li>
+<li><p><strong>callable</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.9)"><em>collections.abc.Callable</em></a>) – Callable that executes the progress-providing function. This callable
+must accept a “progress” named argument, in addition to the provided
+arguments. The callable may then call the “progress” argument to
+report progress.</p></li>
+<li><p><strong>*args</strong> – Positional arguments to pass to the callable.</p></li>
+<li><p><strong>**kwargs</strong> – Named arguments other than “progress” to pass to the callable. These
+must not include “progress”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Object representing the state of the background task.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture">ProgressFuture</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.background_iteration.html"
+                        title="previous chapter">traits_futures.background_iteration module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.base_future.html"
+                        title="next chapter">traits_futures.base_future module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.background_progress.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.3.1.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
