@@ -1,0 +1,39 @@
+name: Doc build
+
+on:
+  pull_request
+
+jobs:
+  docs:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Check out the branch
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies and local packages
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install sphinx enthought-sphinx-theme
+        python -m pip install .
+    - name: Build HTML documentation with Sphinx
+      run: |
+        cd docs
+        python -m sphinx.ext.apidoc -e -T -o source/api -t source/api/templates ../traits_futures ../*/tests
+        python -m sphinx -b html -d doctrees -W source build
+    - name: Update gh-pages branch
+      run: |
+
+    - name: Archive HTML documentation build
+      uses: actions/upload-artifact@v2
+      with:
+        name: documentation
+        path: docs/build/
