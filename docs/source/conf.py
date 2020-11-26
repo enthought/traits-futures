@@ -198,6 +198,12 @@ texinfo_documents = [
     ),
 ]
 
+# Options for autodoc extension
+# -----------------------------
+
+autodoc_mock_imports = ["pyface.qt", "wx"]
+
+
 # Options for intersphinx extension
 # ---------------------------------
 
