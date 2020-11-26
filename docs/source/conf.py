@@ -44,7 +44,6 @@ import traits_futures.version
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.githubpages",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
