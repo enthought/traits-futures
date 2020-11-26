@@ -9,10 +9,16 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.qt.message\_router module
-=========================================
+traits\_futures.wx package
+==========================
 
-.. automodule:: traits_futures.qt.message_router
+.. automodule:: traits_futures.wx
    :members:
    :undoc-members:
    :show-inheritance:
+
+.. toctree::
+
+   traits_futures.wx.gui_test_assistant
+   traits_futures.wx.init
+   traits_futures.wx.pinger

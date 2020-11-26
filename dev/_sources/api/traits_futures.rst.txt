@@ -29,7 +29,10 @@ traits\_futures package
    traits_futures.i_future
    traits_futures.i_parallel_context
    traits_futures.i_task_specification
+   traits_futures.message_receiver
+   traits_futures.message_router
    traits_futures.multithreading_context
+   traits_futures.multithreading_sender
    traits_futures.toolkit_support
    traits_futures.traits_executor
    traits_futures.version
@@ -40,3 +43,4 @@ traits\_futures package
 
    traits_futures.null
    traits_futures.qt
+   traits_futures.wx

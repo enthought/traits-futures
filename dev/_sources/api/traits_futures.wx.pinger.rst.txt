@@ -9,16 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.null package
-============================
+traits\_futures.wx.pinger module
+================================
 
-.. automodule:: traits_futures.null
+.. automodule:: traits_futures.wx.pinger
    :members:
    :undoc-members:
    :show-inheritance:
-
-.. toctree::
-
-   traits_futures.null.gui_test_assistant
-   traits_futures.null.init
-   traits_futures.null.pinger

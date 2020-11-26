@@ -21,4 +21,4 @@ traits\_futures.qt package
 
    traits_futures.qt.gui_test_assistant
    traits_futures.qt.init
-   traits_futures.qt.message_router
+   traits_futures.qt.pinger
