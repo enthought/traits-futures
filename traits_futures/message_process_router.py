@@ -74,6 +74,13 @@ class MessageProcessRouter(HasStrictTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self._manager.Queue()
 
+    def connect(self):
+        """
+        Prepare router for routing.
+        """
+        # XXX Move more initialization here.
+        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee.connect()
         self._monitor_thread = threading.Thread(
             target=monitor_queue,
             args=(
@@ -84,14 +91,6 @@ class MessageProcessRouter(HasStrictTraits):
         )
         # XXX Need tests for shutdown.
         self._monitor_thread.start()
-
-    def connect(self):
-        """
-        Prepare router for routing.
-        """
-        self._pingee = Pingee(on_ping=self._route_message)
-        self._pingee.connect()
-        # XXX Move initialization here.
 
     def disconnect(self):
         """
