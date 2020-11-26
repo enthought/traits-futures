@@ -95,21 +95,26 @@ class PingListener(HasStrictTraits):
     #: Total number of pings received.
     ping_count = Int(0)
 
+    def connect(self):
+        self.pingee = Pingee(on_ping=lambda: setattr(self, "ping", True))
+        self.pingee.connect()
+
+    def disconnect(self):
+        self.pingee.disconnect()
+        self.pingee = None
+
     def _ping_fired(self):
         self.ping_count += 1
-
-    def _pingee_default(self):
-        return Pingee(
-            on_ping=lambda: setattr(self, "ping", True),
-        )
 
 
 class TestPinger(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
         self.listener = PingListener()
+        self.listener.connect()
 
     def tearDown(self):
+        self.listener.disconnect()
         del self.listener
         GuiTestAssistant.tearDown(self)
 
