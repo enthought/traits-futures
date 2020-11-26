@@ -25,8 +25,8 @@ _PING_EVENT_TYPE = wx.NewEventType()
 class _PingEvent(wx.PyCommandEvent):
     """ wx event used to signal that a message has been sent """
 
-    def __init__(self, event_id):
-        wx.PyCommandEvent.__init__(self, _PING_EVENT_TYPE, event_id)
+    def __init__(self):
+        wx.PyCommandEvent.__init__(self, _PING_EVENT_TYPE)
 
 
 class Pinger:
@@ -60,7 +60,7 @@ class Pinger:
         """
         Send a ping to the ping receiver.
         """
-        event = _PingEvent(-1)
+        event = _PingEvent()
         wx.PostEvent(self.pingee, event)
 
 
