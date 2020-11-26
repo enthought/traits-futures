@@ -30,8 +30,19 @@ class Pingee:
     """
 
     def __init__(self, on_ping):
-        self._event_loop = asyncio.get_event_loop()
         self._on_ping = on_ping
+
+    def connect(self):
+        """
+        Prepare Pingee to receive pings.
+        """
+        self._event_loop = asyncio.get_event_loop()
+
+    def disconnect(self):
+        """
+        Undo any connections made in the connect method.
+        """
+        del self._event_loop
 
 
 class Pinger:

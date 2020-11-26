@@ -76,12 +76,18 @@ class Pingee(wx.EvtHandler):
 
     def __init__(self, on_ping):
         wx.EvtHandler.__init__(self)
-        self._on_ping = on_ping
-        self._binder = wx.PyEventBinder(_PING_EVENT_TYPE)
-        self.Bind(self._binder, self._on_ping_event)
+        self._on_ping = lambda event: on_ping()
 
-    def _on_ping_event(self, event):
+    def connect(self):
         """
-        Handler for events of type _PING_EVENT_TYPE.
+        Prepare Pingee to receive pings.
         """
-        self._on_ping()
+        self._binder = wx.PyEventBinder(_PING_EVENT_TYPE)
+        self.Bind(self._binder, self._on_ping)
+
+    def disconnect(self):
+        """
+        Undo any connections made in the connect method.
+        """
+        self.Unbind(self._binder, handler=self._on_ping)
+        del self._binder

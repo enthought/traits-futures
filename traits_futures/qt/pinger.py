@@ -45,6 +45,18 @@ class Pingee(QObject):
     def _execute_ping_callback(self):
         self._on_ping()
 
+    def connect(self):
+        """
+        Prepare Pingee to receive pings.
+        """
+        pass
+
+    def disconnect(self):
+        """
+        Undo any connections made in the connect method.
+        """
+        pass
+
 
 class Pinger:
     """
