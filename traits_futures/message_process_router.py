@@ -89,6 +89,8 @@ class MessageProcessRouter(HasStrictTraits):
         """
         Prepare router for routing.
         """
+        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee.connect()
         # XXX Move initialization here.
 
     def disconnect(self):
@@ -99,6 +101,9 @@ class MessageProcessRouter(HasStrictTraits):
         self._monitor_thread.join()
         # self._process_message_queue.join()
         self._manager.shutdown()
+
+        self._pingee.disconnect()
+        self._pingee = None
 
     def pipe(self):
         # XXX Docstring!
@@ -159,9 +164,6 @@ class MessageProcessRouter(HasStrictTraits):
 
     def __connection_ids_default(self):
         return itertools.count()
-
-    def __pingee_default(self):
-        return Pingee(on_ping=self._route_message)
 
 
 def monitor_queue(process_queue, local_queue, pingee):
