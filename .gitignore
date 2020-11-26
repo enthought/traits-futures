@@ -3,4 +3,5 @@
 !/docs/source/api/traits_futures.api.rst
 /docs/build/
 /coverage/
+.coverage*
 *.egg-info/
