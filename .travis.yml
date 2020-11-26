@@ -17,8 +17,6 @@ addons:
     - libxcb-render-util0
     - libxcb-xinerama0
     # wxPython dependencies
-    - build-essential
-    - libgtk-3-dev
     - libsdl2-2.0-0
 
 env:
