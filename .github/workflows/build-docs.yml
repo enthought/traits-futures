@@ -32,9 +32,12 @@ jobs:
       run: |
         git config user.name "Documentation Bot"
         git config user.email "<>"
+    - name: Checkout the gh-pages branch
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
     - name: Update gh-pages branch
       run: |
-        git checkout origin/gh-pages
         git checkout -b gh-pages-test-update
         rm -r dev
         mv docs/build dev
