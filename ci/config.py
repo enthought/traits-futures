@@ -33,7 +33,7 @@ NULL = "null"  # no GUI toolkit; a simulated event loop is used for tests
 PYQT = "pyqt"  # Qt 4, PyQt
 PYQT5 = "pyqt5"  # Qt 5, PyQt
 PYSIDE2 = "pyside2"  # Qt 5, Qt for Python
-WXPYTHON = "wxpython"  # wxPython
+WXPYTHON = "wxpython"  # wxPython 4
 TOOLKITS = [NULL, PYQT, PYQT5, PYSIDE2, WXPYTHON]
 
 # Default Python version and toolkit.
