@@ -1,7 +1,9 @@
-name: Doc build
+name: Update gh-pages documentation
 
 on:
-  pull_request
+  push:
+    branches:
+    - master
 
 jobs:
   docs:
@@ -36,9 +38,8 @@ jobs:
       run: |
         git fetch --depth=1 origin gh-pages
         git checkout gh-pages
-        git checkout -b gh-pages-test-update
         rm -r dev
         mv docs/build dev
         git add dev
         git commit -m "Update documentation for master branch"
-        git push origin gh-pages-test-update
+        git push origin gh-pages
