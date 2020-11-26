@@ -18,7 +18,7 @@ the main thread execute a (fixed, parameterless) callback.
 import wx
 
 
-#: Event type that's unique to this message. (It's just an integer.)
+#: Event type that's unique to the Pinger infrastructure.
 _PING_EVENT_TYPE = wx.NewEventType()
 
 
