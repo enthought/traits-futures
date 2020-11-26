@@ -22,6 +22,7 @@ TIMEOUT = 10.0
 # our own, but we were running into segfaults.
 # xref: enthought/pyface#815, enthought/traits-futures#251
 
+
 class TimeoutTimer(wx.Timer):
     """
     Single-shot timer that executes a given callback on completion.
