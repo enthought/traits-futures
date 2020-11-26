@@ -14,6 +14,7 @@ the top-level repository README for more detailed instructions on how to use
 these.
 """
 import contextlib
+import glob
 import os
 import shutil
 import stat
@@ -408,11 +409,17 @@ def in_coverage_directory():
         shutil.rmtree(coverage_directory, onerror=_remove_readonly)
     os.makedirs(coverage_directory)
 
+    # Copy coverage config.
+    shutil.copy('.coveragerc', coverage_directory)
+
     old_cwd = os.getcwd()
     os.chdir(coverage_directory)
     try:
         yield
     finally:
+        # Bring back coverage reports.
+        for filepath in glob.iglob('./.coverage*'):
+            shutil.copy(filepath, old_cwd)
         os.chdir(old_cwd)
 
 
