@@ -304,14 +304,7 @@ def test(edm, python_version, toolkit, verbose):
 
     failed_packages = []
     for package in test_packages:
-        test_cmd = [
-            "-Xfaulthandler",
-            "-m",
-            "unittest",
-            "discover",
-            *test_options,
-            package,
-        ]
+        test_cmd = ["-m", "unittest", "discover", *test_options, package]
 
         # Run tests from an empty directory to avoid picking up
         # code directly from the repository instead of the target
