@@ -34,9 +34,10 @@ jobs:
         git config user.email "<>"
     - name: Update gh-pages branch
       run: |
-        git checkout gh-pages
+        git checkout origin/gh-pages
+        git checkout -b gh-pages-test-update
         rm -r dev
         mv docs/build dev
         git add dev
         git commit -m "Update documentation for master branch"
-        git push origin gh-pages
+        git push origin gh-pages-test-update
