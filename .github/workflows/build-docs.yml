@@ -23,13 +23,11 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install pyside2 sphinx enthought-sphinx-theme
         python -m pip install .
-    - name: Autogenerate API documentation
-      run: |
     - name: Build HTML documentation with Sphinx
       run: |
         cd docs
         python -m sphinx.ext.apidoc -e -T -o source/api -t source/api/templates ../traits_futures ../*/tests
-        python -m sphinx -b html -d doctrees source build
+        python -m sphinx -b html -d doctrees -W source build
     - name: Archive HTML documentation build
       uses: actions/upload-artifact@v2
       with:
