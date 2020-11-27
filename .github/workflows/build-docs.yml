@@ -34,12 +34,12 @@ jobs:
       run: |
         git config user.name "Documentation Bot"
         git config user.email "<>"
-    - name: Update gh-pages branch
+    - name: Update gh-pages-staging branch
       run: |
-        git fetch --depth=1 origin gh-pages
-        git checkout gh-pages
+        git fetch --depth=1 origin gh-pages-staging
+        git checkout gh-pages-staging
         rm -r dev
         mv docs/build dev
         git add dev
         git commit -m "Update documentation for master branch"
-        git push origin gh-pages
+        git push origin gh-pages-staging
