@@ -1,4 +1,4 @@
-name: Update gh-pages documentation
+name: Update gh-pages documentation for master branch
 
 on:
   push:
@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the branch
+    - name: Check out the master branch
       uses: actions/checkout@v2
+      with:
+        ref:
+          master
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
