@@ -18,8 +18,15 @@ the main thread execute a (fixed, parameterless) callback.
 import wx.lib.newevent
 
 
-#: Create new event type that's unique to the Pinger infrastructure.
-_PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()
+# Note: we're not using the more obvious spelling
+#   _PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()
+# here because that confuses Sphinx's autodoc mocking.
+# Ref: enthought/traits-futures#263.
+
+#: New event type that's unique to the Pinger infrastructure.
+_PingEventPair = wx.lib.newevent.NewEvent()
+_PingEvent = _PingEventPair[0]
+_PingEventBinder = _PingEventPair[1]
 
 
 class Pinger:
