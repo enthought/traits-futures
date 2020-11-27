@@ -1,7 +1,9 @@
 name: Update gh-pages documentation for master branch
 
 on:
-  pull_request
+  push:
+    branches:
+    - master
 
 jobs:
   docs:
