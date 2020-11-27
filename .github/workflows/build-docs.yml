@@ -27,8 +27,8 @@ jobs:
         python -m pip install .
     - name: Build HTML documentation with Sphinx
       run: |
+        python -m sphinx.ext.apidoc -e -T -o docs/source/api -t docs/source/api/templates traits_futures traits_futures/api.py */tests
         cd docs
-        python -m sphinx.ext.apidoc -e -T -o source/api -t source/api/templates ../traits_futures ../*/tests
         python -m sphinx -b html -d doctrees -W source build
     - name: Configure Git
       run: |
