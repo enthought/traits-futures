@@ -15,18 +15,11 @@ This module provides a way for a background thread to request that
 the main thread execute a (fixed, parameterless) callback.
 """
 
-import wx
+import wx.lib.newevent
 
 
-#: Event type that's unique to the Pinger infrastructure.
-_PING_EVENT_TYPE = wx.NewEventType()
-
-
-class _PingEvent(wx.PyCommandEvent):
-    """ wx event used to signal that a message has been sent """
-
-    def __init__(self):
-        wx.PyCommandEvent.__init__(self, _PING_EVENT_TYPE)
+#: Create new event type that's unique to the Pinger infrastructure.
+_PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()
 
 
 class Pinger:
@@ -82,12 +75,10 @@ class Pingee(wx.EvtHandler):
         """
         Prepare Pingee to receive pings.
         """
-        self._binder = wx.PyEventBinder(_PING_EVENT_TYPE)
-        self.Bind(self._binder, self._on_ping)
+        self.Bind(_PingEventBinder, handler=self._on_ping)
 
     def disconnect(self):
         """
         Undo any connections made in the connect method.
         """
-        self.Unbind(self._binder, handler=self._on_ping)
-        del self._binder
+        self.Unbind(_PingEventBinder, handler=self._on_ping)
