@@ -44,7 +44,6 @@ import traits_futures.version
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.githubpages",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
@@ -197,6 +196,12 @@ texinfo_documents = [
         "Miscellaneous",
     ),
 ]
+
+# Options for autodoc extension
+# -----------------------------
+
+autodoc_mock_imports = ["pyface.qt", "wx"]
+
 
 # Options for intersphinx extension
 # ---------------------------------
