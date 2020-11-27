@@ -24,12 +24,13 @@ _PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()
 
 class Pinger:
     """
-    Ping emitter, which can emit pings in a thread-safe manner.
+    Ping emitter, which can send pings to a receiver in a thread-safe manner.
 
     Parameters
     ----------
     pingee : Pingee
-        The corresponding ping receiver.
+        The target receiver for the pings. The receiver must already be
+        connected.
     """
 
     def __init__(self, pingee):
@@ -59,6 +60,13 @@ class Pinger:
 class Pingee(wx.EvtHandler):
     """
     Receiver for pings.
+
+    Whenever a ping is received from a linked Pingee, the receiver
+    calls the given fixed parameterless callable.
+
+    The ping receiver must be connected (using the ``connect``) method
+    before use, and should call ``disconnect`` when it's no longer
+    expected to receive pings.
 
     Parameters
     ----------
