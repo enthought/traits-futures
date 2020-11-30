@@ -69,13 +69,15 @@ class MessageRouter(HasStrictTraits):
         """
         Prepare router for routing.
         """
-        pass
+        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee.connect()
 
     def disconnect(self):
         """
         Undo any connections made by the ``connect`` call.
         """
-        pass
+        self._pingee.disconnect()
+        self._pingee = None
 
     # Private traits ##########################################################
 
@@ -110,6 +112,3 @@ class MessageRouter(HasStrictTraits):
 
     def __connection_ids_default(self):
         return itertools.count()
-
-    def __pingee_default(self):
-        return Pingee(on_ping=self._route_message)
