@@ -37,13 +37,13 @@ jobs:
       run: |
         git config user.name "Documentation Bot"
         git config user.email "<>"
-    - name: Update gh-pages-staging branch
+    - name: Update gh-pages branch
       run: |
-        git fetch --depth=1 origin gh-pages-staging
-        git checkout gh-pages-staging
+        git fetch --depth=1 origin gh-pages
+        git checkout gh-pages
         rm -r dev
         mv docs/build dev
         git add dev
         # Only commit if there are changes
         git diff-index --quiet --cached HEAD || git commit -m "Automated update of master branch documentation"
-        git push origin gh-pages-staging
+        git push origin gh-pages
