@@ -15,6 +15,8 @@ environment:
       CI_TOOLKIT: "pyqt5"
     - CI_PYTHON_VERSION: "py36"
       CI_TOOLKIT: "pyside2"
+    - CI_PYTHON_VERSION: "py36"
+      CI_TOOLKIT: "wxpython"
 
 cache:
   - C:\Users\appveyor\.cache -> appveyor-clean-cache.txt

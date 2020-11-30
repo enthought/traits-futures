@@ -7,6 +7,7 @@ services:
 addons:
   apt:
     packages:
+    # Qt dependencies
     - qt5-default
     - libxkbcommon-x11-0
     - libxcb-icccm4
@@ -15,6 +16,8 @@ addons:
     - libxcb-randr0
     - libxcb-render-util0
     - libxcb-xinerama0
+    # wxPython dependencies
+    - libsdl2-2.0-0
 
 env:
   global:
@@ -35,14 +38,8 @@ matrix:
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt5"
   - os: linux
     env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyside2"
-  - os: osx
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="null"
-  - os: osx
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt"
-  - os: osx
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyqt5"
-  - os: osx
-    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="pyside2"
+  - os: linux
+    env: CI_PYTHON_VERSION="py36" CI_TOOLKIT="wxpython"
 
 before_install:
   - mkdir -p "${HOME}/.cache/download"

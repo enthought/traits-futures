@@ -9,69 +9,26 @@
 # Thanks for using Enthought open source!
 
 """
-Message routing for the null toolkit.
-
-Messages are dispatched onto the asyncio event loop.
+Message routing from background threads to the GUI event loop.
 """
-import asyncio
+
 import collections.abc
 import itertools
 import queue
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.message_receiver import MessageReceiver
+from traits_futures.multithreading_sender import MultithreadingSender
+from traits_futures.toolkit_support import toolkit
 
-class MessageSender:
-    """
-    Object allowing the worker to send messages.
-
-    This class will be instantiated in the main thread, but passed to the
-    worker thread to allow the worker to communicate back to the main
-    thread.
-
-    Only the worker thread should use the send method, and only
-    inside a "with sender:" block.
-    """
-
-    def __init__(
-        self, connection_id, asyncio_event_loop, route_message, message_queue
-    ):
-        self.connection_id = connection_id
-        self.asyncio_event_loop = asyncio_event_loop
-        self.route_message = route_message
-        self.message_queue = message_queue
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc_info):
-        self.message_queue.put(("done", self.connection_id))
-        asyncio.run_coroutine_threadsafe(
-            self.route_message(), self.asyncio_event_loop
-        )
-
-    def send(self, message):
-        """
-        Send a message to the router.
-        """
-        self.message_queue.put(("message", self.connection_id, message))
-        asyncio.run_coroutine_threadsafe(
-            self.route_message(), self.asyncio_event_loop
-        )
-
-
-class MessageReceiver(HasStrictTraits):
-    """
-    Main-thread object that receives messages from a MessageSender.
-    """
-
-    #: Event fired when a message is received from the paired sender.
-    message = Event(Any())
+Pingee = toolkit("pinger:Pingee")
+Pinger = toolkit("pinger:Pinger")
 
 
 class MessageRouter(HasStrictTraits):
     """
-    Router for messages, sent by means of Qt signals and slots.
+    Router for messages from a background thread.
 
     Requires the event loop to be running in order for messages to arrive.
     """
@@ -85,16 +42,16 @@ class MessageRouter(HasStrictTraits):
 
         Returns
         -------
-        sender : MessageSender
+        sender : MultithreadingSender
             Object to be passed to the background task to send messages.
         receiver : MessageReceiver
             Object to be kept in the foreground which reacts to messages.
         """
         connection_id = next(self._connection_ids)
-        sender = MessageSender(
+        pinger = Pinger(pingee=self._pingee)
+        sender = MultithreadingSender(
             connection_id=connection_id,
-            asyncio_event_loop=self._event_loop,
-            route_message=self._route_message,
+            pinger=pinger,
             message_queue=self._message_queue,
         )
         receiver = MessageReceiver()
@@ -112,12 +69,15 @@ class MessageRouter(HasStrictTraits):
         """
         Prepare router for routing.
         """
-        self._event_loop = asyncio.get_event_loop()
+        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee.connect()
 
     def disconnect(self):
         """
         Undo any connections made by the ``connect`` call.
         """
+        self._pingee.disconnect()
+        self._pingee = None
 
     # Private traits ##########################################################
 
@@ -130,12 +90,12 @@ class MessageRouter(HasStrictTraits):
     #: Receivers, keyed by connection_id.
     _receivers = Dict(Int(), Any())
 
-    #: The event loop used for message routing.
-    _event_loop = Any()
+    #: Receiver for the "message_sent" signal.
+    _pingee = Instance(Pingee)
 
     # Private methods #########################################################
 
-    async def _route_message(self):
+    def _route_message(self):
         wrapped_message = self._message_queue.get()
         if wrapped_message[0] == "message":
             _, connection_id, message = wrapped_message

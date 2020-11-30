@@ -67,7 +67,7 @@ def pi_iterations(chunk_size):
     while True:
         samples = np.random.random(size=(chunk_size, 2))
         nsamples += chunk_size
-        ninside += np.sum((samples * samples).sum(axis=1) <= 1.0)
+        ninside += int(np.sum((samples * samples).sum(axis=1) <= 1.0))
 
         # Compute approximation along with a two-sided error giving
         # a ~95% confidence interval on that approximation.
