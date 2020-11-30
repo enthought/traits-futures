@@ -17,6 +17,7 @@ traits\_futures.wx package
    :undoc-members:
    :show-inheritance:
 
+
 .. toctree::
 
    traits_futures.wx.gui_test_assistant

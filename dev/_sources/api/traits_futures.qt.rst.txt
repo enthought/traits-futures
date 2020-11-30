@@ -17,6 +17,7 @@ traits\_futures.qt package
    :undoc-members:
    :show-inheritance:
 
+
 .. toctree::
 
    traits_futures.qt.gui_test_assistant
