@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.null.message\_router module
-===========================================
+traits\_futures.wx.gui\_test\_assistant module
+==============================================
 
-.. automodule:: traits_futures.null.message_router
+.. automodule:: traits_futures.wx.gui_test_assistant
    :members:
    :undoc-members:
    :show-inheritance:

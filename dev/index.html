@@ -111,8 +111,6 @@ updates off the main thread).</p></li>
 <ul class="simple">
 <li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
 UI event loop to be running in order to process results.</p></li>
-<li><p>For the moment, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires Qt. Support for wxPython
-may arrive in a future release.</p></li>
 <li><p>No multiprocessing support yet. Maybe one day.</p></li>
 <li><p>Requires Python 3.6 or later.</p></li>
 </ul>
@@ -271,7 +269,10 @@ result when it arrives.</p>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_future.html">traits_futures.i_future module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_parallel_context.html">traits_futures.i_parallel_context module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_task_specification.html">traits_futures.i_task_specification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.message_receiver.html">traits_futures.message_receiver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.message_router.html">traits_futures.message_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_context.html">traits_futures.multithreading_context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_sender.html">traits_futures.multithreading_sender module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.toolkit_support.html">traits_futures.toolkit_support module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.version.html">traits_futures.version module</a></li>
@@ -279,13 +280,19 @@ result when it arrives.</p>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.null.html">traits_futures.null package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.gui_test_assistant.html">traits_futures.null.gui_test_assistant module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.init.html">traits_futures.null.init module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.message_router.html">traits_futures.null.message_router module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.pinger.html">traits_futures.null.pinger module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.qt.html">traits_futures.qt package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.gui_test_assistant.html">traits_futures.qt.gui_test_assistant module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.init.html">traits_futures.qt.init module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.message_router.html">traits_futures.qt.message_router module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.pinger.html">traits_futures.qt.pinger module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wx.html">traits_futures.wx package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.gui_test_assistant.html">traits_futures.wx.gui_test_assistant module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.init.html">traits_futures.wx.init module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.pinger.html">traits_futures.wx.pinger module</a></li>
 </ul>
 </li>
 </ul>
