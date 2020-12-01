@@ -10,6 +10,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [3.6, 3.9]
 
+    env:
+      ETS_TOOLKIT: qt
+
     runs-on: ${{ matrix.os }}
 
     steps:
