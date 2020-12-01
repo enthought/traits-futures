@@ -14,7 +14,7 @@
 {%- for option in options %}
    :{{ option }}:
 {%- endfor %}
-{%- endmacro -%}
+{% endmacro -%}
 
 {{ [basename, "module"] | join(' ') | e | heading }}
 

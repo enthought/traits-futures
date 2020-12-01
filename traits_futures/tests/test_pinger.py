@@ -13,7 +13,14 @@ import queue
 import threading
 import unittest
 
-from traits.api import Event, HasStrictTraits, Instance, Int
+from traits.api import (
+    Event,
+    HasStrictTraits,
+    Instance,
+    Int,
+    List,
+    on_trait_change,
+)
 
 from traits_futures.toolkit_support import toolkit
 
@@ -95,6 +102,13 @@ class PingListener(HasStrictTraits):
     #: Total number of pings received.
     ping_count = Int(0)
 
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, *exc_info):
+        self.disconnect()
+
     def connect(self):
         self.pingee = Pingee(on_ping=lambda: setattr(self, "ping", True))
         self.pingee.connect()
@@ -105,6 +119,28 @@ class PingListener(HasStrictTraits):
 
     def _ping_fired(self):
         self.ping_count += 1
+
+
+class MultipleListeners(HasStrictTraits):
+    """
+    Listener for PingListeners, accumulating pings from all listeners.
+    """
+
+    # The individual PingListeners to listen to.
+    listeners = List(Instance(PingListener))
+
+    #: Event fired every time a ping is received.
+    ping = Event()
+
+    #: Total number of pings received from all listeners.
+    ping_count = Int(0)
+
+    def _ping_fired(self):
+        self.ping_count += 1
+
+    @on_trait_change("listeners:ping")
+    def _transmit_ping(self):
+        self.ping = True
 
 
 class TestPinger(GuiTestAssistant, unittest.TestCase):
@@ -152,6 +188,22 @@ class TestPinger(GuiTestAssistant, unittest.TestCase):
             self.assertEventuallyPinged(ping_count=15)
 
         self.assertEqual(self.listener.ping_count, 15)
+
+    def test_multiple_pingees(self):
+        with PingListener() as listener1:
+            with PingListener() as listener2:
+                listeners = MultipleListeners(listeners=[listener1, listener2])
+                with BackgroundPinger(listener1.pingee) as pinger1:
+                    with BackgroundPinger(listener2.pingee) as pinger2:
+                        pinger1.ping(3)
+                        pinger2.ping(4)
+
+                self.run_until(
+                    listeners, "ping", lambda obj: obj.ping_count >= 7
+                )
+
+        self.assertEqual(listener1.ping_count, 3)
+        self.assertEqual(listener2.ping_count, 4)
 
     def test_background_threads_finish_before_event_loop_starts(self):
         # Previous tests keep the background threads running until we've

@@ -30,11 +30,18 @@ class Pingee(QObject):
     """
     Receiver for pings.
 
+    Whenever a ping is received from a linked Pingee, the receiver
+    calls the given fixed parameterless callable.
+
+    The ping receiver must be connected (using the ``connect``) method
+    before use, and should call ``disconnect`` when it's no longer
+    expected to receive pings.
+
     Parameters
     ----------
     on_ping : callable
-        Zero-argument callable that's executed on the main thread as a
-        result of each ping.
+        Zero-argument callable that's called on the main thread
+        every time a ping is received.
     """
 
     def __init__(self, on_ping):
@@ -60,12 +67,13 @@ class Pingee(QObject):
 
 class Pinger:
     """
-    Ping emitter, which can emit pings in a thread-safe manner.
+    Ping emitter, which can send pings to a receiver in a thread-safe manner.
 
     Parameters
     ----------
     pingee : Pingee
-        The corresponding ping receiver.
+        The target receiver for the pings. The receiver must already be
+        connected.
     """
 
     def __init__(self, pingee):
