@@ -103,8 +103,8 @@
 <span class="sd">package, but if this is not explicitly set by an application at startup or via</span>
 <span class="sd">environment variables, there needs to be a way of discovering and loading any</span>
 <span class="sd">available working toolkit implementations.  The default mechanism is via the</span>
-<span class="sd">now-standard :py:mod:`pkg_resources` and :py:mod:`setuptools` &quot;entry point&quot;</span>
-<span class="sd">system.</span>
+<span class="sd">now-standard :py:mod:`importlib_metadata` and :py:mod:`setuptools`</span>
+<span class="sd">&quot;entry point&quot; system.</span>
 
 <span class="sd">This module provides three things:</span>
 
@@ -145,8 +145,14 @@
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Starting Python 3.8, importlib.metadata is available in the Python</span>
+    <span class="c1"># standard library.</span>
+    <span class="kn">import</span> <span class="nn">importlib.metadata</span> <span class="k">as</span> <span class="nn">importlib_metadata</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">importlib_metadata</span>
 
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">ReadOnly</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">TraitError</span>
 <span class="kn">from</span> <span class="nn">traits.etsconfig.api</span> <span class="kn">import</span> <span class="n">ETSConfig</span>
@@ -287,7 +293,10 @@
 <span class="sd">        If no toolkit is found, or if the toolkit cannot be loaded for some</span>
 <span class="sd">        reason.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">plugins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">))</span>
+    <span class="n">entry_point_group</span> <span class="o">=</span> <span class="n">importlib_metadata</span><span class="o">.</span><span class="n">entry_points</span><span class="p">()[</span><span class="n">entry_point</span><span class="p">]</span>
+    <span class="n">plugins</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">plugin</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">entry_point_group</span> <span class="k">if</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">toolkit_name</span>
+    <span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plugins</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No </span><span class="si">{}</span><span class="s2"> plugin found for toolkit </span><span class="si">{}</span><span class="s2">&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">)</span>
@@ -295,8 +304,11 @@
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">plugins</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;multiple </span><span class="si">%r</span><span class="s2"> plugins found for toolkit </span><span class="si">%r</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span>
-        <span class="n">modules</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">module_name</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">,</span> <span class="n">modules</span><span class="p">)</span>
+        <span class="n">module_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">:</span>
+            <span class="n">module_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">module_names</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_names</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">toolkit_name</span><span class="p">,</span> <span class="n">module_names</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -304,7 +316,8 @@
             <span class="k">return</span> <span class="n">toolkit_object</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Could not load plugin </span><span class="si">%r</span><span class="s2"> from </span><span class="si">%r</span><span class="s2">&quot;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No </span><span class="si">{}</span><span class="s2"> plugin could be loaded for </span><span class="si">{}</span><span class="s2">&quot;</span>
@@ -349,8 +362,7 @@
         <span class="k">return</span> <span class="n">import_toolkit</span><span class="p">(</span><span class="n">ETSConfig</span><span class="o">.</span><span class="n">toolkit</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">)</span>
 
     <span class="n">entry_points</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">plugin</span>
-        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">iter_entry_points</span><span class="p">(</span><span class="n">entry_point</span><span class="p">)</span>
+        <span class="n">plugin</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">importlib_metadata</span><span class="o">.</span><span class="n">entry_points</span><span class="p">()[</span><span class="n">entry_point</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">toolkits</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">toolkits</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">entry_points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">priorities</span><span class="p">):</span>
@@ -360,7 +372,8 @@
                 <span class="k">return</span> <span class="n">toolkit</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Could not load </span><span class="si">%s</span><span class="s2"> plugin </span><span class="si">%r</span><span class="s2"> from </span><span class="si">%r</span><span class="s2">&quot;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">module_name</span><span class="p">)</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># if all else fails, try to import the null toolkit.</span>
