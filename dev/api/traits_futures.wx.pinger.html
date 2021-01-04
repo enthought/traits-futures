@@ -25,7 +25,6 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
@@ -89,13 +88,43 @@
 <p>This module provides a way for a background thread to request that
 the main thread execute a (fixed, parameterless) callback.</p>
 <dl class="py class">
+<dt id="traits_futures.wx.pinger.Pingee">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wx.pinger.</code><code class="sig-name descname">Pingee</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pinger.html#Pingee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.pinger.Pingee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
+<p>Receiver for pings.</p>
+<p>Whenever a ping is received from a linked Pingee, the receiver
+calls the given fixed parameterless callable.</p>
+<p>The ping receiver must be connected (using the <code class="docutils literal notranslate"><span class="pre">connect</span></code>) method
+before use, and should call <code class="docutils literal notranslate"><span class="pre">disconnect</span></code> when it’s no longer
+expected to receive pings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>on_ping</strong> (<em>callable</em>) – Zero-argument callable that’s called on the main thread
+every time a ping is received.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.wx.pinger.Pingee.connect">
+<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pinger.html#Pingee.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.pinger.Pingee.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare Pingee to receive pings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.wx.pinger.Pingee.disconnect">
+<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pinger.html#Pingee.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.pinger.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undo any connections made in the connect method.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="traits_futures.wx.pinger.Pinger">
 <em class="property">class </em><code class="sig-prename descclassname">traits_futures.wx.pinger.</code><code class="sig-name descname">Pinger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pingee</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pinger.html#Pinger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.pinger.Pinger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Ping emitter, which can send pings to a receiver in a thread-safe manner.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.null.pinger.html#traits_futures.null.pinger.Pingee" title="traits_futures.null.pinger.Pingee"><em>Pingee</em></a>) – The target receiver for the pings. The receiver must already be
+<dd class="field-odd"><p><strong>pingee</strong> (<a class="reference internal" href="#traits_futures.wx.pinger.Pingee" title="traits_futures.wx.pinger.Pingee"><em>Pingee</em></a>) – The target receiver for the pings. The receiver must already be
 connected.</p>
 </dd>
 </dl>
@@ -178,7 +207,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
       </li>
     </ul>
     </div>

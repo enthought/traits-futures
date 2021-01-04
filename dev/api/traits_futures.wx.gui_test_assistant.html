@@ -25,7 +25,6 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
@@ -92,6 +91,33 @@
 <span id="traits-futures-wx-gui-test-assistant-module"></span><h1>traits_futures.wx.gui_test_assistant module<a class="headerlink" href="#module-traits_futures.wx.gui_test_assistant" title="Permalink to this headline">¶</a></h1>
 <p>Test support, providing the ability to run the event loop from tests.</p>
 <dl class="py class">
+<dt id="traits_futures.wx.gui_test_assistant.AppForTesting">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wx.gui_test_assistant.</code><code class="sig-name descname">AppForTesting</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#AppForTesting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.AppForTesting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
+<p>Subclass of wx.App used for testing.</p>
+<dl class="py method">
+<dt id="traits_futures.wx.gui_test_assistant.AppForTesting.OnInit">
+<code class="sig-name descname">OnInit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#AppForTesting.OnInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.AppForTesting.OnInit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override base class to ensure we have at least one window.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.wx.gui_test_assistant.AppForTesting.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#AppForTesting.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.AppForTesting.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up when the object is no longer needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.wx.gui_test_assistant.AppForTesting.exit">
+<code class="sig-name descname">exit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exit_code</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#AppForTesting.exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.AppForTesting.exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exit the application main event loop with a given exit code.</p>
+<p>The event loop can be started and stopped several times for
+a single AppForTesting object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="traits_futures.wx.gui_test_assistant.GuiTestAssistant">
 <em class="property">class </em><code class="sig-prename descclassname">traits_futures.wx.gui_test_assistant.</code><code class="sig-name descname">GuiTestAssistant</code><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#GuiTestAssistant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.GuiTestAssistant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
@@ -136,6 +162,45 @@ The (somewhat arbitrary) default is 10 seconds.</p></li>
 <dt id="traits_futures.wx.gui_test_assistant.TIMEOUT">
 <code class="sig-prename descclassname">traits_futures.wx.gui_test_assistant.</code><code class="sig-name descname">TIMEOUT</code><em class="property"> = 10.0</em><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.TIMEOUT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default timeout, in seconds</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.wx.gui_test_assistant.TimeoutTimer">
+<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wx.gui_test_assistant.</code><code class="sig-name descname">TimeoutTimer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#TimeoutTimer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.TimeoutTimer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
+<p>Single-shot timer that executes a given callback on completion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Timeout in seconds.</p></li>
+<li><p><strong>callback</strong> (<em>callable</em>) – Callable taking no arguments, to be executed when the timer
+times out.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Tuple of positional arguments to pass to the callable. If not
+provided, no positional arguments are passed.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – Dictionary of keyword arguments to pass to the callable. If not
+provided, no keyword arguments are passed.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.wx.gui_test_assistant.TimeoutTimer.Notify">
+<code class="sig-name descname">Notify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#TimeoutTimer.Notify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.TimeoutTimer.Notify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the callback when the timer completes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.wx.gui_test_assistant.TimeoutTimer.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#TimeoutTimer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.TimeoutTimer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the timer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.wx.gui_test_assistant.TimeoutTimer.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/gui_test_assistant.html#TimeoutTimer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wx.gui_test_assistant.TimeoutTimer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the timer if it hasn’t already expired. The callback
+will not be executed.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -198,7 +263,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
       </li>
     </ul>
     </div>
