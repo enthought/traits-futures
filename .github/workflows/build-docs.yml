@@ -1,20 +1,17 @@
-name: Update gh-pages documentation for master branch
+name: Update gh-pages documentation for main branch
 
 on:
   push:
     branches:
-    - master
+    - main
 
 jobs:
   docs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the master branch
+    - name: Check out the main branch
       uses: actions/checkout@v2
-      with:
-        ref:
-          master
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -45,5 +42,5 @@ jobs:
         mv docs/build dev
         git add dev
         # Only commit if there are changes
-        git diff-index --quiet --cached HEAD || git commit -m "Automated update of master branch documentation"
+        git diff-index --quiet --cached HEAD || git commit -m "Automated update of main branch documentation"
         git push origin gh-pages
