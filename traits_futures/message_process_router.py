@@ -12,8 +12,7 @@
 Support for routing message streams from background processes to their
 corresponding foreground receivers.
 
-This version of the module is for a multiprocessing back end and
-the Qt toolkit on the front end.
+This version of the module is for a multiprocessing back end.
 """
 
 import collections.abc
@@ -25,34 +24,11 @@ import threading
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.message_receiver import MessageReceiver
+from traits_futures.multiprocessing_sender import MultiprocessingSender
 from traits_futures.toolkit_support import toolkit
 
 Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
-
-
-class MessageSender:
-    def __init__(self, connection_id, message_queue):
-        self.connection_id = connection_id
-        self.message_queue = message_queue
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc_info):
-        self.message_queue.put(("done", self.connection_id))
-
-    def send(self, message):
-        """
-        Send a message to the router.
-
-        Parameters
-        ----------
-        message : object
-            Message to be sent to the corresponding foreground receiver.
-            via the router.
-        """
-        self.message_queue.put(("message", self.connection_id, message))
 
 
 class MessageProcessRouter(HasStrictTraits):
@@ -81,6 +57,7 @@ class MessageProcessRouter(HasStrictTraits):
         # XXX Move more initialization here.
         self._pingee = Pingee(on_ping=self._route_message)
         self._pingee.connect()
+
         self._monitor_thread = threading.Thread(
             target=monitor_queue,
             args=(
@@ -108,7 +85,7 @@ class MessageProcessRouter(HasStrictTraits):
         # XXX Docstring!
         connection_id = next(self._connection_ids)
 
-        sender = MessageSender(
+        sender = MultiprocessingSender(
             connection_id=connection_id,
             message_queue=self._process_message_queue,
         )

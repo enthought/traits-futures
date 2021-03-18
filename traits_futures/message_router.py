@@ -9,7 +9,10 @@
 # Thanks for using Enthought open source!
 
 """
-Message routing from background threads to the GUI event loop.
+Support for routing message streams from background processes to their
+corresponding foreground receivers.
+
+This version of the module is for a multithreading back end.
 """
 
 import collections.abc
