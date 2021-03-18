@@ -91,31 +91,31 @@
 <p>Message routing from background threads to the GUI event loop.</p>
 <dl class="py class">
 <dt id="traits_futures.message_router.MessageRouter">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.message_router.</code><code class="sig-name descname">MessageRouter</code><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.message_router.</span></code><code class="sig-name descname"><span class="pre">MessageRouter</span></code><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Router for messages from a background thread.</p>
 <p>Requires the event loop to be running in order for messages to arrive.</p>
 <dl class="py method">
 <dt id="traits_futures.message_router.MessageRouter.close_pipe">
-<code class="sig-name descname">close_pipe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sender</span></em>, <em class="sig-param"><span class="n">receiver</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.close_pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">close_pipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close an unused pipe.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.message_router.MessageRouter.connect">
-<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.connect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare router for routing.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.message_router.MessageRouter.disconnect">
-<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.disconnect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Undo any connections made by the <code class="docutils literal notranslate"><span class="pre">connect</span></code> call.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.message_router.MessageRouter.pipe">
-<code class="sig-name descname">pipe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.pipe" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pipe</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/message_router.html#MessageRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.message_router.MessageRouter.pipe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a (sender, receiver) pair for sending messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -130,7 +130,7 @@
 
 <dl class="py attribute">
 <dt id="traits_futures.message_router.MessageRouter.receiver_done">
-<code class="sig-name descname">receiver_done</code><em class="property"> = Event(Instance(MessageReceiver))</em><a class="headerlink" href="#traits_futures.message_router.MessageRouter.receiver_done" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">receiver_done</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Event(Instance(MessageReceiver))</span></em><a class="headerlink" href="#traits_futures.message_router.MessageRouter.receiver_done" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event fired when a receiver is dropped from the routing table.</p>
 </dd></dl>
 
@@ -196,7 +196,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
       </li>
     </ul>
     </div>

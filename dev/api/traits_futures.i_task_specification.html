@@ -92,7 +92,7 @@
 that the TraitsExecutor knows how to deal with.</p>
 <dl class="py class">
 <dt id="traits_futures.i_task_specification.ITaskSpecification">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.i_task_specification.</code><code class="sig-name descname">ITaskSpecification</code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">ITaskSpecification</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Specify background task callable and foreground future for a task.</p>
 <p>An object implementing the ITaskSpecification interface describes how to
@@ -102,7 +102,7 @@ when submitting background tasks, and implemented by BackgroundCall,
 BackgroundIteration and others.</p>
 <dl class="py method">
 <dt id="traits_futures.i_task_specification.ITaskSpecification.background_task">
-<em class="property">abstract </em><code class="sig-name descname">background_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.background_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.background_task" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">background_task</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.background_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the callable that will be invoked as the background task.</p>
 <p>This callable should be pickleable and should have the signature</p>
 <blockquote>
@@ -136,7 +136,7 @@ cancellation status.</p>
 
 <dl class="py method">
 <dt id="traits_futures.i_task_specification.ITaskSpecification.future">
-<em class="property">abstract </em><code class="sig-name descname">future</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">future</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Future for the background task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -211,7 +211,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
       </li>
     </ul>
     </div>

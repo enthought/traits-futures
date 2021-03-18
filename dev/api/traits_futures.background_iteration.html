@@ -91,18 +91,18 @@
 <p>Background task that sends results from an iteration.</p>
 <dl class="py class">
 <dt id="traits_futures.background_iteration.BackgroundIteration">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_iteration.</code><code class="sig-name descname">BackgroundIteration</code><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#BackgroundIteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.background_iteration.</span></code><code class="sig-name descname"><span class="pre">BackgroundIteration</span></code><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#BackgroundIteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Object representing the background iteration to be executed.</p>
 <dl class="py attribute">
 <dt id="traits_futures.background_iteration.BackgroundIteration.args">
-<code class="sig-name descname">args</code><em class="property"> = Tuple()</em><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.args" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">args</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Tuple()</span></em><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positional arguments to be passed to the callable.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.background_iteration.BackgroundIteration.background_task">
-<code class="sig-name descname">background_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#BackgroundIteration.background_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.background_task" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">background_task</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#BackgroundIteration.background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.background_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a background callable for this task specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -118,13 +118,13 @@ check whether cancellation has been requested.</p>
 
 <dl class="py attribute">
 <dt id="traits_futures.background_iteration.BackgroundIteration.callable">
-<code class="sig-name descname">callable</code><em class="property"> = Callable()</em><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.callable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">callable</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Callable()</span></em><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.callable" title="Permalink to this definition">¶</a></dt>
 <dd><p>The callable to be executed. This should return something iterable.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.background_iteration.BackgroundIteration.future">
-<code class="sig-name descname">future</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#BackgroundIteration.future"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.future" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">future</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#BackgroundIteration.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Future for the background task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -139,7 +139,7 @@ background task.</p>
 
 <dl class="py attribute">
 <dt id="traits_futures.background_iteration.BackgroundIteration.kwargs">
-<code class="sig-name descname">kwargs</code><em class="property"> = Dict(Str())</em><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.kwargs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">kwargs</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Dict(Str())</span></em><a class="headerlink" href="#traits_futures.background_iteration.BackgroundIteration.kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Named arguments to be passed to the callable.</p>
 </dd></dl>
 
@@ -147,26 +147,26 @@ background task.</p>
 
 <dl class="py data">
 <dt id="traits_futures.background_iteration.GENERATED">
-<code class="sig-prename descclassname">traits_futures.background_iteration.</code><code class="sig-name descname">GENERATED</code><em class="property"> = 'generated'</em><a class="headerlink" href="#traits_futures.background_iteration.GENERATED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.background_iteration.</span></code><code class="sig-name descname"><span class="pre">GENERATED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'generated'</span></em><a class="headerlink" href="#traits_futures.background_iteration.GENERATED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Message sent whenever the iteration yields a result.
 The message argument is the result generated.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="traits_futures.background_iteration.IterationBackgroundTask">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_iteration.</code><code class="sig-name descname">IterationBackgroundTask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">callable</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#IterationBackgroundTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_iteration.IterationBackgroundTask" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.background_iteration.</span></code><code class="sig-name descname"><span class="pre">IterationBackgroundTask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#IterationBackgroundTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.IterationBackgroundTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Iteration to be executed in the background.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="traits_futures.background_iteration.IterationFuture">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.background_iteration.</code><code class="sig-name descname">IterationFuture</code><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#IterationFuture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_iteration.IterationFuture" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.background_iteration.</span></code><code class="sig-name descname"><span class="pre">IterationFuture</span></code><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#IterationFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.IterationFuture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.base_future.BaseFuture</span></code></a></p>
 <p>Foreground representation of an iteration executing in the background.</p>
 <dl class="py attribute">
 <dt id="traits_futures.background_iteration.IterationFuture.result_event">
-<code class="sig-name descname">result_event</code><em class="property"> = Event()</em><a class="headerlink" href="#traits_futures.background_iteration.IterationFuture.result_event" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">result_event</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Event()</span></em><a class="headerlink" href="#traits_futures.background_iteration.IterationFuture.result_event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event fired whenever a result arrives from the background
 iteration.</p>
 </dd></dl>
@@ -175,7 +175,7 @@ iteration.</p>
 
 <dl class="py function">
 <dt id="traits_futures.background_iteration.submit_iteration">
-<code class="sig-prename descclassname">traits_futures.background_iteration.</code><code class="sig-name descname">submit_iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">executor</span></em>, <em class="sig-param"><span class="n">callable</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#submit_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.background_iteration.submit_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.background_iteration.</span></code><code class="sig-name descname"><span class="pre">submit_iteration</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#submit_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.submit_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background iteration to an executor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -255,7 +255,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
       </li>
     </ul>
     </div>

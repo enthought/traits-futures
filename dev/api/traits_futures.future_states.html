@@ -91,56 +91,56 @@
 <p>Future states, used by the various future classes.</p>
 <dl class="py data">
 <dt id="traits_futures.future_states.CANCELLABLE_STATES">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">CANCELLABLE_STATES</code><em class="property"> = ('executing', 'waiting')</em><a class="headerlink" href="#traits_futures.future_states.CANCELLABLE_STATES" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">CANCELLABLE_STATES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('executing',</span> <span class="pre">'waiting')</span></em><a class="headerlink" href="#traits_futures.future_states.CANCELLABLE_STATES" title="Permalink to this definition">¶</a></dt>
 <dd><p>States in which we’re permitted to cancel.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.CANCELLED">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">CANCELLED</code><em class="property"> = 'cancelled'</em><a class="headerlink" href="#traits_futures.future_states.CANCELLED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">CANCELLED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'cancelled'</span></em><a class="headerlink" href="#traits_futures.future_states.CANCELLED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task cancelled.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.CANCELLING">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">CANCELLING</code><em class="property"> = 'cancelling'</em><a class="headerlink" href="#traits_futures.future_states.CANCELLING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">CANCELLING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'cancelling'</span></em><a class="headerlink" href="#traits_futures.future_states.CANCELLING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cancellation has been requested, awaiting response.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.COMPLETED">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">COMPLETED</code><em class="property"> = 'completed'</em><a class="headerlink" href="#traits_futures.future_states.COMPLETED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">COMPLETED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'completed'</span></em><a class="headerlink" href="#traits_futures.future_states.COMPLETED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task completed without error.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.DONE_STATES">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">DONE_STATES</code><em class="property"> = ('cancelled', 'completed', 'failed')</em><a class="headerlink" href="#traits_futures.future_states.DONE_STATES" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">DONE_STATES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">('cancelled',</span> <span class="pre">'completed',</span> <span class="pre">'failed')</span></em><a class="headerlink" href="#traits_futures.future_states.DONE_STATES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Final states. If the future is in one of these states,
 no more messages will be received from the background task.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.EXECUTING">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">EXECUTING</code><em class="property"> = 'executing'</em><a class="headerlink" href="#traits_futures.future_states.EXECUTING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">EXECUTING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'executing'</span></em><a class="headerlink" href="#traits_futures.future_states.EXECUTING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task is executing.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.FAILED">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">FAILED</code><em class="property"> = 'failed'</em><a class="headerlink" href="#traits_futures.future_states.FAILED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">FAILED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'failed'</span></em><a class="headerlink" href="#traits_futures.future_states.FAILED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task failed, raising an exception.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="traits_futures.future_states.FutureState">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">FutureState</code><em class="property"> = Enum( …</em><a class="headerlink" href="#traits_futures.future_states.FutureState" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">FutureState</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Enum(</span> <span class="pre">…</span></em><a class="headerlink" href="#traits_futures.future_states.FutureState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trait type representing a future state.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.future_states.WAITING">
-<code class="sig-prename descclassname">traits_futures.future_states.</code><code class="sig-name descname">WAITING</code><em class="property"> = 'waiting'</em><a class="headerlink" href="#traits_futures.future_states.WAITING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.future_states.</span></code><code class="sig-name descname"><span class="pre">WAITING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'waiting'</span></em><a class="headerlink" href="#traits_futures.future_states.WAITING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Task queued, waiting to be executed.</p>
 </dd></dl>
 
@@ -204,7 +204,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
       </li>
     </ul>
     </div>

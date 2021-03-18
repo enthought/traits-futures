@@ -92,7 +92,7 @@
 <p>These are used by the TraitsExecutor machinery.</p>
 <dl class="py class">
 <dt id="traits_futures.wrappers.BackgroundTaskWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">BackgroundTaskWrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">background_task</span></em>, <em class="sig-param"><span class="n">sender</span></em>, <em class="sig-param"><span class="n">cancel_event</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">BackgroundTaskWrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancel_event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Wrapper for callables submitted to the underlying executor.</p>
 <dl class="field-list simple">
@@ -108,7 +108,7 @@ whether cancellation has been requested.</p></li>
 </dl>
 <dl class="py method">
 <dt id="traits_futures.wrappers.BackgroundTaskWrapper.send_control_message">
-<code class="sig-name descname">send_control_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message_type</span></em>, <em class="sig-param"><span class="n">message_args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_control_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_control_message" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">send_control_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_control_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_control_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a control message from the background task to the future.</p>
 <p>These messages apply to all futures, and are used to communicate
 changes to the state of the future.</p>
@@ -116,7 +116,7 @@ changes to the state of the future.</p>
 
 <dl class="py method">
 <dt id="traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message">
-<code class="sig-name descname">send_custom_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message_type</span></em>, <em class="sig-param"><span class="n">message_args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_custom_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">send_custom_message</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_custom_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a custom message from the background task to the future.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -133,32 +133,32 @@ If not given, <code class="docutils literal notranslate"><span class="pre">None<
 
 <dl class="py data">
 <dt id="traits_futures.wrappers.CONTROL">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">CONTROL</code><em class="property"> = 'control'</em><a class="headerlink" href="#traits_futures.wrappers.CONTROL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">CONTROL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'control'</span></em><a class="headerlink" href="#traits_futures.wrappers.CONTROL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prefix used for control messages.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.wrappers.CUSTOM">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">CUSTOM</code><em class="property"> = 'custom'</em><a class="headerlink" href="#traits_futures.wrappers.CUSTOM" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">CUSTOM</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'custom'</span></em><a class="headerlink" href="#traits_futures.wrappers.CUSTOM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prefix used for custom messages.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="traits_futures.wrappers.FutureWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">FutureWrapper</code><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">FutureWrapper</span></code><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Wrapper for the IFuture.</p>
 <p>This wrapper handles control messages from the background task, and
 delegates custom messages to the future.</p>
 <dl class="py attribute">
 <dt id="traits_futures.wrappers.FutureWrapper.future">
-<code class="sig-name descname">future</code><em class="property"> = Instance(IFuture)</em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">future</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>Future being wrapped</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="traits_futures.wrappers.FutureWrapper.receiver">
-<code class="sig-name descname">receiver</code><em class="property"> = Instance(HasTraits)</em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">receiver</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(HasTraits)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object that receives messages from the background task.</p>
 </dd></dl>
 
@@ -166,21 +166,21 @@ delegates custom messages to the future.</p>
 
 <dl class="py data">
 <dt id="traits_futures.wrappers.RAISED">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">RAISED</code><em class="property"> = 'raised'</em><a class="headerlink" href="#traits_futures.wrappers.RAISED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">RAISED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'raised'</span></em><a class="headerlink" href="#traits_futures.wrappers.RAISED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control message sent when an exception was raised by the background
 callable. The argument is a tuple containing exception information.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.wrappers.RETURNED">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">RETURNED</code><em class="property"> = 'returned'</em><a class="headerlink" href="#traits_futures.wrappers.RETURNED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">RETURNED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'returned'</span></em><a class="headerlink" href="#traits_futures.wrappers.RETURNED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control message sent to indicate that the background callable succeeded
 and returned a result. The argument is that result.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt id="traits_futures.wrappers.STARTED">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">STARTED</code><em class="property"> = 'started'</em><a class="headerlink" href="#traits_futures.wrappers.STARTED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">STARTED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'started'</span></em><a class="headerlink" href="#traits_futures.wrappers.STARTED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control message sent before we start to process the target callable.
 The argument is always <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd></dl>
@@ -245,7 +245,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
       </li>
     </ul>
     </div>

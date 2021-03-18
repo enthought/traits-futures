@@ -94,7 +94,7 @@
 the main thread execute a (fixed, parameterless) callback.</p>
 <dl class="py class">
 <dt id="traits_futures.null.pinger.Pingee">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.null.pinger.</code><code class="sig-name descname">Pingee</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">on_ping</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pingee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pingee" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.null.pinger.</span></code><code class="sig-name descname"><span class="pre">Pingee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pingee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Receiver for pings.</p>
 <p>Whenever a ping is received from a linked Pingee, the receiver
@@ -110,13 +110,13 @@ every time a ping is received.</p>
 </dl>
 <dl class="py method">
 <dt id="traits_futures.null.pinger.Pingee.connect">
-<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pingee.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pingee.connect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pingee.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pingee.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare Pingee to receive pings.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.null.pinger.Pingee.disconnect">
-<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pingee.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Undo any connections made in the connect method.</p>
 </dd></dl>
 
@@ -124,7 +124,7 @@ every time a ping is received.</p>
 
 <dl class="py class">
 <dt id="traits_futures.null.pinger.Pinger">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.null.pinger.</code><code class="sig-name descname">Pinger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pingee</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.null.pinger.</span></code><code class="sig-name descname"><span class="pre">Pinger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Ping emitter, which can send pings to a receiver in a thread-safe manner.</p>
 <dl class="field-list simple">
@@ -135,21 +135,21 @@ connected.</p>
 </dl>
 <dl class="py method">
 <dt id="traits_futures.null.pinger.Pinger.connect">
-<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger.connect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to the ping receiver. No pings should be sent until
 this function is called.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.null.pinger.Pinger.disconnect">
-<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger.disconnect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from the ping receiver. No pings should be sent
 after calling this function.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="traits_futures.null.pinger.Pinger.ping">
-<code class="sig-name descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger.ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger.ping" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ping</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/null/pinger.html#Pinger.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.null.pinger.Pinger.ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a ping to the receiver.</p>
 </dd></dl>
 
@@ -215,7 +215,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.4.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
       </li>
     </ul>
     </div>
