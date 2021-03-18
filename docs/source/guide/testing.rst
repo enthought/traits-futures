@@ -56,8 +56,8 @@ call and then wait for the executor to stop: the executor won't reach |STOPPED|
 state until all futures have completed.
 
 
-.. |assertEventuallyTrueInGui| replace:: :meth:`~.GuiTestAssistant.assertEventuallyTrueInGui`
-.. |GuiTestAssistant| replace:: :class:`~.GuiTestAssistant`
+.. |assertEventuallyTrueInGui| replace:: :meth:`pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui`
+.. |GuiTestAssistant| replace:: :class:`pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant`
 
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 .. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
