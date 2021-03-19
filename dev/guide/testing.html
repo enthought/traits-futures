@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Testing Traits Futures code &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
+    <link rel="next" title="Advanced topics" href="advanced.html" >
+    <link rel="prev" title="Making tasks interruptible" href="cancel.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="advanced.html" title="Advanced topics"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="cancel.html" title="Making tasks interruptible"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="testing-traits-futures-code">
+<h1>Testing Traits Futures code<a class="headerlink" href="#testing-traits-futures-code" title="Permalink to this headline">¶</a></h1>
+<p>This section gives some hints and tips for unit-testing code that uses
+Traits Futures. Those tests face two main challenges:</p>
+<ul class="simple">
+<li><p>By design, Traits Futures relies on a running GUI event loop; that typically
+means that each test that uses Traits Futures will need to find some way to
+run the event loop in order for futures to deliver their results.</p></li>
+<li><p>It’s important to fully shut down executors after each test, to avoid
+leaked threads and potential for test interactions.</p></li>
+</ul>
+<div class="section" id="an-example-test">
+<h2>An example test<a class="headerlink" href="#an-example-test" title="Permalink to this headline">¶</a></h2>
+<p>Here’s an example of testing a simple future.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of testing a simple future using the GuiTestAssistant.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">pyface.toolkit</span> <span class="kn">import</span> <span class="n">toolkit_object</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">submit_call</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
+
+
+<span class="c1">#: Maximum timeout for blocking calls, in seconds. A successful test should</span>
+<span class="c1">#: never hit this timeout - it&#39;s there to prevent a failing test from hanging</span>
+<span class="c1">#: forever and blocking the rest of the test suite.</span>
+<span class="n">SAFETY_TIMEOUT</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+
+<span class="c1">#: Note that the GuiTestAssistant is currently only available for Qt, not</span>
+<span class="c1">#: for wxPython. To run this unit test, you&#39;ll need PyQt or PySide 2 installed.</span>
+<span class="n">GuiTestAssistant</span> <span class="o">=</span> <span class="n">toolkit_object</span><span class="p">(</span><span class="s2">&quot;util.gui_test_assistant:GuiTestAssistant&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">TestMyFuture</span><span class="p">(</span><span class="n">GuiTestAssistant</span><span class="p">,</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">GuiTestAssistant</span><span class="o">.</span><span class="n">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Request the executor to stop, and wait for that stop to complete.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEventuallyTrueInGui</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">stopped</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span>
+        <span class="p">)</span>
+
+        <span class="n">GuiTestAssistant</span><span class="o">.</span><span class="n">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_my_future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span>
+
+        <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># Wait for the future to complete.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEventuallyTrueInGui</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="mi">243</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Some points of interest in the above example:</p>
+<ul class="simple">
+<li><p>In order for the result of our future execution to be delivered to the main
+thread (a.k.a. the GUI thread), the event loop for the main thread needs to
+be running. We make use of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant</span></code> class from Pyface
+to make it easy to run the event loop until a particular condition occurs.</p></li>
+<li><p>In the main test method, after submitting the call and receiving the
+<code class="docutils literal notranslate"><span class="pre">future</span></code> future, we want to wait until the future has completed and all
+communications from the background task have completed. We do that by using
+the <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui</span></code> method. At that point, we can check that the
+result of the future is the expected one.</p></li>
+<li><p>We also need to shut down the executor itself at the end of the test. Note
+that the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method is not blocking and does not actually stop the
+executor - instead, it requests cancellation of all running futures and
+prevents new jobs from being scheduled. For the executor to eventually reach
+the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state, the GUI event loop must again be running, so we make a
+second use of <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui</span></code> in the <code class="docutils literal notranslate"><span class="pre">tearDown</span></code> method in the
+example.</p></li>
+</ul>
+<p>If you don’t need the result of the future (for example because you’re using
+the future for its side-effect rather than to perform a computation) then it’s
+safe to remove the wait for <code class="docutils literal notranslate"><span class="pre">future.done</span></code>, so long as you keep the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a>
+call and then wait for the executor to stop: the executor won’t reach <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code></a>
+state until all futures have completed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Testing Traits Futures code</a><ul>
+<li><a class="reference internal" href="#an-example-test">An example test</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cancel.html"
+                        title="previous chapter">Making tasks interruptible</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="advanced.html"
+                        title="next chapter">Advanced topics</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/guide/testing.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2021 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
