@@ -13,7 +13,7 @@ from traits.api import Any, Event, HasStrictTraits
 
 class MessageReceiver(HasStrictTraits):
     """
-    Main-thread object that receives messages from a MessageSender.
+    Main-thread object that receives messages from a sender.
     """
 
     #: Event fired when a message is received from the paired sender.
