@@ -31,7 +31,7 @@ Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
 
 
-class MessageProcessRouter(HasStrictTraits):
+class MultiprocessingRouter(HasStrictTraits):
     """
     Router for messages from background jobs to their corresponding futures.
 
@@ -44,7 +44,7 @@ class MessageProcessRouter(HasStrictTraits):
     receiver_done = Event(Instance(MessageReceiver))
 
     def __init__(self, **traits):
-        super(MessageProcessRouter, self).__init__(**traits)
+        super(MultiprocessingRouter, self).__init__(**traits)
 
         self._manager = multiprocessing.Manager()
         self._local_message_queue = queue.Queue()
