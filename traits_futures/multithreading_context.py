@@ -16,7 +16,7 @@ import concurrent.futures
 import threading
 
 from traits_futures.i_parallel_context import IParallelContext
-from traits_futures.message_router import MultithreadingRouter
+from traits_futures.multithreading_router import MultithreadingRouter
 
 
 class MultithreadingContext(IParallelContext):

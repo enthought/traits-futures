@@ -20,7 +20,7 @@ from traits.api import (
     on_trait_change,
 )
 
-from traits_futures.message_router import MultithreadingRouter
+from traits_futures.multithreading_router import MultithreadingRouter
 from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
