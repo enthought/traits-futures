@@ -8,7 +8,9 @@
 #
 # Thanks for using Enthought open source!
 
+from traits_futures.i_message_sender import IMessageSender
 
+@IMessageSender.register
 class MultithreadingSender:
     """
     Object allowing the worker to send messages.
