@@ -111,7 +111,8 @@ class MultiprocessingRouter(HasStrictTraits):
         """
         if not self._connected:
             raise RuntimeError(
-                "Router must be connected before it can provide pipes.")
+                "Router must be connected before it can provide pipes."
+            )
 
         connection_id = next(self._connection_ids)
 

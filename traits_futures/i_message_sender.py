@@ -27,6 +27,9 @@ class IMessageSender(Interface, contextlib.AbstractContextManager):
     def start(self):
         """
         Do any setup, and send an initial message.
+
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
         """
 
     @abc.abstractmethod
@@ -34,11 +37,20 @@ class IMessageSender(Interface, contextlib.AbstractContextManager):
         """
         Send a message to the router.
 
-        Typically the message will be immutable, small, and pickleable.
+        Parameters
+        ----------
+        message : object
+            Typically this will be immutable, small, and pickleable.
+
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
         """
 
     @abc.abstractmethod
     def stop(self):
         """
         Send a final message, then do any teardown.
+
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
         """

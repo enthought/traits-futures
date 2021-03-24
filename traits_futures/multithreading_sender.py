@@ -11,6 +11,15 @@
 from traits_futures.i_message_sender import IMessageSender
 
 
+#: Internal states. The sender starts in the INITIAL state, moves to
+#: the OPEN state when 'start' is called, and from OPEN to CLOSED when
+#: 'stop' is called. Messages can only be sent while the sending is in
+#: OPEN state.
+_INITIAL = "initial"
+_OPEN = "open"
+_CLOSED = "closed"
+
+
 @IMessageSender.register
 class MultithreadingSender:
     """
@@ -28,6 +37,51 @@ class MultithreadingSender:
         self.connection_id = connection_id
         self.pinger = pinger
         self.message_queue = message_queue
+        self._state = _INITIAL
+
+    def start(self):
+        """
+        Do any setup, and send an initial message.
+        """
+        if self._state != _INITIAL:
+            raise RuntimeError(
+                f"Sender already started: state is {self._state}"
+            )
+
+        self.pinger.connect()
+
+        # self.message_queue.put(("start", self.connection_id))
+        # self.pinger.ping()
+
+        self._state = _OPEN
+
+    def stop(self):
+        """
+        Do any teardown, and send a final message.
+        """
+        if self._state != _OPEN:
+            raise RuntimeError(
+                f"Sender not started, or already stopped: state is {self._state}"
+            )
+
+        self.message_queue.put(("done", self.connection_id))
+        self.pinger.ping()
+
+        self.pinger.disconnect()
+
+        self._state = _CLOSED
+
+    def send(self, message):
+        """
+        Send a message to the router.
+        """
+        if self._state != _OPEN:
+            raise RuntimeError(
+                f"Sender must be in OPEN state to send messages: state is {self._state}"
+            )
+
+        self.message_queue.put(("message", self.connection_id, message))
+        self.pinger.ping()
 
     def __enter__(self):
         self.start()
@@ -35,29 +89,3 @@ class MultithreadingSender:
 
     def __exit__(self, *exc_info):
         self.stop()
-
-    def start(self):
-        """
-        Do any setup, and send an initial message.
-        """
-        self.pinger.connect()
-
-        # self.message_queue.put(("start", self.connection_id))
-        # self.pinger.ping()
-
-    def stop(self):
-        """
-        Do any teardown, and send a final message.
-        """
-        self.message_queue.put(("done", self.connection_id))
-        self.pinger.ping()
-
-        self.pinger.disconnect()
-        self.pinger = None
-
-    def send(self, message):
-        """
-        Send a message to the router.
-        """
-        self.message_queue.put(("message", self.connection_id, message))
-        self.pinger.ping()

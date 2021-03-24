@@ -12,6 +12,15 @@
 from traits_futures.i_message_sender import IMessageSender
 
 
+#: Internal states. The sender starts in the INITIAL state, moves to
+#: the OPEN state when 'start' is called, and from OPEN to CLOSED when
+#: 'stop' is called. Messages can only be sent while the sending is in
+#: OPEN state.
+_INITIAL = "initial"
+_OPEN = "open"
+_CLOSED = "closed"
+
+
 @IMessageSender.register
 class MultiprocessingSender:
     """
@@ -24,25 +33,33 @@ class MultiprocessingSender:
     def __init__(self, connection_id, message_queue):
         self.connection_id = connection_id
         self.message_queue = message_queue
-
-    def __enter__(self):
-        self.start()
-        return self
-
-    def __exit__(self, *exc_info):
-        self.stop()
+        self._state = _INITIAL
 
     def start(self):
         """
         Do any local setup necessary, and send an initial message.
         """
+        if self._state != _INITIAL:
+            raise RuntimeError(
+                f"Sender already started: state is {self._state}"
+            )
+
         # self.message_queue.put(("start", self.connection_id))
+
+        self._state = _OPEN
 
     def stop(self):
         """
         Send a final message, then do any local teardown necessary.
         """
+        if self._state != _OPEN:
+            raise RuntimeError(
+                f"Sender not started, or already stopped: state is {self._state}"
+            )
+
         self.message_queue.put(("done", self.connection_id))
+
+        self._state = _CLOSED
 
     def send(self, message):
         """
@@ -54,4 +71,16 @@ class MultiprocessingSender:
             Message to be sent to the corresponding foreground receiver.
             via the router.
         """
+        if self._state != _OPEN:
+            raise RuntimeError(
+                f"Sender must be in OPEN state to send messages: state is {self._state}"
+            )
+
         self.message_queue.put(("message", self.connection_id, message))
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *exc_info):
+        self.stop()
