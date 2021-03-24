@@ -21,6 +21,7 @@ import queue
 
 from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
 
+from traits_futures.i_message_router import IMessageRouter
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
 from traits_futures.toolkit_support import toolkit
@@ -29,6 +30,7 @@ Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
 
 
+@IMessageRouter.register
 class MultithreadingRouter(HasStrictTraits):
     """
     Router for messages from a background thread.
