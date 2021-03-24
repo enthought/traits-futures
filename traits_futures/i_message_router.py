@@ -11,12 +11,22 @@
 """
 Interface for message routers.
 
+Message routers support sending a properly terminated single-source
+single-destination stream of messages from a background task to the foreground.
+The message routers know nothing about the future machinery - that's in the
+next layer up.
+
 Message routers are responsible for:
 
 - Creating pipes used to send message from a background task to the
   foreground.
 - Receiving and dispatching those messages appropriately.
+- Disposing of pipes once they're no longer needed.
+
+
 """
+
+# XXX Consider using "start" and "stop" instead of "connect" and "disconnect".
 
 
 import abc
@@ -51,31 +61,12 @@ class IMessageRouter(Interface):
         """
 
     @abc.abstractmethod
-    def close_pipe(self, sender, receiver):
-        """
-        Close an unused pipe.
-
-        This is used for example when a pipe is created and something else
-        subsequently goes wrong (for example, creation of the background
-        task fails).
-
-        Not thread safe.
-
-        Parameters
-        ----------
-        sender : IMessageSender
-            First item of a pair produced by the ``pipe`` method.
-        receiver : MessageReceiver
-            Second item of a pair produced by the ``pipe`` method.
-        """
-
-    @abc.abstractmethod
     def connect(self):
         """
         Prepare router for routing.
 
-        This method should be called in the main thread before all calls to
-        ``pipe`` or ``close_pipe``.
+        This method should be called in the main thread before any call to
+        ``pipe``.
 
         Not thread-safe.
         """

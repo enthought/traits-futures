@@ -26,9 +26,22 @@ class MultiprocessingSender:
         self.message_queue = message_queue
 
     def __enter__(self):
+        self.start()
         return self
 
     def __exit__(self, *exc_info):
+        self.stop()
+
+    def start(self):
+        """
+        Do any local setup necessary, and send an initial message.
+        """
+        # self.message_queue.put(("start", self.connection_id))
+
+    def stop(self):
+        """
+        Send a final message, then do any local teardown necessary.
+        """
         self.message_queue.put(("done", self.connection_id))
 
     def send(self, message):

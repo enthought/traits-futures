@@ -95,13 +95,6 @@ class MultiprocessingRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
-    def close_pipe(self, sender, receiver):
-        """
-        Close an unused pipe.
-        """
-        connection_id = sender.connection_id
-        self._receivers.pop(connection_id)
-
     # Private traits ##########################################################
 
     #: Queue receiving messages from child processes.

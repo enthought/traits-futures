@@ -30,10 +30,25 @@ class MultithreadingSender:
         self.message_queue = message_queue
 
     def __enter__(self):
-        self.pinger.connect()
+        self.start()
         return self
 
     def __exit__(self, *exc_info):
+        self.stop()
+
+    def start(self):
+        """
+        Do any setup, and send an initial message.
+        """
+        self.pinger.connect()
+
+        # self.message_queue.put(("start", self.connection_id))
+        # self.pinger.ping()
+
+    def stop(self):
+        """
+        Do any teardown, and send a final message.
+        """
         self.message_queue.put(("done", self.connection_id))
         self.pinger.ping()
 

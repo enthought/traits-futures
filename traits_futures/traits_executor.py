@@ -247,7 +247,8 @@ class TraitsExecutor(HasStrictTraits):
             future = task.future()
             future._executor_initialized(cancel_event.set)
         except Exception:
-            self._message_router.close_pipe(sender, receiver)
+            with sender:
+                pass
             raise
 
         background_task_wrapper = BackgroundTaskWrapper(

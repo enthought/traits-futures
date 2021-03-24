@@ -63,13 +63,6 @@ class MultithreadingRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
-    def close_pipe(self, sender, receiver):
-        """
-        Close an unused pipe.
-        """
-        connection_id = sender.connection_id
-        self._receivers.pop(connection_id)
-
     def connect(self):
         """
         Prepare router for routing.

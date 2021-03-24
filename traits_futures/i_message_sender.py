@@ -24,9 +24,21 @@ class IMessageSender(Interface, contextlib.AbstractContextManager):
     """
 
     @abc.abstractmethod
+    def start(self):
+        """
+        Do any setup, and send an initial message.
+        """
+
+    @abc.abstractmethod
     def send(self, message):
         """
         Send a message to the router.
 
         Typically the message will be immutable, small, and pickleable.
+        """
+
+    @abc.abstractmethod
+    def stop(self):
+        """
+        Send a final message, then do any teardown.
         """
