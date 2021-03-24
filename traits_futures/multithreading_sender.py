@@ -10,6 +10,7 @@
 
 from traits_futures.i_message_sender import IMessageSender
 
+
 @IMessageSender.register
 class MultithreadingSender:
     """

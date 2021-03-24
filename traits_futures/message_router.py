@@ -29,7 +29,7 @@ Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
 
 
-class MessageRouter(HasStrictTraits):
+class MultithreadingRouter(HasStrictTraits):
     """
     Router for messages from a background thread.
 

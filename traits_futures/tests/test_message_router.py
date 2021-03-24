@@ -20,7 +20,7 @@ from traits.api import (
     on_trait_change,
 )
 
-from traits_futures.message_router import MessageRouter
+from traits_futures.message_router import MultithreadingRouter
 from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
@@ -77,10 +77,10 @@ class MultiListener(HasStrictTraits):
         self.message_received = True
 
 
-class TestMessageRouter(GuiTestAssistant, unittest.TestCase):
+class TestMultithreadingRouter(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.router = MessageRouter()
+        self.router = MultithreadingRouter()
         self.router.connect()
 
     def tearDown(self):

@@ -64,7 +64,7 @@ class IParallelContext(abc.ABC):
 
         Returns
         -------
-        message_router : MessageRouter
+        message_router : IMessageRouter
         """
 
     @abc.abstractmethod
