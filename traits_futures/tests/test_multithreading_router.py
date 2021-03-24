@@ -8,6 +8,10 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+Tests for the MultithreadingRouter class.
+"""
+
 import threading
 import unittest
 
@@ -100,6 +104,7 @@ class TestMultithreadingRouter(GuiTestAssistant, unittest.TestCase):
             args=(sender, messages),
         )
         worker.start()
+        # XXX Needs a timeout!
         worker.join()
 
         def got_all_messages(listener):

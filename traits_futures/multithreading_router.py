@@ -67,6 +67,8 @@ class MultithreadingRouter(HasStrictTraits):
         """
         Prepare router for routing.
         """
+        self._message_queue = queue.Queue()
+
         self._pingee = Pingee(on_ping=self._route_message)
         self._pingee.connect()
 
@@ -76,6 +78,8 @@ class MultithreadingRouter(HasStrictTraits):
         """
         self._pingee.disconnect()
         self._pingee = None
+
+        self._message_queue = None
 
     # Private traits ##########################################################
 
@@ -104,9 +108,6 @@ class MultithreadingRouter(HasStrictTraits):
             _, connection_id = wrapped_message
             receiver = self._receivers.pop(connection_id)
             self.receiver_done = receiver
-
-    def __message_queue_default(self):
-        return queue.Queue()
 
     def __connection_ids_default(self):
         return itertools.count()

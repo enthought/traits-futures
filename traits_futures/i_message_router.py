@@ -50,7 +50,7 @@ class IMessageRouter(Interface):
         The receiver has a single trait which is fired when a message is
         received from the background and routed to the receiver.
 
-        Not thread safe.
+        Not thread safe. Should only ever be called from the main thread.
 
         Returns
         -------

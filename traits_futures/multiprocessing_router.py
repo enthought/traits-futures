@@ -21,7 +21,7 @@ import multiprocessing.managers
 import queue
 import threading
 
-from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
+from traits.api import Any, Bool, Dict, Event, HasStrictTraits, Instance, Int
 
 from traits_futures.i_message_router import IMessageRouter
 from traits_futures.message_receiver import MessageReceiver
@@ -45,18 +45,17 @@ class MultiprocessingRouter(HasStrictTraits):
     #: Event fired when a receiver is dropped from the routing table.
     receiver_done = Event(Instance(MessageReceiver))
 
-    def __init__(self, **traits):
-        super(MultiprocessingRouter, self).__init__(**traits)
+    def connect(self):
+        """
+        Prepare router for routing.
+        """
+        if self._connected:
+            raise RuntimeError("Router is already connected")
 
         self._manager = multiprocessing.Manager()
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self._manager.Queue()
 
-    def connect(self):
-        """
-        Prepare router for routing.
-        """
-        # XXX Move more initialization here.
         self._pingee = Pingee(on_ping=self._route_message)
         self._pingee.connect()
 
@@ -68,23 +67,52 @@ class MultiprocessingRouter(HasStrictTraits):
                 self._pingee,
             ),
         )
-        # XXX Need tests for shutdown.
         self._monitor_thread.start()
+
+        self._connected = True
 
     def disconnect(self):
         """
         Undo any connections made by the ``connect`` call.
         """
+        if not self._connected:
+            raise RuntimeError("Router is not connected")
+
+        # Shut everything down in reverse order.
+        # First the monitor thread.
         self._process_message_queue.put(None)
         self._monitor_thread.join()
-        # self._process_message_queue.join()
+        self._monitor_thread = None
+
+        # No shutdown required for the process_message_queue: it's enough
+        # to shut down the manager.
         self._manager.shutdown()
+        self._manager = None
+        self._process_message_queue = None
 
         self._pingee.disconnect()
         self._pingee = None
 
+        self._local_message_queue = None
+
+        self._connected = False
+
     def pipe(self):
-        # XXX Docstring!
+        """
+        Create a (sender, receiver) pair for sending messages.
+
+        The sender object is passed to the background task, and
+        can then be used by that background task to send messages.
+
+        The receiver has a single trait which is fired when a message is
+        received from the background and routed to the receiver.
+
+        Not thread safe. Should only ever be called from the main thread.
+        """
+        if not self._connected:
+            raise RuntimeError(
+                "Router must be connected before it can provide pipes.")
+
         connection_id = next(self._connection_ids)
 
         sender = MultiprocessingSender(
@@ -118,6 +146,9 @@ class MultiprocessingRouter(HasStrictTraits):
 
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
+
+    #: Connection status.
+    _connected = Bool(False)
 
     # Private methods #########################################################
 
