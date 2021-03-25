@@ -17,6 +17,7 @@ This version of the module is for a multiprocessing back end.
 
 import collections.abc
 import itertools
+import logging
 import multiprocessing.managers
 import queue
 import threading
@@ -36,6 +37,8 @@ from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multiprocessing_sender import MultiprocessingSender
 from traits_futures.toolkit_support import toolkit
 
+logger = logging.getLogger(__name__)
+
 Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
 
@@ -50,12 +53,12 @@ class MultiprocessingRouter(HasStrictTraits):
     Requires the event loop to be running in order for messages to arrive.
     """
 
-    def connect(self):
+    def start(self):
         """
         Prepare router for routing.
         """
-        if self._connected:
-            raise RuntimeError("Router is already connected")
+        if self._running:
+            raise RuntimeError("Router is already running")
 
         self._manager = multiprocessing.Manager()
         self._local_message_queue = queue.Queue()
@@ -74,17 +77,17 @@ class MultiprocessingRouter(HasStrictTraits):
         )
         self._monitor_thread.start()
 
-        self._connected = True
+        self._running = True
 
-    def disconnect(self):
+    def stop(self):
         """
         Undo any connections made by the ``connect`` call.
         """
-        # XXX Restore me; figure out why this breaks
-        assert not self._receivers
+        if not self._running:
+            raise RuntimeError("Router is not running")
 
-        if not self._connected:
-            raise RuntimeError("Router is not connected")
+        if self._receivers:
+            logger.warning("there are unclosed pipes")
 
         # Shut everything down in reverse order.
         # First the monitor thread.
@@ -103,7 +106,7 @@ class MultiprocessingRouter(HasStrictTraits):
 
         self._local_message_queue = None
 
-        self._connected = False
+        self._running = False
 
     def pipe(self):
         """
@@ -122,10 +125,8 @@ class MultiprocessingRouter(HasStrictTraits):
         sender : IMessageSender
         receiver : IMessageReceiver
         """
-        if not self._connected:
-            raise RuntimeError(
-                "Router must be connected before it can provide pipes."
-            )
+        if not self._running:
+            raise RuntimeError("Router is not running.")
 
         connection_id = next(self._connection_ids)
 
@@ -138,6 +139,9 @@ class MultiprocessingRouter(HasStrictTraits):
         return sender, receiver
 
     def close_pipe(self, receiver):
+        if not self._running:
+            raise RuntimeError("Router is not running.")
+
         connection_id = receiver.connection_id
         self._receivers.pop(connection_id)
 
@@ -165,15 +169,22 @@ class MultiprocessingRouter(HasStrictTraits):
     #: Manager, used to create cancellation Events and message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
 
-    #: Connection status.
-    _connected = Bool(False)
+    #: Router status
+    _running = Bool(False)
 
     # Private methods #########################################################
 
     def _route_message(self):
         connection_id, message = self._local_message_queue.get()
-        receiver = self._receivers[connection_id]
-        receiver.message = message
+        try:
+            receiver = self._receivers[connection_id]
+        except KeyError:
+            logger.warning(
+                f"No receiver for message with connection_id {connection_id}. "
+                "Message discarded."
+            )
+        else:
+            receiver.message = message
 
     def __connection_ids_default(self):
         return itertools.count()

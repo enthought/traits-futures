@@ -9,22 +9,31 @@
 # Thanks for using Enthought open source!
 
 """
-Support for routing message streams from background processes to their
-corresponding foreground receivers.
-
-This version of the module is for a multithreading back end.
+Implementation of the IMessageRouter interface for the case where the
+sender will be in a background thread.
 """
 
 import collections.abc
 import itertools
+import logging
 import queue
 
-from traits.api import Any, Dict, HasStrictTraits, Instance, Int, provides
+from traits.api import (
+    Any,
+    Bool,
+    Dict,
+    HasStrictTraits,
+    Instance,
+    Int,
+    provides,
+)
 
 from traits_futures.i_message_router import IMessageRouter
 from traits_futures.message_receiver import MessageReceiver
 from traits_futures.multithreading_sender import MultithreadingSender
 from traits_futures.toolkit_support import toolkit
+
+logger = logging.getLogger(__name__)
 
 Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
@@ -33,10 +42,40 @@ Pinger = toolkit("pinger:Pinger")
 @provides(IMessageRouter)
 class MultithreadingRouter(HasStrictTraits):
     """
-    Router for messages from a background thread.
-
-    Requires the event loop to be running in order for messages to arrive.
+    Implementation of the IMessageRouter interface for the case where the
+    sender will be in a background thread.
     """
+
+    def start(self):
+        """
+        Prepare router for routing.
+        """
+        if self._running:
+            raise RuntimeError("router is already running")
+
+        self._message_queue = queue.Queue()
+
+        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee.connect()
+
+        self._running = True
+
+    def stop(self):
+        """
+        Undo any connections made by the ``connect`` call.
+        """
+        if not self._running:
+            raise RuntimeError("router is not running")
+
+        if self._receivers:
+            logger.warning("there are unclosed pipes")
+
+        self._pingee.disconnect()
+        self._pingee = None
+
+        self._message_queue = None
+
+        self._running = False
 
     def pipe(self):
         """
@@ -49,6 +88,9 @@ class MultithreadingRouter(HasStrictTraits):
         receiver : MessageReceiver
             Object to be kept in the foreground which reacts to messages.
         """
+        if not self._running:
+            raise RuntimeError("router is not running")
+
         connection_id = next(self._connection_ids)
         pinger = Pinger(pingee=self._pingee)
         sender = MultithreadingSender(
@@ -69,31 +111,11 @@ class MultithreadingRouter(HasStrictTraits):
         ----------
         receiver : MessageReceiver
         """
+        if not self._running:
+            raise RuntimeError("router is not running")
+
         connection_id = receiver.connection_id
         self._receivers.pop(connection_id)
-
-    def connect(self):
-        """
-        Prepare router for routing.
-        """
-        self._message_queue = queue.Queue()
-
-        self._pingee = Pingee(on_ping=self._route_message)
-        self._pingee.connect()
-
-    def disconnect(self):
-        """
-        Undo any connections made by the ``connect`` call.
-        """
-        # XXX Restore me; figure out why this breaks
-        # Should we warn if we disconnect while we're still listening,
-        # or perhaps just not care?
-        assert not self._receivers
-
-        self._pingee.disconnect()
-        self._pingee = None
-
-        self._message_queue = None
 
     # Private traits ##########################################################
 
@@ -109,12 +131,22 @@ class MultithreadingRouter(HasStrictTraits):
     #: Receiver for the "message_sent" signal.
     _pingee = Instance(Pingee)
 
+    #: Router status: True if running, False if stopped.
+    _running = Bool(False)
+
     # Private methods #########################################################
 
     def _route_message(self):
         connection_id, message = self._message_queue.get()
-        receiver = self._receivers[connection_id]
-        receiver.message = message
+        try:
+            receiver = self._receivers[connection_id]
+        except KeyError:
+            logger.warning(
+                f"No receiver for message with connection_id {connection_id}. "
+                "Message discarded."
+            )
+        else:
+            receiver.message = message
 
     def __connection_ids_default(self):
         return itertools.count()

@@ -337,7 +337,7 @@ class TraitsExecutor(HasStrictTraits):
     def __message_router_default(self):
         # Toolkit-specific message router.
         router = self._context.message_router()
-        router.connect()
+        router.start()
         self._have_message_router = True
         return router
 
@@ -379,7 +379,7 @@ class TraitsExecutor(HasStrictTraits):
         assert not self._wrappers
 
         if self._have_message_router:
-            self._message_router.disconnect()
+            self._message_router.stop()
             self._message_router = None
 
         if self._own_worker_pool:

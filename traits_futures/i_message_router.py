@@ -23,11 +23,13 @@ Message routers are responsible for:
 - Receiving and dispatching those messages appropriately.
 - Disposing of pipes once they're no longer needed.
 
-
 """
 
-# XXX Consider using "start" and "stop" instead of "connect" and "disconnect".
-
+# XXX Improve docstrings in this file.
+# XXX Fix docstrings of implementations to match those
+#     of the interface.
+# XXX Consider dropping need to call "sender.start";
+#     just initialize lazily.
 
 import abc
 
@@ -40,6 +42,39 @@ class IMessageRouter(Interface):
     """
 
     @abc.abstractmethod
+    def start(self):
+        """
+        Start routing messages.
+
+        This method must be called before any call to ``pipe`` or
+        ``close_pipe`` can be made.
+
+        Not thread-safe. Must always be called in the main thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the router has already been started.
+        """
+
+    @abc.abstractmethod
+    def stop(self):
+        """
+        Stop routing messages.
+
+        This method should be called in the main thread after all pipes
+        are finished with. Calls to ``pipe`` or ``close_pipe`` are
+        not permitted after this method has been called.
+
+        Not thread safe. Must always be called in the main thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the router was not already running.
+        """
+
+    @abc.abstractmethod
     def pipe(self):
         """
         Create a (sender, receiver) pair for sending messages.
@@ -50,7 +85,7 @@ class IMessageRouter(Interface):
         The receiver has a single trait which is fired when a message is
         received from the background and routed to the receiver.
 
-        Not thread safe. Should only ever be called from the main thread.
+        Not thread safe. Must always be called in the main thread.
 
         Returns
         -------
@@ -58,40 +93,30 @@ class IMessageRouter(Interface):
             Object to be passed to the background task.
         receiver : IMessageReceiver
             Object kept in the foreground, which reacts to messages.
+
+        Raises
+        ------
+        RuntimeError
+            If the router is not currently running.
         """
 
     @abc.abstractmethod
     def close_pipe(self, receiver):
         """
-        Close the receiver end of a pipe produced by pipe.
+        Close the receiver end of a pipe produced by ``pipe``.
 
         Removes the receiver from the routing table, so that no new messages
         can reach that receiver.
+
+        Not thread safe. Must always be called in the main thread.
 
         Parameters
         ----------
         receiver : IMessageReceiver
             Receiver half of the pair returned by the ``pipe`` method.
-        """
 
-    @abc.abstractmethod
-    def connect(self):
-        """
-        Prepare router for routing.
-
-        This method should be called in the main thread before any call to
-        ``pipe``.
-
-        Not thread-safe.
-        """
-
-    @abc.abstractmethod
-    def disconnect(self):
-        """
-        Undo any connections made by the ``connect`` call.
-
-        This method should be called in the main thread after all pipes
-        are finished with.
-
-        Not thread safe.
+        Raises
+        ------
+        RuntimeError
+            If the router is not currently running.
         """

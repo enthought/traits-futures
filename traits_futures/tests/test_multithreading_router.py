@@ -12,163 +12,31 @@
 Tests for the MultithreadingRouter class.
 """
 
-import threading
+import concurrent.futures
 import unittest
 
-from traits.api import (
-    Any,
-    Event,
-    HasStrictTraits,
-    Instance,
-    List,
-    on_trait_change,
-)
-
-from traits_futures.i_message_receiver import IMessageReceiver
 from traits_futures.multithreading_router import MultithreadingRouter
+from traits_futures.tests.i_message_router_tests import IMessageRouterTests
 from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 
-def send_messages(sender, messages):
+class TestMultithreadingRouter(
+    GuiTestAssistant, IMessageRouterTests, unittest.TestCase
+):
     """
-    Send messages using a given sender.
-    """
-    with sender:
-        for message in messages:
-            sender.send(message)
-
-
-class ReceiverListener(HasStrictTraits):
-    """
-    Test helper that listens to and records all messages from an
-    IMessageReceiver object.
+    Test that MultithreadingRouter implements the IMessageRouter interface.
     """
 
-    #: The receiver that we're listening to.
-    receiver = Instance(IMessageReceiver)
+    #: Factory providing the routers under test.
+    router_factory = MultithreadingRouter
 
-    #: Messages received.
-    messages = List(Any())
+    #: Factory providing worker pools for the tests.
+    executor_factory = concurrent.futures.ThreadPoolExecutor
 
-    #: Event fired whenever a message arrives.
-    message_received = Event()
-
-    #: List of threads that messages arrived on.
-    threads = List(Any)
-
-    @on_trait_change("receiver:message")
-    def _record_message(self, message):
-        self.messages.append(message)
-        self.threads.append(threading.current_thread())
-        self.message_received = True
-
-
-class MultiListener(HasStrictTraits):
-    """
-    Monitor a collection of listeners and fire an event whenever any
-    one of them receives a message.
-    """
-
-    # Listeners we'll listen to.
-    listeners = List(Instance(ReceiverListener))
-
-    # Event fired whenever a message is received by any of the listeners.
-    message_received = Event()
-
-    @on_trait_change("listeners:message_received")
-    def _fire_message_received(self):
-        self.message_received = True
-
-
-class TestMultithreadingRouter(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.router = MultithreadingRouter()
-        self.router.connect()
 
     def tearDown(self):
-        self.router.disconnect()
-        del self.router
         GuiTestAssistant.tearDown(self)
-
-    def test_message_sending_from_background_thread(self):
-        sender, receiver = self.router.pipe()
-        try:
-            listener = ReceiverListener(receiver=receiver)
-
-            messages = ["inconceivable", 15206, (23, 5.6)]
-
-            # Send messages from a background thread.
-            worker = threading.Thread(
-                target=send_messages,
-                args=(sender, messages),
-            )
-            worker.start()
-            # XXX Needs a timeout!
-            worker.join()
-
-            def got_all_messages(listener):
-                return len(listener.messages) >= len(messages)
-
-            self.run_until(listener, "messages_items", got_all_messages)
-            self.assertEqual(listener.messages, messages)
-
-            # Check that all the messages arrived on the main thread
-            # as expected.
-            main_thread = threading.current_thread()
-            for thread in listener.threads:
-                self.assertEqual(thread, main_thread)
-        finally:
-            self.router.close_pipe(receiver)
-
-    def test_multiple_senders(self):
-        worker_count = 64
-        message_count = 64
-
-        # Messages for each worker to send: one list of messages per worker.
-        worker_messages = [
-            [(i, j) for j in range(message_count)] for i in range(worker_count)
-        ]
-
-        workers = []
-        listeners = []
-        receivers = []
-        for messages in worker_messages:
-            sender, receiver = self.router.pipe()
-            receivers.append(receiver)
-            listeners.append(ReceiverListener(receiver=receiver))
-            workers.append(
-                threading.Thread(
-                    target=send_messages,
-                    args=(sender, messages),
-                )
-            )
-
-        monitor = MultiListener(listeners=listeners)
-
-        # Run the workers.
-        for worker in workers:
-            worker.start()
-
-        # Wait until we receive the expected number of messages.
-        def received_all_messages(monitor):
-            return all(
-                len(listener.messages) >= message_count
-                for listener in monitor.listeners
-            )
-
-        self.run_until(monitor, "message_received", received_all_messages)
-
-        # Workers should all be ready to join.
-        for worker in workers:
-            worker.join()
-
-        # Disconnect receivers.
-        for receiver in receivers:
-            self.router.close_pipe(receiver)
-
-        # Check we got the expected messages.
-        received_messages = [listener.messages for listener in listeners]
-        self.assertEqual(received_messages, worker_messages)
