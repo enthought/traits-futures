@@ -306,9 +306,6 @@ class IMessageRouterTests:
         finally:
             router.close_pipe(receiver)
 
-    # Similar tests for sender state: send after stop, etc, calling start
-    # twice, etc.
-
     # Helper functions and assertions
 
     @contextlib.contextmanager
