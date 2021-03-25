@@ -164,9 +164,7 @@ class MultiprocessingRouter(HasStrictTraits):
     # Private methods #########################################################
 
     def _route_message(self):
-        wrapped_message = self._local_message_queue.get()
-        assert wrapped_message[0] == "message"
-        _, connection_id, message = wrapped_message
+        connection_id, message = self._local_message_queue.get()
         receiver = self._receivers[connection_id]
         receiver.message = message
 

@@ -74,7 +74,7 @@ class MultiprocessingSender:
                 f"state is {self._state}"
             )
 
-        self.message_queue.put(("message", self.connection_id, message))
+        self.message_queue.put((self.connection_id, message))
 
     def __enter__(self):
         self.start()
