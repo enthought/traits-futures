@@ -94,30 +94,33 @@ class TestMultithreadingRouter(GuiTestAssistant, unittest.TestCase):
 
     def test_message_sending_from_background_thread(self):
         sender, receiver = self.router.pipe()
-        listener = ReceiverListener(receiver=receiver)
+        try:
+            listener = ReceiverListener(receiver=receiver)
 
-        messages = ["inconceivable", 15206, (23, 5.6)]
+            messages = ["inconceivable", 15206, (23, 5.6)]
 
-        # Send messages from a background thread.
-        worker = threading.Thread(
-            target=send_messages,
-            args=(sender, messages),
-        )
-        worker.start()
-        # XXX Needs a timeout!
-        worker.join()
+            # Send messages from a background thread.
+            worker = threading.Thread(
+                target=send_messages,
+                args=(sender, messages),
+            )
+            worker.start()
+            # XXX Needs a timeout!
+            worker.join()
 
-        def got_all_messages(listener):
-            return len(listener.messages) >= len(messages)
+            def got_all_messages(listener):
+                return len(listener.messages) >= len(messages)
 
-        self.run_until(listener, "messages_items", got_all_messages)
-        self.assertEqual(listener.messages, messages)
+            self.run_until(listener, "messages_items", got_all_messages)
+            self.assertEqual(listener.messages, messages)
 
-        # Check that all the messages arrived on the main thread
-        # as expected.
-        main_thread = threading.current_thread()
-        for thread in listener.threads:
-            self.assertEqual(thread, main_thread)
+            # Check that all the messages arrived on the main thread
+            # as expected.
+            main_thread = threading.current_thread()
+            for thread in listener.threads:
+                self.assertEqual(thread, main_thread)
+        finally:
+            self.router.close_pipe(receiver)
 
     def test_multiple_senders(self):
         worker_count = 64
@@ -130,8 +133,10 @@ class TestMultithreadingRouter(GuiTestAssistant, unittest.TestCase):
 
         workers = []
         listeners = []
+        receivers = []
         for messages in worker_messages:
             sender, receiver = self.router.pipe()
+            receivers.append(receiver)
             listeners.append(ReceiverListener(receiver=receiver))
             workers.append(
                 threading.Thread(
@@ -158,6 +163,10 @@ class TestMultithreadingRouter(GuiTestAssistant, unittest.TestCase):
         # Workers should all be ready to join.
         for worker in workers:
             worker.join()
+
+        # Disconnect receivers.
+        for receiver in receivers:
+            self.router.close_pipe(receiver)
 
         # Check we got the expected messages.
         received_messages = [listener.messages for listener in listeners]

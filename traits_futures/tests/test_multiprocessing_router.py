@@ -45,6 +45,14 @@ def send_messages(sender, messages):
             sender.send(message)
 
 
+def send_without_starting(sender, messages):
+    """
+    Simluate a bad use of the sender.
+    """
+    for message in messages:
+        sender.send(message)
+
+
 class ReceiverListener(HasStrictTraits):
     """
     Test helper that listens to and records all messages from a
@@ -123,24 +131,43 @@ class TestMultiprocessingRouter(GuiTestAssistant, unittest.TestCase):
     def test_send_and_receive_messages(self):
         with self.connected_router() as router:
             sender, receiver = router.pipe()
-            listener = ReceiverListener(receiver=receiver)
-
-            messages = ["inconceivable", 15206, (23, 5.6)]
-
-            worker = multiprocessing.Process(
-                target=send_messages,
-                args=(sender, messages),
-            )
-
-            worker.start()
             try:
-                pass
-            finally:
+                listener = ReceiverListener(receiver=receiver)
+
+                messages = ["inconceivable", 15206, (23, 5.6)]
+
+                worker = multiprocessing.Process(
+                    target=send_messages,
+                    args=(sender, messages),
+                )
+
+                worker.start()
                 worker.join(timeout=SAFETY_TIMEOUT)
                 # Fail if the join timed out, or if we got a nonzero exit code.
                 self.assertEqual(worker.exitcode, 0)
 
-            def got_all_messages(listener):
-                return len(listener.messages) >= len(messages)
+                def got_all_messages(listener):
+                    return len(listener.messages) >= len(messages)
 
-            self.run_until(listener, "messages_items", got_all_messages)
+                self.run_until(listener, "messages_items", got_all_messages)
+            finally:
+                router.close_pipe(receiver)
+
+    def test_start_and_stop_in_main_thread(self):
+        # It should also be safe to start, send and stop in the main thread
+        # of the main process.
+        with self.connected_router() as router:
+            sender, receiver = router.pipe()
+            try:
+                listener = ReceiverListener(receiver=receiver)
+
+                messages = ["inconceivable", 15206, (23, 5.6)]
+
+                send_messages(sender, messages)
+
+                def got_all_messages(listener):
+                    return len(listener.messages) >= len(messages)
+
+                self.run_until(listener, "messages_items", got_all_messages)
+            finally:
+                router.close_pipe(receiver)

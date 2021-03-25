@@ -19,7 +19,7 @@ import collections.abc
 import itertools
 import queue
 
-from traits.api import Any, Dict, Event, HasStrictTraits, Instance, Int
+from traits.api import Any, Dict, HasStrictTraits, Instance, Int
 
 from traits_futures.i_message_router import IMessageRouter
 from traits_futures.message_receiver import MessageReceiver
@@ -37,9 +37,6 @@ class MultithreadingRouter(HasStrictTraits):
 
     Requires the event loop to be running in order for messages to arrive.
     """
-
-    #: Event fired when a receiver is dropped from the routing table.
-    receiver_done = Event(Instance(MessageReceiver))
 
     def pipe(self):
         """
@@ -63,6 +60,16 @@ class MultithreadingRouter(HasStrictTraits):
         self._receivers[connection_id] = receiver
         return sender, receiver
 
+    def close_pipe(self, receiver):
+        for connection_id, gen_receiver in self._receivers.items():
+            if receiver == gen_receiver:
+                break
+        else:
+            connection_id = None
+
+        if connection_id is not None:
+            self._receivers.pop(connection_id)
+
     def connect(self):
         """
         Prepare router for routing.
@@ -76,6 +83,11 @@ class MultithreadingRouter(HasStrictTraits):
         """
         Undo any connections made by the ``connect`` call.
         """
+        # XXX Restore me; figure out why this breaks
+        # Should we warn if we disconnect while we're still listening,
+        # or perhaps just not care?
+        assert not self._receivers
+
         self._pingee.disconnect()
         self._pingee = None
 
@@ -99,15 +111,10 @@ class MultithreadingRouter(HasStrictTraits):
 
     def _route_message(self):
         wrapped_message = self._message_queue.get()
-        if wrapped_message[0] == "message":
-            _, connection_id, message = wrapped_message
-            receiver = self._receivers[connection_id]
-            receiver.message = message
-        else:
-            assert wrapped_message[0] == "done"
-            _, connection_id = wrapped_message
-            receiver = self._receivers.pop(connection_id)
-            self.receiver_done = receiver
+        assert wrapped_message[0] == "message"
+        _, connection_id, message = wrapped_message
+        receiver = self._receivers[connection_id]
+        receiver.message = message
 
     def __connection_ids_default(self):
         return itertools.count()

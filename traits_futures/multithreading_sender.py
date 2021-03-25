@@ -41,7 +41,7 @@ class MultithreadingSender:
 
     def start(self):
         """
-        Do any setup, and send an initial message.
+        Do any local setup necessary, and send an initial message.
         """
         if self._state != _INITIAL:
             raise RuntimeError(
@@ -49,9 +49,6 @@ class MultithreadingSender:
             )
 
         self.pinger.connect()
-
-        # self.message_queue.put(("start", self.connection_id))
-        # self.pinger.ping()
 
         self._state = _OPEN
 
@@ -61,11 +58,9 @@ class MultithreadingSender:
         """
         if self._state != _OPEN:
             raise RuntimeError(
-                f"Sender not started, or already stopped: state is {self._state}"
+                "Sender not started, or already stopped: "
+                f"state is {self._state}"
             )
-
-        self.message_queue.put(("done", self.connection_id))
-        self.pinger.ping()
 
         self.pinger.disconnect()
 
@@ -77,7 +72,8 @@ class MultithreadingSender:
         """
         if self._state != _OPEN:
             raise RuntimeError(
-                f"Sender must be in OPEN state to send messages: state is {self._state}"
+                "Sender must be in OPEN state to send messages: "
+                f"state is {self._state}"
             )
 
         self.message_queue.put(("message", self.connection_id, message))

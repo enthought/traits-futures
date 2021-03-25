@@ -24,14 +24,15 @@ from traits.api import (
     Instance,
     on_trait_change,
     Property,
+    Set,
 )
 
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
+from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
-
 
 # Executor states.
 
@@ -247,6 +248,8 @@ class TraitsExecutor(HasStrictTraits):
             future = task.future()
             future._executor_initialized(cancel_event.set)
         except Exception:
+            # XXX Need something better here.
+            self._message_router._receivers.pop(sender.connection_id)
             with sender:
                 pass
             raise
@@ -256,6 +259,9 @@ class TraitsExecutor(HasStrictTraits):
         )
         wrapper = FutureWrapper(future=future, receiver=receiver)
         self._worker_pool.submit(background_task_wrapper)
+
+        self._active_futures.add(future)
+        self._future_to_receiver[future] = receiver
         self._wrappers[receiver] = wrapper
         return future
 
@@ -271,12 +277,11 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for _, wrapper in self._wrappers.items():
-            future = wrapper.future
+        for future in self._active_futures:
             if future.cancellable:
                 future.cancel()
 
-        if not self._wrappers:
+        if not self._active_futures:
             self._stop()
 
     # Private traits ##########################################################
@@ -303,6 +308,12 @@ class TraitsExecutor(HasStrictTraits):
 
     #: Wrappers for currently-executing futures.
     _wrappers = Dict(Any(), Any())
+
+    #: Currently-executing futures
+    _active_futures = Set(Instance(IFuture))
+
+    #: Mapping from future to corresponding receiver.
+    _future_to_receiver = Dict(Instance(IFuture), Any())
 
     # Private methods #########################################################
 
@@ -338,19 +349,34 @@ class TraitsExecutor(HasStrictTraits):
         self._own_context = True
         return context
 
-    @on_trait_change("_message_router:receiver_done")
-    def _remove_future(self, receiver):
+    @on_trait_change("_active_futures:done")
+    def _untrack_future(self, future, name, is_done):
+        # The 'is_done' value should never be anything other than true.
+        # XXX Remove debugging code.
+        assert is_done
+        assert name == "done"
+        assert future in self._active_futures
+
+        self._active_futures.remove(future)
+        receiver = self._future_to_receiver.pop(future)
         self._wrappers.pop(receiver)
-        # If we're in STOPPING state and the last future has just exited,
-        # go to STOPPED state.
-        if self.state == STOPPING and not self._wrappers:
+
+        self._message_router.close_pipe(receiver)
+        if self.state == STOPPING and not self._active_futures:
             self._stop()
+
+    # XXX Get rid of _wrappers; reorganize active_futures / wrappers /
+    # future_to_receiver. What information do we actually need to keep?
 
     def _stop(self):
         """
         Go to STOPPED state, and shut down the worker pool if we own it.
         """
         assert self.state == STOPPING
+
+        assert not self._active_futures
+        assert not self._future_to_receiver
+        assert not self._wrappers
 
         if self._have_message_router:
             self._message_router.disconnect()

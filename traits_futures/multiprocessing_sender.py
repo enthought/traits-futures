@@ -37,27 +37,24 @@ class MultiprocessingSender:
 
     def start(self):
         """
-        Do any local setup necessary, and send an initial message.
+        Do any local setup necessary.
         """
         if self._state != _INITIAL:
             raise RuntimeError(
                 f"Sender already started: state is {self._state}"
             )
 
-        # self.message_queue.put(("start", self.connection_id))
-
         self._state = _OPEN
 
     def stop(self):
         """
-        Send a final message, then do any local teardown necessary.
+        Undo any setup performed in the start method.
         """
         if self._state != _OPEN:
             raise RuntimeError(
-                f"Sender not started, or already stopped: state is {self._state}"
+                "Sender not started, or already stopped: "
+                f"state is {self._state}"
             )
-
-        self.message_queue.put(("done", self.connection_id))
 
         self._state = _CLOSED
 
@@ -73,7 +70,8 @@ class MultiprocessingSender:
         """
         if self._state != _OPEN:
             raise RuntimeError(
-                f"Sender must be in OPEN state to send messages: state is {self._state}"
+                "Sender must be in OPEN state to send messages: "
+                f"state is {self._state}"
             )
 
         self.message_queue.put(("message", self.connection_id, message))
