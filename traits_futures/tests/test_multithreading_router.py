@@ -24,6 +24,7 @@ from traits.api import (
     on_trait_change,
 )
 
+from traits_futures.i_message_receiver import IMessageReceiver
 from traits_futures.multithreading_router import MultithreadingRouter
 from traits_futures.toolkit_support import toolkit
 
@@ -41,12 +42,12 @@ def send_messages(sender, messages):
 
 class ReceiverListener(HasStrictTraits):
     """
-    Test helper that listens to and records all messages from a
-    MessageReceiver.
+    Test helper that listens to and records all messages from an
+    IMessageReceiver object.
     """
 
     #: The receiver that we're listening to.
-    receiver = Any()
+    receiver = Instance(IMessageReceiver)
 
     #: Messages received.
     messages = List(Any())

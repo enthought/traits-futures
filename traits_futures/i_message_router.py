@@ -56,8 +56,22 @@ class IMessageRouter(Interface):
         -------
         sender : IMessageSender
             Object to be passed to the background task.
-        receiver : MessageReceiver
+        receiver : IMessageReceiver
             Object kept in the foreground, which reacts to messages.
+        """
+
+    @abc.abstractmethod
+    def close_pipe(self, receiver):
+        """
+        Close the receiver end of a pipe produced by pipe.
+
+        Removes the receiver from the routing table, so that no new messages
+        can reach that receiver.
+
+        Parameters
+        ----------
+        receiver : IMessageReceiver
+            Receiver half of the pair returned by the ``pipe`` method.
         """
 
     @abc.abstractmethod

@@ -19,7 +19,7 @@ import collections.abc
 import itertools
 import queue
 
-from traits.api import Any, Dict, HasStrictTraits, Instance, Int
+from traits.api import Any, Dict, HasStrictTraits, Instance, Int, provides
 
 from traits_futures.i_message_router import IMessageRouter
 from traits_futures.message_receiver import MessageReceiver
@@ -30,7 +30,7 @@ Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
 
 
-@IMessageRouter.register
+@provides(IMessageRouter)
 class MultithreadingRouter(HasStrictTraits):
     """
     Router for messages from a background thread.
@@ -56,19 +56,21 @@ class MultithreadingRouter(HasStrictTraits):
             pinger=pinger,
             message_queue=self._message_queue,
         )
-        receiver = MessageReceiver()
+        receiver = MessageReceiver(connection_id=connection_id)
         self._receivers[connection_id] = receiver
         return sender, receiver
 
     def close_pipe(self, receiver):
-        for connection_id, gen_receiver in self._receivers.items():
-            if receiver == gen_receiver:
-                break
-        else:
-            connection_id = None
+        """
+        Stop passing on messages to the given receiver, and remove
+        the receiver from the routing table.
 
-        if connection_id is not None:
-            self._receivers.pop(connection_id)
+        Parameters
+        ----------
+        receiver : MessageReceiver
+        """
+        connection_id = receiver.connection_id
+        self._receivers.pop(connection_id)
 
     def connect(self):
         """

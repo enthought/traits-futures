@@ -9,6 +9,8 @@
 # Thanks for using Enthought open source!
 
 
+from traits.api import provides
+
 from traits_futures.i_message_sender import IMessageSender
 
 
@@ -21,7 +23,7 @@ _OPEN = "open"
 _CLOSED = "closed"
 
 
-@IMessageSender.register
+@provides(IMessageSender)
 class MultiprocessingSender:
     """
     Object allowing the worker to send messages.

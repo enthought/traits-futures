@@ -21,7 +21,15 @@ import multiprocessing.managers
 import queue
 import threading
 
-from traits.api import Any, Bool, Dict, HasStrictTraits, Instance, Int
+from traits.api import (
+    Any,
+    Bool,
+    Dict,
+    HasStrictTraits,
+    Instance,
+    Int,
+    provides,
+)
 
 from traits_futures.i_message_router import IMessageRouter
 from traits_futures.message_receiver import MessageReceiver
@@ -32,7 +40,7 @@ Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
 
 
-@IMessageRouter.register
+@provides(IMessageRouter)
 class MultiprocessingRouter(HasStrictTraits):
     """
     Router for messages from background jobs to their corresponding futures.
@@ -108,6 +116,11 @@ class MultiprocessingRouter(HasStrictTraits):
         received from the background and routed to the receiver.
 
         Not thread safe. Should only ever be called from the main thread.
+
+        Returns
+        -------
+        sender : IMessageSender
+        receiver : IMessageReceiver
         """
         if not self._connected:
             raise RuntimeError(
@@ -120,19 +133,13 @@ class MultiprocessingRouter(HasStrictTraits):
             connection_id=connection_id,
             message_queue=self._process_message_queue,
         )
-        receiver = MessageReceiver()
+        receiver = MessageReceiver(connection_id=connection_id)
         self._receivers[connection_id] = receiver
         return sender, receiver
 
     def close_pipe(self, receiver):
-        for connection_id, gen_receiver in self._receivers.items():
-            if receiver == gen_receiver:
-                break
-        else:
-            connection_id = None
-
-        if connection_id is not None:
-            self._receivers.pop(connection_id)
+        connection_id = receiver.connection_id
+        self._receivers.pop(connection_id)
 
     # Private traits ##########################################################
 
@@ -180,6 +187,9 @@ def monitor_queue(process_queue, local_queue, pingee):
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
     """
+    # XXX Inconsistency with multithreading version, where we
+    # instantiate the Pinger on the main thread (and then pass
+    # to the child thread)
     pinger = Pinger(pingee=pingee)
     pinger.connect()
     try:

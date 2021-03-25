@@ -21,10 +21,12 @@ from traits.api import (
     Any,
     Event,
     HasStrictTraits,
+    Instance,
     List,
     on_trait_change,
 )
 
+from traits_futures.i_message_receiver import IMessageReceiver
 from traits_futures.multiprocessing_router import MultiprocessingRouter
 from traits_futures.toolkit_support import toolkit
 
@@ -55,12 +57,12 @@ def send_without_starting(sender, messages):
 
 class ReceiverListener(HasStrictTraits):
     """
-    Test helper that listens to and records all messages from a
-    MessageReceiver.
+    Test helper that listens to and records all messages from an
+    IMessageReceiver.
     """
 
     #: The receiver that we're listening to.
-    receiver = Any()
+    receiver = Instance(IMessageReceiver)
 
     #: Messages received.
     messages = List(Any())

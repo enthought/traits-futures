@@ -8,15 +8,13 @@
 #
 # Thanks for using Enthought open source!
 
-from traits.api import Any, Event, HasStrictTraits, Int, provides
 
-from traits_futures.i_message_receiver import IMessageReceiver
+from traits.api import Any, Event, Int, Interface
 
 
-@provides(IMessageReceiver)
-class MessageReceiver(HasStrictTraits):
+class IMessageReceiver(Interface):
     """
-    Main-thread object that receives messages from a sender.
+    Interface for the main-thread object that receives messages from a sender.
     """
 
     #: Connection id, matching that of the paired sender.
