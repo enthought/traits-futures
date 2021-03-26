@@ -77,7 +77,7 @@ class CapturingHandler(logging.Handler):
     Adapted from unittest._log in the standard library.
     """
 
-    def __init__(self, level=0):
+    def __init__(self):
         logging.Handler.__init__(self)
         self.watcher = LoggingWatcher()
 
@@ -299,6 +299,8 @@ class IMessageRouterTests:
                 with self.assertRaises(RuntimeError):
                     sender.start()
 
+    # Helper functions and assertions
+
     @contextlib.contextmanager
     def get_sender(self, router):
         """
@@ -309,8 +311,6 @@ class IMessageRouterTests:
             yield sender
         finally:
             router.close_pipe(receiver)
-
-    # Helper functions and assertions
 
     @contextlib.contextmanager
     def started_router(self):
