@@ -100,7 +100,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>background_task</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.9)"><em>collections.abc.Callable</em></a>) – Callable representing the background task. This will be called
 with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
-<li><p><strong>sender</strong> (<em>MessageSender</em>) – Object used to send messages.</p></li>
+<li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><em>IMessageSender</em></a>) – Object used to send messages.</p></li>
 <li><p><strong>cancelled</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.9)"><em>collections.abc.Callable</em></a>) – Zero-argument callable returning bool. This can be called to check
 whether cancellation has been requested.</p></li>
 </ul>
@@ -150,6 +150,12 @@ If not given, <code class="docutils literal notranslate"><span class="pre">None<
 <p>Wrapper for the IFuture.</p>
 <p>This wrapper handles control messages from the background task, and
 delegates custom messages to the future.</p>
+<dl class="py attribute">
+<dt id="traits_futures.wrappers.FutureWrapper.done">
+<code class="sig-name descname"><span class="pre">done</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool recording whether the future has completed or not.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt id="traits_futures.wrappers.FutureWrapper.future">
 <code class="sig-name descname"><span class="pre">future</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
@@ -245,7 +251,7 @@ Thanks for using Enthought open source!
 
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.3.
       </li>
     </ul>
     </div>

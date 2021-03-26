@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.multithreading\_sender module
-=============================================
+traits\_futures.i\_message\_router module
+=========================================
 
-.. automodule:: traits_futures.multithreading_sender
+.. automodule:: traits_futures.i_message_router
    :members:
    :undoc-members:
    :show-inheritance:
