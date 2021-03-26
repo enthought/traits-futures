@@ -362,9 +362,6 @@ def monitor_queue(process_queue, local_queue, pingee):
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
     """
-    # XXX Inconsistency with multithreading version, where we
-    # instantiate the Pinger on the main thread (and then pass
-    # to the child thread)
     pinger = Pinger(pingee=pingee)
     pinger.connect()
     try:

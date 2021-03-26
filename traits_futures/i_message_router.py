@@ -57,9 +57,6 @@ connections made in the :meth:`IMessageSender.start` method.
 
 """
 
-# XXX Fix docstrings of implementations to match those
-#     of the interface.
-
 import abc
 import contextlib
 

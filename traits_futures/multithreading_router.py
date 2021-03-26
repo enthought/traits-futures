@@ -64,15 +64,16 @@ class MultithreadingSender:
     ----------
     connection_id : int
         Id of the matching receiver; used for message routing.
-    pinger : Pinger
-        Used to notify the GUI thread that there's a message pending.
+    pingee : Pingee
+        Recipient for pings, used to notify the GUI thread that there's
+        a message pending.
     message_queue : queue.Queue
         Thread-safe queue for passing messages to the foreground.
     """
 
-    def __init__(self, connection_id, pinger, message_queue):
+    def __init__(self, connection_id, pingee, message_queue):
         self.connection_id = connection_id
-        self.pinger = pinger
+        self.pinger = Pinger(pingee=pingee)
         self.message_queue = message_queue
         self._state = _INITIAL
 
@@ -258,10 +259,9 @@ class MultithreadingRouter(HasStrictTraits):
             raise RuntimeError("router is not running")
 
         connection_id = next(self._connection_ids)
-        pinger = Pinger(pingee=self._pingee)
         sender = MultithreadingSender(
             connection_id=connection_id,
-            pinger=pinger,
+            pingee=self._pingee,
             message_queue=self._message_queue,
         )
         receiver = MultithreadingReceiver(connection_id=connection_id)
