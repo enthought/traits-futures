@@ -11,6 +11,42 @@
 """
 Implementations of the IMessageSender, IMessageReceiver and IMessageRouter
 interfaces for tasks executed in a background process.
+
+Overview of the implementation
+------------------------------
+
+When the router is started (via the ``start`` method), it sets up the
+following machinery:
+
+- A process-safe process message queue that's shared between processes
+  (:attr:`MultiprocessingRouter._process_message_queue`). This queue runs in
+  its own manager server process (the manager is
+  :attr:`MultiprocessingRouter._manager`), and the main process and worker
+  processes use proxy objects to communicate with the queue.
+- A thread-safe local message queue
+  (:attr:`MultiprocessingRouter._local_message_queue`) in the main process.
+- A long-running thread (:attr:`MultiprocessingRouter._monitor_thread`),
+  running in the main process, that continually monitors the process message
+  queue and immediately transfers any messages that arrive to the local message
+  queue.
+- A :class:`IPingee` instance that's pinged by the monitor thread whenever a
+  message is transferred from the process message queue to the local message
+  queue, alerting the GUI that there's a message to process and route.
+
+When a worker process uses the sender to send a message, the following steps
+occur:
+
+- the sender places the message onto the process message queue (using its
+  local proxy for that message queue)
+- the monitor thread receives the message (using *its* local proxy for the
+  process message queue) and places the message onto the local message queue.
+  It also pings the pingee.
+- assuming a running GUI event loop, the pingee receives the ping and executes
+  the :meth:`MultiprocessingRouter._route_message` callback
+- the ``_route_message`` callback pulls the next message from the local message
+  queue, inspects it to determine which receiver it should be sent to, and
+  sends it to that receiver
+
 """
 
 import collections.abc
