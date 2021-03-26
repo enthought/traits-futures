@@ -26,7 +26,7 @@ from traits.api import (
     Str,
 )
 
-from traits_futures.i_message_receiver import IMessageReceiver
+from traits_futures.i_message_router import IMessageReceiver
 from traits_futures.i_message_router import IMessageRouter
 
 

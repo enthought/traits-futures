@@ -9,8 +9,8 @@
 # Thanks for using Enthought open source!
 
 """
-Implementation of the IMessageRouter interface for the case where the
-sender will be in a background thread.
+Implementations of the IMessageSender, IMessageReceiver and IMessageRouter
+interfaces for tasks executed on a background thread.
 """
 
 import collections.abc
@@ -22,21 +22,154 @@ from traits.api import (
     Any,
     Bool,
     Dict,
+    Event,
     HasStrictTraits,
     Instance,
     Int,
     provides,
 )
 
-from traits_futures.i_message_router import IMessageRouter
-from traits_futures.message_receiver import MessageReceiver
-from traits_futures.multithreading_sender import MultithreadingSender
+from traits_futures.i_message_router import (
+    IMessageReceiver,
+    IMessageRouter,
+    IMessageSender,
+)
 from traits_futures.toolkit_support import toolkit
 
 logger = logging.getLogger(__name__)
 
 Pingee = toolkit("pinger:Pingee")
 Pinger = toolkit("pinger:Pinger")
+
+
+#: Internal states for the sender. The sender starts in the _INITIAL state,
+#: moves to the _OPEN state when 'start' is called, and from _OPEN to _CLOSED
+#: when 'stop' is called. Messages can only be sent with the 'send' method
+#: while the sender is in _OPEN state.
+_INITIAL = "initial"
+_OPEN = "open"
+_CLOSED = "closed"
+
+
+@IMessageSender.register
+class MultithreadingSender:
+    """
+    Object allowing the worker to send messages.
+
+    This class will be instantiated in the main thread, and the instance passed
+    to the worker thread to allow the worker to communicate back to the main
+    thread.
+
+    Parameters
+    ----------
+    connection_id : int
+        Id of the matching receiver; used for message routing.
+    pinger : Pinger
+        Used to notify the GUI thread that there's a message pending.
+    message_queue : queue.Queue
+        Thread-safe queue for passing messages to the foreground.
+    """
+
+    def __init__(self, connection_id, pinger, message_queue):
+        self.connection_id = connection_id
+        self.pinger = pinger
+        self.message_queue = message_queue
+        self._state = _INITIAL
+
+    def start(self):
+        """
+        Do any setup necessary to prepare for sending messages.
+
+        This method must be called before any messages can be sent
+        using the ``send`` method.
+
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the sender has previously been started.
+        """
+        if self._state != _INITIAL:
+            raise RuntimeError(
+                f"Sender already started: state is {self._state}"
+            )
+
+        self.pinger.connect()
+
+        self._state = _OPEN
+
+    def send(self, message):
+        """
+        Send a message to the router.
+
+        Parameters
+        ----------
+        message : object
+            Typically this will be immutable, small, and pickleable.
+
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the sender has not been started, or has already been stopped.
+        """
+        if self._state != _OPEN:
+            raise RuntimeError(
+                "Sender must be in OPEN state to send messages: "
+                f"state is {self._state}"
+            )
+
+        self.message_queue.put((self.connection_id, message))
+        self.pinger.ping()
+
+    def stop(self):
+        """
+        Do any teardown.
+
+        After this method has been called, no more messages can be sent.
+
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the sender has not been started, or has already been stopped.
+        """
+        if self._state != _OPEN:
+            raise RuntimeError(
+                "Sender not started, or already stopped: "
+                f"state is {self._state}"
+            )
+
+        self.pinger.disconnect()
+
+        self._state = _CLOSED
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *exc_info):
+        self.stop()
+
+
+@provides(IMessageReceiver)
+class MultithreadingReceiver(HasStrictTraits):
+    """
+    Implementation of the IMessageReceiver interface for the case where the
+    sender will be in a background thread.
+    """
+
+    #: Event fired when a message is received from the paired sender.
+    message = Event(Any())
+
+    #: Connection id, matching that of the paired sender.
+    connection_id = Int()
 
 
 @provides(IMessageRouter)
@@ -48,7 +181,17 @@ class MultithreadingRouter(HasStrictTraits):
 
     def start(self):
         """
-        Prepare router for routing.
+        Start routing messages.
+
+        This method must be called before any call to ``pipe`` or
+        ``close_pipe`` can be made.
+
+        Not thread-safe. Must always be called in the main thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the router has already been started.
         """
         if self._running:
             raise RuntimeError("router is already running")
@@ -62,7 +205,20 @@ class MultithreadingRouter(HasStrictTraits):
 
     def stop(self):
         """
-        Undo any connections made by the ``connect`` call.
+        Stop routing messages.
+
+        This method should be called in the main thread after all pipes
+        are finished with. Calls to ``pipe`` or ``close_pipe`` are
+        not permitted after this method has been called.
+
+        Logs a warning if there are unclosed pipes.
+
+        Not thread safe. Must always be called in the main thread.
+
+        Raises
+        ------
+        RuntimeError
+            If the router was not already running.
         """
         if not self._running:
             raise RuntimeError("router is not running")
@@ -79,14 +235,24 @@ class MultithreadingRouter(HasStrictTraits):
 
     def pipe(self):
         """
-        Create a (sender, receiver) pair for sending messages.
+        Create a (sender, receiver) pair for sending and receiving messages.
+
+        The sender will be passed to the background task and used to send
+        messages, while the receiver remains in the foreground.
+
+        Not thread safe. Must always be called in the main thread.
 
         Returns
         -------
         sender : MultithreadingSender
-            Object to be passed to the background task to send messages.
-        receiver : MessageReceiver
-            Object to be kept in the foreground which reacts to messages.
+            Object to be passed to the background task.
+        receiver : MultithreadingReceiver
+            Object kept in the foreground, which reacts to messages.
+
+        Raises
+        ------
+        RuntimeError
+            If the router is not currently running.
         """
         if not self._running:
             raise RuntimeError("router is not running")
@@ -98,18 +264,28 @@ class MultithreadingRouter(HasStrictTraits):
             pinger=pinger,
             message_queue=self._message_queue,
         )
-        receiver = MessageReceiver(connection_id=connection_id)
+        receiver = MultithreadingReceiver(connection_id=connection_id)
         self._receivers[connection_id] = receiver
         return sender, receiver
 
     def close_pipe(self, receiver):
         """
-        Stop passing on messages to the given receiver, and remove
-        the receiver from the routing table.
+        Close the receiver end of a pipe produced by ``pipe``.
+
+        Removes the receiver from the routing table, so that no new messages
+        can reach that receiver.
+
+        Not thread safe. Must always be called in the main thread.
 
         Parameters
         ----------
-        receiver : MessageReceiver
+        receiver : MultithreadingReceiver
+            Receiver half of the pair returned by the ``pipe`` method.
+
+        Raises
+        ------
+        RuntimeError
+            If the router is not currently running.
         """
         if not self._running:
             raise RuntimeError("router is not running")
@@ -120,13 +296,13 @@ class MultithreadingRouter(HasStrictTraits):
     # Private traits ##########################################################
 
     #: Internal queue for messages from all senders.
-    _message_queue = Any()
+    _message_queue = Instance(queue.Queue)
 
     #: Source of new connection ids.
     _connection_ids = Instance(collections.abc.Iterator)
 
     #: Receivers, keyed by connection_id.
-    _receivers = Dict(Int(), Any())
+    _receivers = Dict(Int(), Instance(MultithreadingReceiver))
 
     #: Receiver for the "message_sent" signal.
     _pingee = Instance(Pingee)
