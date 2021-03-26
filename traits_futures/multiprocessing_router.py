@@ -32,9 +32,9 @@ from traits.api import (
 )
 
 from traits_futures.i_message_router import (
+    IMessageReceiver,
     IMessageRouter,
     IMessageSender,
-    IMessageReceiver,
 )
 from traits_futures.toolkit_support import toolkit
 
@@ -370,7 +370,7 @@ def monitor_queue(process_queue, local_queue, pingee):
         Queue to listen to for messages.
     local_queue : queue.Queue
         Queue to transfer those messages to.
-    pingee : Pingee
+    pingee : IPingee
         Recipient for pings, used to notify the GUI thread that there's
         a message pending.
 

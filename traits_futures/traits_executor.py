@@ -32,6 +32,7 @@ from traits_futures.background_progress import submit_progress
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
+
 # Executor states.
 
 #: Executor is currently running (this is the initial state).
@@ -254,7 +255,6 @@ class TraitsExecutor(HasStrictTraits):
         )
         wrapper = FutureWrapper(future=future, receiver=receiver)
         self._worker_pool.submit(background_task_wrapper)
-
         self._wrappers.add(wrapper)
         return future
 
@@ -300,7 +300,7 @@ class TraitsExecutor(HasStrictTraits):
     #: True if we've created a message router, and need to shut it down.
     _have_message_router = Bool(False)
 
-    #: Wrapper classes for currently-executing futures.
+    #: Wrappers for currently-executing futures.
     _wrappers = Set(Instance(FutureWrapper))
 
     # Private methods #########################################################
@@ -339,9 +339,10 @@ class TraitsExecutor(HasStrictTraits):
 
     @on_trait_change("_wrappers:done")
     def _untrack_future(self, wrapper, name, is_done):
-        self._wrappers.remove(wrapper)
-
         self._message_router.close_pipe(wrapper.receiver)
+        self._wrappers.remove(wrapper)
+        # If we're in STOPPING state and the last future has just exited,
+        # go to STOPPED state.
         if self.state == STOPPING and not self._wrappers:
             self._stop()
 
@@ -350,8 +351,6 @@ class TraitsExecutor(HasStrictTraits):
         Go to STOPPED state, and shut down the worker pool if we own it.
         """
         assert self.state == STOPPING
-
-        assert not self._wrappers
 
         if self._have_message_router:
             self._message_router.stop()
