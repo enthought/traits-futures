@@ -56,7 +56,7 @@ def send_messages(sender, messages):
 
 class ReceiverListener(HasStrictTraits):
     """
-    Listener for a receiver, recording message received.
+    Listener for a receiver, recording received messages.
     """
 
     #: The receiver that we're listening to.
@@ -72,7 +72,9 @@ class ReceiverListener(HasStrictTraits):
 
 class CapturingHandler(logging.Handler):
     """
-    Simple logging handler that just emits records to a list.
+    Logging handler capturing raw and formatted logging output.
+
+    Adapted from unittest._log in the standard library.
     """
 
     def __init__(self, level=0):
