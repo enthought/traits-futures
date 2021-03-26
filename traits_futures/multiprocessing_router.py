@@ -32,9 +32,9 @@ from traits.api import (
 )
 
 from traits_futures.i_message_router import (
+    IMessageReceiver,
     IMessageRouter,
     IMessageSender,
-    IMessageReceiver,
 )
 from traits_futures.toolkit_support import toolkit
 
