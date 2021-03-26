@@ -47,9 +47,11 @@ def send_messages(sender, messages):
         List of objects to send.
     """
     sender.start()
-    for message in messages:
-        sender.send(message)
-    sender.stop()
+    try:
+        for message in messages:
+            sender.send(message)
+    finally:
+        sender.stop()
 
 
 class ReceiverListener(HasStrictTraits):
