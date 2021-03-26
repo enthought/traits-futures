@@ -77,7 +77,7 @@ class IMessageSender(contextlib.AbstractContextManager):
 
     Typically an IMessageSender instance for a given router is created
     in the main thread by that router and then passed to the appropriate
-    background task.
+    background task, which then effectively takes "ownership" of that sender.
     """
 
     @abc.abstractmethod
