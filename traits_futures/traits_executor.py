@@ -18,12 +18,12 @@ import warnings
 from traits.api import (
     Any,
     Bool,
-    Dict,
     Enum,
     HasStrictTraits,
     Instance,
     on_trait_change,
     Property,
+    Set,
 )
 
 from traits_futures.background_call import submit_call
@@ -247,7 +247,7 @@ class TraitsExecutor(HasStrictTraits):
             future = task.future()
             future._executor_initialized(cancel_event.set)
         except Exception:
-            self._message_router.close_pipe(sender, receiver)
+            self._message_router.close_pipe(receiver)
             raise
 
         background_task_wrapper = BackgroundTaskWrapper(
@@ -255,7 +255,7 @@ class TraitsExecutor(HasStrictTraits):
         )
         wrapper = FutureWrapper(future=future, receiver=receiver)
         self._worker_pool.submit(background_task_wrapper)
-        self._wrappers[receiver] = wrapper
+        self._wrappers.add(wrapper)
         return future
 
     def stop(self):
@@ -270,7 +270,7 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for _, wrapper in self._wrappers.items():
+        for wrapper in self._wrappers:
             future = wrapper.future
             if future.cancellable:
                 future.cancel()
@@ -301,7 +301,7 @@ class TraitsExecutor(HasStrictTraits):
     _have_message_router = Bool(False)
 
     #: Wrappers for currently-executing futures.
-    _wrappers = Dict(Any(), Any())
+    _wrappers = Set(Instance(FutureWrapper))
 
     # Private methods #########################################################
 
@@ -325,7 +325,7 @@ class TraitsExecutor(HasStrictTraits):
     def __message_router_default(self):
         # Toolkit-specific message router.
         router = self._context.message_router()
-        router.connect()
+        router.start()
         self._have_message_router = True
         return router
 
@@ -337,9 +337,10 @@ class TraitsExecutor(HasStrictTraits):
         self._own_context = True
         return context
 
-    @on_trait_change("_message_router:receiver_done")
-    def _remove_future(self, receiver):
-        self._wrappers.pop(receiver)
+    @on_trait_change("_wrappers:done")
+    def _untrack_future(self, wrapper, name, is_done):
+        self._message_router.close_pipe(wrapper.receiver)
+        self._wrappers.remove(wrapper)
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
         if self.state == STOPPING and not self._wrappers:
@@ -352,7 +353,7 @@ class TraitsExecutor(HasStrictTraits):
         assert self.state == STOPPING
 
         if self._have_message_router:
-            self._message_router.disconnect()
+            self._message_router.stop()
             self._message_router = None
 
         if self._own_worker_pool:

@@ -16,7 +16,7 @@ import concurrent.futures
 import threading
 
 from traits_futures.i_parallel_context import IParallelContext
-from traits_futures.message_router import MessageRouter
+from traits_futures.multithreading_router import MultithreadingRouter
 
 
 class MultithreadingContext(IParallelContext):
@@ -60,9 +60,9 @@ class MultithreadingContext(IParallelContext):
 
         Returns
         -------
-        message_router : MessageRouter
+        message_router : MultithreadingRouter
         """
-        return MessageRouter()
+        return MultithreadingRouter()
 
     def close(self):
         """
