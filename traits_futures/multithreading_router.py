@@ -219,7 +219,7 @@ class MultithreadingRouter(HasStrictTraits):
         Raises
         ------
         RuntimeError
-            If the router was not already running.
+            If the router is not running.
         """
         if not self._running:
             raise RuntimeError("router is not running")
