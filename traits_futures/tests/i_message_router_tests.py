@@ -47,14 +47,16 @@ def send_messages(sender, messages):
         List of objects to send.
     """
     sender.start()
-    for message in messages:
-        sender.send(message)
-    sender.stop()
+    try:
+        for message in messages:
+            sender.send(message)
+    finally:
+        sender.stop()
 
 
 class ReceiverListener(HasStrictTraits):
     """
-    Listener for a receiver, recording message received.
+    Listener for a receiver, recording received messages.
     """
 
     #: The receiver that we're listening to.
@@ -70,10 +72,12 @@ class ReceiverListener(HasStrictTraits):
 
 class CapturingHandler(logging.Handler):
     """
-    Simple logging handler that just emits records to a list.
+    Logging handler capturing raw and formatted logging output.
+
+    Adapted from unittest._log in the standard library.
     """
 
-    def __init__(self, level=0):
+    def __init__(self):
         logging.Handler.__init__(self)
         self.watcher = LoggingWatcher()
 
@@ -295,6 +299,8 @@ class IMessageRouterTests:
                 with self.assertRaises(RuntimeError):
                     sender.start()
 
+    # Helper functions and assertions
+
     @contextlib.contextmanager
     def get_sender(self, router):
         """
@@ -305,8 +311,6 @@ class IMessageRouterTests:
             yield sender
         finally:
             router.close_pipe(receiver)
-
-    # Helper functions and assertions
 
     @contextlib.contextmanager
     def started_router(self):
@@ -330,17 +334,26 @@ class IMessageRouterTests:
 
         Runs the event loop until either the expected messages are received,
         or until timeout.
+
+        Parameters
+        ----------
+        listener : ReceiverListener
+        messages : list
+            List of messages that are expected.
+        timeout : float
+            Maximum time to wait for the messages to arrive, in seconds.
         """
 
-        def got_expected_messages(listener):
-            return listener.messages[: len(messages)] == messages
+        def got_enough_messages(listener):
+            return len(listener.messages) >= len(messages)
 
         self.run_until(
             object=listener,
             trait="messages_items",
-            condition=got_expected_messages,
+            condition=got_enough_messages,
             timeout=timeout,
         )
+        self.assertEqual(listener.messages, messages)
 
     @contextlib.contextmanager
     def assertEventuallyLogs(
