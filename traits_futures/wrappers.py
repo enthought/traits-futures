@@ -17,6 +17,7 @@ These are used by the TraitsExecutor machinery.
 import logging
 
 from traits.api import (
+    Bool,
     HasStrictTraits,
     HasTraits,
     Instance,
@@ -64,6 +65,13 @@ class FutureWrapper(HasStrictTraits):
     #: Object that receives messages from the background task.
     receiver = Instance(HasTraits)
 
+    #: Bool recording whether the future has completed or not.
+    done = Bool(False)
+
+    @on_trait_change("future:done")
+    def _update_done(self, new_done):
+        self.done = new_done
+
     @on_trait_change("receiver:message")
     def _receive_message(self, message):
         """
@@ -89,7 +97,7 @@ class BackgroundTaskWrapper:
     background_task : collections.abc.Callable
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled``.
-    sender : MessageSender
+    sender : IMessageSender
         Object used to send messages.
     cancelled : collections.abc.Callable
         Zero-argument callable returning bool. This can be called to check
