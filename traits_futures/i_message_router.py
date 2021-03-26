@@ -18,7 +18,7 @@ is responsible for that dispatch.
 
 In more detail, an :class:`IMessageRouter` instance is responsible for:
 
-- Creating "pipes". A pipe is a pairs of linked :class:`IMessageSender` and
+- Creating "pipes". A pipe is a pair of linked :class:`IMessageSender` and
   :class:`IMessageReceiver` objects that provide communications between a
   background task and a foreground receiver.
 - Ensuring that messages are routed appropriately via a running GUI event loop.
