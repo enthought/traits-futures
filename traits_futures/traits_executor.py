@@ -18,7 +18,6 @@ import warnings
 from traits.api import (
     Any,
     Bool,
-    Dict,
     Enum,
     HasStrictTraits,
     Instance,
@@ -30,7 +29,6 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
-from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
@@ -257,9 +255,7 @@ class TraitsExecutor(HasStrictTraits):
         wrapper = FutureWrapper(future=future, receiver=receiver)
         self._worker_pool.submit(background_task_wrapper)
 
-        self._active_futures.add(future)
-        self._future_to_receiver[future] = receiver
-        self._wrappers[receiver] = wrapper
+        self._wrappers.add(wrapper)
         return future
 
     def stop(self):
@@ -274,11 +270,12 @@ class TraitsExecutor(HasStrictTraits):
         self.state = STOPPING
 
         # Cancel any futures that aren't already cancelled.
-        for future in self._active_futures:
+        for wrapper in self._wrappers:
+            future = wrapper.future
             if future.cancellable:
                 future.cancel()
 
-        if not self._active_futures:
+        if not self._wrappers:
             self._stop()
 
     # Private traits ##########################################################
@@ -303,14 +300,8 @@ class TraitsExecutor(HasStrictTraits):
     #: True if we've created a message router, and need to shut it down.
     _have_message_router = Bool(False)
 
-    #: Wrappers for currently-executing futures.
-    _wrappers = Dict(Any(), Any())
-
-    #: Currently-executing futures
-    _active_futures = Set(Instance(IFuture))
-
-    #: Mapping from future to corresponding receiver.
-    _future_to_receiver = Dict(Instance(IFuture), Any())
+    #: Wrapper classes for currently-executing futures.
+    _wrappers = Set(Instance(FutureWrapper))
 
     # Private methods #########################################################
 
@@ -346,24 +337,13 @@ class TraitsExecutor(HasStrictTraits):
         self._own_context = True
         return context
 
-    @on_trait_change("_active_futures:done")
-    def _untrack_future(self, future, name, is_done):
-        # The 'is_done' value should never be anything other than true.
-        # XXX Remove debugging code.
-        assert is_done
-        assert name == "done"
-        assert future in self._active_futures
+    @on_trait_change("_wrappers:done")
+    def _untrack_future(self, wrapper, name, is_done):
+        self._wrappers.remove(wrapper)
 
-        self._active_futures.remove(future)
-        receiver = self._future_to_receiver.pop(future)
-        self._wrappers.pop(receiver)
-
-        self._message_router.close_pipe(receiver)
-        if self.state == STOPPING and not self._active_futures:
+        self._message_router.close_pipe(wrapper.receiver)
+        if self.state == STOPPING and not self._wrappers:
             self._stop()
-
-    # XXX Get rid of _wrappers; reorganize active_futures / wrappers /
-    # future_to_receiver. What information do we actually need to keep?
 
     def _stop(self):
         """
@@ -371,8 +351,6 @@ class TraitsExecutor(HasStrictTraits):
         """
         assert self.state == STOPPING
 
-        assert not self._active_futures
-        assert not self._future_to_receiver
         assert not self._wrappers
 
         if self._have_message_router:
