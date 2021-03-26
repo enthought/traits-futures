@@ -330,17 +330,26 @@ class IMessageRouterTests:
 
         Runs the event loop until either the expected messages are received,
         or until timeout.
+
+        Parameters
+        ----------
+        listener : ReceiverListener
+        messages : list
+            List of messages that are expected.
+        timeout : float
+            Maximum time to wait for the messages to arrive, in seconds.
         """
 
-        def got_expected_messages(listener):
-            return listener.messages[: len(messages)] == messages
+        def got_enough_messages(listener):
+            return len(listener.messages) >= len(messages)
 
         self.run_until(
             object=listener,
             trait="messages_items",
-            condition=got_expected_messages,
+            condition=got_enough_messages,
             timeout=timeout,
         )
+        self.assertEqual(listener.messages, messages)
 
     @contextlib.contextmanager
     def assertEventuallyLogs(
