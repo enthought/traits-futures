@@ -248,10 +248,7 @@ class TraitsExecutor(HasStrictTraits):
             future = task.future()
             future._executor_initialized(cancel_event.set)
         except Exception:
-            # XXX Need something better here.
-            self._message_router._receivers.pop(sender.connection_id)
-            with sender:
-                pass
+            self._message_router.close_pipe(receiver)
             raise
 
         background_task_wrapper = BackgroundTaskWrapper(

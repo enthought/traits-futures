@@ -330,10 +330,10 @@ class MultiprocessingRouter(HasStrictTraits):
     #: Receiver for the "message_sent" signal.
     _pingee = Instance(Pingee)
 
-    #: Manager, used to create cancellation Events and message queues.
+    #: Manager, used to create message queues.
     _manager = Instance(multiprocessing.managers.BaseManager)
 
-    #: Router status
+    #: Router status: True if running, False if stopped.
     _running = Bool(False)
 
     # Private methods #########################################################
@@ -361,14 +361,29 @@ def monitor_queue(process_queue, local_queue, pingee):
     Monitors the process queue for incoming messages, and transfers
     those messages to the local queue, while also requesting that
     the event loop eventually process that message.
+
+    To stop the thread, put ``None`` onto the process_queue.
+
+    Parameters
+    ----------
+    process_queue : multiprocessing.Queue
+        Queue to listen to for messages.
+    local_queue : queue.Queue
+        Queue to transfer those messages to.
+    pingee : Pingee
+        Recipient for pings, used to notify the GUI thread that there's
+        a message pending.
+
     """
     pinger = Pinger(pingee=pingee)
     pinger.connect()
     try:
         while True:
-            # XXX Add a timeout?
-            message = process_queue.get()
-            if not isinstance(message, tuple):
+            try:
+                message = process_queue.get(block=True, timeout=1.0)
+            except queue.Empty:
+                continue
+            if message is None:
                 break
             local_queue.put(message)
             # Avoid hanging onto a reference to the message until the next
