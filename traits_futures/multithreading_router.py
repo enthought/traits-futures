@@ -64,7 +64,7 @@ class MultithreadingSender:
     ----------
     connection_id : int
         Id of the matching receiver; used for message routing.
-    pingee : Pingee
+    pingee : IPingee
         Recipient for pings, used to notify the GUI thread that there's
         a message pending.
     message_queue : queue.Queue

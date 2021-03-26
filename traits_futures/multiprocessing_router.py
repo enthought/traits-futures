@@ -370,7 +370,7 @@ def monitor_queue(process_queue, local_queue, pingee):
         Queue to listen to for messages.
     local_queue : queue.Queue
         Queue to transfer those messages to.
-    pingee : Pingee
+    pingee : IPingee
         Recipient for pings, used to notify the GUI thread that there's
         a message pending.
 
