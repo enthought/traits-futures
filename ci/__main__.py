@@ -150,6 +150,9 @@ def build(edm, python_version, toolkit, mode):
 @python_version_option
 @toolkit_option
 def shell(edm, python_version, toolkit):
+    """
+    Enter the development environment.
+    """
     pyenv = _get_devenv(edm, python_version, toolkit)
     shell_cmd = ["shell", "-e", pyenv.environment_name]
     pyenv.edm(shell_cmd)
@@ -274,18 +277,34 @@ def example(edm, python_version, toolkit, example_name):
 @edm_option
 @python_version_option
 @toolkit_option
-def flake8(edm, python_version, toolkit):
+def format(edm, python_version, toolkit):
     """
-    Run flake8 on all Python files.
+    Run formatters on all Python files.
     """
-    targets = cfg.FLAKE8_TARGETS
-
     pyenv = _get_devenv(edm, python_version, toolkit)
-    if pyenv.python_return_code(["-m", "flake8"] + targets):
+    pyenv.python(["-m", "isort", "."])
+
+
+@cli.command()
+@edm_option
+@python_version_option
+@toolkit_option
+def style(edm, python_version, toolkit):
+    """
+    Run style checks on all Python files.
+    """
+    pyenv = _get_devenv(edm, python_version, toolkit)
+    if pyenv.python_return_code(["-m", "flake8"]):
         click.echo()
         raise click.ClickException("Flake8 check failed.")
     else:
         click.echo("Flake8 check succeeded.")
+
+    if pyenv.python_return_code(["-m", "isort", ".", "--check", "--diff"]):
+        click.echo()
+        raise click.ClickException("Import order check failed.")
+    else:
+        click.echo("Import order check succeeded.")
 
 
 @cli.command()

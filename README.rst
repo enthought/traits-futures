@@ -62,7 +62,7 @@ To run tests under coverage::
 
 To run a style check::
 
-    python -m ci flake8
+    python -m ci style
 
 To build the documentation::
 
