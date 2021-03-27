@@ -15,6 +15,7 @@ Tests for the MultithreadingRouter class.
 import concurrent.futures
 import unittest
 
+from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.multithreading_router import MultithreadingRouter
 from traits_futures.tests.i_message_router_tests import IMessageRouterTests
 from traits_futures.toolkit_support import toolkit
@@ -29,6 +30,9 @@ class TestMultithreadingRouter(
     Test that MultithreadingRouter implements the IMessageRouter interface.
     """
 
+    #: Factory providing the parallelism context
+    context_factory = MultithreadingContext
+
     #: Factory providing the routers under test.
     router_factory = MultithreadingRouter
 
@@ -37,6 +41,8 @@ class TestMultithreadingRouter(
 
     def setUp(self):
         GuiTestAssistant.setUp(self)
+        IMessageRouterTests.setUp(self)
 
     def tearDown(self):
+        IMessageRouterTests.tearDown(self)
         GuiTestAssistant.tearDown(self)

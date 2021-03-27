@@ -28,6 +28,7 @@ from traits.api import (
 
 from traits_futures.i_message_router import IMessageReceiver
 from traits_futures.i_message_router import IMessageRouter
+from traits_futures.i_parallel_context import IParallelContext
 
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
@@ -109,17 +110,29 @@ class IMessageRouterTests:
     Should be used in conjunction with the GuiTestAssistant.
     """
 
+    #: Factory providing the parallelism context.
+    # Override this in implementations. It should be a zero-argument
+    # callable that produces the appropriate IParallelContext instance
+    # when called.
+    context_factory = IParallelContext
+
     #: Factory providing the routers under test.
     # Override this in implementations. It should be a zero-argument
     # callable that produces the appropriate IMessageRouter instances
     # when called.
     router_factory = IMessageRouter
 
-    #: Factory providing worker pools for the tests.
     # Override this in implementations. It should be a zero-argument
     # callback that produces something that follows the concurrent.futures
     # Executor API.
     executor_factory = concurrent.futures.Executor
+
+    def setUp(self):
+        self._context = self.context_factory()
+
+    def tearDown(self):
+        self._context.close()
+        del self._context
 
     def test_send_and_receive(self):
         with self.executor_factory() as worker_pool:
