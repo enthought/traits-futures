@@ -32,7 +32,6 @@ from traits_futures.background_progress import submit_progress
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
-
 # Executor states.
 
 #: Executor is currently running (this is the initial state).

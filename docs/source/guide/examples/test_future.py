@@ -17,7 +17,6 @@ import unittest
 from pyface.toolkit import toolkit_object
 from traits_futures.api import submit_call, TraitsExecutor
 
-
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
 #: forever and blocking the rest of the test suite.
