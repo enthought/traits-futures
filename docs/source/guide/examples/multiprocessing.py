@@ -12,6 +12,10 @@
 Complete example showing how to use the MultiprocessingContext to execute
 background jobs in separate processes instead of separate threads.
 
+The "jobs" in this case are slow, unreliable squaring operations. The
+GUI allows multiple jobs to execute simultaneously, and shows the status
+of each of the currently-running and completed jobs.
+
 Requires TraitsUI to run, in addition to the usual Traits Futures
 dependencies.
 """

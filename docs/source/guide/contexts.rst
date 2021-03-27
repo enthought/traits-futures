@@ -46,7 +46,9 @@ a multiprocessing context::
             traits_executor.stop()
             context.close()
 
+Here's a complete TraitsUI example that makes use of this.
 
+.. literalinclude:: examples/multiprocessing.py
 
 
 ..
