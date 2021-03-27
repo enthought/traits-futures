@@ -103,7 +103,7 @@ CORE_DEPS = [
 # to list of requirements.
 VERSION_CORE_DEPS = {}
 
-# Additional packages needed for running tests under CI.
+# Additional packages needed for running tests and style checks.
 ADDITIONAL_CI_DEPS = [
     "flake8",
     "flake8_ets",

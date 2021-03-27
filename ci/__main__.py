@@ -298,7 +298,9 @@ def style(edm, python_version, toolkit):
 
     if pyenv.python_return_code(["-m", "isort", ".", "--check", "--diff"]):
         click.echo()
-        raise click.ClickException("Import order check failed.")
+        raise click.ClickException(
+            "Import order check failed. Run 'python -m ci format' to fix."
+        )
     else:
         click.echo("Import order check succeeded.")
 
