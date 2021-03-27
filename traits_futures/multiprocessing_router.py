@@ -283,7 +283,6 @@ class MultiprocessingRouter(HasRequiredTraits):
         # down when the manager is shut down. That's the responsibility of
         # whoever provided that manager. Here we just remove the local
         # reference.
-        self.manager = None
         self._process_message_queue = None
 
         self._pingee.disconnect()
