@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.multiprocessing_router module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.multithreading_context module" href="traits_futures.multithreading_context.html" >
+    <link rel="prev" title="traits_futures.i_task_specification module" href="traits_futures.i_task_specification.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.multithreading_context.html" title="traits_futures.multithreading_context module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.i_task_specification.html" title="traits_futures.i_task_specification module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.multiprocessing_router">
+<span id="traits-futures-multiprocessing-router-module"></span><h1>traits_futures.multiprocessing_router module<a class="headerlink" href="#module-traits_futures.multiprocessing_router" title="Permalink to this headline">¶</a></h1>
+<p>Implementations of the IMessageSender, IMessageReceiver and IMessageRouter
+interfaces for tasks executed in a background process.</p>
+<div class="section" id="overview-of-the-implementation">
+<h2>Overview of the implementation<a class="headerlink" href="#overview-of-the-implementation" title="Permalink to this headline">¶</a></h2>
+<p>When the router is started (via the <code class="docutils literal notranslate"><span class="pre">start</span></code> method), it sets up the
+following machinery:</p>
+<ul class="simple">
+<li><p>A process-safe process message queue that’s shared between processes
+(<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._process_message_queue</span></code>). This queue runs in
+its own manager server process (the manager is
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._manager</span></code>), and the main process and worker
+processes use proxy objects to communicate with the queue.</p></li>
+<li><p>A thread-safe local message queue
+(<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._local_message_queue</span></code>) in the main process.</p></li>
+<li><p>A long-running thread (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._monitor_thread</span></code>),
+running in the main process, that continually monitors the process message
+queue and immediately transfers any messages that arrive to the local message
+queue.</p></li>
+<li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code> instance that’s pinged by the monitor thread whenever a
+message is transferred from the process message queue to the local message
+queue, alerting the GUI that there’s a message to process and route.</p></li>
+</ul>
+<p>When a worker process uses the sender to send a message, the following steps
+occur:</p>
+<ul class="simple">
+<li><p>the sender places the message onto the process message queue (using its
+local proxy for that message queue)</p></li>
+<li><p>the monitor thread receives the message (using <em>its</em> local proxy for the
+process message queue) and places the message onto the local message queue.
+It also pings the pingee.</p></li>
+<li><p>assuming a running GUI event loop, the pingee receives the ping and executes
+the <code class="xref py py-meth docutils literal notranslate"><span class="pre">MultiprocessingRouter._route_message</span></code> callback</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">_route_message</span></code> callback pulls the next message from the local message
+queue, inspects it to determine which receiver it should be sent to, and
+sends it to that receiver</p></li>
+</ul>
+<dl class="py class">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingReceiver">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingReceiver</span></code><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Implementation of the IMessageReceiver interface for the case where the
+sender will be in a background process.</p>
+<dl class="py attribute">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id">
+<code class="sig-name descname"><span class="pre">connection_id</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Int()</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection id, matching that of the paired sender.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingReceiver.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Event(Any())</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event fired when a message is received from the paired sender.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingRouter</span></code><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Implementation of the IMessageRouter interface for the case where the
+sender will be in a background process.</p>
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe">
+<code class="sig-name descname"><span class="pre">close_pipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the receiver end of a pipe produced by <code class="docutils literal notranslate"><span class="pre">pipe</span></code>.</p>
+<p>Removes the receiver from the routing table, so that no new messages
+can reach that receiver.</p>
+<p>Not thread safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver" title="traits_futures.multiprocessing_router.MultiprocessingReceiver"><em>MultiprocessingReceiver</em></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.pipe">
+<code class="sig-name descname"><span class="pre">pipe</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a (sender, receiver) pair for sending and receiving messages.</p>
+<p>The sender will be passed to the background task and used to send
+messages, while the receiver remains in the foreground.</p>
+<p>Not thread safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>sender</strong> (<em>MultiprocessingSender</em>) – Object to be passed to the background task.</p></li>
+<li><p><strong>receiver</strong> (<em>MultiprocessingReceiver</em>) – Object kept in the foreground, which reacts to messages.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start routing messages.</p>
+<p>This method must be called before any call to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or
+<code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> can be made.</p>
+<p>Not thread-safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop routing messages.</p>
+<p>This method should be called in the main thread after all pipes
+are finished with. Calls to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or <code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> are
+not permitted after this method has been called.</p>
+<p>Logs a warning if there are unclosed pipes.</p>
+<p>Not thread safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingSender</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Object allowing the worker to send messages.</p>
+<p>This class will be instantiated in the main thread, and the instance passed
+to the worker process to allow the worker to communicate back to the main
+thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Id of the matching receiver; used for message routing.</p></li>
+<li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue" title="(in Python v3.9)"><em>multiprocessing.Queue</em></a>) – Process-safe queue for passing messages to the foreground.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender.send">
+<code class="sig-name descname"><span class="pre">send</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to the router.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – Typically this will be immutable, small, and pickleable.</p></li>
+<li><p><strong>thread-safe. The 'start'</strong> (<em>Not</em>) – </p></li>
+<li><p><strong>and 'stop' methods should</strong> (<em>'send'</em>) – </p></li>
+<li><p><strong>be called from the same thread.</strong> (<em>all</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do any setup necessary to prepare for sending messages.</p>
+<p>This method must be called before any messages can be sent
+using the <code class="docutils literal notranslate"><span class="pre">send</span></code> method.</p>
+<p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
+all be called from the same thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do any teardown.</p>
+<p>After this method has been called, no more messages can be sent.</p>
+<p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
+all be called from the same thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="traits_futures.multiprocessing_router.monitor_queue">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">monitor_queue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#monitor_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.monitor_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move incoming child process messages to the local queue.</p>
+<p>Monitors the process queue for incoming messages, and transfers
+those messages to the local queue. For each message transferred,
+pings the event loop using the pingee to notify it that there’s
+a message to be processed.</p>
+<p>To stop the thread, put <code class="docutils literal notranslate"><span class="pre">None</span></code> onto the process_queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>process_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue" title="(in Python v3.9)"><em>multiprocessing.Queue</em></a>) – Queue to listen to for messages.</p></li>
+<li><p><strong>local_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.9)"><em>queue.Queue</em></a>) – Queue to transfer those messages to.</p></li>
+<li><p><strong>pingee</strong> (<em>IPingee</em>) – Recipient for pings, used to notify the GUI thread that there’s
+a message pending.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">traits_futures.multiprocessing_router module</a><ul>
+<li><a class="reference internal" href="#overview-of-the-implementation">Overview of the implementation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.i_task_specification.html"
+                        title="previous chapter">traits_futures.i_task_specification module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.multithreading_context.html"
+                        title="next chapter">traits_futures.multithreading_context module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.multiprocessing_router.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright (C) Copyright 2018-2021 Enthought, Inc., Austin, TX
+All rights reserved.
+
+This software is provided without warranty under the terms of the BSD
+license included in LICENSE.txt and may be redistributed only under
+the conditions described in the aforementioned license. The license
+is also available online at http://www.enthought.com/licenses/BSD.txt
+
+Thanks for using Enthought open source!
+
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.3.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
