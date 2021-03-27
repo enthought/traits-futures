@@ -12,7 +12,6 @@
 Common tests for testing implementations of the IMessageRouter interface.
 """
 
-import concurrent.futures
 import contextlib
 import logging
 import threading
@@ -27,7 +26,7 @@ from traits.api import (
 )
 
 from traits_futures.i_message_router import IMessageReceiver
-from traits_futures.i_message_router import IMessageRouter
+from traits_futures.i_parallel_context import IParallelContext
 
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
@@ -109,20 +108,21 @@ class IMessageRouterTests:
     Should be used in conjunction with the GuiTestAssistant.
     """
 
-    #: Factory providing the routers under test.
+    #: Factory providing the parallelism context.
     # Override this in implementations. It should be a zero-argument
-    # callable that produces the appropriate IMessageRouter instances
+    # callable that produces the appropriate IParallelContext instance
     # when called.
-    router_factory = IMessageRouter
+    context_factory = IParallelContext
 
-    #: Factory providing worker pools for the tests.
-    # Override this in implementations. It should be a zero-argument
-    # callback that produces something that follows the concurrent.futures
-    # Executor API.
-    executor_factory = concurrent.futures.Executor
+    def setUp(self):
+        self.context = self.context_factory()
+
+    def tearDown(self):
+        self.context.close()
+        del self.context
 
     def test_send_and_receive(self):
-        with self.executor_factory() as worker_pool:
+        with self.context.worker_pool() as worker_pool:
             with self.started_router() as router:
                 # Given
                 sender, receiver = router.pipe()
@@ -145,7 +145,7 @@ class IMessageRouterTests:
         # Labels used to identify tasks.
         tasks = range(64)
 
-        with self.executor_factory() as worker_pool:
+        with self.context.worker_pool() as worker_pool:
             with self.started_router() as router:
                 # Senders, receivers, listeners and messages, keyed by task.
                 sender, receiver, listener, messages = {}, {}, {}, {}
@@ -196,12 +196,12 @@ class IMessageRouterTests:
                 router.start()
 
     def test_stop_unstarted_router(self):
-        router = self.router_factory()
+        router = self.context.message_router()
         with self.assertRaises(RuntimeError):
             router.stop()
 
     def test_pipe_for_unstarted_router(self):
-        router = self.router_factory()
+        router = self.context.message_router()
         with self.assertRaises(RuntimeError):
             router.pipe()
 
@@ -319,7 +319,7 @@ class IMessageRouterTests:
 
         Stops the router on context manager exit.
         """
-        router = self.router_factory()
+        router = self.context.message_router()
         router.start()
         try:
             yield router
