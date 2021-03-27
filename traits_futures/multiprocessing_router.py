@@ -21,7 +21,7 @@ following machinery:
 - A process-safe process message queue that's shared between processes
   (:attr:`MultiprocessingRouter._process_message_queue`). This queue runs in
   its own manager server process (the manager is
-  :attr:`MultiprocessingRouter._manager`), and the main process and worker
+  :attr:`MultiprocessingRouter.manager`), and the main process and worker
   processes use proxy objects to communicate with the queue.
 - A thread-safe local message queue
   (:attr:`MultiprocessingRouter._local_message_queue`) in the main process.
@@ -61,6 +61,7 @@ from traits.api import (
     Bool,
     Dict,
     Event,
+    HasRequiredTraits,
     HasStrictTraits,
     Instance,
     Int,
@@ -203,10 +204,15 @@ class MultiprocessingReceiver(HasStrictTraits):
 
 
 @provides(IMessageRouter)
-class MultiprocessingRouter(HasStrictTraits):
+class MultiprocessingRouter(HasRequiredTraits):
     """
     Implementation of the IMessageRouter interface for the case where the
     sender will be in a background process.
+
+    Parameters
+    ----------
+    manager : multiprocessing.Manager
+        Manager to be used for creating the shared-process queue.
     """
 
     def start(self):
@@ -226,9 +232,8 @@ class MultiprocessingRouter(HasStrictTraits):
         if self._running:
             raise RuntimeError("Router is already running")
 
-        self._manager = multiprocessing.Manager()
         self._local_message_queue = queue.Queue()
-        self._process_message_queue = self._manager.Queue()
+        self._process_message_queue = self.manager.Queue()
 
         self._pingee = Pingee(on_ping=self._route_message)
         self._pingee.connect()
@@ -274,10 +279,10 @@ class MultiprocessingRouter(HasStrictTraits):
         self._monitor_thread.join()
         self._monitor_thread = None
 
-        # No shutdown required for the process_message_queue: it's enough
-        # to shut down the manager.
-        self._manager.shutdown()
-        self._manager = None
+        # No shutdown required for the process_message_queue: it'll be shut
+        # down when the manager is shut down. That's the responsibility of
+        # whoever provided that manager. Here we just remove the local
+        # reference.
         self._process_message_queue = None
 
         self._pingee.disconnect()
@@ -346,6 +351,11 @@ class MultiprocessingRouter(HasStrictTraits):
         connection_id = receiver.connection_id
         self._receivers.pop(connection_id)
 
+    # Public traits ###########################################################
+
+    #: Manager, used to create message queues.
+    manager = Instance(multiprocessing.managers.BaseManager, required=True)
+
     # Private traits ##########################################################
 
     #: Queue receiving messages from child processes.
@@ -365,9 +375,6 @@ class MultiprocessingRouter(HasStrictTraits):
 
     #: Receiver for the "message_sent" signal.
     _pingee = Instance(Pingee)
-
-    #: Manager, used to create message queues.
-    _manager = Instance(multiprocessing.managers.BaseManager)
 
     #: Router status: True if running, False if stopped.
     _running = Bool(False)
