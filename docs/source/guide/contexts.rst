@@ -31,3 +31,12 @@ Traits Futures provides two different contexts: the |MultithreadingContext|
 and the |MultiprocessingContext|. By default, the executor will use a
 |MultithreadingContext|, but you can create and pass in your own context
 instead.
+
+..
+   substitutions
+
+
+.. |IParallelContext| replace:: :class:`~.IParallelContext`
+.. |MultiprocessingContext| replace:: :class:`~.MultiprocessingContext`
+.. |MultithreadingContext| replace:: :class:`~.MultithreadingContext`
+.. |TraitsExecutor| replace:: :class:`~.TraitsExecutor`
