@@ -20,26 +20,61 @@ from traits_futures.multiprocessing_router import MultiprocessingRouter
 
 
 class MultiprocessingContext(IParallelContext):
+    """
+    Context for multiprocessing, suitable for use with the TraitsExecutor.
+    """
+
     def __init__(self):
         self._closed = False
         self._manager = multiprocessing.Manager()
 
     def worker_pool(self, *, max_workers=None):
+        """
+        Provide a new worker pool suitable for this context.
+
+        Parameters
+        ----------
+        max_workers : int, optional
+            Maximum number of workers to use. If not given, the choice is
+            delegated to the ThreadPoolExecutor.
+
+        Returns
+        -------
+        executor : concurrent.futures.Executor
+        """
         return concurrent.futures.ProcessPoolExecutor(max_workers=max_workers)
 
     def event(self):
+        """
+        Return a shareable event suitable for this context.
+
+        Returns
+        -------
+        event : event-like
+            An event that can be shared safely with workers.
+        """
         return self._manager.Event()
 
-    def queue(self):
-        return self._manager.Queue()
-
     def message_router(self):
+        """
+        Return a message router suitable for use in this context.
+
+        Returns
+        -------
+        message_router : MultithreadingRouter
+        """
         return MultiprocessingRouter(manager=self._manager)
 
     def close(self):
+        """
+        Do any cleanup necessary before disposal of the context.
+        """
         self._manager.shutdown()
         self._closed = True
 
     @property
     def closed(self):
+        """
+        True if this context is closed, else False.
+        """
         return self._closed
