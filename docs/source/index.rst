@@ -45,7 +45,6 @@ Limitations
 
 - By design, and unlike :mod:`concurrent.futures`, |traits_futures| requires the
   UI event loop to be running in order to process results.
-- No multiprocessing support yet. Maybe one day.
 - Requires Python 3.6 or later.
 
 
