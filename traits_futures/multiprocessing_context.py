@@ -34,7 +34,7 @@ class MultiprocessingContext(IParallelContext):
         return self._manager.Queue()
 
     def message_router(self):
-        return MultiprocessingRouter()
+        return MultiprocessingRouter(manager=self._manager)
 
     def close(self):
         self._manager.shutdown()
