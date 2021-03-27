@@ -36,7 +36,7 @@ class MultiprocessingContext(IParallelContext):
         ----------
         max_workers : int, optional
             Maximum number of workers to use. If not given, the choice is
-            delegated to the ThreadPoolExecutor.
+            delegated to the ProcessPoolExecutor.
 
         Returns
         -------
@@ -61,7 +61,7 @@ class MultiprocessingContext(IParallelContext):
 
         Returns
         -------
-        message_router : MultithreadingRouter
+        message_router : MultiprocessingRouter
         """
         return MultiprocessingRouter(manager=self._manager)
 
