@@ -12,11 +12,9 @@
 Tests for the MultiprocessingRouter class.
 """
 
-import concurrent.futures
 import unittest
 
 from traits_futures.multiprocessing_context import MultiprocessingContext
-from traits_futures.multiprocessing_router import MultiprocessingRouter
 from traits_futures.tests.i_message_router_tests import IMessageRouterTests
 from traits_futures.toolkit_support import toolkit
 
@@ -32,12 +30,6 @@ class TestMultiprocessingRouter(
 
     #: Factory providing the parallelism context
     context_factory = MultiprocessingContext
-
-    #: Factory providing the routers under test.
-    router_factory = MultiprocessingRouter
-
-    #: Factory providing worker pools for the tests.
-    executor_factory = concurrent.futures.ProcessPoolExecutor
 
     def setUp(self):
         GuiTestAssistant.setUp(self)
