@@ -62,7 +62,6 @@ import contextlib
 
 from traits.api import Any, Event, Interface
 
-
 # Note: implementations of IMessageRouter and IMessageReceiver are expected to
 # be HasTraits classes, so we inherit from the Traits Interface class.
 # IMessageSender implementations are not expected to be HasTraits classes:

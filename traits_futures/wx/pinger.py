@@ -17,7 +17,6 @@ the main thread execute a (fixed, parameterless) callback.
 
 import wx.lib.newevent
 
-
 # Note: we're not using the more obvious spelling
 #   _PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()
 # here because that confuses Sphinx's autodoc mocking.

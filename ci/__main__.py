@@ -23,11 +23,7 @@ import tempfile
 import click
 
 import ci.config as cfg
-from ci.python_environment import (
-    current_platform,
-    PythonEnvironment,
-)
-
+from ci.python_environment import current_platform, PythonEnvironment
 
 # Ensure that "-h" is supported for getting help.
 CONTEXT_SETTINGS = dict(

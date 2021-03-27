@@ -70,18 +70,12 @@ Parallelism contexts
 - :class:`~.MultithreadingContext`
 
 """
-from traits_futures.background_call import (
-    CallFuture,
-    submit_call,
-)
+from traits_futures.background_call import CallFuture, submit_call
 from traits_futures.background_iteration import (
     IterationFuture,
     submit_iteration,
 )
-from traits_futures.background_progress import (
-    ProgressFuture,
-    submit_progress,
-)
+from traits_futures.background_progress import ProgressFuture, submit_progress
 from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import (
     CANCELLED,

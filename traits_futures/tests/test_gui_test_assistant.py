@@ -19,7 +19,6 @@ from traits.api import Event, HasStrictTraits
 from traits_futures.api import CANCELLED, submit_call, TraitsExecutor
 from traits_futures.toolkit_support import toolkit
 
-
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 

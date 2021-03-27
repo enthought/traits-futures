@@ -15,7 +15,6 @@ Test support, providing the ability to run the event loop from tests.
 from pyface.qt.QtCore import QTimer
 from pyface.qt.QtGui import QApplication
 
-
 #: Default timeout, in seconds
 TIMEOUT = 10.0
 
