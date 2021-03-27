@@ -14,7 +14,6 @@ Test support, providing the ability to run the event loop from tests.
 
 import asyncio
 
-
 #: Default timeout, in seconds
 TIMEOUT = 10.0
 

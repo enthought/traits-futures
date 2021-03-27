@@ -22,7 +22,6 @@ from traits_futures.api import (
     WAITING,
 )
 
-
 #: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
 

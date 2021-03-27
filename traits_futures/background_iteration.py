@@ -12,18 +12,10 @@
 Background task that sends results from an iteration.
 """
 
-from traits.api import (
-    Callable,
-    Dict,
-    Event,
-    HasStrictTraits,
-    Str,
-    Tuple,
-)
+from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
-
 
 #: Message sent whenever the iteration yields a result.
 #: The message argument is the result generated.

@@ -19,18 +19,10 @@ Every progress submission also marks a point where the callable can
 be cancelled.
 """
 
-from traits.api import (
-    Callable,
-    Dict,
-    Event,
-    HasStrictTraits,
-    Str,
-    Tuple,
-)
+from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
-
 
 # Message types for messages from ProgressBackgroundTask
 # to ProgressFuture.
