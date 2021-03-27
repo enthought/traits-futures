@@ -395,8 +395,9 @@ def monitor_queue(process_queue, local_queue, pingee):
     Move incoming child process messages to the local queue.
 
     Monitors the process queue for incoming messages, and transfers
-    those messages to the local queue, while also requesting that
-    the event loop eventually process that message.
+    those messages to the local queue. For each message transferred,
+    pings the event loop using the pingee to notify it that there's
+    a message to be processed.
 
     To stop the thread, put ``None`` onto the process_queue.
 
