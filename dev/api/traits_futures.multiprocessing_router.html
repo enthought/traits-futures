@@ -33,7 +33,7 @@
     <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.multithreading_context module" href="traits_futures.multithreading_context.html" >
-    <link rel="prev" title="traits_futures.i_task_specification module" href="traits_futures.i_task_specification.html" > 
+    <link rel="prev" title="traits_futures.multiprocessing_context module" href="traits_futures.multiprocessing_context.html" > 
   </head>
   <body>
   <div class="container">
@@ -70,7 +70,7 @@
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.i_task_specification.html" title="traits_futures.i_task_specification module"
+        <a href="traits_futures.multiprocessing_context.html" title="traits_futures.multiprocessing_context module"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -98,7 +98,7 @@ following machinery:</p>
 <li><p>A process-safe process message queue that’s shared between processes
 (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._process_message_queue</span></code>). This queue runs in
 its own manager server process (the manager is
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._manager</span></code>), and the main process and worker
+<a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="traits_futures.multiprocessing_router.MultiprocessingRouter.manager"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter.manager</span></code></a>), and the main process and worker
 processes use proxy objects to communicate with the queue.</p></li>
 <li><p>A thread-safe local message queue
 (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._local_message_queue</span></code>) in the main process.</p></li>
@@ -146,10 +146,15 @@ sender will be in a background process.</p>
 
 <dl class="py class">
 <dt id="traits_futures.multiprocessing_router.MultiprocessingRouter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingRouter</span></code><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingRouter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasRequiredTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasRequiredTraits</span></code></a></p>
 <p>Implementation of the IMessageRouter interface for the case where the
 sender will be in a background process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>manager</strong> (<em>multiprocessing.Manager</em>) – Manager to be used for creating the shared-process queue.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe">
 <code class="sig-name descname"><span class="pre">close_pipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
@@ -165,6 +170,12 @@ can reach that receiver.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.manager">
+<code class="sig-name descname"><span class="pre">manager</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Pingee(on_ping=self._route_message)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manager, used to create message queues.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -328,8 +339,8 @@ a message pending.</p></li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.i_task_specification.html"
-                        title="previous chapter">traits_futures.i_task_specification module</a></p>
+  <p class="topless"><a href="traits_futures.multiprocessing_context.html"
+                        title="previous chapter">traits_futures.multiprocessing_context module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="traits_futures.multithreading_context.html"
                         title="next chapter">traits_futures.multithreading_context module</a></p>

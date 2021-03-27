@@ -100,7 +100,7 @@
 <span class="sd">- A process-safe process message queue that&#39;s shared between processes</span>
 <span class="sd">  (:attr:`MultiprocessingRouter._process_message_queue`). This queue runs in</span>
 <span class="sd">  its own manager server process (the manager is</span>
-<span class="sd">  :attr:`MultiprocessingRouter._manager`), and the main process and worker</span>
+<span class="sd">  :attr:`MultiprocessingRouter.manager`), and the main process and worker</span>
 <span class="sd">  processes use proxy objects to communicate with the queue.</span>
 <span class="sd">- A thread-safe local message queue</span>
 <span class="sd">  (:attr:`MultiprocessingRouter._local_message_queue`) in the main process.</span>
@@ -140,6 +140,7 @@
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">Event</span><span class="p">,</span>
+    <span class="n">HasRequiredTraits</span><span class="p">,</span>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
     <span class="n">Instance</span><span class="p">,</span>
     <span class="n">Int</span><span class="p">,</span>
@@ -282,10 +283,15 @@
 
 
 <div class="viewcode-block" id="MultiprocessingRouter"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageRouter</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MultiprocessingRouter</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MultiprocessingRouter</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the IMessageRouter interface for the case where the</span>
 <span class="sd">    sender will be in a background process.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    manager : multiprocessing.Manager</span>
+<span class="sd">        Manager to be used for creating the shared-process queue.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MultiprocessingRouter.start"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -305,9 +311,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Router is already running&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_message_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_process_message_queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_message_queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="n">Pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
@@ -353,10 +358,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_thread</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># No shutdown required for the process_message_queue: it&#39;s enough</span>
-        <span class="c1"># to shut down the manager.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># No shutdown required for the process_message_queue: it&#39;ll be shut</span>
+        <span class="c1"># down when the manager is shut down. That&#39;s the responsibility of</span>
+        <span class="c1"># whoever provided that manager. Here we just remove the local</span>
+        <span class="c1"># reference.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_message_queue</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
@@ -425,6 +430,11 @@
         <span class="n">connection_id</span> <span class="o">=</span> <span class="n">receiver</span><span class="o">.</span><span class="n">connection_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span></div>
 
+    <span class="c1"># Public traits ###########################################################</span>
+
+    <span class="c1">#: Manager, used to create message queues.</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">BaseManager</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="c1"># Private traits ##########################################################</span>
 
     <span class="c1">#: Queue receiving messages from child processes.</span>
@@ -444,9 +454,6 @@
 
     <span class="c1">#: Receiver for the &quot;message_sent&quot; signal.</span>
     <span class="n">_pingee</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Pingee</span><span class="p">)</span>
-
-    <span class="c1">#: Manager, used to create message queues.</span>
-    <span class="n">_manager</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">managers</span><span class="o">.</span><span class="n">BaseManager</span><span class="p">)</span>
 
     <span class="c1">#: Router status: True if running, False if stopped.</span>
     <span class="n">_running</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
