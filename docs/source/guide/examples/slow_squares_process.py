@@ -9,8 +9,11 @@
 # Thanks for using Enthought open source!
 
 """
-Variant of the slow squares example that runs the background tasks
-in a process pool instead of a thread pool.
+Complete example showing how to use the MultiprocessingContext to execute
+background jobs in separate processes instead of separate threads.
+
+Requires TraitsUI to run, in addition to the usual Traits Futures
+dependencies.
 """
 
 import random
@@ -151,6 +154,9 @@ class SquaringHelper(Handler):
 
 
 def main():
+    """
+    Demonstrate a GUI that hands off background tasks to a separate process.
+    """
     context = MultiprocessingContext()
     traits_executor = TraitsExecutor(context=context)
     try:
