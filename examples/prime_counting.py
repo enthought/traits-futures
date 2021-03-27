@@ -25,8 +25,6 @@ from traits.api import (
     Property,
     Str,
 )
-from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
-
 from traits_futures.api import (
     CANCELLED,
     COMPLETED,
@@ -34,6 +32,7 @@ from traits_futures.api import (
     submit_progress,
     TraitsExecutor,
 )
+from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
 
 class ProgressDialog(Dialog, HasStrictTraits):

@@ -12,17 +12,6 @@ import random
 import time
 
 from traits.api import Button, Instance, List, Property, Range
-from traitsui.api import (
-    Handler,
-    HGroup,
-    Item,
-    TabularEditor,
-    UItem,
-    VGroup,
-    View,
-)
-from traitsui.tabular_adapter import TabularAdapter
-
 from traits_futures.api import (
     CallFuture,
     CANCELLED,
@@ -34,6 +23,16 @@ from traits_futures.api import (
     TraitsExecutor,
     WAITING,
 )
+from traitsui.api import (
+    Handler,
+    HGroup,
+    Item,
+    TabularEditor,
+    UItem,
+    VGroup,
+    View,
+)
+from traitsui.tabular_adapter import TabularAdapter
 
 
 def slow_square(n, timeout=5.0):

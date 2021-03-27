@@ -30,8 +30,6 @@ from traits.api import (
     Property,
     Str,
 )
-from traitsui.api import HGroup, Item, UItem, View
-
 from traits_futures.api import (
     CANCELLED,
     COMPLETED,
@@ -40,6 +38,7 @@ from traits_futures.api import (
     submit_call,
     TraitsExecutor,
 )
+from traitsui.api import HGroup, Item, UItem, View
 
 
 def approximate_pi(sample_count=10 ** 8):
