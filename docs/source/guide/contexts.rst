@@ -30,12 +30,14 @@ concurrency constructs.
 Traits Futures provides two different contexts: the |MultithreadingContext|
 and the |MultiprocessingContext|. By default, the executor will use a
 |MultithreadingContext|, but you can create and pass in your own context
-instead.
+instead. The context should be closed with the |close| method once it's
+no longer needed.
 
 ..
    substitutions
 
 
+.. |close| replace:: :meth:`~.IParallelContext.close`
 .. |IParallelContext| replace:: :class:`~.IParallelContext`
 .. |MultiprocessingContext| replace:: :class:`~.MultiprocessingContext`
 .. |MultithreadingContext| replace:: :class:`~.MultithreadingContext`
