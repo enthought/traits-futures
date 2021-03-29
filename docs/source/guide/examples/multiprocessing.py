@@ -23,7 +23,7 @@ dependencies.
 import random
 import time
 
-from traits.api import Button, Dict, Instance, List, Property, Range
+from traits.api import Button, Dict, Instance, List, Property, Range, Str
 from traitsui.api import (
     Handler,
     HGroup,
@@ -85,7 +85,7 @@ class JobTabularAdapter(TabularAdapter):
     )
 
     #: Text to be displayed for the state column.
-    state_text = Property
+    state_text = Property(Str())
 
     def _get_bg_color(self):
         return self.colors[self.item.state]
