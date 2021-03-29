@@ -31,13 +31,12 @@ from traits.api import (
     Property,
     Tuple,
 )
-from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
-
 from traits_futures.api import (
     IterationFuture,
     submit_iteration,
     TraitsExecutor,
 )
+from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
 
 
 def pi_iterations(chunk_size):

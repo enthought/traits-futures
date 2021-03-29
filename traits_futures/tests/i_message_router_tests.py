@@ -28,7 +28,6 @@ from traits.api import (
 from traits_futures.i_message_router import IMessageReceiver
 from traits_futures.i_parallel_context import IParallelContext
 
-
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
 SAFETY_TIMEOUT = 10.0
