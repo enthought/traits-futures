@@ -83,7 +83,7 @@ class JobTabularAdapter(TabularAdapter):
     }
 
     #: Text to be displayed for the state column.
-    state_text = Property
+    state_text = Property(Str())
 
     def _get_bg_color(self):
         return self.colors[self.item.state]
