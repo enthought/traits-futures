@@ -8,6 +8,18 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+Complete example showing how to use the MultiprocessingContext to execute
+background jobs in separate processes instead of separate threads.
+
+The "jobs" in this case are slow, unreliable squaring operations. The
+GUI allows multiple jobs to execute simultaneously, and shows the status
+of each of the currently-running and completed jobs.
+
+Requires TraitsUI to run, in addition to the usual Traits Futures
+dependencies.
+"""
+
 import random
 import time
 
@@ -19,6 +31,7 @@ from traits_futures.api import (
     COMPLETED,
     EXECUTING,
     FAILED,
+    MultiprocessingContext,
     submit_call,
     TraitsExecutor,
     WAITING,
@@ -89,7 +102,7 @@ class JobTabularAdapter(TabularAdapter):
 
 class SquaringHelper(Handler):
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: List of the submitted jobs, for display purposes.
     current_futures = List(Instance(CallFuture))
@@ -105,11 +118,6 @@ class SquaringHelper(Handler):
 
     #: Value that we'll square.
     input = Range(low=0, high=100)
-
-    def closed(self, info, is_ok):
-        # Cancel all jobs at shutdown.
-        self.traits_executor.stop()
-        super().closed(info, is_ok)
 
     def _square_fired(self):
         future = submit_call(self.traits_executor, slow_square, self.input)
@@ -150,6 +158,19 @@ class SquaringHelper(Handler):
         )
 
 
+def main():
+    """
+    Demonstrate a GUI that hands off background tasks to a separate process.
+    """
+    context = MultiprocessingContext()
+    traits_executor = TraitsExecutor(context=context)
+    try:
+        view = SquaringHelper(traits_executor=traits_executor)
+        view.configure_traits()
+    finally:
+        traits_executor.stop()
+        context.close()
+
+
 if __name__ == "__main__":
-    view = SquaringHelper()
-    view.configure_traits()
+    main()

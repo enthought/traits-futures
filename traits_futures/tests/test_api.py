@@ -27,6 +27,7 @@ class TestApi(unittest.TestCase):
             IParallelContext,
             ITaskSpecification,
             IterationFuture,
+            MultiprocessingContext,
             MultithreadingContext,
             ProgressFuture,
             RUNNING,
