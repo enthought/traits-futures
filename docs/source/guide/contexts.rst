@@ -48,7 +48,7 @@ a multiprocessing context::
 
 Here's a complete TraitsUI example that makes use of this.
 
-.. literalinclude:: examples/multiprocessing.py
+.. literalinclude:: examples/background_processes.py
 
 
 ..
