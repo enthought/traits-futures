@@ -12,8 +12,7 @@ import os
 
 import pkg_resources
 
-# Main package name, used for installing development sources
-# and as a flake8 target.
+# Main package name, used for installing development sources.
 PACKAGE_NAME = "traits_futures"
 
 # Prefix used for generated EDM environments.
@@ -73,15 +72,6 @@ RUNTIME_VERSION = {
     PYTHON36: "3.6",
 }
 
-# Directories and files that should be checked for flake8-cleanness.
-FLAKE8_TARGETS = [
-    "ci",
-    "docs",
-    "setup.py",
-    PACKAGE_NAME,
-    "examples",
-]
-
 # Platforms and Python versions that we support.
 # Triples (edm-platform-string, Python major.minor version, GUI toolkit)
 PLATFORMS = [
@@ -113,11 +103,11 @@ CORE_DEPS = [
 # to list of requirements.
 VERSION_CORE_DEPS = {}
 
-# Additional packages needed for running tests under CI.
+# Additional packages needed for running tests and style checks.
 ADDITIONAL_CI_DEPS = [
     "flake8",
     "flake8_ets",
-    "flake8_import_order",
+    "isort",
     "pip",
 ]
 
