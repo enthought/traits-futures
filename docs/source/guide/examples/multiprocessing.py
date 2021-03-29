@@ -23,17 +23,17 @@ dependencies.
 import random
 import time
 
-from traits.api import Button, Instance, List, Property, Range
+from traits.api import Button, Dict, Instance, List, Property, Range
 from traitsui.api import (
     Handler,
     HGroup,
     Item,
+    TabularAdapter,
     TabularEditor,
     UItem,
     VGroup,
     View,
 )
-from traitsui.tabular_adapter import TabularAdapter
 
 from traits_futures.api import (
     CallFuture,
@@ -73,14 +73,16 @@ class JobTabularAdapter(TabularAdapter):
     ]
 
     #: Row colors for the table.
-    colors = {
-        CANCELLED: (255, 0, 0),
-        CANCELLING: (255, 128, 0),
-        EXECUTING: (128, 128, 255),
-        FAILED: (255, 192, 255),
-        COMPLETED: (128, 255, 128),
-        WAITING: (255, 255, 255),
-    }
+    colors = Dict(
+        {
+            CANCELLED: (255, 0, 0),
+            CANCELLING: (255, 128, 0),
+            EXECUTING: (128, 128, 255),
+            FAILED: (255, 192, 255),
+            COMPLETED: (128, 255, 128),
+            WAITING: (255, 255, 255),
+        }
+    )
 
     #: Text to be displayed for the state column.
     state_text = Property
