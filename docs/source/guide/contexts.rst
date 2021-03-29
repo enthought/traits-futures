@@ -12,10 +12,7 @@
 Contexts and multiprocessing
 ============================
 
-By default, the |TraitsExecutor| submits its tasks to a thread pool: either
-one supplied by the |TraitsExecutor| creator, or a dedicated thread pool
-created by the executor itself.
-
+By default, the |TraitsExecutor| submits its background tasks to a thread pool.
 In some cases, for example in the case of multiple heavily CPU-bound background
 tasks, it may be desirable to run the background tasks in separate processes
 instead. For this to work, the Traits Futures code needs to know that it has to
