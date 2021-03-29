@@ -45,6 +45,14 @@ ROOT_DIR = os.path.abspath(".")
 PACKAGE_DIR = os.path.join(ROOT_DIR, PACKAGE_NAME)
 COVERAGE_DIR = os.path.join(ROOT_DIR, "coverage")
 
+# Directories containing isort configurations. We need to run isort
+# separately from each such directory.
+ISORT_ROOTS = [
+    ROOT_DIR,
+    os.path.join(ROOT_DIR, "examples"),
+    os.path.join(ROOT_DIR, "docs", "source", "guide", "examples"),
+]
+
 # Locations of data directories for the ci package.
 DATA = pkg_resources.resource_filename("ci", "data")
 
