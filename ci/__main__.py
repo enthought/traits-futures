@@ -278,7 +278,11 @@ def format(edm, python_version, toolkit):
     Run formatters on all Python files.
     """
     pyenv = _get_devenv(edm, python_version, toolkit)
-    pyenv.python(["-m", "isort", "."])
+
+    # Run isort. We have some directories with a different isort configuration
+    # from the top-level directory, so we need to run isort multiple times.
+    for path in cfg.ISORT_ROOTS:
+        pyenv.python(["-m", "isort", path])
 
 
 @cli.command()
@@ -289,6 +293,7 @@ def style(edm, python_version, toolkit):
     """
     Run style checks on all Python files.
     """
+    # Flake8 checks
     pyenv = _get_devenv(edm, python_version, toolkit)
     if pyenv.python_return_code(["-m", "flake8"]):
         click.echo()
@@ -296,7 +301,13 @@ def style(edm, python_version, toolkit):
     else:
         click.echo("Flake8 check succeeded.")
 
-    if pyenv.python_return_code(["-m", "isort", ".", "--check", "--diff"]):
+    # isort checks
+    imports_ok = True
+    for path in cfg.ISORT_ROOTS:
+        imports_ok &= not pyenv.python_return_code(
+            ["-m", "isort", path, "--check", "--diff"]
+        )
+    if not imports_ok:
         click.echo()
         raise click.ClickException(
             "Import order check failed. Run 'python -m ci format' to fix."
