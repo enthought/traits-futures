@@ -24,17 +24,6 @@ import random
 import time
 
 from traits.api import Button, Dict, Instance, List, Property, Range, Str
-from traitsui.api import (
-    Handler,
-    HGroup,
-    Item,
-    TabularAdapter,
-    TabularEditor,
-    UItem,
-    VGroup,
-    View,
-)
-
 from traits_futures.api import (
     CallFuture,
     CANCELLED,
@@ -46,6 +35,16 @@ from traits_futures.api import (
     submit_call,
     TraitsExecutor,
     WAITING,
+)
+from traitsui.api import (
+    Handler,
+    HGroup,
+    Item,
+    TabularAdapter,
+    TabularEditor,
+    UItem,
+    VGroup,
+    View,
 )
 
 
