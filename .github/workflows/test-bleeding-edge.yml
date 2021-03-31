@@ -1,12 +1,9 @@
 name: Test against ETS master
 
 on:
-  pull_request
-
-# on:
-#   schedule:
-#     # Run at 04:35 UTC on every Sunday
-#     - cron: '35 4 * * 0'
+  schedule:
+    # Run at 04:35 UTC on every Sunday
+    - cron: '35 4 * * 0'
 
 jobs:
   test-bleeding-edge:
