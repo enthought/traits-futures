@@ -8,6 +8,7 @@
 #
 # Thanks for using Enthought open source!
 
+import logging
 import random
 import time
 
@@ -151,5 +152,11 @@ class SquaringHelper(Handler):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format=(
+            "%(asctime)s %(levelname)-8.8s [%(name)s:%(lineno)s] %(message)s"
+        ),
+    )
     view = SquaringHelper()
     view.configure_traits()

@@ -224,13 +224,8 @@ class IMessageRouterTests:
             with self.started_router() as router:
                 router.pipe()
 
-        self.assertTrue(
-            any(
-                "there are unclosed pipes" in log_message
-                for log_message in cm.output
-            ),
-            msg="Expected log message not found",
-        )
+        all_log_messages = "\n".join(cm.output)
+        self.assertIn("unclosed pipes", all_log_messages)
 
     def test_threads_cleaned_up(self):
         threads_before = threading.enumerate()
@@ -254,12 +249,9 @@ class IMessageRouterTests:
                 sender.send("some message")
                 sender.stop()
 
-            self.assertTrue(
-                any(
-                    "No receiver for message" in log_message
-                    for log_message in cm.output
-                ),
-                msg="Expected log message not found",
+            all_log_messages = "\n".join(cm.output)
+            self.assertIn(
+                "discarding message from closed pipe", all_log_messages
             )
 
     def test_sender_send_without_start(self):
