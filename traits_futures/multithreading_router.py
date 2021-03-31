@@ -326,8 +326,7 @@ class MultithreadingRouter(HasStrictTraits):
             receiver = self._receivers[connection_id]
         except KeyError:
             logger.warning(
-                f"{self} has no receiver for connection_id {connection_id}. "
-                "Discarding message."
+                f"{self} discarding message from closed pipe #{connection_id}."
             )
         else:
             receiver.message = message

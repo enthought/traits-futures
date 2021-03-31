@@ -249,6 +249,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._monitor_thread.start()
 
         self._running = True
+        logger.debug(f"{self} started")
 
     def stop(self):
         """
@@ -271,7 +272,7 @@ class MultiprocessingRouter(HasRequiredTraits):
             raise RuntimeError("Router is not running")
 
         if self._receivers:
-            logger.warning("there are unclosed pipes")
+            logger.warning(f"{self} has {len(self._receivers)} unclosed pipes")
 
         # Shut everything down in reverse order.
         # First the monitor thread.
@@ -291,6 +292,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = None
 
         self._running = False
+        logger.debug(f"{self} stopped")
 
     def pipe(self):
         """
@@ -324,6 +326,9 @@ class MultiprocessingRouter(HasRequiredTraits):
         )
         receiver = MultiprocessingReceiver(connection_id=connection_id)
         self._receivers[connection_id] = receiver
+        logger.debug(
+            f"{self} created pipe #{connection_id} with receiver {receiver}"
+        )
         return sender, receiver
 
     def close_pipe(self, receiver):
@@ -350,6 +355,9 @@ class MultiprocessingRouter(HasRequiredTraits):
 
         connection_id = receiver.connection_id
         self._receivers.pop(connection_id)
+        logger.debug(
+            f"{self} closed pipe #{connection_id} with receiver {receiver}"
+        )
 
     # Public traits ###########################################################
 
@@ -387,8 +395,7 @@ class MultiprocessingRouter(HasRequiredTraits):
             receiver = self._receivers[connection_id]
         except KeyError:
             logger.warning(
-                f"No receiver for message with connection_id {connection_id}. "
-                "Message discarded."
+                f"{self} discarding message from closed pipe #{connection_id}."
             )
         else:
             receiver.message = message
