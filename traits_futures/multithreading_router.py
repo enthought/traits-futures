@@ -203,6 +203,7 @@ class MultithreadingRouter(HasStrictTraits):
         self._pingee.connect()
 
         self._running = True
+        logger.debug(f"{self} started")
 
     def stop(self):
         """
@@ -225,7 +226,7 @@ class MultithreadingRouter(HasStrictTraits):
             raise RuntimeError("router is not running")
 
         if self._receivers:
-            logger.warning("there are unclosed pipes")
+            logger.warning(f"{self} has {len(self._receivers)} unclosed pipes")
 
         self._pingee.disconnect()
         self._pingee = None
@@ -233,6 +234,7 @@ class MultithreadingRouter(HasStrictTraits):
         self._message_queue = None
 
         self._running = False
+        logger.debug(f"{self} stopped")
 
     def pipe(self):
         """
@@ -266,6 +268,9 @@ class MultithreadingRouter(HasStrictTraits):
         )
         receiver = MultithreadingReceiver(connection_id=connection_id)
         self._receivers[connection_id] = receiver
+        logger.debug(
+            f"{self} created pipe #{connection_id} with receiver {receiver}"
+        )
         return sender, receiver
 
     def close_pipe(self, receiver):
@@ -292,6 +297,9 @@ class MultithreadingRouter(HasStrictTraits):
 
         connection_id = receiver.connection_id
         self._receivers.pop(connection_id)
+        logger.debug(
+            f"{self} closed pipe #{connection_id} with receiver {receiver}"
+        )
 
     # Private traits ##########################################################
 
@@ -318,8 +326,8 @@ class MultithreadingRouter(HasStrictTraits):
             receiver = self._receivers[connection_id]
         except KeyError:
             logger.warning(
-                f"No receiver for message with connection_id {connection_id}. "
-                "Message discarded."
+                f"{self} has no receiver for connection_id {connection_id}. "
+                "Discarding message."
             )
         else:
             receiver.message = message
