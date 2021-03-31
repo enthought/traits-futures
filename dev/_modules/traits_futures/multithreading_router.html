@@ -281,7 +281,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="n">Pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> started&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.stop"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -304,14 +305,15 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;router is not running&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;there are unclosed pipes&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">)</span><span class="si">}</span><span class="s2"> unclosed pipes&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopped&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.pipe"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.pipe">[docs]</a>    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -345,6 +347,9 @@
         <span class="p">)</span>
         <span class="n">receiver</span> <span class="o">=</span> <span class="n">MultithreadingReceiver</span><span class="p">(</span><span class="n">connection_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">receiver</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> created pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2"> with receiver </span><span class="si">{</span><span class="n">receiver</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.close_pipe"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.close_pipe">[docs]</a>    <span class="k">def</span> <span class="nf">close_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
@@ -370,7 +375,10 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;router is not running&quot;</span><span class="p">)</span>
 
         <span class="n">connection_id</span> <span class="o">=</span> <span class="n">receiver</span><span class="o">.</span><span class="n">connection_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> closed pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2"> with receiver </span><span class="si">{</span><span class="n">receiver</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
 
     <span class="c1"># Private traits ##########################################################</span>
 
@@ -397,8 +405,7 @@
             <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;No receiver for message with connection_id </span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="s2">&quot;Message discarded.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> discarding message from closed pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">receiver</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
