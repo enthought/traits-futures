@@ -13,6 +13,7 @@ Executor to submit background tasks.
 """
 
 import concurrent.futures
+import logging
 import warnings
 
 from traits.api import (
@@ -31,6 +32,9 @@ from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
+
+logger = logging.getLogger(__name__)
+
 
 # Executor states.
 
@@ -117,6 +121,7 @@ class TraitsExecutor(HasStrictTraits):
 
         own_worker_pool = worker_pool is None
         if own_worker_pool:
+            logger.debug(f"{self} creating worker pool")
             if max_workers is None:
                 worker_pool = self._context.worker_pool()
             else:
@@ -131,6 +136,8 @@ class TraitsExecutor(HasStrictTraits):
 
         self._worker_pool = worker_pool
         self._own_worker_pool = own_worker_pool
+
+        logger.debug(f"{self} running")
 
     def submit_call(self, callable, *args, **kwargs):
         """
@@ -255,6 +262,7 @@ class TraitsExecutor(HasStrictTraits):
         wrapper = FutureWrapper(future=future, receiver=receiver)
         self._worker_pool.submit(background_task_wrapper)
         self._wrappers.add(wrapper)
+        logger.debug(f"{self} created future {future}")
         return future
 
     def stop(self):
@@ -264,15 +272,20 @@ class TraitsExecutor(HasStrictTraits):
         if not self.running:
             raise RuntimeError("Executor is not currently running.")
 
+        # Cancel any futures that aren't already cancelled.
+        if self._wrappers:
+            logger.debug(
+                f"{self} cancelling {len(self._wrappers)} unfinished futures"
+            )
+            for wrapper in self._wrappers:
+                future = wrapper.future
+                if future.cancellable:
+                    future.cancel()
+
         # For consistency, we always go through the STOPPING state,
         # even if there are no jobs.
         self.state = STOPPING
-
-        # Cancel any futures that aren't already cancelled.
-        for wrapper in self._wrappers:
-            future = wrapper.future
-            if future.cancellable:
-                future.cancel()
+        logger.debug(f"{self} stopping")
 
         if not self._wrappers:
             self._stop()
@@ -340,6 +353,9 @@ class TraitsExecutor(HasStrictTraits):
     def _untrack_future(self, wrapper, name, is_done):
         self._message_router.close_pipe(wrapper.receiver)
         self._wrappers.remove(wrapper)
+        logger.debug(
+            f"{self} future {wrapper.future} done ({wrapper.future.state})"
+        )
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
         if self.state == STOPPING and not self._wrappers:
@@ -356,10 +372,13 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router = None
 
         if self._own_worker_pool:
+            logger.debug(f"{self} shutting down owned worker pool")
             self._worker_pool.shutdown()
         self._worker_pool = None
 
         if self._own_context:
             self._context.close()
         self._context = None
+
         self.state = STOPPED
+        logger.debug(f"{self} stopped")
