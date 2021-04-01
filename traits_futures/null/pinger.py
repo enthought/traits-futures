@@ -17,12 +17,15 @@ the main thread execute a (fixed, parameterless) callback.
 
 import asyncio
 
+from traits_futures.i_pingee import IPingee, IPinger
 
+
+@IPingee.register
 class Pingee:
     """
     Receiver for pings.
 
-    Whenever a ping is received from a linked Pingee, the receiver
+    Whenever a ping is received from a linked Pinger, the receiver
     calls the given fixed parameterless callable.
 
     The ping receiver must be connected (using the ``connect``) method
@@ -52,6 +55,7 @@ class Pingee:
         del self._event_loop
 
 
+@IPinger.register
 class Pinger:
     """
     Ping emitter, which can send pings to a receiver in a thread-safe manner.
