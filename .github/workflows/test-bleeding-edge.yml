@@ -1,0 +1,45 @@
+name: Test against ETS master
+
+on:
+  schedule:
+    # Run at 04:35 UTC every Sunday
+    - cron: '35 4 * * 0'
+
+jobs:
+  test-bleeding-edge:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.6, 3.9]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Linux packages for Qt 5 support
+      run: |
+        sudo apt-get update
+        sudo apt-get install qt5-default
+        sudo apt-get install libxkbcommon-x11-0
+        sudo apt-get install libxcb-icccm4
+        sudo apt-get install libxcb-image0
+        sudo apt-get install libxcb-keysyms1
+        sudo apt-get install libxcb-randr0
+        sudo apt-get install libxcb-render-util0
+        sudo apt-get install libxcb-xinerama0
+      if: runner.os == 'Linux'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies and local packages
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install git+https://github.com/enthought/traits
+        python -m pip install git+https://github.com/enthought/pyface
+        python -m pip install .[pyside2]
+    - name: Run the test suite
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        working-directory: ${{ runner.temp }}
+        run: python -m unittest discover -v traits_futures
