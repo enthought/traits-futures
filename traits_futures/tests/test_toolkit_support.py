@@ -19,7 +19,7 @@ except ImportError:
 
 from pyface.base_toolkit import Toolkit
 
-# from traits_futures.testing.api import requires_qt, requires_wx
+from traits_futures.testing.api import requires_qt, requires_wx
 from traits_futures.toolkit_support import toolkit
 
 #: Name of the setuptools entry_point group for Traits Futures toolkits
@@ -41,6 +41,7 @@ class TestToolkitSupport(unittest.TestCase):
         toolkit = entry_point.load()
         self.assertIsInstance(toolkit, Toolkit)
 
+    @requires_wx
     def test_wx_entry_point(self):
         entry_points = self.toolkit_entry_points("wx")
         self.assertEqual(len(entry_points), 1)
@@ -48,6 +49,7 @@ class TestToolkitSupport(unittest.TestCase):
         toolkit = entry_point.load()
         self.assertIsInstance(toolkit, Toolkit)
 
+    @requires_qt
     def test_qt4_entry_point(self):
         entry_points = self.toolkit_entry_points("qt4")
         self.assertEqual(len(entry_points), 1)
@@ -55,6 +57,7 @@ class TestToolkitSupport(unittest.TestCase):
         toolkit = entry_point.load()
         self.assertIsInstance(toolkit, Toolkit)
 
+    @requires_qt
     def test_qt_entry_point(self):
         entry_points = self.toolkit_entry_points("qt")
         self.assertEqual(len(entry_points), 1)
