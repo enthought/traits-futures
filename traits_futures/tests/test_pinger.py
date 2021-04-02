@@ -27,7 +27,6 @@ from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 Pingee = toolkit("pinger:Pingee")
-Pinger = toolkit("pinger:Pinger")
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.

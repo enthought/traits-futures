@@ -40,7 +40,6 @@ from traits_futures.toolkit_support import toolkit
 logger = logging.getLogger(__name__)
 
 Pingee = toolkit("pinger:Pingee")
-Pinger = toolkit("pinger:Pinger")
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
