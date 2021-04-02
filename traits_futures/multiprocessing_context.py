@@ -17,15 +17,21 @@ import multiprocessing
 
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multiprocessing_router import MultiprocessingRouter
-from traits_futures.toolkit_support import toolkit
 
 
 class MultiprocessingContext(IParallelContext):
     """
     Context for multiprocessing, suitable for use with the TraitsExecutor.
+
+    Parameters
+    ----------
+    toolkit : Toolkit, optional
+        Gui toolkit to use. If not given, the toolkit is determined based
+        on what's available in the environment.
     """
 
-    def __init__(self):
+    def __init__(self, toolkit):
+        self._toolkit = toolkit
         self._closed = False
         self._manager = multiprocessing.Manager()
 
@@ -66,7 +72,7 @@ class MultiprocessingContext(IParallelContext):
         """
         return MultiprocessingRouter(
             manager=self._manager,
-            _toolkit=toolkit,
+            _toolkit=self._toolkit,
         )
 
     def close(self):

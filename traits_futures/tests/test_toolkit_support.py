@@ -10,15 +10,15 @@
 
 import unittest
 
-from traits_futures.toolkit_support import toolkit
+from traits_futures.toolkit_support import lazy_toolkit
 
 
 class TestToolkitSupport(unittest.TestCase):
     def test_event_loop_helper(self):
-        event_loop_helper = toolkit.event_loop_helper()
+        event_loop_helper = lazy_toolkit.event_loop_helper()
         self.assertTrue(hasattr(event_loop_helper, "run_until"))
 
     def test_pinger_class(self):
-        pingee = toolkit.pingee(on_ping=lambda: None)
+        pingee = lazy_toolkit.pingee(on_ping=lambda: None)
         pinger = pingee.pinger()
         self.assertTrue(hasattr(pinger, "ping"))

@@ -17,15 +17,21 @@ import threading
 
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_router import MultithreadingRouter
-from traits_futures.toolkit_support import toolkit
 
 
 class MultithreadingContext(IParallelContext):
     """
     Context for multithreading, suitable for use with the TraitsExecutor.
+
+    Parameters
+    ----------
+    toolkit : Toolkit, optional
+        Gui toolkit to use. If not given, the toolkit is determined based
+        on what's available in the environment.
     """
 
-    def __init__(self):
+    def __init__(self, toolkit):
+        self._toolkit = toolkit
         self._closed = False
 
     def worker_pool(self, *, max_workers=None):
@@ -63,7 +69,7 @@ class MultithreadingContext(IParallelContext):
         -------
         message_router : MultithreadingRouter
         """
-        return MultithreadingRouter(_toolkit=toolkit)
+        return MultithreadingRouter(_toolkit=self._toolkit)
 
     def close(self):
         """

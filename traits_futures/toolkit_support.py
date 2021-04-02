@@ -13,7 +13,7 @@ Support for toolkit-specific classes.
 """
 
 
-class LazyToolkit:
+class _LazyToolkit:
     """
     Provide access to toolkit-specific classes.
 
@@ -40,5 +40,5 @@ class LazyToolkit:
         return self.toolkit_object.event_loop_helper()
 
 
-#: Object providing access to the current toolkit.
-toolkit = LazyToolkit()
+#: Singleton object that resolves the actual toolkit on first use.
+lazy_toolkit = _LazyToolkit()

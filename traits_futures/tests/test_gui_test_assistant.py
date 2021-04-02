@@ -16,7 +16,12 @@ import unittest
 
 from traits.api import Event, HasStrictTraits
 
-from traits_futures.api import CANCELLED, submit_call, TraitsExecutor
+from traits_futures.api import (
+    CANCELLED,
+    MultithreadingContext,
+    submit_call,
+    TraitsExecutor,
+)
 from traits_futures.testing.api import GuiTestAssistant
 
 
@@ -60,7 +65,9 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
 
     def test_run_until_timeout_trait_fired(self):
         # Trait fired, but condition still never true.
-        executor = TraitsExecutor()
+        executor = TraitsExecutor(
+            context=MultithreadingContext(toolkit=self._toolkit)
+        )
         future = submit_call(executor, int, "111")
         start_time = time.monotonic()
         with self.assertRaises(RuntimeError):
@@ -97,7 +104,9 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
 
     def test_run_until_success(self):
         # Trait fired, condition starts false but becomes true.
-        executor = TraitsExecutor()
+        executor = TraitsExecutor(
+            context=MultithreadingContext(toolkit=self._toolkit)
+        )
 
         # Case 1: condition true on second trait change event.
         future = submit_call(executor, slow_return)

@@ -12,7 +12,7 @@
 Test support, providing the ability to run the event loop from within tests.
 """
 
-from traits_futures.toolkit_support import LazyToolkit
+from traits_futures.asyncio.init import AsyncioToolkit
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
@@ -23,7 +23,8 @@ SAFETY_TIMEOUT = 10.0
 class GuiTestAssistant:
     #: Factory for the toolkit. Override in subclasses to test with a
     #: specific toolkit.
-    toolkit_factory = LazyToolkit
+    def toolkit_factory(self):
+        return AsyncioToolkit()
 
     def setUp(self):
         self._toolkit = self.toolkit_factory()

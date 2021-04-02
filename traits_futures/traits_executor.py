@@ -344,8 +344,9 @@ class TraitsExecutor(HasStrictTraits):
     def __context_default(self):
         # By default, we use multithreading
         from traits_futures.multithreading_context import MultithreadingContext
+        from traits_futures.toolkit_support import lazy_toolkit
 
-        context = MultithreadingContext()
+        context = MultithreadingContext(toolkit=lazy_toolkit)
         self._own_context = True
         return context
 
