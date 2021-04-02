@@ -31,3 +31,11 @@ try:
 except ImportError:
     wx = None
 requires_wx = unittest.skipIf(wx is None, "wx not available")
+
+
+__all__ = [
+    "GuiTestAssistant",
+    "SAFETY_TIMEOUT",
+    "requires_qt",
+    "requires_wx",
+]
