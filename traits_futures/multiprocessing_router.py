@@ -73,6 +73,7 @@ from traits_futures.i_message_router import (
     IMessageRouter,
     IMessageSender,
 )
+from traits_futures.i_pingee import IPingee
 from traits_futures.toolkit_support import toolkit
 
 logger = logging.getLogger(__name__)
@@ -382,7 +383,7 @@ class MultiprocessingRouter(HasRequiredTraits):
     _receivers = Dict(Int(), Instance(MultiprocessingReceiver))
 
     #: Receiver for the "message_sent" signal.
-    _pingee = Instance(Pingee)
+    _pingee = Instance(IPingee)
 
     #: Router status: True if running, False if stopped.
     _running = Bool(False)

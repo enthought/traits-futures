@@ -17,6 +17,8 @@ the main thread execute a (fixed, parameterless) callback.
 
 from pyface.qt.QtCore import QObject, Qt, Signal, Slot
 
+from traits_futures.i_pingee import IPingee, IPinger
+
 
 class _Signaller(QObject):
     """
@@ -26,11 +28,12 @@ class _Signaller(QObject):
     ping = Signal()
 
 
+@IPingee.register
 class Pingee(QObject):
     """
     Receiver for pings.
 
-    Whenever a ping is received from a linked Pingee, the receiver
+    Whenever a ping is received from a linked Pinger, the receiver
     calls the given fixed parameterless callable.
 
     The ping receiver must be connected (using the ``connect``) method
@@ -65,6 +68,7 @@ class Pingee(QObject):
         pass
 
 
+@IPinger.register
 class Pinger:
     """
     Ping emitter, which can send pings to a receiver in a thread-safe manner.

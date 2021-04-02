@@ -22,6 +22,7 @@ from traits.api import (
     on_trait_change,
 )
 
+from traits_futures.i_pingee import IPingee
 from traits_futures.toolkit_support import toolkit
 
 GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
@@ -94,7 +95,7 @@ class PingListener(HasStrictTraits):
     """
 
     #: The actual pingee as provided by Traits Futures.
-    pingee = Instance(Pingee)
+    pingee = Instance(IPingee)
 
     #: Event fired every time a ping is received.
     ping = Event()

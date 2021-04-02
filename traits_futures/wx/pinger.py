@@ -17,6 +17,8 @@ the main thread execute a (fixed, parameterless) callback.
 
 import wx.lib.newevent
 
+from traits_futures.i_pingee import IPingee, IPinger
+
 # Note: we're not using the more obvious spelling
 #   _PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()
 # here because that confuses Sphinx's autodoc mocking.
@@ -28,6 +30,7 @@ _PingEvent = _PingEventPair[0]
 _PingEventBinder = _PingEventPair[1]
 
 
+@IPinger.register
 class Pinger:
     """
     Ping emitter, which can send pings to a receiver in a thread-safe manner.
@@ -63,11 +66,12 @@ class Pinger:
         wx.PostEvent(self.pingee, _PingEvent())
 
 
+@IPingee.register
 class Pingee(wx.EvtHandler):
     """
     Receiver for pings.
 
-    Whenever a ping is received from a linked Pingee, the receiver
+    Whenever a ping is received from a linked Pinger, the receiver
     calls the given fixed parameterless callable.
 
     The ping receiver must be connected (using the ``connect``) method
