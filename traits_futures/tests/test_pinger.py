@@ -143,16 +143,20 @@ class MultipleListeners(HasStrictTraits):
         self.ping = True
 
 
-class TestPinger(GuiTestAssistant, unittest.TestCase):
+class IPingeeTests:
+    """
+    Mixin class for testing IPingee and IPinger implementations.
+
+    Should be used in combination with the GuiTestAssistant.
+    """
+
     def setUp(self):
-        GuiTestAssistant.setUp(self)
         self.listener = PingListener()
         self.listener.connect()
 
     def tearDown(self):
         self.listener.disconnect()
         del self.listener
-        GuiTestAssistant.tearDown(self)
 
     def test_single_background_ping(self):
         self.assertEqual(self.listener.ping_count, 0)
@@ -246,3 +250,13 @@ class TestPinger(GuiTestAssistant, unittest.TestCase):
             "ping_count",
             lambda listener: listener.ping_count >= ping_count,
         )
+
+
+class TestPinger(GuiTestAssistant, IPingeeTests, unittest.TestCase):
+    def setUp(self):
+        GuiTestAssistant.setUp(self)
+        IPingeeTests.setUp(self)
+
+    def tearDown(self):
+        IPingeeTests.tearDown(self)
+        GuiTestAssistant.tearDown(self)
