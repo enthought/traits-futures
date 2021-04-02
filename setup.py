@@ -30,7 +30,7 @@ def get_long_description():
 
 
 install_requires = [
-    "importlib-metadata; python_version < '3.8'"
+    "importlib-metadata; python_version < '3.8'",
     "pyface",
     "traits",
 ]
