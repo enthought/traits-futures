@@ -28,14 +28,15 @@ class Toolkit:
     @property
     def toolkit_object(self):
         if self._toolkit_object is None:
-            self._toolkit_object = find_toolkit("traits_futures.toolkits")
+            toolkit_class = find_toolkit("traits_futures.toolkits")
+            self._toolkit_object = toolkit_class()
         return self._toolkit_object
-
-    def __call__(self, name):
-        return self.toolkit_object(name)
 
     def pingee(self, on_ping):
         return self.toolkit_object.pingee(on_ping=on_ping)
+
+    def event_loop_helper(self):
+        return self.toolkit_object.event_loop_helper()
 
 
 #: Object providing access to the current toolkit.

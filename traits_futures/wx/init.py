@@ -14,18 +14,19 @@ Entry point for finding toolkit-specific classes.
 # Force an ImportError if wxPython is not installed.
 import wx  # noqa: F401
 
-from pyface.base_toolkit import Toolkit
-
+from traits_futures.wx.event_loop_helper import EventLoopHelper
 from traits_futures.wx.pinger import Pingee
 
 
-class WxToolkit(Toolkit):
+class WxToolkit:
     def pingee(self, on_ping):
         """
         Return a new Pingee instance for this toolkit.
         """
         return Pingee(on_ping=on_ping)
 
-
-#: The toolkit object used to find toolkit-specific resources
-toolkit_object = WxToolkit("traits_futures", "wx", "traits_futures.wx")
+    def event_loop_helper(self):
+        """
+        Return a new EventLoopHelper instance for this toolkit.
+        """
+        return EventLoopHelper()

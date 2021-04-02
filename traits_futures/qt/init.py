@@ -12,19 +12,21 @@
 Entry point for finding toolkit-specific classes.
 """
 # We import QtCore to force an ImportError if Qt is not installed.
-from pyface.base_toolkit import Toolkit
 from pyface.qt import QtCore  # noqa: F401
 
+from traits_futures.qt.event_loop_helper import EventLoopHelper
 from traits_futures.qt.pinger import Pingee
 
 
-class QtToolkit(Toolkit):
+class QtToolkit:
     def pingee(self, on_ping):
         """
         Return a new Pingee instance for this toolkit.
         """
         return Pingee(on_ping=on_ping)
 
-
-#: The toolkit object used to find toolkit-specific resources.
-toolkit_object = QtToolkit("traits_futures", "qt", "traits_futures.qt")
+    def event_loop_helper(self):
+        """
+        Return a new EventLoopHelper instance for this toolkit.
+        """
+        return EventLoopHelper()

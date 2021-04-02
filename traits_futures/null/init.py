@@ -11,20 +11,19 @@
 """
 Entry point for finding toolkit specific classes.
 """
-from pyface.base_toolkit import Toolkit
-
+from traits_futures.null.event_loop_helper import EventLoopHelper
 from traits_futures.null.pinger import Pingee
 
 
-class AsyncioToolkit(Toolkit):
+class AsyncioToolkit:
     def pingee(self, on_ping):
         """
         Return a new Pingee instance for this toolkit.
         """
         return Pingee(on_ping=on_ping)
 
-
-#: The toolkit object used to find toolkit-specific resources.
-toolkit_object = AsyncioToolkit(
-    "traits_futures", "null", "traits_futures.null"
-)
+    def event_loop_helper(self):
+        """
+        Return a new EventLoopHelper instance for this toolkit.
+        """
+        return EventLoopHelper()

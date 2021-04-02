@@ -15,8 +15,7 @@ from traits_futures.toolkit_support import toolkit
 
 class TestToolkitSupport(unittest.TestCase):
     def test_event_loop_helper(self):
-        EventLoopHelper = toolkit("event_loop_helper:EventLoopHelper")
-        event_loop_helper = EventLoopHelper()
+        event_loop_helper = toolkit.event_loop_helper()
         self.assertTrue(hasattr(event_loop_helper, "run_until"))
 
     def test_pinger_class(self):

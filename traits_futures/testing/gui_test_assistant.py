@@ -14,8 +14,6 @@ Test support, providing the ability to run the event loop from within tests.
 
 from traits_futures.toolkit_support import toolkit
 
-EventLoopHelper = toolkit("event_loop_helper:EventLoopHelper")
-
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
 #: forever and blocking the rest of the test suite.
@@ -24,8 +22,7 @@ SAFETY_TIMEOUT = 10.0
 
 class GuiTestAssistant:
     def setUp(self):
-
-        self._event_loop_helper = EventLoopHelper()
+        self._event_loop_helper = toolkit.event_loop_helper()
         self._event_loop_helper.start()
 
     def tearDown(self):
