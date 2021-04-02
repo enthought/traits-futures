@@ -84,6 +84,16 @@ class TestToolkitSupport(unittest.TestCase):
         """
         Return all entry points for the "traits_futures.toolkits" toolkit
         with the given name.
+
+        Parameters
+        ----------
+        name : str
+            Name of the entry point (for example "qt", or "asyncio").
+
+        Returns
+        -------
+        entry_points : list of importlib.metadata.EntryPoint
+            All entry points found whose name is the given one.
         """
         return [
             entry_point
