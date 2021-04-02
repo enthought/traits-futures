@@ -22,7 +22,7 @@ from traits_futures.api import (
     submit_call,
     TraitsExecutor,
 )
-from traits_futures.testing.api import GuiTestAssistant
+from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 
 
 class Dummy(HasStrictTraits):

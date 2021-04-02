@@ -16,7 +16,10 @@ import contextlib
 import unittest
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
-from traits_futures.testing.api import GuiTestAssistant, SAFETY_TIMEOUT
+from traits_futures.testing.gui_test_assistant import (
+    GuiTestAssistant,
+    SAFETY_TIMEOUT,
+)
 from traits_futures.tests.background_progress_tests import (
     BackgroundProgressTests,
 )

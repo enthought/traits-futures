@@ -17,7 +17,7 @@ import unittest
 from traits.api import Bool
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
-from traits_futures.testing.api import GuiTestAssistant
+from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.traits_executor_tests import (
     ExecutorListener,
     TraitsExecutorTests,

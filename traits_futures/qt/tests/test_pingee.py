@@ -14,7 +14,8 @@ Tests for the Qt implementations of IPingee and IPinger.
 
 import unittest
 
-from traits_futures.testing.api import GuiTestAssistant, requires_qt
+from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.optional_dependencies import requires_qt
 from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
