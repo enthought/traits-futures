@@ -22,7 +22,7 @@ from pyface.base_toolkit import Toolkit
 from traits_futures.testing.api import requires_qt, requires_wx
 from traits_futures.toolkit_support import toolkit
 
-#: Name of the setuptools entry_point group for Traits Futures toolkits
+#: Name of the setuptools entry point group for Traits Futures toolkits
 TOOLKIT_ENTRY_POINT_GROUP = "traits_futures.toolkits"
 
 
