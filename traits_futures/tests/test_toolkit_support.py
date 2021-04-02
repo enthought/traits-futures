@@ -17,8 +17,7 @@ try:
 except ImportError:
     import importlib_metadata
 
-from pyface.base_toolkit import Toolkit
-
+from traits_futures.i_toolkit import IToolkit
 from traits_futures.testing.api import requires_qt, requires_wx
 from traits_futures.toolkit_support import lazy_toolkit
 
@@ -31,39 +30,44 @@ class TestToolkitSupport(unittest.TestCase):
         entry_points = self.toolkit_entry_points("asyncio")
         self.assertEqual(len(entry_points), 1)
         entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+        toolkit_class = entry_point.load()
+        toolkit = toolkit_class()
+        self.assertIsInstance(toolkit, IToolkit)
 
     def test_null_entry_point(self):
         entry_points = self.toolkit_entry_points("null")
         self.assertEqual(len(entry_points), 1)
         entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+        toolkit_class = entry_point.load()
+        toolkit = toolkit_class()
+        self.assertIsInstance(toolkit, IToolkit)
 
     @requires_wx
     def test_wx_entry_point(self):
         entry_points = self.toolkit_entry_points("wx")
         self.assertEqual(len(entry_points), 1)
         entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+        toolkit_class = entry_point.load()
+        toolkit = toolkit_class()
+        self.assertIsInstance(toolkit, IToolkit)
 
     @requires_qt
     def test_qt4_entry_point(self):
         entry_points = self.toolkit_entry_points("qt4")
         self.assertEqual(len(entry_points), 1)
         entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+        toolkit_class = entry_point.load()
+        toolkit = toolkit_class()
+        self.assertIsInstance(toolkit, IToolkit)
 
     @requires_qt
     def test_qt_entry_point(self):
         entry_points = self.toolkit_entry_points("qt")
         self.assertEqual(len(entry_points), 1)
         entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+        toolkit_class = entry_point.load()
+        toolkit = toolkit_class()
+        self.assertIsInstance(toolkit, IToolkit)
 
     def test_event_loop_helper(self):
         event_loop_helper = lazy_toolkit.event_loop_helper()

@@ -14,10 +14,12 @@ Entry point for finding toolkit-specific classes.
 # Force an ImportError if wxPython is not installed.
 import wx  # noqa: F401
 
+from traits_futures.i_toolkit import IToolkit
 from traits_futures.wx.event_loop_helper import EventLoopHelper
 from traits_futures.wx.pinger import Pingee
 
 
+@IToolkit.register
 class WxToolkit:
     def pingee(self, on_ping):
         """

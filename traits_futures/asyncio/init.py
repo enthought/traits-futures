@@ -13,8 +13,10 @@ Entry point for finding toolkit specific classes.
 """
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.asyncio.pinger import Pingee
+from traits_futures.i_toolkit import IToolkit
 
 
+@IToolkit.register
 class AsyncioToolkit:
     def pingee(self, on_ping):
         """
