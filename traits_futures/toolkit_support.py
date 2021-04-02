@@ -11,7 +11,6 @@
 """
 Support for toolkit-specific classes.
 """
-from pyface.base_toolkit import find_toolkit
 
 
 class Toolkit:
@@ -27,6 +26,8 @@ class Toolkit:
 
     @property
     def toolkit_object(self):
+        from pyface.base_toolkit import find_toolkit
+
         if self._toolkit_object is None:
             toolkit_class = find_toolkit("traits_futures.toolkits")
             self._toolkit_object = toolkit_class()
