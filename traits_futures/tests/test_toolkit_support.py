@@ -19,7 +19,10 @@ except ImportError:
 
 from pyface.base_toolkit import Toolkit
 
-from traits_futures.testing.api import requires_qt, requires_wx
+from traits_futures.testing.optional_dependencies import (
+    requires_qt,
+    requires_wx,
+)
 from traits_futures.toolkit_support import toolkit
 
 #: Name of the setuptools entry point group for Traits Futures toolkits

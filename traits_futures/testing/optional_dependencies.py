@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Testing helpers and utilities.
+Code for managing optional dependencies in tests.
 """
 
 import unittest
@@ -18,6 +18,9 @@ try:
     from pyface.qt import QtCore
 except ImportError:
     QtCore = None
+
+#: Decorator that can be used to indicate that a test requires a Qt
+#: backend (e.g., PyQt or PySide2)
 requires_qt = unittest.skipIf(QtCore is None, "Qt not available")
 
 
@@ -25,10 +28,6 @@ try:
     import wx
 except ImportError:
     wx = None
+
+#: Decorator that can be used to indicate that a test requires wxPython.
 requires_wx = unittest.skipIf(wx is None, "wx not available")
-
-
-__all__ = [
-    "requires_qt",
-    "requires_wx",
-]
