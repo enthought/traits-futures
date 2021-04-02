@@ -30,43 +30,18 @@ TOOLKIT_ENTRY_POINT_GROUP = "traits_futures.toolkits"
 
 
 class TestToolkitSupport(unittest.TestCase):
-    def test_asyncio_entry_point(self):
-        entry_points = self.toolkit_entry_points("asyncio")
-        self.assertEqual(len(entry_points), 1)
-        entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
-
-    def test_null_entry_point(self):
-        entry_points = self.toolkit_entry_points("null")
-        self.assertEqual(len(entry_points), 1)
-        entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+    def test_asyncio_entry_points(self):
+        self.assertValidToolkitEntryPoint("asyncio")
+        self.assertValidToolkitEntryPoint("null")
 
     @requires_wx
     def test_wx_entry_point(self):
-        entry_points = self.toolkit_entry_points("wx")
-        self.assertEqual(len(entry_points), 1)
-        entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+        self.assertValidToolkitEntryPoint("wx")
 
     @requires_qt
-    def test_qt4_entry_point(self):
-        entry_points = self.toolkit_entry_points("qt4")
-        self.assertEqual(len(entry_points), 1)
-        entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
-
-    @requires_qt
-    def test_qt_entry_point(self):
-        entry_points = self.toolkit_entry_points("qt")
-        self.assertEqual(len(entry_points), 1)
-        entry_point = entry_points[0]
-        toolkit = entry_point.load()
-        self.assertIsInstance(toolkit, Toolkit)
+    def test_qt_entry_points(self):
+        self.assertValidToolkitEntryPoint("qt")
+        self.assertValidToolkitEntryPoint("qt4")
 
     def test_gui_test_assistant(self):
         GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
@@ -105,3 +80,15 @@ class TestToolkitSupport(unittest.TestCase):
             ]
             if entry_point.name == name
         ]
+
+    def assertValidToolkitEntryPoint(self, name):
+        """
+        Check that an entry point with the given name exists,
+        that its ``load`` method is functional, and that the
+        instantiated object is an instance of Toolkit.
+        """
+        entry_points = self.toolkit_entry_points(name)
+        self.assertEqual(len(entry_points), 1)
+        entry_point = entry_points[0]
+        toolkit = entry_point.load()
+        self.assertIsInstance(toolkit, Toolkit)
