@@ -13,5 +13,18 @@ Entry point for finding toolkit specific classes.
 """
 from pyface.base_toolkit import Toolkit
 
+from traits_futures.null.pinger import Pingee
+
+
+class AsyncioToolkit(Toolkit):
+    def pingee(self, on_ping):
+        """
+        Return a new Pingee instance for this toolkit.
+        """
+        return Pingee(on_ping=on_ping)
+
+
 #: The toolkit object used to find toolkit-specific resources.
-toolkit_object = Toolkit("traits_futures", "null", "traits_futures.null")
+toolkit_object = AsyncioToolkit(
+    "traits_futures", "null", "traits_futures.null"
+)

@@ -196,9 +196,7 @@ class MultithreadingRouter(HasStrictTraits):
 
         self._message_queue = queue.Queue()
 
-        Pingee = self._toolkit("pinger:Pingee")
-
-        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee = self._toolkit.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._running = True

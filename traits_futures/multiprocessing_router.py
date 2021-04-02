@@ -232,9 +232,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self.manager.Queue()
 
-        Pingee = self._toolkit("pinger:Pingee")
-
-        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee = self._toolkit.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._monitor_thread = threading.Thread(

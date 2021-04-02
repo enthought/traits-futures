@@ -34,6 +34,9 @@ class Toolkit:
     def __call__(self, name):
         return self.toolkit_object(name)
 
+    def pingee(self, on_ping):
+        return self.toolkit_object.pingee(on_ping=on_ping)
+
 
 #: Object providing access to the current toolkit.
 toolkit = Toolkit()
