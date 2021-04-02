@@ -11,8 +11,8 @@
 """
 Entry point for finding toolkit specific classes.
 """
-from traits_futures.null.event_loop_helper import EventLoopHelper
-from traits_futures.null.pinger import Pingee
+from traits_futures.asyncio.event_loop_helper import EventLoopHelper
+from traits_futures.asyncio.pinger import Pingee
 
 
 class AsyncioToolkit:

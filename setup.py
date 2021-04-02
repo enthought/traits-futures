@@ -65,9 +65,10 @@ setup(
     ],
     entry_points={
         "traits_futures.toolkits": [
-            "null = traits_futures.null.init:AsyncioToolkit",
-            "qt4 = traits_futures.qt.init:QtToolkit",
+            "asyncio = traits_futures.asyncio.init:AsyncioToolkit",
+            "null = traits_futures.asyncio.init:AsyncioToolkit",
             "qt = traits_futures.qt.init:QtToolkit",
+            "qt4 = traits_futures.qt.init:QtToolkit",
             "wx = traits_futures.wx.init:WxToolkit",
         ],
     },
