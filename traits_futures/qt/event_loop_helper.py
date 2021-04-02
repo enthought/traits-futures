@@ -15,21 +15,24 @@ Test support, providing the ability to run the event loop from tests.
 from pyface.qt.QtCore import QTimer
 from pyface.qt.QtGui import QApplication
 
-#: Default timeout, in seconds
-TIMEOUT = 10.0
 
-
-class GuiTestAssistant:
-    def setUp(self):
+class EventLoopHelper:
+    def start(self):
+        """
+        Start event loop.
+        """
         qt_app = QApplication.instance()
         if qt_app is None:
             qt_app = QApplication([])
         self.qt_app = qt_app
 
-    def tearDown(self):
+    def stop(self):
+        """
+        Stop event loop.
+        """
         del self.qt_app
 
-    def run_until(self, object, trait, condition, timeout=TIMEOUT):
+    def run_until(self, object, trait, condition, timeout):
         """
         Run event loop until the given condition holds true, or until timeout.
 
@@ -45,9 +48,8 @@ class GuiTestAssistant:
         condition : callable
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
-        timeout : float, optional
+        timeout : float
             Number of seconds to allow before timing out with an exception.
-            The (somewhat arbitrary) default is 10 seconds.
 
         Raises
         ------

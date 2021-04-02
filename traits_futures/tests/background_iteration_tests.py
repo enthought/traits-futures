@@ -28,7 +28,7 @@ from traits_futures.api import (
 )
 
 #: Timeout for blocking operations, in seconds.
-TIMEOUT = 10.0
+SAFETY_TIMEOUT = 10.0
 
 
 def reciprocals(start, stop):
@@ -56,7 +56,7 @@ def yield_then_wait(barrier):
     Yield a result, then wait for an external event.
     """
     yield 1
-    barrier.wait(timeout=TIMEOUT)
+    barrier.wait(timeout=SAFETY_TIMEOUT)
 
 
 def set_then_yield(event):
@@ -72,7 +72,7 @@ def wait_midway(barrier):
     Wait for an external event in the middle of an iteration.
     """
     yield 1729
-    barrier.wait(timeout=TIMEOUT)
+    barrier.wait(timeout=SAFETY_TIMEOUT)
     yield 2718
 
 
@@ -80,7 +80,7 @@ def wait_then_fail(barrier):
     """
     Wait for an external event, then fail.
     """
-    barrier.wait(timeout=TIMEOUT)
+    barrier.wait(timeout=SAFETY_TIMEOUT)
     yield 1 / 0
 
 
@@ -91,7 +91,7 @@ def ping_pong(test_ready, midpoint):
     # Using sets because we need something weakref'able.
     yield {1, 2, 3}
     midpoint.set()
-    test_ready.wait(timeout=TIMEOUT)
+    test_ready.wait(timeout=SAFETY_TIMEOUT)
     yield {4, 5, 6}
 
 
@@ -102,7 +102,7 @@ def resource_acquiring_iteration(acquired, released, barrier):
     acquired.set()
     try:
         yield 1
-        barrier.wait(timeout=TIMEOUT)
+        barrier.wait(timeout=SAFETY_TIMEOUT)
         yield 2
     finally:
         released.set()
@@ -197,7 +197,7 @@ class BackgroundIterationTests:
         future = submit_iteration(self.executor, set_then_yield, event)
         listener = IterationFutureListener(future=future)
 
-        self.assertTrue(event.wait(timeout=TIMEOUT))
+        self.assertTrue(event.wait(timeout=SAFETY_TIMEOUT))
         self.assertTrue(future.cancellable)
         future.cancel()
         self.wait_until_done(future)
@@ -403,7 +403,7 @@ class BackgroundIterationTests:
             # midpoint won't be set until we next invoke "next(iterable)",
             # by which time the IterationBackgroundTask's reference should
             # have been deleted.
-            self.assertTrue(midpoint.wait(timeout=TIMEOUT))
+            self.assertTrue(midpoint.wait(timeout=SAFETY_TIMEOUT))
             self.assertIsNone(ref())
         finally:
             # Let the background task complete, even if the test fails.

@@ -16,16 +16,13 @@ import contextlib
 import unittest
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
+from traits_futures.testing.gui_test_assistant import (
+    GuiTestAssistant,
+    SAFETY_TIMEOUT,
+)
 from traits_futures.tests.background_iteration_tests import (
     BackgroundIterationTests,
 )
-from traits_futures.toolkit_support import toolkit
-
-GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
-
-
-#: Timeout for blocking operations, in seconds.
-TIMEOUT = 10.0
 
 
 class TestBackgroundIteration(
@@ -58,4 +55,4 @@ class TestBackgroundIteration(
             yield
         finally:
             event.set()
-            concurrent.futures.wait(futures, timeout=TIMEOUT)
+            concurrent.futures.wait(futures, timeout=SAFETY_TIMEOUT)

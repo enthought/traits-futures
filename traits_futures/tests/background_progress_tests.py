@@ -23,7 +23,7 @@ from traits_futures.api import (
 )
 
 #: Timeout for blocking operations, in seconds.
-TIMEOUT = 10.0
+SAFETY_TIMEOUT = 10.0
 
 
 # Target functions used for testing ###########################################
@@ -55,7 +55,7 @@ def wait_then_fail(signal, progress):
     """
     Target function that waits until given permission to proceed, then fails.
     """
-    signal.wait(timeout=TIMEOUT)
+    signal.wait(timeout=SAFETY_TIMEOUT)
     1 / 0
 
 
@@ -75,7 +75,7 @@ def syncing_progress(test_ready, raised, progress):
     """
     progress("first")
     # Synchronise with the test.
-    test_ready.wait(timeout=TIMEOUT)
+    test_ready.wait(timeout=SAFETY_TIMEOUT)
     # After the test cancels, the second progress send operation should raise,
     # so that we never get to the following code.
     try:
@@ -99,7 +99,7 @@ def resource_acquirer(acquired, ready, checkpoint, progress):
     acquired.set()
     try:
         checkpoint.set()
-        ready.wait(timeout=TIMEOUT)
+        ready.wait(timeout=SAFETY_TIMEOUT)
     finally:
         acquired.clear()
 
@@ -176,7 +176,7 @@ class BackgroundProgressTests:
         future = submit_progress(self.executor, event_set_with_progress, event)
         listener = ProgressFutureListener(future=future)
 
-        self.assertTrue(event.wait(timeout=TIMEOUT))
+        self.assertTrue(event.wait(timeout=SAFETY_TIMEOUT))
         self.assertTrue(future.cancellable)
         future.cancel()
         self.wait_until_done(future)
@@ -268,7 +268,7 @@ class BackgroundProgressTests:
 
         # Let the background task run to completion; it will have already sent
         # progress messages.
-        self.assertTrue(signal.wait(timeout=TIMEOUT))
+        self.assertTrue(signal.wait(timeout=SAFETY_TIMEOUT))
 
         future.cancel()
 
@@ -290,7 +290,7 @@ class BackgroundProgressTests:
             )
 
             self.wait_for_state(future, EXECUTING)
-            self.assertTrue(checkpoint.wait(timeout=TIMEOUT))
+            self.assertTrue(checkpoint.wait(timeout=SAFETY_TIMEOUT))
             self.assertTrue(acquired.is_set())
             future.cancel()
         finally:

@@ -14,9 +14,6 @@ Test support, providing the ability to run the event loop from tests.
 
 import wx
 
-#: Default timeout, in seconds
-TIMEOUT = 10.0
-
 # XXX We should be using Pyface's own CallbackTimer instead of creating
 # our own, but we were running into segfaults.
 # xref: enthought/pyface#815, enthought/traits-futures#251
@@ -103,19 +100,19 @@ class AppForTesting(wx.App):
         del self.frame
 
 
-class GuiTestAssistant:
+class EventLoopHelper:
     """
     Support for running the wx event loop in unit tests.
     """
 
-    def setUp(self):
+    def start(self):
         self.wx_app = AppForTesting()
 
-    def tearDown(self):
+    def stop(self):
         self.wx_app.close()
         del self.wx_app
 
-    def run_until(self, object, trait, condition, timeout=TIMEOUT):
+    def run_until(self, object, trait, condition, timeout):
         """
         Run event loop until the given condition holds true, or until timeout.
 
@@ -131,9 +128,8 @@ class GuiTestAssistant:
         condition : callable
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
-        timeout : float, optional
+        timeout : float
             Number of seconds to allow before timing out with an exception.
-            The (somewhat arbitrary) default is 10 seconds.
 
         Raises
         ------

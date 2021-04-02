@@ -23,9 +23,8 @@ from traits.api import (
 )
 
 from traits_futures.i_pingee import IPingee
+from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.toolkit_support import toolkit
-
-GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
