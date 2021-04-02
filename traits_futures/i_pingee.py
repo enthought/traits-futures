@@ -51,7 +51,6 @@ class IPingee(abc.ABC):
 
         Not thread-safe. This method should only be called in the main thread.
         """
-        del self._event_loop
 
 
 class IPinger(abc.ABC):
