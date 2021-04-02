@@ -13,7 +13,7 @@ Support for toolkit-specific classes.
 """
 
 
-class Toolkit:
+class LazyToolkit:
     """
     Provide access to toolkit-specific classes.
 
@@ -41,4 +41,4 @@ class Toolkit:
 
 
 #: Object providing access to the current toolkit.
-toolkit = Toolkit()
+toolkit = LazyToolkit()

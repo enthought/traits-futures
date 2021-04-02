@@ -12,7 +12,7 @@
 Test support, providing the ability to run the event loop from within tests.
 """
 
-from traits_futures.toolkit_support import Toolkit
+from traits_futures.toolkit_support import LazyToolkit
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
@@ -23,16 +23,17 @@ SAFETY_TIMEOUT = 10.0
 class GuiTestAssistant:
     #: Factory for the toolkit. Override in subclasses to test with a
     #: specific toolkit.
-    toolkit_factory = Toolkit
+    toolkit_factory = LazyToolkit
 
     def setUp(self):
-        toolkit = self.toolkit_factory()
-        self._event_loop_helper = toolkit.event_loop_helper()
+        self._toolkit = self.toolkit_factory()
+        self._event_loop_helper = self._toolkit.event_loop_helper()
         self._event_loop_helper.start()
 
     def tearDown(self):
         self._event_loop_helper.stop()
         del self._event_loop_helper
+        del self._toolkit
 
     def run_until(self, object, trait, condition, timeout=SAFETY_TIMEOUT):
         """

@@ -15,7 +15,7 @@ Tests for the MultithreadingRouter class.
 import unittest
 
 from traits_futures.multithreading_context import MultithreadingContext
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.api import GuiTestAssistant
 from traits_futures.tests.i_message_router_tests import IMessageRouterTests
 
 

@@ -9,30 +9,24 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the MultiprocessingRouter class.
+Tests for the asyncio implementations of IPingee and IPinger.
 """
 
 import unittest
 
-from traits_futures.multiprocessing_context import MultiprocessingContext
+from traits_futures.asyncio.init import AsyncioToolkit
 from traits_futures.testing.api import GuiTestAssistant
-from traits_futures.tests.i_message_router_tests import IMessageRouterTests
+from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
-class TestMultiprocessingRouter(
-    GuiTestAssistant, IMessageRouterTests, unittest.TestCase
-):
-    """
-    Test that MultiprocessingRouter implements the IMessageRouter interface.
-    """
+class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
 
-    #: Factory providing the parallelism context
-    context_factory = MultiprocessingContext
+    toolkit_factory = AsyncioToolkit
 
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        IMessageRouterTests.setUp(self)
+        IPingeeTests.setUp(self)
 
     def tearDown(self):
-        IMessageRouterTests.tearDown(self)
+        IPingeeTests.tearDown(self)
         GuiTestAssistant.tearDown(self)

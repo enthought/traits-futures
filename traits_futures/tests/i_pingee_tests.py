@@ -8,12 +8,16 @@
 #
 # Thanks for using Enthought open source!
 
+"""
+Test mixin for testing implementations of IPingee and IPinger interfaces.
+"""
+
 import contextlib
 import queue
 import threading
-import unittest
 
 from traits.api import (
+    Any,
     Event,
     HasStrictTraits,
     Instance,
@@ -23,8 +27,6 @@ from traits.api import (
 )
 
 from traits_futures.i_pingee import IPingee
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
-from traits_futures.toolkit_support import toolkit
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -91,6 +93,9 @@ class PingListener(HasStrictTraits):
     Listener providing an observable callback for the pingee.
     """
 
+    #: The toolkit in use.
+    toolkit = Any()
+
     #: The actual pingee as provided by Traits Futures.
     pingee = Instance(IPingee)
 
@@ -108,7 +113,7 @@ class PingListener(HasStrictTraits):
         self.disconnect()
 
     def connect(self):
-        self.pingee = toolkit.pingee(
+        self.pingee = self.toolkit.pingee(
             on_ping=lambda: setattr(self, "ping", True)
         )
         self.pingee.connect()
@@ -151,7 +156,7 @@ class IPingeeTests:
     """
 
     def setUp(self):
-        self.listener = PingListener()
+        self.listener = PingListener(toolkit=self._toolkit)
         self.listener.connect()
 
     def tearDown(self):
@@ -194,8 +199,8 @@ class IPingeeTests:
         self.assertEqual(self.listener.ping_count, 15)
 
     def test_multiple_pingees(self):
-        with PingListener() as listener1:
-            with PingListener() as listener2:
+        with PingListener(toolkit=self._toolkit) as listener1:
+            with PingListener(toolkit=self._toolkit) as listener2:
                 listeners = MultipleListeners(listeners=[listener1, listener2])
                 with BackgroundPinger(listener1.pingee) as pinger1:
                     with BackgroundPinger(listener2.pingee) as pinger2:
@@ -244,19 +249,8 @@ class IPingeeTests:
         ping_count : int
             The expected number of pings to receive.
         """
-
         self.run_until(
             self.listener,
             "ping_count",
             lambda listener: listener.ping_count >= ping_count,
         )
-
-
-class TestPinger(GuiTestAssistant, IPingeeTests, unittest.TestCase):
-    def setUp(self):
-        GuiTestAssistant.setUp(self)
-        IPingeeTests.setUp(self)
-
-    def tearDown(self):
-        IPingeeTests.tearDown(self)
-        GuiTestAssistant.tearDown(self)

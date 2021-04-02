@@ -17,7 +17,7 @@ import unittest
 from traits.api import Event, HasStrictTraits
 
 from traits_futures.api import CANCELLED, submit_call, TraitsExecutor
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.api import GuiTestAssistant
 
 
 class Dummy(HasStrictTraits):

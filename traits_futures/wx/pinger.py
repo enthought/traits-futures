@@ -30,59 +30,6 @@ _PingEvent = _PingEventPair[0]
 _PingEventBinder = _PingEventPair[1]
 
 
-@IPinger.register
-class Pinger:
-    """
-    Ping emitter, which can send pings to a receiver in a thread-safe manner.
-
-    Parameters
-    ----------
-    pingee : Pingee
-        The target receiver for the pings. The receiver must already be
-        connected.
-    """
-
-    def __init__(self, pingee):
-        self.pingee = pingee
-
-    def connect(self):
-        """
-        Connect to the ping receiver. No pings should be sent until
-        this function is called.
-        """
-        pass
-
-    def disconnect(self):
-        """
-        Disconnect from the ping receiver. No pings should be sent
-        after calling this function.
-        """
-        pass
-
-    def ping(self):
-        """
-        Send a ping to the ping receiver.
-        """
-        wx.PostEvent(self.pingee, _PingEvent())
-
-    def pinger(self):
-        """
-        Create and return a new pinger linked to this pingee.
-
-        This method is thread-safe. Typically the pingee will be passed to
-        a background thread, and this method used within that background thread
-        to create a pinger.
-
-        This method should only be called on a connected pingee.
-
-        Returns
-        -------
-        pinger : Pinger
-            New pinger, linked to this pingee.
-        """
-        return Pinger(pingee=self)
-
-
 @IPingee.register
 class Pingee(wx.EvtHandler):
     """
@@ -117,3 +64,56 @@ class Pingee(wx.EvtHandler):
         Undo any connections made in the connect method.
         """
         self.Unbind(_PingEventBinder, handler=self._on_ping)
+
+    def pinger(self):
+        """
+        Create and return a new pinger linked to this pingee.
+
+        This method is thread-safe. Typically the pingee will be passed to
+        a background thread, and this method used within that background thread
+        to create a pinger.
+
+        This method should only be called on a connected pingee.
+
+        Returns
+        -------
+        pinger : Pinger
+            New pinger, linked to this pingee.
+        """
+        return Pinger(pingee=self)
+
+
+@IPinger.register
+class Pinger:
+    """
+    Ping emitter, which can send pings to a receiver in a thread-safe manner.
+
+    Parameters
+    ----------
+    pingee : Pingee
+        The target receiver for the pings. The receiver must already be
+        connected.
+    """
+
+    def __init__(self, pingee):
+        self.pingee = pingee
+
+    def connect(self):
+        """
+        Connect to the ping receiver. No pings should be sent until
+        this function is called.
+        """
+        pass
+
+    def disconnect(self):
+        """
+        Disconnect from the ping receiver. No pings should be sent
+        after calling this function.
+        """
+        pass
+
+    def ping(self):
+        """
+        Send a ping to the ping receiver.
+        """
+        wx.PostEvent(self.pingee, _PingEvent())
