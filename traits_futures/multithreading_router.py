@@ -35,11 +35,8 @@ from traits_futures.i_message_router import (
     IMessageSender,
 )
 from traits_futures.i_pingee import IPingee
-from traits_futures.toolkit_support import toolkit
 
 logger = logging.getLogger(__name__)
-
-Pingee = toolkit("pinger:Pingee")
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -199,6 +196,8 @@ class MultithreadingRouter(HasStrictTraits):
 
         self._message_queue = queue.Queue()
 
+        Pingee = self._toolkit("pinger:Pingee")
+
         self._pingee = Pingee(on_ping=self._route_message)
         self._pingee.connect()
 
@@ -302,6 +301,9 @@ class MultithreadingRouter(HasStrictTraits):
         )
 
     # Private traits ##########################################################
+
+    #: GUI toolkit
+    _toolkit = Any()
 
     #: Internal queue for messages from all senders.
     _message_queue = Instance(queue.Queue)

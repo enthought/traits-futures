@@ -17,6 +17,7 @@ import multiprocessing
 
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multiprocessing_router import MultiprocessingRouter
+from traits_futures.toolkit_support import toolkit
 
 
 class MultiprocessingContext(IParallelContext):
@@ -63,7 +64,10 @@ class MultiprocessingContext(IParallelContext):
         -------
         message_router : MultiprocessingRouter
         """
-        return MultiprocessingRouter(manager=self._manager)
+        return MultiprocessingRouter(
+            manager=self._manager,
+            _toolkit=toolkit,
+        )
 
     def close(self):
         """

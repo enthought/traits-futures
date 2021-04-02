@@ -17,6 +17,7 @@ import threading
 
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_router import MultithreadingRouter
+from traits_futures.toolkit_support import toolkit
 
 
 class MultithreadingContext(IParallelContext):
@@ -62,7 +63,7 @@ class MultithreadingContext(IParallelContext):
         -------
         message_router : MultithreadingRouter
         """
-        return MultithreadingRouter()
+        return MultithreadingRouter(_toolkit=toolkit)
 
     def close(self):
         """

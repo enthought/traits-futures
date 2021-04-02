@@ -74,11 +74,8 @@ from traits_futures.i_message_router import (
     IMessageSender,
 )
 from traits_futures.i_pingee import IPingee
-from traits_futures.toolkit_support import toolkit
 
 logger = logging.getLogger(__name__)
-
-Pingee = toolkit("pinger:Pingee")
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -235,6 +232,8 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self.manager.Queue()
 
+        Pingee = self._toolkit("pinger:Pingee")
+
         self._pingee = Pingee(on_ping=self._route_message)
         self._pingee.connect()
 
@@ -365,6 +364,9 @@ class MultiprocessingRouter(HasRequiredTraits):
     manager = Instance(multiprocessing.managers.BaseManager, required=True)
 
     # Private traits ##########################################################
+
+    #: GUI toolkit
+    _toolkit = Any()
 
     #: Queue receiving messages from child processes.
     _process_message_queue = Any()
