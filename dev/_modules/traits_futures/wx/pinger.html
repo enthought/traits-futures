@@ -96,6 +96,8 @@
 
 <span class="kn">import</span> <span class="nn">wx.lib.newevent</span>
 
+<span class="kn">from</span> <span class="nn">traits_futures.i_pingee</span> <span class="kn">import</span> <span class="n">IPingee</span><span class="p">,</span> <span class="n">IPinger</span>
+
 <span class="c1"># Note: we&#39;re not using the more obvious spelling</span>
 <span class="c1">#   _PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()</span>
 <span class="c1"># here because that confuses Sphinx&#39;s autodoc mocking.</span>
@@ -107,7 +109,8 @@
 <span class="n">_PingEventBinder</span> <span class="o">=</span> <span class="n">_PingEventPair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger">[docs]</a><span class="k">class</span> <span class="nc">Pinger</span><span class="p">:</span>
+<div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">Pinger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ping emitter, which can send pings to a receiver in a thread-safe manner.</span>
 
@@ -142,11 +145,12 @@
         <span class="n">wx</span><span class="o">.</span><span class="n">PostEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pingee</span><span class="p">,</span> <span class="n">_PingEvent</span><span class="p">())</span></div></div>
 
 
-<div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee">[docs]</a><span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Receiver for pings.</span>
 
-<span class="sd">    Whenever a ping is received from a linked Pingee, the receiver</span>
+<span class="sd">    Whenever a ping is received from a linked Pinger, the receiver</span>
 <span class="sd">    calls the given fixed parameterless callable.</span>
 
 <span class="sd">    The ping receiver must be connected (using the ``connect``) method</span>

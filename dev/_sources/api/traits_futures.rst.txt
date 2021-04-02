@@ -30,6 +30,7 @@ traits\_futures package
    traits_futures.i_future
    traits_futures.i_message_router
    traits_futures.i_parallel_context
+   traits_futures.i_pingee
    traits_futures.i_task_specification
    traits_futures.multiprocessing_context
    traits_futures.multiprocessing_router

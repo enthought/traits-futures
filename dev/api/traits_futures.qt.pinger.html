@@ -97,7 +97,7 @@ the main thread execute a (fixed, parameterless) callback.</p>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.qt.pinger.</span></code><code class="sig-name descname"><span class="pre">Pingee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pinger.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pinger.Pingee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.qt.QtCore.</span></code></p>
 <p>Receiver for pings.</p>
-<p>Whenever a ping is received from a linked Pingee, the receiver
+<p>Whenever a ping is received from a linked Pinger, the receiver
 calls the given fixed parameterless callable.</p>
 <p>The ping receiver must be connected (using the <code class="docutils literal notranslate"><span class="pre">connect</span></code>) method
 before use, and should call <code class="docutils literal notranslate"><span class="pre">disconnect</span></code> when it’s no longer
