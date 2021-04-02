@@ -14,16 +14,16 @@ Tests for the Qt implementations of IPingee and IPinger.
 
 import unittest
 
-from traits_futures.testing.api import GuiTestAssistant, requires_wx
+from traits_futures.testing.api import GuiTestAssistant, requires_qt
 from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
-@requires_wx
+@requires_qt
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
     def toolkit_factory(self):
-        from traits_futures.wx.init import WxToolkit
+        from traits_futures.qt.init import QtToolkit
 
-        return WxToolkit()
+        return QtToolkit()
 
     def setUp(self):
         GuiTestAssistant.setUp(self)

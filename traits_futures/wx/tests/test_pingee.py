@@ -9,21 +9,21 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the Qt implementations of IPingee and IPinger.
+Tests for the Wx implementations of IPingee and IPinger.
 """
 
 import unittest
 
-from traits_futures.testing.api import GuiTestAssistant, requires_qt
+from traits_futures.testing.api import GuiTestAssistant, requires_wx
 from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
-@requires_qt
+@requires_wx
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
     def toolkit_factory(self):
-        from traits_futures.qt.init import QtToolkit
+        from traits_futures.wx.init import WxToolkit
 
-        return QtToolkit()
+        return WxToolkit()
 
     def setUp(self):
         GuiTestAssistant.setUp(self)
