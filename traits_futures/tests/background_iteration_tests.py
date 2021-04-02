@@ -28,7 +28,7 @@ from traits_futures.api import (
 )
 
 #: Timeout for blocking operations, in seconds.
-SAFETY_TIMEOUT = 10.0
+SAFETY_TIMEOUT = 5.0
 
 
 def reciprocals(start, stop):

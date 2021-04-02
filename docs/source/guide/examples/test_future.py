@@ -20,7 +20,7 @@ from traits_futures.api import submit_call, TraitsExecutor
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
 #: forever and blocking the rest of the test suite.
-SAFETY_TIMEOUT = 10.0
+SAFETY_TIMEOUT = 5.0
 
 
 #: Note that the GuiTestAssistant is currently only available for Qt, not

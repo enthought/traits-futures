@@ -30,7 +30,7 @@ from traits_futures.i_parallel_context import IParallelContext
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
-SAFETY_TIMEOUT = 10.0
+SAFETY_TIMEOUT = 5.0
 
 
 def send_messages(sender, messages):

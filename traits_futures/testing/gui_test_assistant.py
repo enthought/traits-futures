@@ -17,7 +17,7 @@ from traits_futures.asyncio.init import AsyncioToolkit
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
 #: forever and blocking the rest of the test suite.
-SAFETY_TIMEOUT = 10.0
+SAFETY_TIMEOUT = 5.0
 
 
 class GuiTestAssistant:
