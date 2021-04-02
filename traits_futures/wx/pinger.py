@@ -71,7 +71,7 @@ class Pingee(wx.EvtHandler):
     """
     Receiver for pings.
 
-    Whenever a ping is received from a linked Pingee, the receiver
+    Whenever a ping is received from a linked Pinger, the receiver
     calls the given fixed parameterless callable.
 
     The ping receiver must be connected (using the ``connect``) method
