@@ -427,7 +427,7 @@ def monitor_queue(process_queue, local_queue, pingee):
         a message pending.
 
     """
-    pinger = Pinger(pingee=pingee)
+    pinger = pingee.pinger()
     pinger.connect()
     try:
         while True:

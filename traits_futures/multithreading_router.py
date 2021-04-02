@@ -74,7 +74,7 @@ class MultithreadingSender:
 
     def __init__(self, connection_id, pingee, message_queue):
         self.connection_id = connection_id
-        self.pinger = Pinger(pingee=pingee)
+        self.pinger = pingee.pinger()
         self.message_queue = message_queue
         self._state = _INITIAL
 

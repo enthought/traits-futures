@@ -75,7 +75,7 @@ class BackgroundPinger:
         """
         request_queue = self.ping_request_queue
 
-        pinger = Pinger(self.pingee)
+        pinger = self.pingee.pinger()
         pinger.connect()
         try:
             while True:
