@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.null package
-============================
+traits\_futures.asyncio package
+===============================
 
-.. automodule:: traits_futures.null
+.. automodule:: traits_futures.asyncio
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,6 +20,6 @@ traits\_futures.null package
 
 .. toctree::
 
-   traits_futures.null.gui_test_assistant
-   traits_futures.null.init
-   traits_futures.null.pinger
+   traits_futures.asyncio.gui_test_assistant
+   traits_futures.asyncio.init
+   traits_futures.asyncio.pinger

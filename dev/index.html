@@ -3,7 +3,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
+    <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
@@ -77,14 +78,14 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
+  <section id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
 <h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Permalink to this headline">¶</a></h1>
 <p>Release v0.3.0.dev0.</p>
 <p>The <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> package provides a means to fire off a background
 calculation from a <a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI</a> application, and later respond to the result(s)
 of that calculation, leaving the main UI responsive for user interactions while
 the background calculation is in progress.</p>
-<div class="section" id="features">
+<section id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Supports simple calls, iterations, and progress-reporting functions. Can
@@ -104,16 +105,16 @@ traditional thread-based solutions (race conditions, deadlocks, and UI
 updates off the main thread).</p></li>
 <li><p>Cross-platform.</p></li>
 </ul>
-</div>
-<div class="section" id="limitations">
+</section>
+<section id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
 UI event loop to be running in order to process results.</p></li>
 <li><p>Requires Python 3.6 or later.</p></li>
 </ul>
-</div>
-<div class="section" id="quick-start">
+</section>
+<section id="quick-start">
 <h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
 <p>Here’s a complete example showing a minimal TraitsUI application that fires off
 a background computation when its “Calculate” button is pressed, and shows the
@@ -203,9 +204,9 @@ result when it arrives.</p>
 <span class="n">QuickStartExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="user-guide">
+</section>
+</section>
+<section id="user-guide">
 <h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
@@ -247,8 +248,8 @@ result when it arrives.</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="api-documentation">
+</section>
+<section id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
@@ -288,16 +289,20 @@ result when it arrives.</p>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.version.html">traits_futures.version module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wrappers.html">traits_futures.wrappers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.null.html">traits_futures.null package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.gui_test_assistant.html">traits_futures.null.gui_test_assistant module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.init.html">traits_futures.null.init module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.null.pinger.html">traits_futures.null.pinger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.asyncio.html">traits_futures.asyncio package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.gui_test_assistant.html">traits_futures.asyncio.gui_test_assistant module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.init.html">traits_futures.asyncio.init module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.pinger.html">traits_futures.asyncio.pinger module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.qt.html">traits_futures.qt package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.gui_test_assistant.html">traits_futures.qt.gui_test_assistant module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.init.html">traits_futures.qt.init module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.pinger.html">traits_futures.qt.pinger module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.testing.html">traits_futures.testing package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.testing.optional_dependencies.html">traits_futures.testing.optional_dependencies module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wx.html">traits_futures.wx package</a><ul>
@@ -310,15 +315,15 @@ result when it arrives.</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
+</section>
+<section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
           </div>

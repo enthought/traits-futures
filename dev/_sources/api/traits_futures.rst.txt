@@ -44,6 +44,7 @@ traits\_futures package
 
 .. toctree::
 
-   traits_futures.null
+   traits_futures.asyncio
    traits_futures.qt
+   traits_futures.testing
    traits_futures.wx

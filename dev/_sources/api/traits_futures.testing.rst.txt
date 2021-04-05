@@ -9,10 +9,15 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.null.pinger module
-==================================
+traits\_futures.testing package
+===============================
 
-.. automodule:: traits_futures.null.pinger
+.. automodule:: traits_futures.testing
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+.. toctree::
+
+   traits_futures.testing.optional_dependencies

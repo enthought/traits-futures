@@ -3,7 +3,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
+    <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>Making tasks interruptible &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
@@ -84,7 +85,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="making-tasks-interruptible">
+  <section id="making-tasks-interruptible">
 <h1>Making tasks interruptible<a class="headerlink" href="#making-tasks-interruptible" title="Permalink to this headline">¶</a></h1>
 <p>All background tasks are cancellable in some form: calling the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method
 on the future for the task requests cancellation of the background task.
@@ -105,7 +106,7 @@ interruption points, and then execute that callable using <a class="reference in
 instead of <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>. In addition, each <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.9)"><span class="xref std std-ref">yield</span></a> statement can be used to
 provide progress information to the future. The following goes into this in
 more detail.</p>
-<div class="section" id="example-approximating">
+<section id="example-approximating">
 <h2>Example: approximating π<a class="headerlink" href="#example-approximating" title="Permalink to this headline">¶</a></h2>
 <p>We use a simplistic example to illustrate. The following code uses a Monte
 Carlo algorithm to compute (slowly and inefficiently) an approximation to π.</p>
@@ -263,8 +264,8 @@ don’t want to yield too often - as a guide, sending a message more than 100
 times per second is likely be inefficient. But conversely, if you yield too
 rarely, then the checks for cancellation will be spaced further apart, so you
 increase the latency for a response to a cancellation request.</p>
-</div>
-<div class="section" id="making-the-approximation-cancellable">
+</section>
+<section id="making-the-approximation-cancellable">
 <h2>Making the approximation cancellable<a class="headerlink" href="#making-the-approximation-cancellable" title="Permalink to this headline">¶</a></h2>
 <p>Here’s a modification of the above function that checks for cancellation every
 100 thousand iterations (which, for reference, worked out to around every 50th
@@ -288,8 +289,8 @@ the original function.</p>
 executor, and we get an <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> instead of a <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a> in return.
 Just as with the <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, the eventual result of the <code class="docutils literal notranslate"><span class="pre">approximate_pi</span></code>
 call is supplied to the future on completion via the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a> attribute.</p>
-</div>
-<div class="section" id="sending-partial-results">
+</section>
+<section id="sending-partial-results">
 <h2>Sending partial results<a class="headerlink" href="#sending-partial-results" title="Permalink to this headline">¶</a></h2>
 <p>As we mentioned above, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> also sends a message to the
 <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> whenever it encounters a <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.9)"><span class="xref std std-ref">yield</span></a>. That message carries
@@ -445,8 +446,8 @@ for those results.</p>
     <span class="n">InterruptibleTaskExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>

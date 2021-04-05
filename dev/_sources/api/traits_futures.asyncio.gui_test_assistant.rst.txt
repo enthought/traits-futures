@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.null.init module
-================================
+traits\_futures.asyncio.gui\_test\_assistant module
+===================================================
 
-.. automodule:: traits_futures.null.init
+.. automodule:: traits_futures.asyncio.gui_test_assistant
    :members:
    :undoc-members:
    :show-inheritance:

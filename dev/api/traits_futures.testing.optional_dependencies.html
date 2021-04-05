@@ -3,8 +3,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.null.init module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>traits_futures.testing.optional_dependencies module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
@@ -31,9 +32,9 @@
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
     <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
-    <link rel="up" title="traits_futures.null package" href="traits_futures.null.html" >
-    <link rel="next" title="traits_futures.null.pinger module" href="traits_futures.null.pinger.html" >
-    <link rel="prev" title="traits_futures.null.gui_test_assistant module" href="traits_futures.null.gui_test_assistant.html" > 
+    <link rel="up" title="traits_futures.testing package" href="traits_futures.testing.html" >
+    <link rel="next" title="traits_futures.wx package" href="traits_futures.wx.html" >
+    <link rel="prev" title="traits_futures.testing package" href="traits_futures.testing.html" > 
   </head>
   <body>
   <div class="container">
@@ -53,7 +54,7 @@
         <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
-          <li class="active"><a href="traits_futures.null.html" accesskey="U">traits_futures.null package</a></li> 
+          <li class="active"><a href="traits_futures.testing.html" accesskey="U">traits_futures.testing package</a></li> 
     </ul>
               
               
@@ -67,11 +68,11 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="traits_futures.null.pinger.html" title="traits_futures.null.pinger module"
+        <a href="traits_futures.wx.html" title="traits_futures.wx package"
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.null.gui_test_assistant.html" title="traits_futures.null.gui_test_assistant module"
+        <a href="traits_futures.testing.html" title="traits_futures.testing package"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -87,16 +88,23 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.null.init">
-<span id="traits-futures-null-init-module"></span><h1>traits_futures.null.init module<a class="headerlink" href="#module-traits_futures.null.init" title="Permalink to this headline">¶</a></h1>
-<p>Entry point for finding toolkit specific classes.</p>
-<dl class="py data">
-<dt id="traits_futures.null.init.toolkit_object">
-<code class="sig-prename descclassname"><span class="pre">traits_futures.null.init.</span></code><code class="sig-name descname"><span class="pre">toolkit_object</span></code><em class="property"> <span class="pre">=</span> <span class="pre">&lt;pyface.base_toolkit.Toolkit</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#traits_futures.null.init.toolkit_object" title="Permalink to this definition">¶</a></dt>
-<dd><p>The toolkit object used to find toolkit-specific resources.</p>
+  <section id="module-traits_futures.testing.optional_dependencies">
+<span id="traits-futures-testing-optional-dependencies-module"></span><h1>traits_futures.testing.optional_dependencies module<a class="headerlink" href="#module-traits_futures.testing.optional_dependencies" title="Permalink to this headline">¶</a></h1>
+<p>Code for managing optional dependencies in tests.</p>
+<dl class="py function">
+<dt id="traits_futures.testing.optional_dependencies.requires_qt">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.testing.optional_dependencies.</span></code><code class="sig-name descname"><span class="pre">requires_qt</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#traits_futures.testing.optional_dependencies.requires_qt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that can be used to indicate that a test requires a Qt
+backend (e.g., PyQt or PySide2)</p>
 </dd></dl>
 
-</div>
+<dl class="py function">
+<dt id="traits_futures.testing.optional_dependencies.requires_wx">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.testing.optional_dependencies.</span></code><code class="sig-name descname"><span class="pre">requires_wx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#traits_futures.testing.optional_dependencies.requires_wx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that can be used to indicate that a test requires wxPython.</p>
+</dd></dl>
+
+</section>
 
 
           </div>
@@ -108,14 +116,14 @@
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.null.gui_test_assistant.html"
-                        title="previous chapter">traits_futures.null.gui_test_assistant module</a></p>
+  <p class="topless"><a href="traits_futures.testing.html"
+                        title="previous chapter">traits_futures.testing package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.null.pinger.html"
-                        title="next chapter">traits_futures.null.pinger module</a></p>
+  <p class="topless"><a href="traits_futures.wx.html"
+                        title="next chapter">traits_futures.wx package</a></p>
   <h3>This Page</h3>
   <div>
-    <a href="../_sources/api/traits_futures.null.init.rst.txt"
+    <a href="../_sources/api/traits_futures.testing.optional_dependencies.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">

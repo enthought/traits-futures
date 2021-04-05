@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.null.gui\_test\_assistant module
-================================================
+traits\_futures.testing.optional\_dependencies module
+=====================================================
 
-.. automodule:: traits_futures.null.gui_test_assistant
+.. automodule:: traits_futures.testing.optional_dependencies
    :members:
    :undoc-members:
    :show-inheritance:

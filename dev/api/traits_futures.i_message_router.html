@@ -3,7 +3,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
+    <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
     <title>traits_futures.i_message_router module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
@@ -86,7 +87,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.i_message_router">
+  <section id="module-traits_futures.i_message_router">
 <span id="traits-futures-i-message-router-module"></span><h1>traits_futures.i_message_router module<a class="headerlink" href="#module-traits_futures.i_message_router" title="Permalink to this headline">¶</a></h1>
 <p>Interfaces for message routers, senders and receivers.</p>
 <p>Background: messages from background tasks arrive in the foreground via
@@ -104,7 +105,7 @@ background task and a foreground receiver.</p></li>
 <p>The message routing layer of Traits Futures provides no meaning or structure to
 the actual messages passed; that’s the job of the next layer up (the futures
 layer).</p>
-<div class="section" id="overview-of-the-apis">
+<section id="overview-of-the-apis">
 <h2>Overview of the APIs<a class="headerlink" href="#overview-of-the-apis" title="Permalink to this headline">¶</a></h2>
 <p>An object implementing <a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter" title="traits_futures.i_message_router.IMessageRouter"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageRouter</span></code></a> has <a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.start" title="traits_futures.i_message_router.IMessageRouter.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageRouter.start</span></code></a>
 and <a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.stop" title="traits_futures.i_message_router.IMessageRouter.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageRouter.stop</span></code></a> methods to start and stop message routing.
@@ -271,8 +272,8 @@ all be called from the same thread.</p>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
