@@ -3,8 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+    
     <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
@@ -78,14 +77,14 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
+  <div class="section" id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
 <h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Permalink to this headline">¶</a></h1>
 <p>Release v0.3.0.dev0.</p>
 <p>The <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> package provides a means to fire off a background
 calculation from a <a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI</a> application, and later respond to the result(s)
 of that calculation, leaving the main UI responsive for user interactions while
 the background calculation is in progress.</p>
-<section id="features">
+<div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Supports simple calls, iterations, and progress-reporting functions. Can
@@ -105,16 +104,16 @@ traditional thread-based solutions (race conditions, deadlocks, and UI
 updates off the main thread).</p></li>
 <li><p>Cross-platform.</p></li>
 </ul>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
 UI event loop to be running in order to process results.</p></li>
 <li><p>Requires Python 3.6 or later.</p></li>
 </ul>
-</section>
-<section id="quick-start">
+</div>
+<div class="section" id="quick-start">
 <h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
 <p>Here’s a complete example showing a minimal TraitsUI application that fires off
 a background computation when its “Calculate” button is pressed, and shows the
@@ -204,9 +203,9 @@ result when it arrives.</p>
 <span class="n">QuickStartExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="user-guide">
+</div>
+</div>
+<div class="section" id="user-guide">
 <h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
@@ -248,8 +247,8 @@ result when it arrives.</p>
 </li>
 </ul>
 </div>
-</section>
-<section id="api-documentation">
+</div>
+<div class="section" id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
@@ -315,15 +314,15 @@ result when it arrives.</p>
 </li>
 </ul>
 </div>
-</section>
-<section id="indices-and-tables">
+</div>
+<div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</section>
+</div>
 
 
           </div>
@@ -384,7 +383,7 @@ result when it arrives.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>
