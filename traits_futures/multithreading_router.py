@@ -40,7 +40,6 @@ from traits_futures.toolkit_support import toolkit
 logger = logging.getLogger(__name__)
 
 Pingee = toolkit("pinger:Pingee")
-Pinger = toolkit("pinger:Pinger")
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -74,7 +73,7 @@ class MultithreadingSender:
 
     def __init__(self, connection_id, pingee, message_queue):
         self.connection_id = connection_id
-        self.pinger = Pinger(pingee=pingee)
+        self.pinger = pingee.pinger()
         self.message_queue = message_queue
         self._state = _INITIAL
 

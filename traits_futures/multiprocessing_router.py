@@ -79,7 +79,6 @@ from traits_futures.toolkit_support import toolkit
 logger = logging.getLogger(__name__)
 
 Pingee = toolkit("pinger:Pingee")
-Pinger = toolkit("pinger:Pinger")
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -427,7 +426,7 @@ def monitor_queue(process_queue, local_queue, pingee):
         a message pending.
 
     """
-    pinger = Pinger(pingee=pingee)
+    pinger = pingee.pinger()
     pinger.connect()
     try:
         while True:
