@@ -14,6 +14,8 @@ in different contexts.
 """
 
 import contextlib
+import queue
+import threading
 
 from traits.api import (
     Bool,
@@ -37,6 +39,11 @@ from traits_futures.api import (
     submit_call,
     TraitsExecutor,
 )
+
+#: Maximum timeout for blocking calls, in seconds. A successful test should
+#: never hit this timeout - it's there to prevent a failing test from hanging
+#: forever and blocking the rest of the test suite.
+SAFETY_TIMEOUT = 5.0
 
 
 def test_call(*args, **kwds):
@@ -327,6 +334,32 @@ class TraitsExecutorTests:
 
         for future in futures:
             self.assertEqual(future.state, CANCELLED)
+
+    def test_submit_from_background_thread(self):
+        def target(executor, msg_queue):
+            """
+            Submit a simple callable to the given executor, and report
+            the result of that submission to a queue.
+            """
+            try:
+                future = submit_call(executor, pow, 2, 3)
+            except BaseException as exc:
+                msg_queue.put(("FAILED", exc))
+            else:
+                msg_queue.put(("DONE", future))
+
+        msg_queue = queue.Queue()
+        worker = threading.Thread(
+            target=target, args=(self.executor, msg_queue)
+        )
+        worker.start()
+        try:
+            result_type, future_or_exc = msg_queue.get(timeout=SAFETY_TIMEOUT)
+        finally:
+            worker.join(timeout=SAFETY_TIMEOUT)
+
+        self.assertEqual(result_type, "FAILED")
+        self.assertIsInstance(future_or_exc, RuntimeError)
 
     # Helper methods and assertions ###########################################
 

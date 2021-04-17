@@ -75,6 +75,10 @@ from ``traits_futures.api``:
   format in the |ProgressFuture|, and then your application can choose how to
   interpret them.
 
+In the current version of Traits Futures, tasks may only be submitted from the
+main thread. An attempt to submit a task from a background thread will raise
+|RuntimeError|. This restriction may be removed in the future.
+
 
 Working with future objects
 ---------------------------
@@ -319,3 +323,5 @@ needed.
 .. |FAILED| replace:: :data:`~traits_futures.future_states.FAILED`
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
+
+.. |RuntimeError| replace:: :exc:`RuntimeError`

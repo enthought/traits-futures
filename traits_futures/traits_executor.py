@@ -14,6 +14,7 @@ Executor to submit background tasks.
 
 import concurrent.futures
 import logging
+import threading
 import warnings
 
 from traits.api import (
@@ -233,6 +234,9 @@ class TraitsExecutor(HasStrictTraits):
         """
         Submit a task to the executor, and return the corresponding future.
 
+        This method is not thread-safe. It may only be used from the main
+        thread.
+
         Parameters
         ----------
         task : ITaskSpecification
@@ -242,6 +246,13 @@ class TraitsExecutor(HasStrictTraits):
         future : IFuture
             Future for this task.
         """
+        # We may relax this one day, but for now tasks may only be submitted
+        # from the main thread. ref: enthought/traits-futures#302.
+        if threading.current_thread() != threading.main_thread():
+            raise RuntimeError(
+                "Tasks may only be sumitted on the main thread."
+            )
+
         if not self.running:
             raise RuntimeError("Can't submit task unless executor is running.")
 
