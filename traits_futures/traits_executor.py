@@ -267,12 +267,14 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(receiver)
             raise
 
+        future_wrapper = FutureWrapper(future=future, receiver=receiver)
+        self._wrappers.add(future_wrapper)
+
         background_task_wrapper = BackgroundTaskWrapper(
             runner, sender, cancel_event
         )
-        wrapper = FutureWrapper(future=future, receiver=receiver)
         self._worker_pool.submit(background_task_wrapper)
-        self._wrappers.add(wrapper)
+
         logger.debug(f"{self} created future {future}")
         return future
 
