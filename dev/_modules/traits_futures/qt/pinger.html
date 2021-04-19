@@ -144,7 +144,24 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Undo any connections made in the connect method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div></div>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.qt.pinger.html#traits_futures.qt.pinger.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and return a new pinger linked to this pingee.</span>
+
+<span class="sd">        This method is thread-safe. Typically the pingee will be passed to</span>
+<span class="sd">        a background thread, and this method used within that background thread</span>
+<span class="sd">        to create a pinger.</span>
+
+<span class="sd">        This method should only be called on a connected pingee.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pinger : Pinger</span>
+<span class="sd">            New pinger, linked to this pingee.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Pinger</span><span class="p">(</span><span class="n">pingee</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.qt.pinger.html#traits_futures.qt.pinger.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>

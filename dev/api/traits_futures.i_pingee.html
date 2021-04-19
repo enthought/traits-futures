@@ -122,6 +122,24 @@ every time a ping is received.</p>
 <p>Not thread-safe. This method should only be called in the main thread.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt id="traits_futures.i_pingee.IPingee.pinger">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">pinger</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.pinger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and return a new pinger linked to this pingee.</p>
+<p>This method is thread-safe. Typically the pingee will be passed to
+a background thread, and this method used within that background thread
+to create a pinger.</p>
+<p>This method should only be called on a connected pingee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pinger</strong> – New pinger, linked to this pingee.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#traits_futures.i_pingee.IPinger" title="traits_futures.i_pingee.IPinger">IPinger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">

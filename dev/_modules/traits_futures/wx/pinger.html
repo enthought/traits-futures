@@ -109,6 +109,59 @@
 <span class="n">_PingEventBinder</span> <span class="o">=</span> <span class="n">_PingEventPair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 
+<div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Receiver for pings.</span>
+
+<span class="sd">    Whenever a ping is received from a linked Pinger, the receiver</span>
+<span class="sd">    calls the given fixed parameterless callable.</span>
+
+<span class="sd">    The ping receiver must be connected (using the ``connect``) method</span>
+<span class="sd">    before use, and should call ``disconnect`` when it&#39;s no longer</span>
+<span class="sd">    expected to receive pings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    on_ping : callable</span>
+<span class="sd">        Zero-argument callable that&#39;s called on the main thread</span>
+<span class="sd">        every time a ping is received.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">on_ping</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare Pingee to receive pings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Undo any connections made in the connect method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Unbind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and return a new pinger linked to this pingee.</span>
+
+<span class="sd">        This method is thread-safe. Typically the pingee will be passed to</span>
+<span class="sd">        a background thread, and this method used within that background thread</span>
+<span class="sd">        to create a pinger.</span>
+
+<span class="sd">        This method should only be called on a connected pingee.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pinger : Pinger</span>
+<span class="sd">            New pinger, linked to this pingee.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Pinger</span><span class="p">(</span><span class="n">pingee</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
 <div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">Pinger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -143,42 +196,6 @@
 <span class="sd">        Send a ping to the ping receiver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">PostEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pingee</span><span class="p">,</span> <span class="n">_PingEvent</span><span class="p">())</span></div></div>
-
-
-<div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
-<span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Receiver for pings.</span>
-
-<span class="sd">    Whenever a ping is received from a linked Pinger, the receiver</span>
-<span class="sd">    calls the given fixed parameterless callable.</span>
-
-<span class="sd">    The ping receiver must be connected (using the ``connect``) method</span>
-<span class="sd">    before use, and should call ``disconnect`` when it&#39;s no longer</span>
-<span class="sd">    expected to receive pings.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    on_ping : callable</span>
-<span class="sd">        Zero-argument callable that&#39;s called on the main thread</span>
-<span class="sd">        every time a ping is received.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">on_ping</span><span class="p">()</span>
-
-<div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prepare Pingee to receive pings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Undo any connections made in the connect method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Unbind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
