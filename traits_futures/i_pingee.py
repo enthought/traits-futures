@@ -52,6 +52,23 @@ class IPingee(abc.ABC):
         Not thread-safe. This method should only be called in the main thread.
         """
 
+    @abc.abstractmethod
+    def pinger(self):
+        """
+        Create and return a new pinger linked to this pingee.
+
+        This method is thread-safe. Typically the pingee will be passed to
+        a background thread, and this method used within that background thread
+        to create a pinger.
+
+        This method should only be called on a connected pingee.
+
+        Returns
+        -------
+        pinger : IPinger
+            New pinger, linked to this pingee.
+        """
+
 
 class IPinger(abc.ABC):
     """
