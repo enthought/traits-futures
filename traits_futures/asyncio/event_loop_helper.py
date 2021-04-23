@@ -14,20 +14,30 @@ Test support, providing the ability to run the event loop from tests.
 
 import asyncio
 
-#: Default timeout, in seconds
-TIMEOUT = 10.0
+from traits_futures.i_event_loop_helper import IEventLoopHelper
 
 
-class GuiTestAssistant:
-    def setUp(self):
+@IEventLoopHelper.register
+class EventLoopHelper:
+    """
+    Support for running the asyncio event loop in unit tests.
+    """
+
+    def init(self):
+        """
+        Prepare the event loop for use.
+        """
         asyncio.set_event_loop(asyncio.new_event_loop())
 
-    def tearDown(self):
+    def dispose(self):
+        """
+        Dispose of any resources used by this object.
+        """
         asyncio.get_event_loop().close()
 
-    def run_until(self, object, trait, condition, timeout=TIMEOUT):
+    def run_until(self, object, trait, condition, timeout):
         """
-        Run event loop until the given condition holds true, or until timeout.
+        Run event loop until a given condition occurs, or timeout.
 
         The condition is re-evaluated, with the object as argument, every time
         the trait changes.
@@ -41,9 +51,8 @@ class GuiTestAssistant:
         condition : callable
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
-        timeout : float, optional
+        timeout : float
             Number of seconds to allow before timing out with an exception.
-            The (somewhat arbitrary) default is 10 seconds.
 
         Raises
         ------
@@ -51,7 +60,6 @@ class GuiTestAssistant:
             If timeout is reached, regardless of whether the condition is
             true or not at that point.
         """
-
         timed_out = []
 
         event_loop = asyncio.get_event_loop()
