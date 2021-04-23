@@ -152,9 +152,10 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_id</span><span class="p">,</span> <span class="n">pingee</span><span class="p">,</span> <span class="n">message_queue</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span> <span class="o">=</span> <span class="n">connection_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="n">pingee</span><span class="o">.</span><span class="n">pinger</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pingee</span> <span class="o">=</span> <span class="n">pingee</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">message_queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_INITIAL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="MultithreadingSender.start"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -176,6 +177,7 @@
                 <span class="sa">f</span><span class="s2">&quot;Sender already started: state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pingee</span><span class="o">.</span><span class="n">pinger</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_OPEN</span></div>
@@ -227,6 +229,7 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_CLOSED</span></div>
 
