@@ -16,7 +16,7 @@ from pyface.qt import QtCore  # noqa: F401
 
 from traits_futures.i_toolkit import IToolkit
 from traits_futures.qt.event_loop_helper import EventLoopHelper
-from traits_futures.qt.pinger import Pingee
+from traits_futures.qt.pingee import Pingee
 
 
 @IToolkit.register

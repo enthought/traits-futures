@@ -14,11 +14,12 @@ Test support, providing the ability to run the event loop from tests.
 
 import wx
 
+from traits_futures.i_event_loop_helper import IEventLoopHelper
+
+
 # XXX We should be using Pyface's own CallbackTimer instead of creating
 # our own, but we were running into segfaults.
 # xref: enthought/pyface#815, enthought/traits-futures#251
-
-
 class TimeoutTimer(wx.Timer):
     """
     Single-shot timer that executes a given callback on completion.
@@ -100,15 +101,23 @@ class AppForTesting(wx.App):
         del self.frame
 
 
+@IEventLoopHelper.register
 class EventLoopHelper:
     """
     Support for running the wx event loop in unit tests.
     """
 
-    def start(self):
+    def init(self):
+        """
+        Prepare the event loop for use.
+        """
+        # Running tests requires that there's a visible application.
         self.wx_app = AppForTesting()
 
-    def stop(self):
+    def dispose(self):
+        """
+        Dispose of any resources used by this object.
+        """
         self.wx_app.close()
         del self.wx_app
 

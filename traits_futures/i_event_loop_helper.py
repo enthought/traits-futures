@@ -9,31 +9,36 @@
 # Thanks for using Enthought open source!
 
 """
-Test support, providing the ability to run the event loop from tests.
+Interface for toolkit-specific event loop helper class.
 """
 
-import asyncio
-
-from traits_futures.i_event_loop_helper import IEventLoopHelper
+import abc
 
 
-@IEventLoopHelper.register
-class EventLoopHelper:
+class IEventLoopHelper(abc.ABC):
     """
-    Support for running the asyncio event loop in unit tests.
+    Interface for toolkit-specific event loop helper class.
+
+    An IEventLoopHelper instance provides a way to run the event loop
+    programmatically until a given condition occurs. Its primary use
+    is in testing.
     """
 
     def init(self):
         """
         Prepare the event loop for use.
+
+        This method is not thread-safe. It should always be called on the
+        main GUI thread.
         """
-        asyncio.set_event_loop(asyncio.new_event_loop())
 
     def dispose(self):
         """
         Dispose of any resources used by this object.
+
+        This method is not thread-safe. It should always be called on the
+        main GUI thread.
         """
-        asyncio.get_event_loop().close()
 
     def run_until(self, object, trait, condition, timeout):
         """
@@ -41,6 +46,9 @@ class EventLoopHelper:
 
         The condition is re-evaluated, with the object as argument, every time
         the trait changes.
+
+        This method is not thread-safe. It should always be called on the
+        main GUI thread.
 
         Parameters
         ----------
@@ -60,35 +68,3 @@ class EventLoopHelper:
             If timeout is reached, regardless of whether the condition is
             true or not at that point.
         """
-        timed_out = []
-
-        event_loop = asyncio.get_event_loop()
-
-        def stop_on_timeout():
-            timed_out.append(True)
-            event_loop.stop()
-
-        def stop_if_condition():
-            if condition(object):
-                event_loop.stop()
-
-        object.on_trait_change(stop_if_condition, trait)
-        try:
-            # The condition may have become True before we
-            # started listening to changes. So start with a check.
-            if not condition(object):
-                timer_handle = event_loop.call_later(timeout, stop_on_timeout)
-                try:
-                    event_loop.run_forever()
-                finally:
-                    timer_handle.cancel()
-        finally:
-            object.on_trait_change(stop_if_condition, trait, remove=True)
-
-        if timed_out:
-            raise RuntimeError(
-                "run_until timed out after {} seconds. "
-                "At timeout, condition was {}.".format(
-                    timeout, condition(object)
-                )
-            )

@@ -15,20 +15,27 @@ Test support, providing the ability to run the event loop from tests.
 from pyface.qt.QtCore import QTimer
 from pyface.qt.QtGui import QApplication
 
+from traits_futures.i_event_loop_helper import IEventLoopHelper
 
+
+@IEventLoopHelper.register
 class EventLoopHelper:
-    def start(self):
+    """
+    Support for running the Qt event loop in unit tests.
+    """
+
+    def init(self):
         """
-        Start event loop.
+        Prepare the event loop for use.
         """
         qt_app = QApplication.instance()
         if qt_app is None:
             qt_app = QApplication([])
         self.qt_app = qt_app
 
-    def stop(self):
+    def dispose(self):
         """
-        Stop event loop.
+        Dispose of any resources used by this object.
         """
         del self.qt_app
 

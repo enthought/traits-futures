@@ -12,6 +12,7 @@
 Test support, providing the ability to run the event loop from within tests.
 """
 
+
 from traits_futures.asyncio.init import AsyncioToolkit
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
@@ -21,6 +22,15 @@ SAFETY_TIMEOUT = 5.0
 
 
 class GuiTestAssistant:
+    """
+    Convenience mixin class for tests that need the event loop.
+
+    This class is designed to be used as a mixin alongside unittest.TestCase
+    for tests that need to run the event loop as part of the test.
+
+    Most of the logic is devolved to a toolkit-specific EventLoopHelper class.
+    """
+
     #: Factory for the toolkit. Override in subclasses to test with a
     #: specific toolkit.
     def toolkit_factory(self):
@@ -29,10 +39,10 @@ class GuiTestAssistant:
     def setUp(self):
         self._toolkit = self.toolkit_factory()
         self._event_loop_helper = self._toolkit.event_loop_helper()
-        self._event_loop_helper.start()
+        self._event_loop_helper.init()
 
     def tearDown(self):
-        self._event_loop_helper.stop()
+        self._event_loop_helper.dispose()
         del self._event_loop_helper
         del self._toolkit
 
@@ -54,7 +64,7 @@ class GuiTestAssistant:
             called with *object* as the only input.
         timeout : float, optional
             Number of seconds to allow before timing out with an exception.
-            The (somewhat arbitrary) default is 10 seconds.
+            The (somewhat arbitrary) default is 5 seconds.
 
         Raises
         ------
