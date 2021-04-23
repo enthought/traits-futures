@@ -43,10 +43,10 @@ class TestToolkitSupport(unittest.TestCase):
         self.assertValidToolkitEntryPoint("qt")
         self.assertValidToolkitEntryPoint("qt4")
 
-    def test_gui_test_assistant(self):
-        GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
-        test_assistant = GuiTestAssistant()
-        self.assertTrue(hasattr(test_assistant, "run_until"))
+    def test_event_loop_helper(self):
+        EventLoopHelper = toolkit("event_loop_helper:EventLoopHelper")
+        event_loop_helper = EventLoopHelper()
+        self.assertTrue(hasattr(event_loop_helper, "run_until"))
 
     def test_pingee(self):
         Pingee = toolkit("pingee:Pingee")
