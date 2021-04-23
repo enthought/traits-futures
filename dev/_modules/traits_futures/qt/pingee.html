@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.wx.pinger &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.qt.pingee &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
@@ -76,7 +76,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <h1>Source code for traits_futures.wx.pinger</h1><div class="highlight"><pre>
+  <h1>Source code for traits_futures.qt.pingee</h1><div class="highlight"><pre>
 <span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
@@ -88,29 +88,27 @@
 <span class="c1"># Thanks for using Enthought open source!</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">wxPython cross-thread pinger.</span>
+<span class="sd">Qt cross-thread pinger.</span>
 
 <span class="sd">This module provides a way for a background thread to request that</span>
 <span class="sd">the main thread execute a (fixed, parameterless) callback.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">wx.lib.newevent</span>
+<span class="kn">from</span> <span class="nn">pyface.qt.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">Slot</span>
 
 <span class="kn">from</span> <span class="nn">traits_futures.i_pingee</span> <span class="kn">import</span> <span class="n">IPingee</span><span class="p">,</span> <span class="n">IPinger</span>
 
-<span class="c1"># Note: we&#39;re not using the more obvious spelling</span>
-<span class="c1">#   _PingEvent, _PingEventBinder = wx.lib.newevent.NewEvent()</span>
-<span class="c1"># here because that confuses Sphinx&#39;s autodoc mocking.</span>
-<span class="c1"># Ref: enthought/traits-futures#263.</span>
 
-<span class="c1">#: New event type that&#39;s unique to the Pinger infrastructure.</span>
-<span class="n">_PingEventPair</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">newevent</span><span class="o">.</span><span class="n">NewEvent</span><span class="p">()</span>
-<span class="n">_PingEvent</span> <span class="o">=</span> <span class="n">_PingEventPair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">_PingEventBinder</span> <span class="o">=</span> <span class="n">_PingEventPair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">class</span> <span class="nc">_Signaller</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Private object used to send signals to the corresponding Qt receiver.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ping</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
-<span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Receiver for pings.</span>
 
@@ -129,22 +127,26 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="n">on_ping</span><span class="p">()</span>
+        <span class="n">QObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span> <span class="o">=</span> <span class="n">on_ping</span>
 
-<div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@Slot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_execute_ping_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare Pingee to receive pings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div>
+        <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Undo any connections made in the connect method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Unbind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div>
+        <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return a new pinger linked to this pingee.</span>
 
@@ -162,7 +164,7 @@
         <span class="k">return</span> <span class="n">Pinger</span><span class="p">(</span><span class="n">pingee</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>
+<div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">Pinger</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ping emitter, which can send pings to a receiver in a thread-safe manner.</span>
@@ -175,27 +177,33 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pingee</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pingee</span> <span class="o">=</span> <span class="n">pingee</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="n">pingee</span>
 
-<div class="viewcode-block" id="Pinger.connect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Pinger.connect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to the ping receiver. No pings should be sent until</span>
 <span class="sd">        this function is called.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signaller</span> <span class="o">=</span> <span class="n">_Signaller</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signaller</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">_execute_ping_callback</span><span class="p">,</span>
+            <span class="n">Qt</span><span class="o">.</span><span class="n">QueuedConnection</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Pinger.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Pinger.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect from the ping receiver. No pings should be sent</span>
 <span class="sd">        after calling this function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signaller</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">_execute_ping_callback</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signaller</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span></div>
 
-<div class="viewcode-block" id="Pinger.ping"><a class="viewcode-back" href="../../../api/traits_futures.wx.pinger.html#traits_futures.wx.pinger.Pinger.ping">[docs]</a>    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Pinger.ping"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger.ping">[docs]</a>    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Send a ping to the ping receiver.</span>
+<span class="sd">        Send a ping to the receiver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">PostEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pingee</span><span class="p">,</span> <span class="n">_PingEvent</span><span class="p">())</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signaller</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

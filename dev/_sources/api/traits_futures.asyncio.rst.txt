@@ -22,4 +22,4 @@ traits\_futures.asyncio package
 
    traits_futures.asyncio.event_loop_helper
    traits_futures.asyncio.init
-   traits_futures.asyncio.pinger
+   traits_futures.asyncio.pingee

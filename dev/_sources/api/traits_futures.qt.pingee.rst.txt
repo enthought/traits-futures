@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.qt.pinger module
+traits\_futures.qt.pingee module
 ================================
 
-.. automodule:: traits_futures.qt.pinger
+.. automodule:: traits_futures.qt.pingee
    :members:
    :undoc-members:
    :show-inheritance:

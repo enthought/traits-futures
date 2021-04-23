@@ -22,4 +22,4 @@ traits\_futures.qt package
 
    traits_futures.qt.event_loop_helper
    traits_futures.qt.init
-   traits_futures.qt.pinger
+   traits_futures.qt.pingee
