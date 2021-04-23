@@ -48,7 +48,7 @@ class TestToolkitSupport(unittest.TestCase):
         test_assistant = GuiTestAssistant()
         self.assertTrue(hasattr(test_assistant, "run_until"))
 
-    def test_pinger_class(self):
+    def test_pingee(self):
         Pingee = toolkit("pingee:Pingee")
 
         pingee = Pingee(on_ping=lambda: None)
