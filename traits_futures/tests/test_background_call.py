@@ -13,11 +13,8 @@ import contextlib
 import unittest
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
+from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.background_call_tests import BackgroundCallTests
-from traits_futures.toolkit_support import toolkit
-
-GuiTestAssistant = toolkit("gui_test_assistant:GuiTestAssistant")
-
 
 #: Timeout for blocking operations, in seconds.
 TIMEOUT = 10.0
