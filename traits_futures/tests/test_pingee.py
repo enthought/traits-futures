@@ -26,7 +26,7 @@ from traits_futures.i_pingee import IPingee
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.toolkit_support import toolkit
 
-Pingee = toolkit("pinger:Pingee")
+Pingee = toolkit("pingee:Pingee")
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -143,7 +143,7 @@ class MultipleListeners(HasStrictTraits):
         self.ping = True
 
 
-class TestPinger(GuiTestAssistant, unittest.TestCase):
+class TestPingee(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
         self.listener = PingListener()

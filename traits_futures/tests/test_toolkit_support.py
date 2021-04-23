@@ -48,8 +48,8 @@ class TestToolkitSupport(unittest.TestCase):
         event_loop_helper = EventLoopHelper()
         self.assertTrue(hasattr(event_loop_helper, "run_until"))
 
-    def test_pinger_class(self):
-        Pingee = toolkit("pinger:Pingee")
+    def test_pingee(self):
+        Pingee = toolkit("pingee:Pingee")
 
         pingee = Pingee(on_ping=lambda: None)
         pinger = pingee.pinger()
