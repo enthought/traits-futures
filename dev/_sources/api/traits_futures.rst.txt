@@ -27,6 +27,7 @@ traits\_futures package
    traits_futures.base_future
    traits_futures.exception_handling
    traits_futures.future_states
+   traits_futures.i_event_loop_helper
    traits_futures.i_future
    traits_futures.i_message_router
    traits_futures.i_parallel_context

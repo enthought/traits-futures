@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.asyncio.gui_test_assistant module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.qt.event_loop_helper module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
@@ -31,9 +31,9 @@
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
     <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
-    <link rel="up" title="traits_futures.asyncio package" href="traits_futures.asyncio.html" >
-    <link rel="next" title="traits_futures.asyncio.init module" href="traits_futures.asyncio.init.html" >
-    <link rel="prev" title="traits_futures.asyncio package" href="traits_futures.asyncio.html" > 
+    <link rel="up" title="traits_futures.qt package" href="traits_futures.qt.html" >
+    <link rel="next" title="traits_futures.qt.init module" href="traits_futures.qt.init.html" >
+    <link rel="prev" title="traits_futures.qt package" href="traits_futures.qt.html" > 
   </head>
   <body>
   <div class="container">
@@ -53,7 +53,7 @@
         <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
-          <li class="active"><a href="traits_futures.asyncio.html" accesskey="U">traits_futures.asyncio package</a></li> 
+          <li class="active"><a href="traits_futures.qt.html" accesskey="U">traits_futures.qt package</a></li> 
     </ul>
               
               
@@ -67,11 +67,11 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="traits_futures.asyncio.init.html" title="traits_futures.asyncio.init module"
+        <a href="traits_futures.qt.init.html" title="traits_futures.qt.init module"
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.asyncio.html" title="traits_futures.asyncio package"
+        <a href="traits_futures.qt.html" title="traits_futures.qt package"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -87,16 +87,29 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.asyncio.gui_test_assistant">
-<span id="traits-futures-asyncio-gui-test-assistant-module"></span><h1>traits_futures.asyncio.gui_test_assistant module<a class="headerlink" href="#module-traits_futures.asyncio.gui_test_assistant" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-traits_futures.qt.event_loop_helper">
+<span id="traits-futures-qt-event-loop-helper-module"></span><h1>traits_futures.qt.event_loop_helper module<a class="headerlink" href="#module-traits_futures.qt.event_loop_helper" title="Permalink to this headline">¶</a></h1>
 <p>Test support, providing the ability to run the event loop from tests.</p>
 <dl class="py class">
-<dt id="traits_futures.asyncio.gui_test_assistant.GuiTestAssistant">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.gui_test_assistant.</span></code><code class="sig-name descname"><span class="pre">GuiTestAssistant</span></code><a class="reference internal" href="../_modules/traits_futures/asyncio/gui_test_assistant.html#GuiTestAssistant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.gui_test_assistant.GuiTestAssistant" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.qt.event_loop_helper.EventLoopHelper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.qt.event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">EventLoopHelper</span></code><a class="reference internal" href="../_modules/traits_futures/qt/event_loop_helper.html#EventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.event_loop_helper.EventLoopHelper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Support for running the Qt event loop in unit tests.</p>
 <dl class="py method">
-<dt id="traits_futures.asyncio.gui_test_assistant.GuiTestAssistant.run_until">
-<code class="sig-name descname"><span class="pre">run_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/gui_test_assistant.html#GuiTestAssistant.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.gui_test_assistant.GuiTestAssistant.run_until" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.qt.event_loop_helper.EventLoopHelper.dispose">
+<code class="sig-name descname"><span class="pre">dispose</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/event_loop_helper.html#EventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.event_loop_helper.EventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispose of any resources used by this object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.qt.event_loop_helper.EventLoopHelper.init">
+<code class="sig-name descname"><span class="pre">init</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/event_loop_helper.html#EventLoopHelper.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.event_loop_helper.EventLoopHelper.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the event loop for use.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.qt.event_loop_helper.EventLoopHelper.run_until">
+<code class="sig-name descname"><span class="pre">run_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/event_loop_helper.html#EventLoopHelper.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.event_loop_helper.EventLoopHelper.run_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run event loop until the given condition holds true, or until timeout.</p>
 <p>The condition is re-evaluated, with the object as argument, every time
 the trait changes.</p>
@@ -107,8 +120,7 @@ the trait changes.</p>
 <li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the trait to monitor for changes.</p></li>
 <li><p><strong>condition</strong> (<em>callable</em>) – Single-argument callable, returning a boolean. This will be
 called with <em>object</em> as the only input.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Number of seconds to allow before timing out with an exception.
-The (somewhat arbitrary) default is 10 seconds.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Number of seconds to allow before timing out with an exception.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -118,22 +130,6 @@ The (somewhat arbitrary) default is 10 seconds.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="traits_futures.asyncio.gui_test_assistant.GuiTestAssistant.setUp">
-<code class="sig-name descname"><span class="pre">setUp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/gui_test_assistant.html#GuiTestAssistant.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.gui_test_assistant.GuiTestAssistant.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="traits_futures.asyncio.gui_test_assistant.GuiTestAssistant.tearDown">
-<code class="sig-name descname"><span class="pre">tearDown</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/gui_test_assistant.html#GuiTestAssistant.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.gui_test_assistant.GuiTestAssistant.tearDown" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py data">
-<dt id="traits_futures.asyncio.gui_test_assistant.TIMEOUT">
-<code class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.gui_test_assistant.</span></code><code class="sig-name descname"><span class="pre">TIMEOUT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">10.0</span></em><a class="headerlink" href="#traits_futures.asyncio.gui_test_assistant.TIMEOUT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default timeout, in seconds</p>
 </dd></dl>
 
 </div>
@@ -148,14 +144,14 @@ The (somewhat arbitrary) default is 10 seconds.</p></li>
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.asyncio.html"
-                        title="previous chapter">traits_futures.asyncio package</a></p>
+  <p class="topless"><a href="traits_futures.qt.html"
+                        title="previous chapter">traits_futures.qt package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.asyncio.init.html"
-                        title="next chapter">traits_futures.asyncio.init module</a></p>
+  <p class="topless"><a href="traits_futures.qt.init.html"
+                        title="next chapter">traits_futures.qt.init module</a></p>
   <h3>This Page</h3>
   <div>
-    <a href="../_sources/api/traits_futures.asyncio.gui_test_assistant.rst.txt"
+    <a href="../_sources/api/traits_futures.qt.event_loop_helper.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">

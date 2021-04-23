@@ -9,16 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.testing package
-===============================
+traits\_futures.i\_event\_loop\_helper module
+=============================================
 
-.. automodule:: traits_futures.testing
+.. automodule:: traits_futures.i_event_loop_helper
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-.. toctree::
-
-   traits_futures.testing.gui_test_assistant
-   traits_futures.testing.optional_dependencies

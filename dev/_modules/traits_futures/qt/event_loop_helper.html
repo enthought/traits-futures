@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.qt.gui_test_assistant &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.qt.event_loop_helper &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
@@ -76,7 +76,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <h1>Source code for traits_futures.qt.gui_test_assistant</h1><div class="highlight"><pre>
+  <h1>Source code for traits_futures.qt.event_loop_helper</h1><div class="highlight"><pre>
 <span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
@@ -94,21 +94,31 @@
 <span class="kn">from</span> <span class="nn">pyface.qt.QtCore</span> <span class="kn">import</span> <span class="n">QTimer</span>
 <span class="kn">from</span> <span class="nn">pyface.qt.QtGui</span> <span class="kn">import</span> <span class="n">QApplication</span>
 
-<span class="c1">#: Default timeout, in seconds</span>
-<span class="n">TIMEOUT</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop_helper</span> <span class="kn">import</span> <span class="n">IEventLoopHelper</span>
 
 
-<div class="viewcode-block" id="GuiTestAssistant"><a class="viewcode-back" href="../../../api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant">[docs]</a><span class="k">class</span> <span class="nc">GuiTestAssistant</span><span class="p">:</span>
-<div class="viewcode-block" id="GuiTestAssistant.setUp"><a class="viewcode-back" href="../../../api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper">[docs]</a><span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Support for running the Qt event loop in unit tests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EventLoopHelper.init"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare the event loop for use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qt_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">qt_app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qt_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">([])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">qt_app</span> <span class="o">=</span> <span class="n">qt_app</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.tearDown"><a class="viewcode-back" href="../../../api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dispose of any resources used by this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">qt_app</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.run_until"><a class="viewcode-back" href="../../../api/traits_futures.qt.gui_test_assistant.html#traits_futures.qt.gui_test_assistant.GuiTestAssistant.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">TIMEOUT</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper.run_until"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
@@ -124,9 +134,8 @@
 <span class="sd">        condition : callable</span>
 <span class="sd">            Single-argument callable, returning a boolean. This will be</span>
 <span class="sd">            called with *object* as the only input.</span>
-<span class="sd">        timeout : float, optional</span>
+<span class="sd">        timeout : float</span>
 <span class="sd">            Number of seconds to allow before timing out with an exception.</span>
-<span class="sd">            The (somewhat arbitrary) default is 10 seconds.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>

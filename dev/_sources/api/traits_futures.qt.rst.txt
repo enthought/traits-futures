@@ -20,6 +20,6 @@ traits\_futures.qt package
 
 .. toctree::
 
-   traits_futures.qt.gui_test_assistant
+   traits_futures.qt.event_loop_helper
    traits_futures.qt.init
    traits_futures.qt.pinger

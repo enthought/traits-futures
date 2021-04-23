@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.qt.gui\_test\_assistant module
-==============================================
+traits\_futures.qt.event\_loop\_helper module
+=============================================
 
-.. automodule:: traits_futures.qt.gui_test_assistant
+.. automodule:: traits_futures.qt.event_loop_helper
    :members:
    :undoc-members:
    :show-inheritance:

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.wx.gui_test_assistant &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.wx.event_loop_helper &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
@@ -76,7 +76,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <h1>Source code for traits_futures.wx.gui_test_assistant</h1><div class="highlight"><pre>
+  <h1>Source code for traits_futures.wx.event_loop_helper</h1><div class="highlight"><pre>
 <span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
@@ -93,15 +93,13 @@
 
 <span class="kn">import</span> <span class="nn">wx</span>
 
-<span class="c1">#: Default timeout, in seconds</span>
-<span class="n">TIMEOUT</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop_helper</span> <span class="kn">import</span> <span class="n">IEventLoopHelper</span>
+
 
 <span class="c1"># XXX We should be using Pyface&#39;s own CallbackTimer instead of creating</span>
 <span class="c1"># our own, but we were running into segfaults.</span>
 <span class="c1"># xref: enthought/pyface#815, enthought/traits-futures#251</span>
-
-
-<div class="viewcode-block" id="TimeoutTimer"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.TimeoutTimer">[docs]</a><span class="k">class</span> <span class="nc">TimeoutTimer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Timer</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutTimer"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer">[docs]</a><span class="k">class</span> <span class="nc">TimeoutTimer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Timer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single-shot timer that executes a given callback on completion.</span>
 
@@ -127,33 +125,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">kwargs</span>
 
-<div class="viewcode-block" id="TimeoutTimer.start"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.TimeoutTimer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutTimer.start"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the timer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timeout_in_ms</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">StartOnce</span><span class="p">(</span><span class="n">milliseconds</span><span class="o">=</span><span class="n">timeout_in_ms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TimeoutTimer.stop"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.TimeoutTimer.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutTimer.stop"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the timer if it hasn&#39;t already expired. The callback</span>
 <span class="sd">        will not be executed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Stop</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TimeoutTimer.Notify"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.TimeoutTimer.Notify">[docs]</a>    <span class="k">def</span> <span class="nf">Notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutTimer.Notify"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.Notify">[docs]</a>    <span class="k">def</span> <span class="nf">Notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the callback when the timer completes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="AppForTesting"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.AppForTesting">[docs]</a><span class="k">class</span> <span class="nc">AppForTesting</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
+<div class="viewcode-block" id="AppForTesting"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting">[docs]</a><span class="k">class</span> <span class="nc">AppForTesting</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Subclass of wx.App used for testing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="AppForTesting.OnInit"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.AppForTesting.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AppForTesting.OnInit"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Override base class to ensure we have at least one window.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -164,7 +162,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="AppForTesting.exit"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.AppForTesting.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
+<div class="viewcode-block" id="AppForTesting.exit"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exit the application main event loop with a given exit code.</span>
 
@@ -174,7 +172,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="n">exit_code</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ExitMainLoop</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="AppForTesting.close"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.AppForTesting.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AppForTesting.close"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clean up when the object is no longer needed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -182,19 +180,27 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span></div></div>
 
 
-<div class="viewcode-block" id="GuiTestAssistant"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.GuiTestAssistant">[docs]</a><span class="k">class</span> <span class="nc">GuiTestAssistant</span><span class="p">:</span>
+<div class="viewcode-block" id="EventLoopHelper"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper">[docs]</a><span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Support for running the wx event loop in unit tests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GuiTestAssistant.setUp"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.GuiTestAssistant.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper.init"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare the event loop for use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Running tests requires that there&#39;s a visible application.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span> <span class="o">=</span> <span class="n">AppForTesting</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.tearDown"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.GuiTestAssistant.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dispose of any resources used by this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.run_until"><a class="viewcode-back" href="../../../api/traits_futures.wx.gui_test_assistant.html#traits_futures.wx.gui_test_assistant.GuiTestAssistant.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">TIMEOUT</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper.run_until"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
@@ -210,9 +216,8 @@
 <span class="sd">        condition : callable</span>
 <span class="sd">            Single-argument callable, returning a boolean. This will be</span>
 <span class="sd">            called with *object* as the only input.</span>
-<span class="sd">        timeout : float, optional</span>
+<span class="sd">        timeout : float</span>
 <span class="sd">            Number of seconds to allow before timing out with an exception.</span>
-<span class="sd">            The (somewhat arbitrary) default is 10 seconds.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>

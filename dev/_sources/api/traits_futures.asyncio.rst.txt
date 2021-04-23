@@ -20,6 +20,6 @@ traits\_futures.asyncio package
 
 .. toctree::
 
-   traits_futures.asyncio.gui_test_assistant
+   traits_futures.asyncio.event_loop_helper
    traits_futures.asyncio.init
    traits_futures.asyncio.pinger
