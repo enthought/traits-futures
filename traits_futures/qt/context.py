@@ -11,16 +11,16 @@
 """
 Entry point for finding toolkit-specific classes.
 """
-# Force an ImportError if wxPython is not installed.
-import wx  # noqa: F401
+# We import QtCore to force an ImportError if Qt is not installed.
+from pyface.qt import QtCore  # noqa: F401
 
-from traits_futures.i_toolkit import IToolkit
-from traits_futures.wx.event_loop_helper import EventLoopHelper
-from traits_futures.wx.pingee import Pingee
+from traits_futures.i_gui_context import IGuiContext
+from traits_futures.qt.event_loop_helper import EventLoopHelper
+from traits_futures.qt.pingee import Pingee
 
 
-@IToolkit.register
-class WxToolkit:
+@IGuiContext.register
+class QtContext:
     def pingee(self, on_ping):
         """
         Return a new Pingee instance for this toolkit.

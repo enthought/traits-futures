@@ -66,11 +66,11 @@ setup(
     ],
     entry_points={
         "traits_futures.toolkits": [
-            "asyncio = traits_futures.asyncio.init:AsyncioToolkit",
-            "null = traits_futures.asyncio.init:AsyncioToolkit",
-            "qt = traits_futures.qt.init:QtToolkit",
-            "qt4 = traits_futures.qt.init:QtToolkit",
-            "wx = traits_futures.wx.init:WxToolkit",
+            "asyncio = traits_futures.asyncio.context:AsyncioContext",
+            "null = traits_futures.asyncio.context:AsyncioContext",
+            "qt = traits_futures.qt.context:QtContext",
+            "qt4 = traits_futures.qt.context:QtContext",
+            "wx = traits_futures.wx.context:WxContext",
         ],
     },
     python_requires=">=3.6",

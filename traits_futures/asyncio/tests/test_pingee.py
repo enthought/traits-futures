@@ -14,14 +14,14 @@ Tests for the asyncio implementations of IPingee and IPinger.
 
 import unittest
 
-from traits_futures.asyncio.init import AsyncioToolkit
+from traits_futures.asyncio.context import AsyncioContext
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
 
-    toolkit_factory = AsyncioToolkit
+    toolkit_factory = AsyncioContext
 
     def setUp(self):
         GuiTestAssistant.setUp(self)

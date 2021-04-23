@@ -9,18 +9,15 @@
 # Thanks for using Enthought open source!
 
 """
-Entry point for finding toolkit-specific classes.
+Entry point for finding toolkit specific classes.
 """
-# We import QtCore to force an ImportError if Qt is not installed.
-from pyface.qt import QtCore  # noqa: F401
-
-from traits_futures.i_toolkit import IToolkit
-from traits_futures.qt.event_loop_helper import EventLoopHelper
-from traits_futures.qt.pingee import Pingee
+from traits_futures.asyncio.event_loop_helper import EventLoopHelper
+from traits_futures.asyncio.pingee import Pingee
+from traits_futures.i_gui_context import IGuiContext
 
 
-@IToolkit.register
-class QtToolkit:
+@IGuiContext.register
+class AsyncioContext:
     def pingee(self, on_ping):
         """
         Return a new Pingee instance for this toolkit.

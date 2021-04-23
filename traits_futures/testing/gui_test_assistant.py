@@ -13,7 +13,7 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
-from traits_futures.asyncio.init import AsyncioToolkit
+from traits_futures.asyncio.context import AsyncioContext
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
@@ -34,7 +34,7 @@ class GuiTestAssistant:
     #: Factory for the toolkit. Override in subclasses to test with a
     #: specific toolkit.
     def toolkit_factory(self):
-        return AsyncioToolkit()
+        return AsyncioContext()
 
     def setUp(self):
         self._toolkit = self.toolkit_factory()

@@ -9,23 +9,21 @@
 # Thanks for using Enthought open source!
 
 """
-Entry point for finding toolkit specific classes.
+Interface for GUI toolkit objects.
 """
-from traits_futures.asyncio.event_loop_helper import EventLoopHelper
-from traits_futures.asyncio.pingee import Pingee
-from traits_futures.i_toolkit import IToolkit
+
+import abc
 
 
-@IToolkit.register
-class AsyncioToolkit:
+class IGuiContext(abc.ABC):
+    @abc.abstractmethod
     def pingee(self, on_ping):
         """
         Return a new Pingee instance for this toolkit.
         """
-        return Pingee(on_ping=on_ping)
 
+    @abc.abstractmethod
     def event_loop_helper(self):
         """
         Return a new EventLoopHelper instance for this toolkit.
         """
-        return EventLoopHelper()

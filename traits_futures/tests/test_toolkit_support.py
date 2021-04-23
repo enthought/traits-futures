@@ -17,7 +17,7 @@ try:
 except ImportError:
     import importlib_metadata
 
-from traits_futures.i_toolkit import IToolkit
+from traits_futures.i_gui_context import IGuiContext
 from traits_futures.testing.optional_dependencies import (
     requires_qt,
     requires_wx,
@@ -87,4 +87,4 @@ class TestToolkitSupport(unittest.TestCase):
         entry_point = entry_points[0]
         toolkit_class = entry_point.load()
         toolkit = toolkit_class()
-        self.assertIsInstance(toolkit, IToolkit)
+        self.assertIsInstance(toolkit, IGuiContext)
