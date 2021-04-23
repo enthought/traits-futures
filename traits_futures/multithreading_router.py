@@ -73,9 +73,10 @@ class MultithreadingSender:
 
     def __init__(self, connection_id, pingee, message_queue):
         self.connection_id = connection_id
-        self.pinger = pingee.pinger()
+        self.pingee = pingee
         self.message_queue = message_queue
         self._state = _INITIAL
+        self.pinger = None
 
     def start(self):
         """
@@ -97,6 +98,7 @@ class MultithreadingSender:
                 f"Sender already started: state is {self._state}"
             )
 
+        self.pinger = self.pingee.pinger()
         self.pinger.connect()
 
         self._state = _OPEN
@@ -148,6 +150,7 @@ class MultithreadingSender:
             )
 
         self.pinger.disconnect()
+        self.pinger = None
 
         self._state = _CLOSED
 
