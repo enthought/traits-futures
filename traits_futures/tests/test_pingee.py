@@ -22,11 +22,11 @@ from traits.api import (
     on_trait_change,
 )
 
+from traits_futures.ets_context import ETSContext
 from traits_futures.i_pingee import IPingee
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
-from traits_futures.toolkit_support import toolkit
 
-Pingee = toolkit("pingee:Pingee")
+gui_context = ETSContext()
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -110,7 +110,9 @@ class PingListener(HasStrictTraits):
         self.disconnect()
 
     def connect(self):
-        self.pingee = Pingee(on_ping=lambda: setattr(self, "ping", True))
+        self.pingee = gui_context.pingee(
+            on_ping=lambda: setattr(self, "ping", True)
+        )
         self.pingee.connect()
 
     def disconnect(self):
