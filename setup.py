@@ -30,7 +30,6 @@ def get_long_description():
 
 
 install_requires = [
-    "importlib-metadata; python_version < '3.8'",
     "pyface",
     "traits",
 ]
@@ -71,13 +70,6 @@ setup(
             "qt = traits_futures.qt.context:QtContext",
             "qt4 = traits_futures.qt.context:QtContext",
             "wx = traits_futures.wx.context:WxContext",
-        ],
-        "traits_futures.toolkits": [
-            "asyncio = traits_futures.asyncio.init:toolkit_object",
-            "null = traits_futures.asyncio.init:toolkit_object",
-            "qt4 = traits_futures.qt.init:toolkit_object",
-            "qt = traits_futures.qt.init:toolkit_object",
-            "wx = traits_futures.wx.init:toolkit_object",
         ],
     },
     python_requires=">=3.6",
