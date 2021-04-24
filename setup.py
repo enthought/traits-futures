@@ -65,6 +65,13 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
     entry_points={
+        "traits_futures.gui_contexts": [
+            "asyncio = traits_futures.asyncio.context:AsyncioContext",
+            "null = traits_futures.asyncio.context:AsyncioContext",
+            "qt = traits_futures.qt.context:QtContext",
+            "qt4 = traits_futures.qt.context:QtContext",
+            "wx = traits_futures.wx.context:WxContext",
+        ],
         "traits_futures.toolkits": [
             "asyncio = traits_futures.asyncio.init:toolkit_object",
             "null = traits_futures.asyncio.init:toolkit_object",
