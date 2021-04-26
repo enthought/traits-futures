@@ -30,7 +30,6 @@ def get_long_description():
 
 
 install_requires = [
-    "importlib-metadata; python_version < '3.8'",
     "pyface",
     "traits",
 ]
@@ -65,7 +64,7 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
     entry_points={
-        "traits_futures.toolkits": [
+        "traits_futures.gui_contexts": [
             "asyncio = traits_futures.asyncio.context:AsyncioContext",
             "null = traits_futures.asyncio.context:AsyncioContext",
             "qt = traits_futures.qt.context:QtContext",

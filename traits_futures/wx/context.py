@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Entry point for finding toolkit-specific classes.
+IGuiContext implementation for the wx event loop.
 """
 # Force an ImportError if wxPython is not installed.
 import wx  # noqa: F401
@@ -21,14 +21,33 @@ from traits_futures.wx.pingee import Pingee
 
 @IGuiContext.register
 class WxContext:
+    """
+    IGuiContext implementation for the wx event loop.
+    """
+
     def pingee(self, on_ping):
         """
-        Return a new Pingee instance for this toolkit.
+        Return a new pingee.
+
+        Parameters
+        ----------
+        on_ping : callable
+            Zero-argument callable, called on the main thread (under a running
+            event loop) as a result of each ping sent. The return value of the
+            callable is ignored.
+
+        Returns
+        -------
+        pingee : IPingee
         """
         return Pingee(on_ping=on_ping)
 
     def event_loop_helper(self):
         """
-        Return a new EventLoopHelper instance for this toolkit.
+        Return a new event loop helper.
+
+        Returns
+        -------
+        event_loop_helper : IEventLoopHelper
         """
         return EventLoopHelper()

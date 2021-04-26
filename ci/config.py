@@ -115,7 +115,6 @@ VERSION_CORE_DEPS = {}
 ADDITIONAL_CI_DEPS = [
     "flake8",
     "flake8_ets",
-    "importlib_metadata",
     "isort",
     "pip",
 ]

@@ -9,21 +9,44 @@
 # Thanks for using Enthought open source!
 
 """
-Interface for GUI toolkit objects.
+Interface for GUI toolkit context objects.
 """
 
 import abc
 
 
 class IGuiContext(abc.ABC):
+    """
+    Interface for objects usable in a GUI context.
+
+    An instance of this class provides consistent mechanisms to get
+    objects related to the event loop for a particular choice of GUI
+    toolkit or event loop.
+    """
+
     @abc.abstractmethod
     def pingee(self, on_ping):
         """
-        Return a new Pingee instance for this toolkit.
+        Return a new pingee.
+
+        Parameters
+        ----------
+        on_ping : callable
+            Zero-argument callable, called on the main thread (under a running
+            event loop) as a result of each ping sent. The return value of the
+            callable is ignored.
+
+        Returns
+        -------
+        pingee : IPingee
         """
 
     @abc.abstractmethod
     def event_loop_helper(self):
         """
-        Return a new EventLoopHelper instance for this toolkit.
+        Return a new event loop helper.
+
+        Returns
+        -------
+        event_loop_helper : IEventLoopHelper
         """
