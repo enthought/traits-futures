@@ -9,9 +9,17 @@
 # Thanks for using Enthought open source!
 
 """
-Entry point for finding toolkit specific classes.
+Tests for the asyncio GUI context.
 """
-from pyface.base_toolkit import Toolkit
 
-#: The toolkit object used to find toolkit-specific resources.
-toolkit_object = Toolkit("traits_futures", "asyncio", "traits_futures.asyncio")
+
+import unittest
+
+from traits_futures.asyncio.context import AsyncioContext
+from traits_futures.tests.i_gui_context_tests import IGuiContextTests
+
+
+class TestAsyncioContext(IGuiContextTests, unittest.TestCase):
+
+    #: Factory for instances of the context.
+    context_factory = AsyncioContext

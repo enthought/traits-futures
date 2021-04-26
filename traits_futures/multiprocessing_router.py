@@ -68,17 +68,17 @@ from traits.api import (
     provides,
 )
 
+from traits_futures.ets_context import ETSContext
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
     IMessageSender,
 )
 from traits_futures.i_pingee import IPingee
-from traits_futures.toolkit_support import toolkit
 
 logger = logging.getLogger(__name__)
 
-Pingee = toolkit("pingee:Pingee")
+gui_context = ETSContext()
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -235,7 +235,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self.manager.Queue()
 
-        self._pingee = Pingee(on_ping=self._route_message)
+        self._pingee = gui_context.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._monitor_thread = threading.Thread(
