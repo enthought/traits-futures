@@ -12,7 +12,7 @@
 Context with toolkit selection matching that of ETS.
 
 This module provides an IGuiContext implementation that's determined in the
-same way that the toolkit is determined for Traits and Pyface, using the
+same way that the toolkit is determined for TraitsUI and Pyface, using the
 ETS_TOOLKIT environment variable if set, and examining the available toolkits
 if not.
 """
