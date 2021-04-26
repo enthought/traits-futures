@@ -92,9 +92,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="kn">from</span> <span class="nn">traits_futures.toolkit_support</span> <span class="kn">import</span> <span class="n">toolkit</span>
+<span class="kn">from</span> <span class="nn">traits_futures.ets_context</span> <span class="kn">import</span> <span class="n">ETSContext</span>
 
-<span class="n">EventLoopHelper</span> <span class="o">=</span> <span class="n">toolkit</span><span class="p">(</span><span class="s2">&quot;event_loop_helper:EventLoopHelper&quot;</span><span class="p">)</span>
+<span class="n">gui_context</span> <span class="o">=</span> <span class="n">ETSContext</span><span class="p">()</span>
 
 <span class="c1">#: Maximum timeout for blocking calls, in seconds. A successful test should</span>
 <span class="c1">#: never hit this timeout - it&#39;s there to prevent a failing test from hanging</span>
@@ -113,7 +113,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="GuiTestAssistant.setUp"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span> <span class="o">=</span> <span class="n">EventLoopHelper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span> <span class="o">=</span> <span class="n">gui_context</span><span class="o">.</span><span class="n">event_loop_helper</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">init</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="GuiTestAssistant.tearDown"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

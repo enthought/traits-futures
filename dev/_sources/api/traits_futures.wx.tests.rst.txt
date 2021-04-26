@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.asyncio package
-===============================
+traits\_futures.wx.tests package
+================================
 
-.. automodule:: traits_futures.asyncio
+.. automodule:: traits_futures.wx.tests
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,11 +20,4 @@ traits\_futures.asyncio package
 
 .. toctree::
 
-   traits_futures.asyncio.context
-   traits_futures.asyncio.event_loop_helper
-   traits_futures.asyncio.pingee
-
-
-.. toctree::
-
-   traits_futures.asyncio.tests
+   traits_futures.wx.tests.test_context

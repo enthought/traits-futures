@@ -91,6 +91,7 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -111,6 +112,10 @@
         <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.args">(traits_futures.background_progress.BackgroundProgress attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext">AsyncioContext (class in traits_futures.asyncio.context)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -229,6 +234,14 @@
         <li><a href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingReceiver.connection_id">(traits_futures.multithreading_router.MultithreadingReceiver attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/traits_futures.asyncio.tests.test_context.html#traits_futures.asyncio.tests.test_context.TestAsyncioContext.context_factory">context_factory (traits_futures.asyncio.tests.test_context.TestAsyncioContext attribute)</a>
+</li>
+      <li><a href="api/traits_futures.qt.tests.test_context.html#traits_futures.qt.tests.test_context.TestQtContext.context_factory">context_factory() (traits_futures.qt.tests.test_context.TestQtContext method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.wx.tests.test_context.html#traits_futures.wx.tests.test_context.TestWxContext.context_factory">(traits_futures.wx.tests.test_context.TestWxContext method)</a>
+</li>
+      </ul></li>
       <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.CONTROL">CONTROL (in module traits_futures.wrappers)</a>
 </li>
       <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.CUSTOM">CUSTOM (in module traits_futures.wrappers)</a>
@@ -285,6 +298,8 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.ets_context.html#traits_futures.ets_context.ETSContext">ETSContext (class in traits_futures.ets_context)</a>
+</li>
       <li><a href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.event">event() (traits_futures.i_parallel_context.IParallelContext method)</a>
 
       <ul>
@@ -293,6 +308,20 @@
         <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.event">(traits_futures.multithreading_context.MultithreadingContext method)</a>
 </li>
       </ul></li>
+      <li><a href="api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext.event_loop_helper">event_loop_helper() (traits_futures.asyncio.context.AsyncioContext method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.ets_context.html#traits_futures.ets_context.ETSContext.event_loop_helper">(traits_futures.ets_context.ETSContext method)</a>
+</li>
+        <li><a href="api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext.event_loop_helper">(traits_futures.i_gui_context.IGuiContext method)</a>
+</li>
+        <li><a href="api/traits_futures.qt.context.html#traits_futures.qt.context.QtContext.event_loop_helper">(traits_futures.qt.context.QtContext method)</a>
+</li>
+        <li><a href="api/traits_futures.wx.context.html#traits_futures.wx.context.WxContext.event_loop_helper">(traits_futures.wx.context.WxContext method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper">EventLoopHelper (class in traits_futures.asyncio.event_loop_helper)</a>
 
       <ul>
@@ -301,8 +330,6 @@
         <li><a href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper">(class in traits_futures.wx.event_loop_helper)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception">exception() (traits_futures.base_future.BaseFuture property)</a>
 
       <ul>
@@ -362,6 +389,8 @@
       <li><a href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper">IEventLoopHelper (class in traits_futures.i_event_loop_helper)</a>
 </li>
       <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture">IFuture (class in traits_futures.i_future)</a>
+</li>
+      <li><a href="api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext">IGuiContext (class in traits_futures.i_gui_context)</a>
 </li>
       <li><a href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageReceiver">IMessageReceiver (class in traits_futures.i_message_router)</a>
 </li>
@@ -445,11 +474,15 @@
 </li>
         <li><a href="api/traits_futures.asyncio.html#module-traits_futures.asyncio">traits_futures.asyncio</a>
 </li>
+        <li><a href="api/traits_futures.asyncio.context.html#module-traits_futures.asyncio.context">traits_futures.asyncio.context</a>
+</li>
         <li><a href="api/traits_futures.asyncio.event_loop_helper.html#module-traits_futures.asyncio.event_loop_helper">traits_futures.asyncio.event_loop_helper</a>
 </li>
-        <li><a href="api/traits_futures.asyncio.init.html#module-traits_futures.asyncio.init">traits_futures.asyncio.init</a>
-</li>
         <li><a href="api/traits_futures.asyncio.pingee.html#module-traits_futures.asyncio.pingee">traits_futures.asyncio.pingee</a>
+</li>
+        <li><a href="api/traits_futures.asyncio.tests.html#module-traits_futures.asyncio.tests">traits_futures.asyncio.tests</a>
+</li>
+        <li><a href="api/traits_futures.asyncio.tests.test_context.html#module-traits_futures.asyncio.tests.test_context">traits_futures.asyncio.tests.test_context</a>
 </li>
         <li><a href="api/traits_futures.background_call.html#module-traits_futures.background_call">traits_futures.background_call</a>
 </li>
@@ -459,6 +492,8 @@
 </li>
         <li><a href="api/traits_futures.base_future.html#module-traits_futures.base_future">traits_futures.base_future</a>
 </li>
+        <li><a href="api/traits_futures.ets_context.html#module-traits_futures.ets_context">traits_futures.ets_context</a>
+</li>
         <li><a href="api/traits_futures.exception_handling.html#module-traits_futures.exception_handling">traits_futures.exception_handling</a>
 </li>
         <li><a href="api/traits_futures.future_states.html#module-traits_futures.future_states">traits_futures.future_states</a>
@@ -466,6 +501,8 @@
         <li><a href="api/traits_futures.i_event_loop_helper.html#module-traits_futures.i_event_loop_helper">traits_futures.i_event_loop_helper</a>
 </li>
         <li><a href="api/traits_futures.i_future.html#module-traits_futures.i_future">traits_futures.i_future</a>
+</li>
+        <li><a href="api/traits_futures.i_gui_context.html#module-traits_futures.i_gui_context">traits_futures.i_gui_context</a>
 </li>
         <li><a href="api/traits_futures.i_message_router.html#module-traits_futures.i_message_router">traits_futures.i_message_router</a>
 </li>
@@ -485,19 +522,21 @@
 </li>
         <li><a href="api/traits_futures.qt.html#module-traits_futures.qt">traits_futures.qt</a>
 </li>
+        <li><a href="api/traits_futures.qt.context.html#module-traits_futures.qt.context">traits_futures.qt.context</a>
+</li>
         <li><a href="api/traits_futures.qt.event_loop_helper.html#module-traits_futures.qt.event_loop_helper">traits_futures.qt.event_loop_helper</a>
 </li>
-        <li><a href="api/traits_futures.qt.init.html#module-traits_futures.qt.init">traits_futures.qt.init</a>
-</li>
         <li><a href="api/traits_futures.qt.pingee.html#module-traits_futures.qt.pingee">traits_futures.qt.pingee</a>
+</li>
+        <li><a href="api/traits_futures.qt.tests.html#module-traits_futures.qt.tests">traits_futures.qt.tests</a>
+</li>
+        <li><a href="api/traits_futures.qt.tests.test_context.html#module-traits_futures.qt.tests.test_context">traits_futures.qt.tests.test_context</a>
 </li>
         <li><a href="api/traits_futures.testing.html#module-traits_futures.testing">traits_futures.testing</a>
 </li>
         <li><a href="api/traits_futures.testing.gui_test_assistant.html#module-traits_futures.testing.gui_test_assistant">traits_futures.testing.gui_test_assistant</a>
 </li>
         <li><a href="api/traits_futures.testing.optional_dependencies.html#module-traits_futures.testing.optional_dependencies">traits_futures.testing.optional_dependencies</a>
-</li>
-        <li><a href="api/traits_futures.toolkit_support.html#module-traits_futures.toolkit_support">traits_futures.toolkit_support</a>
 </li>
         <li><a href="api/traits_futures.traits_executor.html#module-traits_futures.traits_executor">traits_futures.traits_executor</a>
 </li>
@@ -507,11 +546,15 @@
 </li>
         <li><a href="api/traits_futures.wx.html#module-traits_futures.wx">traits_futures.wx</a>
 </li>
+        <li><a href="api/traits_futures.wx.context.html#module-traits_futures.wx.context">traits_futures.wx.context</a>
+</li>
         <li><a href="api/traits_futures.wx.event_loop_helper.html#module-traits_futures.wx.event_loop_helper">traits_futures.wx.event_loop_helper</a>
 </li>
-        <li><a href="api/traits_futures.wx.init.html#module-traits_futures.wx.init">traits_futures.wx.init</a>
-</li>
         <li><a href="api/traits_futures.wx.pingee.html#module-traits_futures.wx.pingee">traits_futures.wx.pingee</a>
+</li>
+        <li><a href="api/traits_futures.wx.tests.html#module-traits_futures.wx.tests">traits_futures.wx.tests</a>
+</li>
+        <li><a href="api/traits_futures.wx.tests.test_context.html#module-traits_futures.wx.tests.test_context">traits_futures.wx.tests.test_context</a>
 </li>
       </ul></li>
   </ul></td>
@@ -574,6 +617,18 @@
         <li><a href="api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pingee">(class in traits_futures.wx.pingee)</a>
 </li>
       </ul></li>
+      <li><a href="api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext.pingee">pingee() (traits_futures.asyncio.context.AsyncioContext method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.ets_context.html#traits_futures.ets_context.ETSContext.pingee">(traits_futures.ets_context.ETSContext method)</a>
+</li>
+        <li><a href="api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext.pingee">(traits_futures.i_gui_context.IGuiContext method)</a>
+</li>
+        <li><a href="api/traits_futures.qt.context.html#traits_futures.qt.context.QtContext.pingee">(traits_futures.qt.context.QtContext method)</a>
+</li>
+        <li><a href="api/traits_futures.wx.context.html#traits_futures.wx.context.WxContext.pingee">(traits_futures.wx.context.WxContext method)</a>
+</li>
+      </ul></li>
       <li><a href="api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pinger">Pinger (class in traits_futures.asyncio.pingee)</a>
 
       <ul>
@@ -582,6 +637,8 @@
         <li><a href="api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pinger">(class in traits_futures.wx.pingee)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee.pinger">pinger() (traits_futures.asyncio.pingee.Pingee method)</a>
 
       <ul>
@@ -592,8 +649,6 @@
         <li><a href="api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pingee.pinger">(traits_futures.wx.pingee.Pingee method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.pipe">pipe() (traits_futures.i_message_router.IMessageRouter method)</a>
 
       <ul>
@@ -611,6 +666,14 @@
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture">ProgressFuture (class in traits_futures.background_progress)</a>
 </li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter">ProgressReporter (class in traits_futures.background_progress)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.qt.context.html#traits_futures.qt.context.QtContext">QtContext (class in traits_futures.qt.context)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -758,21 +821,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.tearDown">tearDown() (traits_futures.testing.gui_test_assistant.GuiTestAssistant method)</a>
 </li>
+      <li><a href="api/traits_futures.asyncio.tests.test_context.html#traits_futures.asyncio.tests.test_context.TestAsyncioContext">TestAsyncioContext (class in traits_futures.asyncio.tests.test_context)</a>
+</li>
+      <li><a href="api/traits_futures.qt.tests.test_context.html#traits_futures.qt.tests.test_context.TestQtContext">TestQtContext (class in traits_futures.qt.tests.test_context)</a>
+</li>
+      <li><a href="api/traits_futures.wx.tests.test_context.html#traits_futures.wx.tests.test_context.TestWxContext">TestWxContext (class in traits_futures.wx.tests.test_context)</a>
+</li>
       <li><a href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer">TimeoutTimer (class in traits_futures.wx.event_loop_helper)</a>
 </li>
-      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.Toolkit">Toolkit (class in traits_futures.toolkit_support)</a>
-</li>
-      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.toolkit">toolkit (in module traits_futures.toolkit_support)</a>
-</li>
-      <li><a href="api/traits_futures.asyncio.init.html#traits_futures.asyncio.init.toolkit_object">toolkit_object (in module traits_futures.asyncio.init)</a>
-
-      <ul>
-        <li><a href="api/traits_futures.qt.init.html#traits_futures.qt.init.toolkit_object">(in module traits_futures.qt.init)</a>
-</li>
-        <li><a href="api/traits_futures.wx.init.html#traits_futures.wx.init.toolkit_object">(in module traits_futures.wx.init)</a>
-</li>
-      </ul></li>
-      <li><a href="api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.Toolkit.toolkit_object">toolkit_object() (traits_futures.toolkit_support.Toolkit property)</a>
+      <li><a href="api/traits_futures.ets_context.html#traits_futures.ets_context.ETSContext.toolkit_context">toolkit_context() (traits_futures.ets_context.ETSContext property)</a>
 </li>
       <li>
     traits_futures
@@ -796,6 +853,13 @@
 </li>
       </ul></li>
       <li>
+    traits_futures.asyncio.context
+
+      <ul>
+        <li><a href="api/traits_futures.asyncio.context.html#module-traits_futures.asyncio.context">module</a>
+</li>
+      </ul></li>
+      <li>
     traits_futures.asyncio.event_loop_helper
 
       <ul>
@@ -803,17 +867,24 @@
 </li>
       </ul></li>
       <li>
-    traits_futures.asyncio.init
-
-      <ul>
-        <li><a href="api/traits_futures.asyncio.init.html#module-traits_futures.asyncio.init">module</a>
-</li>
-      </ul></li>
-      <li>
     traits_futures.asyncio.pingee
 
       <ul>
         <li><a href="api/traits_futures.asyncio.pingee.html#module-traits_futures.asyncio.pingee">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.asyncio.tests
+
+      <ul>
+        <li><a href="api/traits_futures.asyncio.tests.html#module-traits_futures.asyncio.tests">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.asyncio.tests.test_context
+
+      <ul>
+        <li><a href="api/traits_futures.asyncio.tests.test_context.html#module-traits_futures.asyncio.tests.test_context">module</a>
 </li>
       </ul></li>
       <li>
@@ -845,6 +916,13 @@
 </li>
       </ul></li>
       <li>
+    traits_futures.ets_context
+
+      <ul>
+        <li><a href="api/traits_futures.ets_context.html#module-traits_futures.ets_context">module</a>
+</li>
+      </ul></li>
+      <li>
     traits_futures.exception_handling
 
       <ul>
@@ -870,6 +948,13 @@
 
       <ul>
         <li><a href="api/traits_futures.i_future.html#module-traits_futures.i_future">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.i_gui_context
+
+      <ul>
+        <li><a href="api/traits_futures.i_gui_context.html#module-traits_futures.i_gui_context">module</a>
 </li>
       </ul></li>
       <li>
@@ -938,6 +1023,13 @@
 </li>
       </ul></li>
       <li>
+    traits_futures.qt.context
+
+      <ul>
+        <li><a href="api/traits_futures.qt.context.html#module-traits_futures.qt.context">module</a>
+</li>
+      </ul></li>
+      <li>
     traits_futures.qt.event_loop_helper
 
       <ul>
@@ -945,17 +1037,24 @@
 </li>
       </ul></li>
       <li>
-    traits_futures.qt.init
-
-      <ul>
-        <li><a href="api/traits_futures.qt.init.html#module-traits_futures.qt.init">module</a>
-</li>
-      </ul></li>
-      <li>
     traits_futures.qt.pingee
 
       <ul>
         <li><a href="api/traits_futures.qt.pingee.html#module-traits_futures.qt.pingee">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.qt.tests
+
+      <ul>
+        <li><a href="api/traits_futures.qt.tests.html#module-traits_futures.qt.tests">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.qt.tests.test_context
+
+      <ul>
+        <li><a href="api/traits_futures.qt.tests.test_context.html#module-traits_futures.qt.tests.test_context">module</a>
 </li>
       </ul></li>
       <li>
@@ -977,13 +1076,6 @@
 
       <ul>
         <li><a href="api/traits_futures.testing.optional_dependencies.html#module-traits_futures.testing.optional_dependencies">module</a>
-</li>
-      </ul></li>
-      <li>
-    traits_futures.toolkit_support
-
-      <ul>
-        <li><a href="api/traits_futures.toolkit_support.html#module-traits_futures.toolkit_support">module</a>
 </li>
       </ul></li>
       <li>
@@ -1015,6 +1107,13 @@
 </li>
       </ul></li>
       <li>
+    traits_futures.wx.context
+
+      <ul>
+        <li><a href="api/traits_futures.wx.context.html#module-traits_futures.wx.context">module</a>
+</li>
+      </ul></li>
+      <li>
     traits_futures.wx.event_loop_helper
 
       <ul>
@@ -1022,17 +1121,24 @@
 </li>
       </ul></li>
       <li>
-    traits_futures.wx.init
-
-      <ul>
-        <li><a href="api/traits_futures.wx.init.html#module-traits_futures.wx.init">module</a>
-</li>
-      </ul></li>
-      <li>
     traits_futures.wx.pingee
 
       <ul>
         <li><a href="api/traits_futures.wx.pingee.html#module-traits_futures.wx.pingee">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.wx.tests
+
+      <ul>
+        <li><a href="api/traits_futures.wx.tests.html#module-traits_futures.wx.tests">module</a>
+</li>
+      </ul></li>
+      <li>
+    traits_futures.wx.tests.test_context
+
+      <ul>
+        <li><a href="api/traits_futures.wx.tests.test_context.html#module-traits_futures.wx.tests.test_context">module</a>
 </li>
       </ul></li>
       <li><a href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor">TraitsExecutor (class in traits_futures.traits_executor)</a>
@@ -1061,6 +1167,10 @@
         <li><a href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.worker_pool">(traits_futures.multithreading_context.MultithreadingContext method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.wx.context.html#traits_futures.wx.context.WxContext">WxContext (class in traits_futures.wx.context)</a>
+</li>
   </ul></td>
 </tr></table>
 

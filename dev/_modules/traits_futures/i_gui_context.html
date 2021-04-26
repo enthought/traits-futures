@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.toolkit_support &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.i_gui_context &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
@@ -76,7 +76,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <h1>Source code for traits_futures.toolkit_support</h1><div class="highlight"><pre>
+  <h1>Source code for traits_futures.i_gui_context</h1><div class="highlight"><pre>
 <span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
@@ -88,34 +88,47 @@
 <span class="c1"># Thanks for using Enthought open source!</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Support for toolkit-specific classes.</span>
+<span class="sd">Interface for GUI toolkit context objects.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">pyface.base_toolkit</span> <span class="kn">import</span> <span class="n">find_toolkit</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
 
 
-<div class="viewcode-block" id="Toolkit"><a class="viewcode-back" href="../../api/traits_futures.toolkit_support.html#traits_futures.toolkit_support.Toolkit">[docs]</a><span class="k">class</span> <span class="nc">Toolkit</span><span class="p">:</span>
+<div class="viewcode-block" id="IGuiContext"><a class="viewcode-back" href="../../api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext">[docs]</a><span class="k">class</span> <span class="nc">IGuiContext</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provide access to toolkit-specific classes.</span>
+<span class="sd">    Interface for objects usable in a GUI context.</span>
 
-<span class="sd">    This is a wrapper around the real toolkit object. The first time it&#39;s</span>
-<span class="sd">    used it&#39;ll fix the UI backend.</span>
+<span class="sd">    An instance of this class provides consistent mechanisms to get</span>
+<span class="sd">    objects related to the event loop for a particular choice of GUI</span>
+<span class="sd">    toolkit or event loop.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_object</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="IGuiContext.pingee"><a class="viewcode-back" href="../../api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext.pingee">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new pingee.</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">toolkit_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_object</span> <span class="o">=</span> <span class="n">find_toolkit</span><span class="p">(</span><span class="s2">&quot;traits_futures.toolkits&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_object</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        on_ping : callable</span>
+<span class="sd">            Zero-argument callable, called on the main thread (under a running</span>
+<span class="sd">            event loop) as a result of each ping sent. The return value of the</span>
+<span class="sd">            callable is ignored.</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolkit_object</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pingee : IPingee</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
+<div class="viewcode-block" id="IGuiContext.event_loop_helper"><a class="viewcode-back" href="../../api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext.event_loop_helper">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">event_loop_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new event loop helper.</span>
 
-<span class="c1">#: Object providing access to the current toolkit.</span>
-<span class="n">toolkit</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        event_loop_helper : IEventLoopHelper</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
 </pre></div>
 
           </div>

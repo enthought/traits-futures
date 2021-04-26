@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.qt.init module
-==============================
+traits\_futures.wx.tests.test\_context module
+=============================================
 
-.. automodule:: traits_futures.qt.init
+.. automodule:: traits_futures.wx.tests.test_context
    :members:
    :undoc-members:
    :show-inheritance:

@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.asyncio.init module
-===================================
+traits\_futures.wx.context module
+=================================
 
-.. automodule:: traits_futures.asyncio.init
+.. automodule:: traits_futures.wx.context
    :members:
    :undoc-members:
    :show-inheritance:

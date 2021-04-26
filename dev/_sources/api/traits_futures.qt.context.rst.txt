@@ -9,22 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.asyncio package
-===============================
+traits\_futures.qt.context module
+=================================
 
-.. automodule:: traits_futures.asyncio
+.. automodule:: traits_futures.qt.context
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-.. toctree::
-
-   traits_futures.asyncio.context
-   traits_futures.asyncio.event_loop_helper
-   traits_futures.asyncio.pingee
-
-
-.. toctree::
-
-   traits_futures.asyncio.tests

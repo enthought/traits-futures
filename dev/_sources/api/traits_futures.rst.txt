@@ -25,10 +25,12 @@ traits\_futures package
    traits_futures.background_iteration
    traits_futures.background_progress
    traits_futures.base_future
+   traits_futures.ets_context
    traits_futures.exception_handling
    traits_futures.future_states
    traits_futures.i_event_loop_helper
    traits_futures.i_future
+   traits_futures.i_gui_context
    traits_futures.i_message_router
    traits_futures.i_parallel_context
    traits_futures.i_pingee
@@ -37,7 +39,6 @@ traits\_futures package
    traits_futures.multiprocessing_router
    traits_futures.multithreading_context
    traits_futures.multithreading_router
-   traits_futures.toolkit_support
    traits_futures.traits_executor
    traits_futures.version
    traits_futures.wrappers
