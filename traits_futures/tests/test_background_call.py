@@ -25,7 +25,7 @@ class TestBackgroundCall(
 ):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self._context = MultithreadingContext()
+        self._context = MultithreadingContext(gui_context=self._gui_context)
         self.executor = TraitsExecutor(context=self._context)
 
     def tearDown(self):

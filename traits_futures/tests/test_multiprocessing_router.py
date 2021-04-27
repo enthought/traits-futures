@@ -27,7 +27,8 @@ class TestMultiprocessingRouter(
     """
 
     #: Factory providing the parallelism context
-    context_factory = MultiprocessingContext
+    def context_factory(self):
+        return MultiprocessingContext(gui_context=self._gui_context)
 
     def setUp(self):
         GuiTestAssistant.setUp(self)

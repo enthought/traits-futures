@@ -15,6 +15,7 @@ Context providing multithreading-friendly worker pools, events, and routers.
 import concurrent.futures
 import threading
 
+from traits_futures.ets_context import ETSContext
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_router import MultithreadingRouter
 
@@ -22,10 +23,20 @@ from traits_futures.multithreading_router import MultithreadingRouter
 class MultithreadingContext(IParallelContext):
     """
     Context for multithreading, suitable for use with the TraitsExecutor.
+
+    Parameters
+    ----------
+    gui_context : IGuiContext, optional
+        GUI context to use for interactions with the GUI event loop.
+        If not given, an :class:`ETSContext` instance is used.
     """
 
-    def __init__(self):
+    def __init__(self, gui_context=None):
+        if gui_context is None:
+            gui_context = ETSContext()
+
         self._closed = False
+        self._gui_context = gui_context
 
     def worker_pool(self, *, max_workers=None):
         """
@@ -62,7 +73,7 @@ class MultithreadingContext(IParallelContext):
         -------
         message_router : MultithreadingRouter
         """
-        return MultithreadingRouter()
+        return MultithreadingRouter(gui_context=self._gui_context)
 
     def close(self):
         """
