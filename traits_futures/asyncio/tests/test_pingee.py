@@ -22,11 +22,3 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
 
     toolkit_factory = AsyncioContext
-
-    def setUp(self):
-        GuiTestAssistant.setUp(self)
-        IPingeeTests.setUp(self)
-
-    def tearDown(self):
-        IPingeeTests.tearDown(self)
-        GuiTestAssistant.tearDown(self)

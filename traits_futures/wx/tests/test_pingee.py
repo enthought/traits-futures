@@ -25,11 +25,3 @@ class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
         from traits_futures.wx.context import WxContext
 
         return WxContext()
-
-    def setUp(self):
-        GuiTestAssistant.setUp(self)
-        IPingeeTests.setUp(self)
-
-    def tearDown(self):
-        IPingeeTests.tearDown(self)
-        GuiTestAssistant.tearDown(self)

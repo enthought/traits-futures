@@ -25,11 +25,3 @@ class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
         from traits_futures.qt.context import QtContext
 
         return QtContext()
-
-    def setUp(self):
-        GuiTestAssistant.setUp(self)
-        IPingeeTests.setUp(self)
-
-    def tearDown(self):
-        IPingeeTests.tearDown(self)
-        GuiTestAssistant.tearDown(self)
