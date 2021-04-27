@@ -31,8 +31,13 @@ class GuiTestAssistant:
     Most of the logic is devolved to a toolkit-specific EventLoopHelper class.
     """
 
+    #: Factory for the GUI context. This should be a zero-argument callable
+    #: that provides an IGUIContext instance. Override in subclasses to
+    #: run tests with a particular toolkit.
+    gui_context_factory = ETSContext
+
     def setUp(self):
-        self._gui_context = ETSContext()
+        self._gui_context = self.gui_context_factory()
         self._event_loop_helper = self._gui_context.event_loop_helper()
         self._event_loop_helper.init()
 
