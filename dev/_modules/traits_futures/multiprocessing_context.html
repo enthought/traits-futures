@@ -94,6 +94,7 @@
 <span class="kn">import</span> <span class="nn">concurrent.futures</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 
+<span class="kn">from</span> <span class="nn">traits_futures.ets_context</span> <span class="kn">import</span> <span class="n">ETSContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="kn">import</span> <span class="n">IParallelContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.multiprocessing_router</span> <span class="kn">import</span> <span class="n">MultiprocessingRouter</span>
 
@@ -101,10 +102,20 @@
 <div class="viewcode-block" id="MultiprocessingContext"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext">[docs]</a><span class="k">class</span> <span class="nc">MultiprocessingContext</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context for multiprocessing, suitable for use with the TraitsExecutor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gui_context : IGuiContext, optional</span>
+<span class="sd">        GUI context to use for interactions with the GUI event loop.</span>
+<span class="sd">        If not given, an :class:`ETSContext` instance is used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gui_context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">gui_context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gui_context</span> <span class="o">=</span> <span class="n">ETSContext</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gui_context</span> <span class="o">=</span> <span class="n">gui_context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MultiprocessingContext.worker_pool"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool">[docs]</a>    <span class="k">def</span> <span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -142,7 +153,10 @@
 <span class="sd">        -------</span>
 <span class="sd">        message_router : MultiprocessingRouter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MultiprocessingRouter</span><span class="p">(</span><span class="n">manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">MultiprocessingRouter</span><span class="p">(</span>
+            <span class="n">gui_context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_gui_context</span><span class="p">,</span>
+            <span class="n">manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultiprocessingContext.close"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

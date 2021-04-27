@@ -91,9 +91,15 @@
 <p>Context providing multithreading-friendly worker pools, events, and routers.</p>
 <dl class="py class">
 <dt id="traits_futures.multithreading_context.MultithreadingContext">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_context.</span></code><code class="sig-name descname"><span class="pre">MultithreadingContext</span></code><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_context.</span></code><code class="sig-name descname"><span class="pre">MultithreadingContext</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.i_parallel_context.IParallelContext</span></code></a></p>
 <p>Context for multithreading, suitable for use with the TraitsExecutor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gui_context</strong> (<a class="reference internal" href="traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext" title="traits_futures.i_gui_context.IGuiContext"><em>IGuiContext</em></a><em>, </em><em>optional</em>) – GUI context to use for interactions with the GUI event loop.
+If not given, an <code class="xref py py-class docutils literal notranslate"><span class="pre">ETSContext</span></code> instance is used.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="traits_futures.multithreading_context.MultithreadingContext.close">
 <code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.close" title="Permalink to this definition">¶</a></dt>

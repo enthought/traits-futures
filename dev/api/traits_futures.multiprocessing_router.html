@@ -152,7 +152,10 @@ sender will be in a background process.</p>
 sender will be in a background process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>manager</strong> (<em>multiprocessing.Manager</em>) – Manager to be used for creating the shared-process queue.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gui_context</strong> (<a class="reference internal" href="traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext" title="traits_futures.i_gui_context.IGuiContext"><em>IGuiContext</em></a>) – GUI context to use for interactions with the GUI event loop.</p></li>
+<li><p><strong>manager</strong> (<em>multiprocessing.Manager</em>) – Manager to be used for creating the shared-process queue.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
@@ -173,8 +176,14 @@ can reach that receiver.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.gui_context">
+<code class="sig-name descname"><span class="pre">gui_context</span></code><em class="property"> <span class="pre">=</span> <span class="pre">self._route_message)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.gui_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>GUI context to use for interactions with the GUI event loop.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.manager">
-<code class="sig-name descname"><span class="pre">manager</span></code><em class="property"> <span class="pre">=</span> <span class="pre">gui_context.pingee(on_ping=self._route_message)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">manager</span></code><em class="property"> <span class="pre">=</span> <span class="pre">self.gui_context.pingee(on_ping=self._route_message)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manager, used to create message queues.</p>
 </dd></dl>
 
