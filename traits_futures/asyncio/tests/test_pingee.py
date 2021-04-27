@@ -21,4 +21,4 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
 
-    toolkit_factory = AsyncioContext
+    gui_context_factory = AsyncioContext

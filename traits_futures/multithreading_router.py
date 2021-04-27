@@ -316,9 +316,6 @@ class MultithreadingRouter(HasRequiredTraits):
 
     # Private traits ##########################################################
 
-    #: GUI toolkit
-    _toolkit = Any()
-
     #: Internal queue for messages from all senders.
     _message_queue = Instance(queue.Queue)
 

@@ -369,9 +369,6 @@ class MultiprocessingRouter(HasRequiredTraits):
 
     # Private traits ##########################################################
 
-    #: GUI toolkit
-    _toolkit = Any()
-
     #: Queue receiving messages from child processes.
     _process_message_queue = Any()
 

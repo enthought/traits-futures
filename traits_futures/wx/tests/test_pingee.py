@@ -21,7 +21,7 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 @requires_wx
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
-    def toolkit_factory(self):
+    def gui_context_factory(self):
         from traits_futures.wx.context import WxContext
 
         return WxContext()

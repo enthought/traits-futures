@@ -33,11 +33,11 @@ class GuiTestAssistant:
 
     #: Factory for the toolkit. Override in subclasses to test with a
     #: specific toolkit.
-    def toolkit_factory(self):
+    def gui_context_factory(self):
         return AsyncioContext()
 
     def setUp(self):
-        self._gui_context = self.toolkit_factory()
+        self._gui_context = self.gui_context_factory()
         self._event_loop_helper = self._gui_context.event_loop_helper()
         self._event_loop_helper.init()
 
