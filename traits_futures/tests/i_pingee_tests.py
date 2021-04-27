@@ -108,23 +108,23 @@ class IPingeeTests:
     """
 
     def test_single_background_ping(self):
-        self.listener = PingListener()
-        with self.connected_pingee(on_ping=self.listener.fire_ping) as pingee:
+        listener = PingListener()
+        with self.connected_pingee(on_ping=listener.fire_ping) as pingee:
             with BackgroundPinger(pingee) as pinger:
                 pinger.ping()
-                self.assertEventuallyPinged(self.listener)
+                self.assertEventuallyPinged(listener)
 
     def test_multiple_background_pings(self):
-        self.listener = PingListener()
-        with self.connected_pingee(on_ping=self.listener.fire_ping) as pingee:
+        listener = PingListener()
+        with self.connected_pingee(on_ping=listener.fire_ping) as pingee:
             with BackgroundPinger(pingee) as pinger:
                 pinger.ping(3)
                 pinger.ping(4)
-                self.assertEventuallyPinged(self.listener, ping_count=7)
+                self.assertEventuallyPinged(listener, ping_count=7)
 
     def test_multiple_background_pingers(self):
-        self.listener = PingListener()
-        with self.connected_pingee(on_ping=self.listener.fire_ping) as pingee:
+        listener = PingListener()
+        with self.connected_pingee(on_ping=listener.fire_ping) as pingee:
             with contextlib.ExitStack() as stack:
                 pingers = [
                     stack.enter_context(BackgroundPinger(pingee))
@@ -134,7 +134,7 @@ class IPingeeTests:
                 for pinger in pingers:
                     pinger.ping(3)
 
-                self.assertEventuallyPinged(self.listener, ping_count=15)
+                self.assertEventuallyPinged(listener, ping_count=15)
 
     def test_multiple_pingees(self):
         listener1 = PingListener()
@@ -154,8 +154,8 @@ class IPingeeTests:
         # Previous tests keep the background threads running until we've
         # received the expected number of pings. But that shouldn't be
         # necessary.
-        self.listener = PingListener()
-        with self.connected_pingee(on_ping=self.listener.fire_ping) as pingee:
+        listener = PingListener()
+        with self.connected_pingee(on_ping=listener.fire_ping) as pingee:
             with contextlib.ExitStack() as stack:
                 pingers = [
                     stack.enter_context(BackgroundPinger(pingee))
@@ -170,7 +170,7 @@ class IPingeeTests:
 
             # Note: threads have all already completed and exited before we
             # start running the event loop.
-            self.assertEventuallyPinged(self.listener, ping_count=15)
+            self.assertEventuallyPinged(listener, ping_count=15)
 
     @contextlib.contextmanager
     def connected_pingee(self, on_ping):
