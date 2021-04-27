@@ -15,8 +15,6 @@ Test support, providing the ability to run the event loop from within tests.
 
 from traits_futures.ets_context import ETSContext
 
-gui_context = ETSContext()
-
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
 #: forever and blocking the rest of the test suite.
@@ -34,12 +32,14 @@ class GuiTestAssistant:
     """
 
     def setUp(self):
-        self._event_loop_helper = gui_context.event_loop_helper()
+        self._gui_context = ETSContext()
+        self._event_loop_helper = self._gui_context.event_loop_helper()
         self._event_loop_helper.init()
 
     def tearDown(self):
         self._event_loop_helper.dispose()
         del self._event_loop_helper
+        del self._gui_context
 
     def run_until(self, object, trait, condition, timeout=SAFETY_TIMEOUT):
         """

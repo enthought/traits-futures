@@ -27,7 +27,8 @@ class TestMultithreadingRouter(
     """
 
     #: Factory providing the parallelism context
-    context_factory = MultithreadingContext
+    def context_factory(self):
+        return MultithreadingContext(gui_context=self._gui_context)
 
     def setUp(self):
         GuiTestAssistant.setUp(self)
