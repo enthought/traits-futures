@@ -30,6 +30,7 @@ from traits.api import (
 )
 
 from traits_futures.ets_context import ETSContext
+from traits_futures.i_gui_context import IGuiContext
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
@@ -38,8 +39,6 @@ from traits_futures.i_message_router import (
 from traits_futures.i_pingee import IPingee
 
 logger = logging.getLogger(__name__)
-
-gui_context = ETSContext()
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -202,7 +201,9 @@ class MultithreadingRouter(HasStrictTraits):
 
         self._message_queue = queue.Queue()
 
-        self._pingee = gui_context.pingee(on_ping=self._route_message)
+        self._gui_context = ETSContext()
+
+        self._pingee = self._gui_context.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._running = True
@@ -305,6 +306,10 @@ class MultithreadingRouter(HasStrictTraits):
         )
 
     # Private traits ##########################################################
+
+    #: GUI context, providing the appropriate ping mechanism for the GUI
+    #: event loop.
+    _gui_context = Instance(IGuiContext)
 
     #: Internal queue for messages from all senders.
     _message_queue = Instance(queue.Queue)

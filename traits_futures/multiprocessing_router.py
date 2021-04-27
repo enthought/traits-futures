@@ -69,6 +69,7 @@ from traits.api import (
 )
 
 from traits_futures.ets_context import ETSContext
+from traits_futures.i_gui_context import IGuiContext
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
@@ -77,8 +78,6 @@ from traits_futures.i_message_router import (
 from traits_futures.i_pingee import IPingee
 
 logger = logging.getLogger(__name__)
-
-gui_context = ETSContext()
 
 
 #: Internal states for the sender. The sender starts in the _INITIAL state,
@@ -235,7 +234,9 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self.manager.Queue()
 
-        self._pingee = gui_context.pingee(on_ping=self._route_message)
+        self._gui_context = ETSContext()
+
+        self._pingee = self._gui_context.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._monitor_thread = threading.Thread(
@@ -365,6 +366,10 @@ class MultiprocessingRouter(HasRequiredTraits):
     manager = Instance(multiprocessing.managers.BaseManager, required=True)
 
     # Private traits ##########################################################
+
+    #: GUI context, providing the appropriate ping mechanism for the GUI
+    #: event loop.
+    _gui_context = Instance(IGuiContext)
 
     #: Queue receiving messages from child processes.
     _process_message_queue = Any()
