@@ -213,7 +213,6 @@ class MultiprocessingRouter(HasRequiredTraits):
         GUI context to use for interactions with the GUI event loop.
     manager : multiprocessing.Manager
         Manager to be used for creating the shared-process queue.
-
     """
 
     def start(self):
@@ -363,7 +362,7 @@ class MultiprocessingRouter(HasRequiredTraits):
     # Public traits ###########################################################
 
     #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IGuiContext)
+    gui_context = Instance(IGuiContext, required=True)
 
     #: Manager, used to create message queues.
     manager = Instance(multiprocessing.managers.BaseManager, required=True)

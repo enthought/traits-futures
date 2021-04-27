@@ -312,7 +312,7 @@ class MultithreadingRouter(HasRequiredTraits):
     # Public traits ###########################################################
 
     #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IGuiContext)
+    gui_context = Instance(IGuiContext, required=True)
 
     # Private traits ##########################################################
 
