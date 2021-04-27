@@ -93,8 +93,8 @@ class PingListener(HasStrictTraits):
     Listener providing an observable callback for the pingee.
     """
 
-    #: The toolkit in use.
-    toolkit = Any()
+    #: The GUI context in use.
+    gui_context = Any()
 
     #: The actual pingee as provided by Traits Futures.
     pingee = Instance(IPingee)
@@ -113,7 +113,7 @@ class PingListener(HasStrictTraits):
         self.disconnect()
 
     def connect(self):
-        self.pingee = self.toolkit.pingee(
+        self.pingee = self.gui_context.pingee(
             on_ping=lambda: setattr(self, "ping", True)
         )
         self.pingee.connect()
@@ -156,7 +156,7 @@ class IPingeeTests:
     """
 
     def setUp(self):
-        self.listener = PingListener(toolkit=self._toolkit)
+        self.listener = PingListener(gui_context=self._gui_context)
         self.listener.connect()
 
     def tearDown(self):
@@ -199,8 +199,8 @@ class IPingeeTests:
         self.assertEqual(self.listener.ping_count, 15)
 
     def test_multiple_pingees(self):
-        with PingListener(toolkit=self._toolkit) as listener1:
-            with PingListener(toolkit=self._toolkit) as listener2:
+        with PingListener(gui_context=self._gui_context) as listener1:
+            with PingListener(gui_context=self._gui_context) as listener2:
                 listeners = MultipleListeners(listeners=[listener1, listener2])
                 with BackgroundPinger(listener1.pingee) as pinger1:
                     with BackgroundPinger(listener2.pingee) as pinger2:

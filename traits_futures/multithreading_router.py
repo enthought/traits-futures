@@ -23,12 +23,14 @@ from traits.api import (
     Bool,
     Dict,
     Event,
+    HasRequiredTraits,
     HasStrictTraits,
     Instance,
     Int,
     provides,
 )
 
+from traits_futures.i_gui_context import IGuiContext
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
@@ -174,10 +176,16 @@ class MultithreadingReceiver(HasStrictTraits):
 
 
 @provides(IMessageRouter)
-class MultithreadingRouter(HasStrictTraits):
+class MultithreadingRouter(HasRequiredTraits):
     """
     Implementation of the IMessageRouter interface for the case where the
     sender will be in a background thread.
+
+    Parameters
+    ----------
+    gui_context : IGuiContext
+        GUI context to use for interactions with the GUI event loop.
+
     """
 
     def start(self):
@@ -199,7 +207,7 @@ class MultithreadingRouter(HasStrictTraits):
 
         self._message_queue = queue.Queue()
 
-        self._pingee = self._toolkit.pingee(on_ping=self._route_message)
+        self._pingee = self.gui_context.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._running = True
@@ -300,6 +308,11 @@ class MultithreadingRouter(HasStrictTraits):
         logger.debug(
             f"{self} closed pipe #{connection_id} with receiver {receiver}"
         )
+
+    # Public traits ###########################################################
+
+    #: GUI context to use for interactions with the GUI event loop.
+    gui_context = Instance(IGuiContext, required=True)
 
     # Private traits ##########################################################
 

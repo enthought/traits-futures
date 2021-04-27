@@ -29,7 +29,7 @@ from traits_futures.tests.traits_executor_tests import (
 class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self._context = MultiprocessingContext(toolkit=self._toolkit)
+        self._context = MultiprocessingContext(gui_context=self._gui_context)
 
     def tearDown(self):
         if hasattr(self, "executor"):
@@ -59,7 +59,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             self.assertIsInstance(executor._context, MultithreadingContext)
 
     def test_externally_supplied_context(self):
-        context = MultiprocessingContext(toolkit=self._toolkit)
+        context = MultiprocessingContext(gui_context=self._gui_context)
         try:
             with self.temporary_executor(context=context) as executor:
                 self.assertIs(executor._context, context)
@@ -144,7 +144,7 @@ class TestTraitsExecutor(
 ):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self._context = MultiprocessingContext(toolkit=self._toolkit)
+        self._context = MultiprocessingContext(gui_context=self._gui_context)
         self.executor = TraitsExecutor(context=self._context)
         self.listener = ExecutorListener(executor=self.executor)
 
