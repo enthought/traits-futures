@@ -15,6 +15,7 @@ Context providing multiprocessing-friendly worker pools, events, and routers.
 import concurrent.futures
 import multiprocessing
 
+from traits_futures.ets_context import ETSContext
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multiprocessing_router import MultiprocessingRouter
 
@@ -26,6 +27,7 @@ class MultiprocessingContext(IParallelContext):
 
     def __init__(self):
         self._closed = False
+        self._gui_context = ETSContext()
         self._manager = multiprocessing.Manager()
 
     def worker_pool(self, *, max_workers=None):
@@ -63,7 +65,10 @@ class MultiprocessingContext(IParallelContext):
         -------
         message_router : MultiprocessingRouter
         """
-        return MultiprocessingRouter(manager=self._manager)
+        return MultiprocessingRouter(
+            gui_context=self._gui_context,
+            manager=self._manager,
+        )
 
     def close(self):
         """
