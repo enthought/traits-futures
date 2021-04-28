@@ -9,16 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.qt.tests package
-================================
+traits\_futures.asyncio.tests.test\_pingee module
+=================================================
 
-.. automodule:: traits_futures.qt.tests
+.. automodule:: traits_futures.asyncio.tests.test_pingee
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-.. toctree::
-
-   traits_futures.qt.tests.test_context
-   traits_futures.qt.tests.test_pingee

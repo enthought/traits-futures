@@ -21,3 +21,4 @@ traits\_futures.asyncio.tests package
 .. toctree::
 
    traits_futures.asyncio.tests.test_context
+   traits_futures.asyncio.tests.test_pingee

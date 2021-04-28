@@ -21,3 +21,4 @@ traits\_futures.wx.tests package
 .. toctree::
 
    traits_futures.wx.tests.test_context
+   traits_futures.wx.tests.test_pingee
