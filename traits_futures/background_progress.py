@@ -32,7 +32,7 @@ from traits_futures.i_task_specification import ITaskSpecification
 PROGRESS = "progress"
 
 
-class _ProgressCancelled(Exception):
+class ProgressCancelled(Exception):
     """
     Exception raised when progress reporting is interrupted by
     task cancellation.
@@ -60,9 +60,16 @@ class ProgressReporter:
         progress_info : object
             An arbitrary object representing progress. Ideally, this
             should be immutable and pickleable.
+
+        Raises
+        ------
+        ProgressCancelled
+            If a cancellation request for this task has already been made.
+            In this case, the exception will be raised before any progress
+            information is sent.
         """
         if self.cancelled():
-            raise _ProgressCancelled("Task was cancelled")
+            raise ProgressCancelled("Task was cancelled")
         self.send(PROGRESS, progress_info)
 
 
@@ -85,7 +92,7 @@ class ProgressBackgroundTask:
 
         try:
             return self.callable(*self.args, **self.kwargs)
-        except _ProgressCancelled:
+        except ProgressCancelled:
             return None
 
 
