@@ -32,7 +32,7 @@ class GuiTestAssistant:
     """
 
     #: Factory for the GUI context. This should be a zero-argument callable
-    #: that provides an IGUIContext instance. Override in subclasses to
+    #: that provides an IGuiContext instance. Override in subclasses to
     #: run tests with a particular toolkit.
     gui_context_factory = AsyncioContext
 
