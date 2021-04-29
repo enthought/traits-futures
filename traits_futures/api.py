@@ -28,6 +28,7 @@ Task submission functions
 - :func:`~.submit_call`
 - :func:`~.submit_iteration`
 - :func:`~.submit_progress`
+- :exc:`~.ProgressCancelled`
 
 Types of futures
 ----------------
@@ -75,7 +76,11 @@ from traits_futures.background_iteration import (
     IterationFuture,
     submit_iteration,
 )
-from traits_futures.background_progress import ProgressFuture, submit_progress
+from traits_futures.background_progress import (
+    ProgressCancelled,
+    ProgressFuture,
+    submit_progress,
+)
 from traits_futures.base_future import BaseFuture
 from traits_futures.future_states import (
     CANCELLED,
@@ -105,6 +110,7 @@ __all__ = [
     "CallFuture",
     "IterationFuture",
     "ProgressFuture",
+    "ProgressCancelled",
     # Future states
     "FutureState",
     "CANCELLED",
