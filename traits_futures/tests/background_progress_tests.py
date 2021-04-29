@@ -17,6 +17,7 @@ from traits_futures.api import (
     EXECUTING,
     FAILED,
     FutureState,
+    ProgressCancelled,
     ProgressFuture,
     submit_progress,
     WAITING,
@@ -80,7 +81,7 @@ def syncing_progress(test_ready, raised, progress):
     # so that we never get to the following code.
     try:
         progress("second")
-    except BaseException:
+    except ProgressCancelled:
         raised.set()
         raise
 
