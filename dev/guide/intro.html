@@ -124,7 +124,9 @@ callable, and returns a <a class="reference internal" href="../api/traits_future
 <em>must</em> have a parameter called “progress”.  A value for this parameter will
 be passed (by name) by the executor machinery. The value passed for the
 “progress” parameter can then be called to send progress reports to the
-associated <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> object.</p>
+associated <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> object. If the future has been cancelled, the
+next call to <code class="docutils literal notranslate"><span class="pre">progress</span></code> in the background task will raise a
+<a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressCancelled" title="traits_futures.background_progress.ProgressCancelled"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ProgressCancelled</span></code></a> exception.</p>
 <p>For example, your callable might look like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">interruptible_sum_of_squares</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Compute the sum of squares of integers smaller than n.&quot;&quot;&quot;</span>
