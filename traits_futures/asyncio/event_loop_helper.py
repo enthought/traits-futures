@@ -35,6 +35,29 @@ class EventLoopHelper:
         """
         asyncio.get_event_loop().close()
 
+    def setattr_soon(self, obj, name, value):
+        """
+        Arrange for an attribute to be set once the event loop is running.
+
+        In typical usage, *obj* will be a ``HasTraits`` instance and
+        *name* will be the name of a trait on *obj*.
+
+        This method is not thread-safe. It's designed to be called
+        from the main thread.
+
+        Parameters
+        ----------
+        obj : object
+            Object to set the given attribute on.
+        name : str
+            Name of the attribute to set; typically this is
+            a traited attribute.
+        value : object
+            Value to set the attribute to.
+        """
+        event_loop = asyncio.get_event_loop()
+        event_loop.call_soon(setattr, obj, name, value)
+
     def run_until(self, object, trait, condition, timeout):
         """
         Run event loop until a given condition occurs, or timeout.

@@ -12,10 +12,27 @@
 Test support, providing the ability to run the event loop from tests.
 """
 
-from pyface.qt.QtCore import QTimer
+from pyface.qt.QtCore import QObject, Qt, QTimer, Signal, Slot
 from pyface.qt.QtGui import QApplication
 
 from traits_futures.i_event_loop_helper import IEventLoopHelper
+
+
+class AttributeSetter(QObject):
+    """
+    Simple QObject
+
+    """
+
+    @Slot(object, str, object)
+    def _on_setattr(self, obj, name, value):
+        """
+        Slot for setting an arbitrary attribute value on an object.
+        """
+        setattr(obj, name, value)
+
+    #: Signal used to trigger attribute sets.
+    setattr = Signal(object, str, object)
 
 
 @IEventLoopHelper.register
@@ -33,11 +50,43 @@ class EventLoopHelper:
             qt_app = QApplication([])
         self.qt_app = qt_app
 
+        self._attribute_setter = AttributeSetter()
+        self._attribute_setter.setattr.connect(
+            self._attribute_setter._on_setattr, Qt.QueuedConnection
+        )
+
     def dispose(self):
         """
         Dispose of any resources used by this object.
         """
+        self._attribute_setter.setattr.disconnect(
+            self._attribute_setter._on_setattr
+        )
+
+        del self._attribute_setter
         del self.qt_app
+
+    def setattr_soon(self, obj, name, value):
+        """
+        Arrange for an attribute to be set once the event loop is running.
+
+        In typical usage, *obj* will be a ``HasTraits`` instance and
+        *name* will be the name of a trait on *obj*.
+
+        This method is not thread-safe. It's designed to be called
+        from the main thread.
+
+        Parameters
+        ----------
+        obj : object
+            Object to set the given attribute on.
+        name : str
+            Name of the attribute to set; typically this is
+            a traited attribute.
+        value : object
+            Value to set the attribute to.
+        """
+        self._attribute_setter.setattr.emit(obj, name, value)
 
     def run_until(self, object, trait, condition, timeout):
         """

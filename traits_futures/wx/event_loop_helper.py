@@ -12,7 +12,7 @@
 Test support, providing the ability to run the event loop from tests.
 """
 
-import wx
+import wx.lib.newevent
 
 from traits_futures.i_event_loop_helper import IEventLoopHelper
 
@@ -101,6 +101,22 @@ class AppForTesting(wx.App):
         del self.frame
 
 
+# Note: we're not using the more obvious spelling
+#   _SetattrEvent, _SetattrEventBinder = wx.lib.newevent.NewEvent()
+# here because that confuses Sphinx's autodoc mocking.
+# Ref: enthought/traits-futures#263.
+
+#: New event type to be used for signalling attribute set operations.
+_SetattrEventPair = wx.lib.newevent.NewEvent()
+_SetattrEvent = _SetattrEventPair[0]
+_SetattrEventBinder = _SetattrEventPair[1]
+
+
+class AttributeSetter(wx.EvtHandler):
+    def _on_setattr(self, event):
+        setattr(event.obj, event.name, event.value)
+
+
 @IEventLoopHelper.register
 class EventLoopHelper:
     """
@@ -114,12 +130,53 @@ class EventLoopHelper:
         # Running tests requires that there's a visible application.
         self.wx_app = AppForTesting()
 
+        attribute_setter = AttributeSetter()
+        attribute_setter.Bind(
+            _SetattrEventBinder, handler=attribute_setter._on_setattr
+        )
+
+        self._attribute_setter = attribute_setter
+
     def dispose(self):
         """
         Dispose of any resources used by this object.
         """
+        attribute_setter = self._attribute_setter
+        attribute_setter.Unbind(
+            _SetattrEventBinder, handler=attribute_setter._on_setattr
+        )
+
+        del self._attribute_setter
+
         self.wx_app.close()
         del self.wx_app
+
+    def setattr_soon(self, obj, name, value):
+        """
+        Arrange for an attribute to be set once the event loop is running.
+
+        In typical usage, *obj* will be a ``HasTraits`` instance and
+        *name* will be the name of a trait on *obj*.
+
+        This method is not thread-safe. It's designed to be called
+        from the main thread.
+
+        Parameters
+        ----------
+        obj : object
+            Object to set the given attribute on.
+        name : str
+            Name of the attribute to set; typically this is
+            a traited attribute.
+        value : object
+            Value to set the attribute to.
+        """
+        event = _SetattrEvent(
+            obj=obj,
+            name=name,
+            value=value,
+        )
+        wx.PostEvent(self._attribute_setter, event)
 
     def run_until(self, object, trait, condition, timeout):
         """
