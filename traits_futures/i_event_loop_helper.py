@@ -24,6 +24,7 @@ class IEventLoopHelper(abc.ABC):
     is in testing.
     """
 
+    @abc.abstractmethod
     def init(self):
         """
         Prepare the event loop for use.
@@ -32,6 +33,7 @@ class IEventLoopHelper(abc.ABC):
         main GUI thread.
         """
 
+    @abc.abstractmethod
     def dispose(self):
         """
         Dispose of any resources used by this object.
@@ -40,6 +42,29 @@ class IEventLoopHelper(abc.ABC):
         main GUI thread.
         """
 
+    @abc.abstractmethod
+    def setattr_soon(self, obj, name, value):
+        """
+        Arrange for an attribute to be set once the event loop is running.
+
+        In typical usage, *obj* will be a ``HasTraits`` instance and
+        *name* will be the name of a trait on *obj*.
+
+        This method is not thread-safe. It's designed to be called
+        from the main thread.
+
+        Parameters
+        ----------
+        obj : object
+            Object to set the given attribute on.
+        name : str
+            Name of the attribute to set; typically this is
+            a traited attribute.
+        value : object
+            Value to set the attribute to.
+        """
+
+    @abc.abstractmethod
     def run_until(self, object, trait, condition, timeout):
         """
         Run event loop until a given condition occurs, or timeout.
