@@ -20,8 +20,8 @@ from traits_futures.i_event_loop_helper import IEventLoopHelper
 
 class AttributeSetter(QObject):
     """
-    Simple QObject
-
+    Simple QObject that allows us to set object attributes from with
+    a running event loop.
     """
 
     @Slot(object, str, object)
@@ -31,7 +31,7 @@ class AttributeSetter(QObject):
         """
         setattr(obj, name, value)
 
-    #: Signal used to trigger attribute sets.
+    #: Signal used to trigger setattr operations.
     setattr = Signal(object, str, object)
 
 

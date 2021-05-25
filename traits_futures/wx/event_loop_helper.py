@@ -16,6 +16,16 @@ import wx.lib.newevent
 
 from traits_futures.i_event_loop_helper import IEventLoopHelper
 
+# Note: we're not using the more obvious spelling
+#   _SetattrEvent, _SetattrEventBinder = wx.lib.newevent.NewEvent()
+# here because that confuses Sphinx's autodoc mocking.
+# Ref: enthought/traits-futures#263.
+
+#: New event type to be used for signalling attribute set operations.
+_SetattrEventPair = wx.lib.newevent.NewEvent()
+_SetattrEvent = _SetattrEventPair[0]
+_SetattrEventBinder = _SetattrEventPair[1]
+
 
 # XXX We should be using Pyface's own CallbackTimer instead of creating
 # our own, but we were running into segfaults.
@@ -101,18 +111,12 @@ class AppForTesting(wx.App):
         del self.frame
 
 
-# Note: we're not using the more obvious spelling
-#   _SetattrEvent, _SetattrEventBinder = wx.lib.newevent.NewEvent()
-# here because that confuses Sphinx's autodoc mocking.
-# Ref: enthought/traits-futures#263.
-
-#: New event type to be used for signalling attribute set operations.
-_SetattrEventPair = wx.lib.newevent.NewEvent()
-_SetattrEvent = _SetattrEventPair[0]
-_SetattrEventBinder = _SetattrEventPair[1]
-
-
 class AttributeSetter(wx.EvtHandler):
+    """
+    Event handler that allows us to set object attributes from with
+    a running event loop.
+    """
+
     def _on_setattr(self, event):
         setattr(event.obj, event.name, event.value)
 
