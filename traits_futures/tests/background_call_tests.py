@@ -23,7 +23,7 @@ from traits_futures.api import (
 )
 
 #: Timeout for blocking operations, in seconds.
-SAFETY_TIMEOUT = 5.0
+TIMEOUT = 10.0
 
 
 def ping_pong(ping_event, pong_event):
@@ -31,7 +31,7 @@ def ping_pong(ping_event, pong_event):
     Send a ping, then wait for an answering pong.
     """
     ping_event.set()
-    pong_event.wait(timeout=SAFETY_TIMEOUT)
+    pong_event.wait(timeout=TIMEOUT)
 
 
 def ping_pong_fail(ping_event, pong_event):
@@ -39,7 +39,7 @@ def ping_pong_fail(ping_event, pong_event):
     Send a ping, wait for an answering pong, then fail.
     """
     ping_event.set()
-    pong_event.wait(timeout=SAFETY_TIMEOUT)
+    pong_event.wait(timeout=TIMEOUT)
     1 / 0
 
 
@@ -103,7 +103,7 @@ class BackgroundCallTests:
         listener = CallFutureListener(future=future)
 
         # Ensure the background task is past the cancel_event.is_set() check.
-        self.assertTrue(event.wait(timeout=SAFETY_TIMEOUT))
+        self.assertTrue(event.wait(timeout=TIMEOUT))
 
         # And _now_ cancel before we process any messages.
         self.assertTrue(future.cancellable)
@@ -144,7 +144,7 @@ class BackgroundCallTests:
 
         # Wait for executing state; the test_ready event ensures we
         # get no further.
-        self.assertTrue(signal.wait(timeout=SAFETY_TIMEOUT))
+        self.assertTrue(signal.wait(timeout=TIMEOUT))
         self.wait_for_state(future, EXECUTING)
 
         self.assertTrue(future.cancellable)
@@ -168,7 +168,7 @@ class BackgroundCallTests:
 
         # Wait for executing state; the test_ready event ensures we
         # get no further.
-        self.assertTrue(signal.wait(timeout=SAFETY_TIMEOUT))
+        self.assertTrue(signal.wait(timeout=TIMEOUT))
         self.wait_for_state(future, EXECUTING)
 
         self.assertTrue(future.cancellable)
@@ -245,7 +245,7 @@ class BackgroundCallTests:
 
         # Wait for executing state; the test_ready event ensures we
         # get no further.
-        self.assertTrue(signal.wait(timeout=SAFETY_TIMEOUT))
+        self.assertTrue(signal.wait(timeout=TIMEOUT))
         self.wait_for_state(future, EXECUTING)
 
         self.assertTrue(future.cancellable)
