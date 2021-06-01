@@ -22,15 +22,9 @@ from traits_futures.multithreading_router import MultithreadingRouter
 class MultithreadingContext(IParallelContext):
     """
     Context for multithreading, suitable for use with the TraitsExecutor.
-
-    Parameters
-    ----------
-    gui_context : IGuiContext
-        GUI context to use for interactions with the GUI event loop.
     """
 
-    def __init__(self, gui_context=None):
-        assert gui_context is None
+    def __init__(self):
         self._closed = False
 
     def worker_pool(self, *, max_workers=None):

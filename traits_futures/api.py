@@ -133,7 +133,7 @@ __all__ = [
     # Support for creating new task types
     "BaseFuture",
     "ITaskSpecification",
-    # Parallelism contexts
+    # Contexts
     "IParallelContext",
     "MultiprocessingContext",
     "MultithreadingContext",
