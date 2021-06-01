@@ -102,13 +102,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.qt.tests.test_pingee.TestPingee.gui_context_factory">
 <span class="sig-name descname"><span class="pre">gui_context_factory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/tests/test_pingee.html#TestPingee.gui_context_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.tests.test_pingee.TestPingee.gui_context_factory" title="Permalink to this definition">¶</a></dt>
-<dd><p>IGuiContext implementation with lazily-determined toolkit.</p>
-<p>The first time this context is used, an appropriate toolkit will
-be selected.</p>
-<p>The toolkit selection mechanism used matches that used by Pyface, and
-is based on the value of the ETS_TOOLKIT environment variable, followed
-an examination of the available setuptools entry points under the
-entry point group “traits_futures.gui_contexts”.</p>
+<dd><p>IGuiContext implementation for the main-thread asyncio event loop.</p>
 </dd></dl>
 
 </dd></dl>
