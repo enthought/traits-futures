@@ -355,10 +355,11 @@ class TraitsExecutor(HasStrictTraits):
         return router
 
     def __context_default(self):
-        # By default, we use multithreading
+        # By default, we use multithreading, and the default "ETS" GUI context.
+        from traits_futures.ets_context import ETSContext
         from traits_futures.multithreading_context import MultithreadingContext
 
-        context = MultithreadingContext()
+        context = MultithreadingContext(gui_context=ETSContext())
         self._own_context = True
         return context
 
