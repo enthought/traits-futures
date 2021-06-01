@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +24,7 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -91,9 +94,19 @@
 <span class="sd">Test support, providing the ability to run the event loop from tests.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">wx.lib.newevent</span>
 
 <span class="kn">from</span> <span class="nn">traits_futures.i_event_loop_helper</span> <span class="kn">import</span> <span class="n">IEventLoopHelper</span>
+
+<span class="c1"># Note: we&#39;re not using the more obvious spelling</span>
+<span class="c1">#   _SetattrEvent, _SetattrEventBinder = wx.lib.newevent.NewEvent()</span>
+<span class="c1"># here because that confuses Sphinx&#39;s autodoc mocking.</span>
+<span class="c1"># Ref: enthought/traits-futures#263.</span>
+
+<span class="c1">#: New event type to be used for signalling attribute set operations.</span>
+<span class="n">_SetattrEventPair</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">newevent</span><span class="o">.</span><span class="n">NewEvent</span><span class="p">()</span>
+<span class="n">_SetattrEvent</span> <span class="o">=</span> <span class="n">_SetattrEventPair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">_SetattrEventBinder</span> <span class="o">=</span> <span class="n">_SetattrEventPair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 
 <span class="c1"># XXX We should be using Pyface&#39;s own CallbackTimer instead of creating</span>
@@ -180,6 +193,16 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span></div></div>
 
 
+<div class="viewcode-block" id="AttributeSetter"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AttributeSetter">[docs]</a><span class="k">class</span> <span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Event handler that allows us to set object attributes from with</span>
+<span class="sd">    a running event loop.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="EventLoopHelper"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper">[docs]</a><span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -191,14 +214,55 @@
 <span class="sd">        Prepare the event loop for use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Running tests requires that there&#39;s a visible application.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span> <span class="o">=</span> <span class="n">AppForTesting</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span> <span class="o">=</span> <span class="n">AppForTesting</span><span class="p">()</span>
+
+        <span class="n">attribute_setter</span> <span class="o">=</span> <span class="n">AttributeSetter</span><span class="p">()</span>
+        <span class="n">attribute_setter</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span>
+            <span class="n">_SetattrEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="n">attribute_setter</span><span class="o">.</span><span class="n">_on_setattr</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span> <span class="o">=</span> <span class="n">attribute_setter</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attribute_setter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span>
+        <span class="n">attribute_setter</span><span class="o">.</span><span class="n">Unbind</span><span class="p">(</span>
+            <span class="n">_SetattrEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="n">attribute_setter</span><span class="o">.</span><span class="n">_on_setattr</span>
+        <span class="p">)</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span></div>
+
+<div class="viewcode-block" id="EventLoopHelper.setattr_soon"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>    <span class="k">def</span> <span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Arrange for an attribute to be set once the event loop is running.</span>
+
+<span class="sd">        In typical usage, *obj* will be a ``HasTraits`` instance and</span>
+<span class="sd">        *name* will be the name of a trait on *obj*.</span>
+
+<span class="sd">        This method is not thread-safe. It&#39;s designed to be called</span>
+<span class="sd">        from the main thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obj : object</span>
+<span class="sd">            Object to set the given attribute on.</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the attribute to set; typically this is</span>
+<span class="sd">            a traited attribute.</span>
+<span class="sd">        value : object</span>
+<span class="sd">            Value to set the attribute to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">_SetattrEvent</span><span class="p">(</span>
+            <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">PostEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.run_until"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -296,7 +360,7 @@
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.2.
       </li>
     </ul>
     </div>

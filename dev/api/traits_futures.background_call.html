@@ -3,13 +3,16 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>traits_futures.background_call module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +25,7 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -86,23 +90,23 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.background_call">
+  <section id="module-traits_futures.background_call">
 <span id="traits-futures-background-call-module"></span><h1>traits_futures.background_call module<a class="headerlink" href="#module-traits_futures.background_call" title="Permalink to this headline">¶</a></h1>
 <p>Background task consisting of a simple callable.</p>
 <dl class="py class">
-<dt id="traits_futures.background_call.BackgroundCall">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></code><code class="sig-name descname"><span class="pre">BackgroundCall</span></code><a class="reference internal" href="../_modules/traits_futures/background_call.html#BackgroundCall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.BackgroundCall" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.BackgroundCall">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></span><span class="sig-name descname"><span class="pre">BackgroundCall</span></span><a class="reference internal" href="../_modules/traits_futures/background_call.html#BackgroundCall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.BackgroundCall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Object representing the background call to be executed.</p>
 <dl class="py attribute">
-<dt id="traits_futures.background_call.BackgroundCall.args">
-<code class="sig-name descname"><span class="pre">args</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Tuple()</span></em><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.args" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.BackgroundCall.args">
+<span class="sig-name descname"><span class="pre">args</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Tuple()</span></em><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positional arguments to be passed to the callable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.background_call.BackgroundCall.background_task">
-<code class="sig-name descname"><span class="pre">background_task</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#BackgroundCall.background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.background_task" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.BackgroundCall.background_task">
+<span class="sig-name descname"><span class="pre">background_task</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#BackgroundCall.background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.background_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a background callable for this task specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -117,14 +121,14 @@ check whether cancellation has been requested.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="traits_futures.background_call.BackgroundCall.callable">
-<code class="sig-name descname"><span class="pre">callable</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Callable()</span></em><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.callable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.BackgroundCall.callable">
+<span class="sig-name descname"><span class="pre">callable</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Callable()</span></em><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.callable" title="Permalink to this definition">¶</a></dt>
 <dd><p>The callable to be executed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.background_call.BackgroundCall.future">
-<code class="sig-name descname"><span class="pre">future</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#BackgroundCall.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.future" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.BackgroundCall.future">
+<span class="sig-name descname"><span class="pre">future</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#BackgroundCall.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Future for the background task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -138,31 +142,31 @@ background task.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="traits_futures.background_call.BackgroundCall.kwargs">
-<code class="sig-name descname"><span class="pre">kwargs</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Dict(Str())</span></em><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.kwargs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.BackgroundCall.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Dict(Str())</span></em><a class="headerlink" href="#traits_futures.background_call.BackgroundCall.kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Named arguments to be passed to the callable.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="traits_futures.background_call.CallBackgroundTask">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></code><code class="sig-name descname"><span class="pre">CallBackgroundTask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallBackgroundTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.CallBackgroundTask" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.CallBackgroundTask">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></span><span class="sig-name descname"><span class="pre">CallBackgroundTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallBackgroundTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.CallBackgroundTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Wrapper around the actual callable to be run. This wrapper provides the
 task that will be submitted to the concurrent.futures executor</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="traits_futures.background_call.CallFuture">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></code><code class="sig-name descname"><span class="pre">CallFuture</span></code><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.CallFuture" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.CallFuture">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></span><span class="sig-name descname"><span class="pre">CallFuture</span></span><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.CallFuture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.base_future.BaseFuture</span></code></a></p>
 <p>Object representing the front-end handle to a background call.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="traits_futures.background_call.submit_call">
-<code class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></code><code class="sig-name descname"><span class="pre">submit_call</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#submit_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.submit_call" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.background_call.submit_call">
+<span class="sig-prename descclassname"><span class="pre">traits_futures.background_call.</span></span><span class="sig-name descname"><span class="pre">submit_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#submit_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.submit_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background call to an executor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -182,7 +186,7 @@ task that will be submitted to the concurrent.futures executor</p>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -233,7 +237,7 @@ task that will be submitted to the concurrent.futures executor</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.2.
       </li>
     </ul>
     </div>

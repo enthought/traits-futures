@@ -9,17 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.wx.tests package
-================================
+traits\_futures.asyncio.tests.test\_event\_loop\_helper module
+==============================================================
 
-.. automodule:: traits_futures.wx.tests
+.. automodule:: traits_futures.asyncio.tests.test_event_loop_helper
    :members:
    :undoc-members:
    :show-inheritance:
-
-
-.. toctree::
-
-   traits_futures.wx.tests.test_context
-   traits_futures.wx.tests.test_event_loop_helper
-   traits_futures.wx.tests.test_pingee

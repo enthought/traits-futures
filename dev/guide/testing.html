@@ -3,13 +3,16 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Testing Traits Futures code &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +25,7 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -84,7 +88,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="testing-traits-futures-code">
+  <section id="testing-traits-futures-code">
 <h1>Testing Traits Futures code<a class="headerlink" href="#testing-traits-futures-code" title="Permalink to this headline">¶</a></h1>
 <p>This section gives some hints and tips for unit-testing code that uses
 Traits Futures. Those tests face two main challenges:</p>
@@ -95,7 +99,7 @@ run the event loop in order for futures to deliver their results.</p></li>
 <li><p>It’s important to fully shut down executors after each test, to avoid
 leaked threads and potential for test interactions.</p></li>
 </ul>
-<div class="section" id="an-example-test">
+<section id="an-example-test">
 <h2>An example test<a class="headerlink" href="#an-example-test" title="Permalink to this headline">¶</a></h2>
 <p>Here’s an example of testing a simple future.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
@@ -179,8 +183,8 @@ the future for its side-effect rather than to perform a computation) then it’s
 safe to remove the wait for <code class="docutils literal notranslate"><span class="pre">future.done</span></code>, so long as you keep the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a>
 call and then wait for the executor to stop: the executor won’t reach <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code></a>
 state until all futures have completed.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -239,7 +243,7 @@ state until all futures have completed.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.2.
       </li>
     </ul>
     </div>

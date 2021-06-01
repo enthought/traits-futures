@@ -21,4 +21,5 @@ traits\_futures.qt.tests package
 .. toctree::
 
    traits_futures.qt.tests.test_context
+   traits_futures.qt.tests.test_event_loop_helper
    traits_futures.qt.tests.test_pingee

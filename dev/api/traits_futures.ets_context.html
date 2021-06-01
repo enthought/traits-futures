@@ -3,13 +3,16 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>traits_futures.ets_context module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +25,7 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -86,7 +90,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.ets_context">
+  <section id="module-traits_futures.ets_context">
 <span id="traits-futures-ets-context-module"></span><h1>traits_futures.ets_context module<a class="headerlink" href="#module-traits_futures.ets_context" title="Permalink to this headline">¶</a></h1>
 <p>Context with toolkit selection matching that of ETS.</p>
 <p>This module provides an IGuiContext implementation that’s determined in the
@@ -94,8 +98,8 @@ same way that the toolkit is determined for TraitsUI and Pyface, using the
 ETS_TOOLKIT environment variable if set, and examining the available toolkits
 if not.</p>
 <dl class="py class">
-<dt id="traits_futures.ets_context.ETSContext">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.ets_context.</span></code><code class="sig-name descname"><span class="pre">ETSContext</span></code><a class="reference internal" href="../_modules/traits_futures/ets_context.html#ETSContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_context.ETSContext" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.ets_context.ETSContext">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.ets_context.</span></span><span class="sig-name descname"><span class="pre">ETSContext</span></span><a class="reference internal" href="../_modules/traits_futures/ets_context.html#ETSContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_context.ETSContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>IGuiContext implementation with lazily-determined toolkit.</p>
 <p>The first time this context is used, an appropriate toolkit will
@@ -105,8 +109,8 @@ is based on the value of the ETS_TOOLKIT environment variable, followed
 an examination of the available setuptools entry points under the
 entry point group “traits_futures.gui_contexts”.</p>
 <dl class="py method">
-<dt id="traits_futures.ets_context.ETSContext.event_loop_helper">
-<code class="sig-name descname"><span class="pre">event_loop_helper</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/ets_context.html#ETSContext.event_loop_helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_context.ETSContext.event_loop_helper" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.ets_context.ETSContext.event_loop_helper">
+<span class="sig-name descname"><span class="pre">event_loop_helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/ets_context.html#ETSContext.event_loop_helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_context.ETSContext.event_loop_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new event loop helper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -119,8 +123,8 @@ entry point group “traits_futures.gui_contexts”.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.ets_context.ETSContext.pingee">
-<code class="sig-name descname"><span class="pre">pingee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/ets_context.html#ETSContext.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_context.ETSContext.pingee" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.ets_context.ETSContext.pingee">
+<span class="sig-name descname"><span class="pre">pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/ets_context.html#ETSContext.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_context.ETSContext.pingee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new pingee.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -137,16 +141,16 @@ callable is ignored.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="traits_futures.ets_context.ETSContext.toolkit_context">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">toolkit_context</span></code><a class="headerlink" href="#traits_futures.ets_context.ETSContext.toolkit_context" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="traits_futures.ets_context.ETSContext.toolkit_context">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">toolkit_context</span></span><a class="headerlink" href="#traits_futures.ets_context.ETSContext.toolkit_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fix the toolkit for this context, using the same mechanism as Pyface
 uses to find its toolkits.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -197,7 +201,7 @@ uses to find its toolkits.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.2.
       </li>
     </ul>
     </div>
