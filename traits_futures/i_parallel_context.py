@@ -58,9 +58,14 @@ class IParallelContext(abc.ABC):
         """
 
     @abc.abstractmethod
-    def message_router(self):
+    def message_router(self, gui_context):
         """
         Return a message router suitable for use in this context.
+
+        Parameters
+        ----------
+        gui_context : IGuiContext
+            The GUI context providing the event loop to interact with.
 
         Returns
         -------

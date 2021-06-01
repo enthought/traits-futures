@@ -48,7 +48,7 @@ class TrackingTraitsExecutor(TraitsExecutor):
 class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self._context = MultithreadingContext(gui_context=self._gui_context)
+        self._context = MultithreadingContext()
 
     def tearDown(self):
         self._context.close()
@@ -74,7 +74,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             self.assertIsInstance(executor._context, MultithreadingContext)
 
     def test_externally_supplied_context(self):
-        context = MultithreadingContext(gui_context=self._gui_context)
+        context = MultithreadingContext()
         try:
             with self.temporary_executor(context=context) as executor:
                 self.assertIs(executor._context, context)
@@ -176,8 +176,11 @@ class TestTraitsExecutor(
 ):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self._context = MultithreadingContext(gui_context=self._gui_context)
-        self.executor = TraitsExecutor(context=self._context)
+        self._context = MultithreadingContext()
+        self.executor = TraitsExecutor(
+            context=self._context,
+            gui_context=self._gui_context,
+        )
         self.listener = ExecutorListener(executor=self.executor)
 
     def tearDown(self):

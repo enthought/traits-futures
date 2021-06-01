@@ -30,8 +30,11 @@ class TestBackgroundProgress(
 ):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self._context = MultithreadingContext(gui_context=self._gui_context)
-        self.executor = TraitsExecutor(context=self._context)
+        self._context = MultithreadingContext()
+        self.executor = TraitsExecutor(
+            context=self._context,
+            gui_context=self._gui_context,
+        )
 
     def tearDown(self):
         self.halt_executor()

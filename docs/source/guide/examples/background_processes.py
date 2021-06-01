@@ -29,7 +29,6 @@ from traits_futures.api import (
     CANCELLED,
     CANCELLING,
     COMPLETED,
-    ETSContext,
     EXECUTING,
     FAILED,
     MultiprocessingContext,
@@ -163,8 +162,7 @@ def main():
     """
     Demonstrate a GUI that hands off background tasks to a separate process.
     """
-    gui_context = ETSContext()
-    context = MultiprocessingContext(gui_context=gui_context)
+    context = MultiprocessingContext()
     traits_executor = TraitsExecutor(context=context)
     try:
         view = SquaringHelper(traits_executor=traits_executor)

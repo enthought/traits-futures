@@ -34,8 +34,7 @@ Here's an example ``main`` function that creates an executor that uses
 a multiprocessing context::
 
     def main():
-        gui_context = ETSContext()
-        context = MultiprocessingContext(gui_context=gui_context)
+        context = MultiprocessingContext()
         traits_executor = TraitsExecutor(context=context)
         try:
             view = SquaringHelper(traits_executor=traits_executor)

@@ -31,7 +31,10 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
+from traits_futures.ets_context import ETSContext
+from traits_futures.i_gui_context import IGuiContext
 from traits_futures.i_parallel_context import IParallelContext
+from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
 logger = logging.getLogger(__name__)
@@ -102,6 +105,7 @@ class TraitsExecutor(HasStrictTraits):
         worker_pool=None,
         max_workers=None,
         context=None,
+        gui_context=None,
         **traits,
     ):
         super().__init__(**traits)
@@ -119,6 +123,9 @@ class TraitsExecutor(HasStrictTraits):
 
         if context is not None:
             self._context = context
+
+        if gui_context is not None:
+            self._gui_context = gui_context
 
         own_worker_pool = worker_pool is None
         if own_worker_pool:
@@ -308,6 +315,9 @@ class TraitsExecutor(HasStrictTraits):
     #: Parallelization context
     _context = Instance(IParallelContext)
 
+    #: GUI toolkit context
+    _gui_context = Instance(IGuiContext)
+
     #: True if we own this context, else False.
     _own_context = Bool(False)
 
@@ -349,17 +359,20 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        router = self._context.message_router()
+        router = self._context.message_router(gui_context=self._gui_context)
         router.start()
         self._have_message_router = True
         return router
 
-    def __context_default(self):
-        # By default, we use multithreading, and the default "ETS" GUI context.
-        from traits_futures.ets_context import ETSContext
-        from traits_futures.multithreading_context import MultithreadingContext
+    def __gui_context_default(self):
+        # By default we use the "ETS" GUI context, which chooses which
+        # GUI toolkit to use based on the ETS_TOOLKIT environment variable
+        # and the available installed packages.
+        return ETSContext()
 
-        context = MultithreadingContext(gui_context=ETSContext())
+    def __context_default(self):
+        # By default, we use multithreading.
+        context = MultithreadingContext()
         self._own_context = True
         return context
 

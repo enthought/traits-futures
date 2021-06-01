@@ -19,7 +19,6 @@ class TestApi(unittest.TestCase):
             CANCELLED,
             CANCELLING,
             COMPLETED,
-            ETSContext,
             EXECUTING,
             ExecutorState,
             FAILED,

@@ -29,9 +29,9 @@ class MultithreadingContext(IParallelContext):
         GUI context to use for interactions with the GUI event loop.
     """
 
-    def __init__(self, gui_context):
+    def __init__(self, gui_context=None):
+        assert gui_context is None
         self._closed = False
-        self._gui_context = gui_context
 
     def worker_pool(self, *, max_workers=None):
         """
@@ -60,15 +60,20 @@ class MultithreadingContext(IParallelContext):
         """
         return threading.Event()
 
-    def message_router(self):
+    def message_router(self, gui_context):
         """
         Return a message router suitable for use in this context.
+
+        Parameters
+        ----------
+        gui_context : IGuiContext
+            The GUI context providing the event loop to interact with.
 
         Returns
         -------
         message_router : MultithreadingRouter
         """
-        return MultithreadingRouter(gui_context=self._gui_context)
+        return MultithreadingRouter(gui_context=gui_context)
 
     def close(self):
         """

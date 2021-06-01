@@ -82,7 +82,6 @@ from traits_futures.background_progress import (
     submit_progress,
 )
 from traits_futures.base_future import BaseFuture
-from traits_futures.ets_context import ETSContext
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
@@ -138,6 +137,4 @@ __all__ = [
     "IParallelContext",
     "MultiprocessingContext",
     "MultithreadingContext",
-    # GUI Contexts
-    "ETSContext",
 ]
