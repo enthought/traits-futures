@@ -13,7 +13,7 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
-from traits_futures.ets_context import ETSContext
+from traits_futures.asyncio.context import AsyncioContext
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
@@ -34,7 +34,7 @@ class GuiTestAssistant:
     #: Factory for the GUI context. This should be a zero-argument callable
     #: that provides an IGuiContext instance. Override in subclasses to
     #: run tests with a particular toolkit.
-    gui_context_factory = ETSContext
+    gui_context_factory = AsyncioContext
 
     def setUp(self):
         self._gui_context = self.gui_context_factory()
