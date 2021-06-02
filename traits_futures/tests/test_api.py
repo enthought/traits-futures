@@ -14,16 +14,19 @@ import unittest
 class TestApi(unittest.TestCase):
     def test_imports(self):
         from traits_futures.api import (  # noqa: F401
+            AsyncioContext,
             BaseFuture,
             CallFuture,
             CANCELLED,
             CANCELLING,
             COMPLETED,
+            ETSContext,
             EXECUTING,
             ExecutorState,
             FAILED,
             FutureState,
             IFuture,
+            IGuiContext,
             IParallelContext,
             ITaskSpecification,
             IterationFuture,
