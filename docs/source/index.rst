@@ -67,6 +67,7 @@ User Guide
    guide/intro.rst
    guide/cancel.rst
    guide/contexts.rst
+   guide/toolkits.rst
    guide/testing.rst
    guide/advanced.rst
 
