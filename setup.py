@@ -14,7 +14,7 @@ from setuptools import find_packages, setup
 
 
 def get_version_info():
-    """ Extract version information as a dictionary from version.py. """
+    """Extract version information as a dictionary from version.py."""
     version_info = {}
     version_filename = os.path.join("traits_futures", "version.py")
     with open(version_filename, "r", encoding="utf-8") as version_module:
@@ -24,7 +24,7 @@ def get_version_info():
 
 
 def get_long_description():
-    """ Read long description from README.rst. """
+    """Read long description from README.rst."""
     with open("README.rst", "r", encoding="utf-8") as readme:
         return readme.read()
 

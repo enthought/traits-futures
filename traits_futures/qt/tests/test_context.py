@@ -22,7 +22,7 @@ from traits_futures.tests.i_gui_context_tests import IGuiContextTests
 @requires_qt
 class TestQtContext(IGuiContextTests, unittest.TestCase):
     def context_factory(self):
-        """ Factory for instances of the context. """
+        """Factory for instances of the context."""
         from traits_futures.qt.context import QtContext
 
         return QtContext()

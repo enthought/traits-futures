@@ -26,7 +26,7 @@ def dummy_cancel_callback():
 
 
 class FutureListener(HasStrictTraits):
-    """ Record state changes to a given future. """
+    """Record state changes to a given future."""
 
     #: The future that we're listening to.
     future = Any()
@@ -56,7 +56,7 @@ class CommonFutureTests:
         states = []
 
         def record_states():
-            """ Record the future's state and derived traits. """
+            """Record the future's state and derived traits."""
             states.append((future.state, future.cancellable, future.done))
 
         # Record state when any of the three traits changes.
@@ -181,7 +181,7 @@ class CommonFutureTests:
         self.assertIsInstance(future, IFuture)
 
     def send_message(self, future, message):
-        """ Send a particular message to a future. """
+        """Send a particular message to a future."""
         if message == "I":
             future._executor_initialized(dummy_cancel_callback)
         elif message == "S":
@@ -195,7 +195,7 @@ class CommonFutureTests:
             future._user_cancelled()
 
     def send_message_sequence(self, messages):
-        """ Create a new future, and send the given message sequence to it. """
+        """Create a new future, and send the given message sequence to it."""
         future = self.future_class()
         for message in messages:
             self.send_message(future, message)

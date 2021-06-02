@@ -24,7 +24,7 @@ class TestWxContext(IGuiContextTests, unittest.TestCase):
 
     #: Factory for instances of the context
     def context_factory(self):
-        """ Factory for instances of the context. """
+        """Factory for instances of the context."""
         from traits_futures.wx.context import WxContext
 
         return WxContext()

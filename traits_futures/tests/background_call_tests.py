@@ -67,7 +67,7 @@ class CallFutureListener(HasStrictTraits):
 
 
 class BackgroundCallTests:
-    """ Mixin class containing tests for the background call. """
+    """Mixin class containing tests for the background call."""
 
     def test_successful_call(self):
         future = submit_call(self.executor, pow, 2, 3)

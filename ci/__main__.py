@@ -424,7 +424,7 @@ def _get_devenv(edm, python_version, toolkit):
 
 
 def _remove_readonly(func, path, _):
-    """ Clear the readonly bit and reattempt the removal """
+    """Clear the readonly bit and reattempt the removal."""
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
