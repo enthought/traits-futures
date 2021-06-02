@@ -32,7 +32,10 @@ toolkit to use based on the value of the ``ETS_TOOLKIT`` environment variable,
 on whether any other part of the ETS machinery has already "fixed" the toolkit,
 and on which toolkits are available in the current Python environment.
 
+Here's an example script that uses the |AsyncioContext| in order to execute
+Traits Futures tasks within the context of an asyncio event loop.
 
+.. literalinclude:: examples/headless.py
 
 
 
