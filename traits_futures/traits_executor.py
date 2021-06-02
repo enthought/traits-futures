@@ -85,6 +85,10 @@ class TraitsExecutor(HasStrictTraits):
         multithreading or multiprocessing). If not given, assumes
         multithreading. Note that if both ``context`` and ``worker_pool``
         are given, they must be compatible.
+    gui_context : IGuiContext, optional
+        Context providing information about which GUI event loop to use. If not
+        given, uses an :class:`~.ETSContext` instance, which determines the
+        appropriate toolkit based on availability.
     """
 
     #: Current state of this executor.
