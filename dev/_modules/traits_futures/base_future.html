@@ -448,19 +448,19 @@
     <span class="c1"># Private methods #########################################################</span>
 
     <span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Property getter for the &quot;state&quot; trait. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;state&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get_cancellable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Property getter for the &quot;cancellable&quot; trait. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;cancellable&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_CANCELLABLE_INTERNAL_STATES</span>
 
     <span class="k">def</span> <span class="nf">_get_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Property getter for the &quot;done&quot; trait. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;done&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_DONE_INTERNAL_STATES</span>
 
     <span class="k">def</span> <span class="nf">__internal_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Trait change handler for the &quot;_internal_state&quot; trait. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
         <span class="n">old_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">[</span><span class="n">old_internal_state</span><span class="p">]</span>
         <span class="n">new_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">[</span><span class="n">new_internal_state</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">old_state</span> <span class="o">!=</span> <span class="n">new_state</span><span class="p">:</span>
