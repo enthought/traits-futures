@@ -16,7 +16,7 @@ from traits_futures.i_pingee import IPingee
 
 
 class IGuiContextTests:
-    """ Mixin providing tests for implementations of IGuiContext. """
+    """Mixin providing tests for implementations of IGuiContext."""
 
     #: Override this in subclasses.
     context_factory = IGuiContext

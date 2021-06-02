@@ -366,19 +366,19 @@ class BaseFuture(HasStrictTraits):
     # Private methods #########################################################
 
     def _get_state(self):
-        """ Property getter for the "state" trait. """
+        """Property getter for the "state" trait."""
         return _INTERNAL_STATE_TO_STATE[self._internal_state]
 
     def _get_cancellable(self):
-        """ Property getter for the "cancellable" trait. """
+        """Property getter for the "cancellable" trait."""
         return self._internal_state in _CANCELLABLE_INTERNAL_STATES
 
     def _get_done(self):
-        """ Property getter for the "done" trait. """
+        """Property getter for the "done" trait."""
         return self._internal_state in _DONE_INTERNAL_STATES
 
     def __internal_state_changed(self, old_internal_state, new_internal_state):
-        """ Trait change handler for the "_internal_state" trait. """
+        """Trait change handler for the "_internal_state" trait."""
         old_state = _INTERNAL_STATE_TO_STATE[old_internal_state]
         new_state = _INTERNAL_STATE_TO_STATE[new_internal_state]
         if old_state != new_state:

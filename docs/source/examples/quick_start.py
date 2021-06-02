@@ -26,7 +26,7 @@ from traits_futures.api import CallFuture, submit_call, TraitsExecutor
 
 
 def slow_square(n):
-    """ Square the given input, slowly. """
+    """Square the given input, slowly."""
     time.sleep(5.0)
     return n * n
 

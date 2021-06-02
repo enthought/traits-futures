@@ -23,7 +23,7 @@ from traits_futures.tests.i_event_loop_helper_tests import (
 @requires_qt
 class TestEventLoopHelper(unittest.TestCase, IEventLoopHelperTests):
     def event_loop_helper_factory(self):
-        """ Create an instance of the EventLoopHelper for testing. """
+        """Create an instance of the EventLoopHelper for testing."""
         from traits_futures.qt.event_loop_helper import EventLoopHelper
 
         return EventLoopHelper()

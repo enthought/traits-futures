@@ -47,23 +47,23 @@ SAFETY_TIMEOUT = 5.0
 
 
 def test_call(*args, **kwds):
-    """ Simple test target for submit_call. """
+    """Simple test target for submit_call."""
     return args, kwds
 
 
 def test_iteration(*args, **kwargs):
-    """ Simple test target for submit_iteration. """
+    """Simple test target for submit_iteration."""
     yield args
     yield kwargs
 
 
 def test_progress(arg1, arg2, kwd1, kwd2, progress):
-    """ Simple test target for submit_progress. """
+    """Simple test target for submit_progress."""
     return arg1, arg2, kwd1, kwd2
 
 
 class ExecutorListener(HasStrictTraits):
-    """ Listener for executor state changes. """
+    """Listener for executor state changes."""
 
     #: Executor that we're listening to.
     executor = Instance(TraitsExecutor)
