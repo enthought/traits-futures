@@ -15,11 +15,7 @@ Running Traits Futures without a GUI, using the asyncio event loop.
 import asyncio
 import random
 
-from traits_futures.api import (
-    AsyncioContext,
-    submit_iteration,
-    TraitsExecutor,
-)
+from traits_futures.api import AsyncioContext, submit_iteration, TraitsExecutor
 
 
 def approximate_pi(sample_count=10**8, report_interval=10 ** 6):
