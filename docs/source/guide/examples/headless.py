@@ -16,9 +16,9 @@ import asyncio
 import random
 
 from traits_futures.api import (
-    TraitsExecutor,
-    submit_iteration,
     AsyncioContext,
+    submit_iteration,
+    TraitsExecutor,
 )
 
 
