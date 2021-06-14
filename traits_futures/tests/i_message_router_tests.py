@@ -195,12 +195,12 @@ class IMessageRouterTests:
                 router.start()
 
     def test_stop_unstarted_router(self):
-        router = self.context.message_router()
+        router = self.context.message_router(gui_context=self._gui_context)
         with self.assertRaises(RuntimeError):
             router.stop()
 
     def test_pipe_for_unstarted_router(self):
-        router = self.context.message_router()
+        router = self.context.message_router(gui_context=self._gui_context)
         with self.assertRaises(RuntimeError):
             router.pipe()
 
@@ -310,7 +310,7 @@ class IMessageRouterTests:
 
         Stops the router on context manager exit.
         """
-        router = self.context.message_router()
+        router = self.context.message_router(gui_context=self._gui_context)
         router.start()
         try:
             yield router
