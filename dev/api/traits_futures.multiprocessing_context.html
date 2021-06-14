@@ -95,15 +95,9 @@
 <p>Context providing multiprocessing-friendly worker pools, events, and routers.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_context.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_context.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingContext</span></span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.i_parallel_context.IParallelContext</span></code></a></p>
 <p>Context for multiprocessing, suitable for use with the TraitsExecutor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>gui_context</strong> (<a class="reference internal" href="traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext" title="traits_futures.i_gui_context.IGuiContext"><em>IGuiContext</em></a><em>, </em><em>optional</em>) – GUI context to use for interactions with the GUI event loop.
-If not given, an <code class="xref py py-class docutils literal notranslate"><span class="pre">ETSContext</span></code> instance is used.</p>
-</dd>
-</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.close" title="Permalink to this definition">¶</a></dt>
@@ -132,14 +126,17 @@ If not given, an <code class="xref py py-class docutils literal notranslate"><sp
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.message_router">
-<span class="sig-name descname"><span class="pre">message_router</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.message_router" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">message_router</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.message_router" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a message router suitable for use in this context.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>message_router</strong></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gui_context</strong> (<a class="reference internal" href="traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext" title="traits_futures.i_gui_context.IGuiContext"><em>IGuiContext</em></a>) – The GUI context providing the event loop to interact with.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter" title="traits_futures.multiprocessing_router.MultiprocessingRouter">MultiprocessingRouter</a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>message_router</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter" title="traits_futures.multiprocessing_router.MultiprocessingRouter">MultiprocessingRouter</a></p>
 </dd>
 </dl>
 </dd></dl>

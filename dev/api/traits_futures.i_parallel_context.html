@@ -133,14 +133,17 @@ the <code class="docutils literal notranslate"><span class="pre">set</span></cod
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_parallel_context.IParallelContext.message_router">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">message_router</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_parallel_context.html#IParallelContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_parallel_context.IParallelContext.message_router" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">message_router</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_parallel_context.html#IParallelContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_parallel_context.IParallelContext.message_router" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a message router suitable for use in this context.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>message_router</strong></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gui_context</strong> (<a class="reference internal" href="traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext" title="traits_futures.i_gui_context.IGuiContext"><em>IGuiContext</em></a>) – The GUI context providing the event loop to interact with.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter" title="traits_futures.i_message_router.IMessageRouter">IMessageRouter</a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>message_router</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter" title="traits_futures.i_message_router.IMessageRouter">IMessageRouter</a></p>
 </dd>
 </dl>
 </dd></dl>
