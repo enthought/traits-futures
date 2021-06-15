@@ -64,6 +64,7 @@ User Guide
 .. toctree::
    :maxdepth: 4
 
+   guide/overview.rst
    guide/intro.rst
    guide/cancel.rst
    guide/contexts.rst
