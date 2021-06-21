@@ -56,6 +56,8 @@ a background computation when its "Calculate" button is pressed, and shows the
 result when it arrives.
 
 .. literalinclude:: examples/quick_start.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 
 User Guide

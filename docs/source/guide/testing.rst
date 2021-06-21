@@ -29,6 +29,8 @@ An example test
 Here's an example of testing a simple future.
 
 .. literalinclude:: examples/test_future.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 Some points of interest in the above example:
 

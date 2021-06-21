@@ -152,6 +152,8 @@ Putting everything together, here's an example GUI that makes use of the new
 background task type:
 
 .. literalinclude:: examples/fizz_buzz_ui.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 
 ..
