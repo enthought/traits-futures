@@ -64,6 +64,8 @@ however, that the GUI will remain responsive and usable during those seconds.
 Here's a complete TraitsUI application that demonstrates this behaviour.
 
 .. literalinclude:: examples/non_interruptible_task.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 However, with two simple changes, we can allow the ``approximate_pi`` function
 to cancel mid-calculation. Those two changes are:
@@ -144,6 +146,8 @@ Here's a version of the approximation code that yields partial results at each
 Here's a complete TraitsUI example making use of the above.
 
 .. literalinclude:: examples/interruptible_task.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 ..
    substitutions
