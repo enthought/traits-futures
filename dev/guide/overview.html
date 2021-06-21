@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Overview &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
+    <link rel="next" title="Introduction" href="intro.html" >
+    <link rel="prev" title="Traits Futures: reactive background processing for Traits and TraitsUI" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="intro.html" title="Introduction"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="../index.html" title="Traits Futures: reactive background processing for Traits and TraitsUI"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<section id="why-traits-futures">
+<h2>Why Traits Futures?<a class="headerlink" href="#why-traits-futures" title="Permalink to this headline">¶</a></h2>
+<p>In a nutshell, Traits Futures allows GUI applications to execute one or more
+background tasks without blocking the main GUI, and then <em>safely</em> update the
+GUI in response to full or partial results from those background tasks. For
+more details and an explanation of why this is needed, read on.</p>
+<p>The GUI frameworks that we work with in the Enthought Tool Suite are
+essentially<a class="footnote-reference brackets" href="#f1" id="id1">1</a> single-threaded. When an application is started, the main
+thread of the Python process enters the GUI framework’s event loop, for example
+via a call to <a class="reference external" href="https://doc.qt.io/qt-5/qapplication.html#exec">QApplication::exec</a>. That event loop then
+waits for relevant events (user interactions with widgets, external network
+events, timing events, and so on) in a loop, and when they occur, dispatches
+those events to appropriate event handlers. In many cases those handlers take
+the form of callbacks into Python code.</p>
+<p>Traits-based GUIs that perform significant work in response to user
+interactions (for example, running a complex computation, or submitting a
+complex search query to a remote database) face two main problems.</p>
+<section id="problem-1-unresponsive-guis">
+<h3>Problem 1: unresponsive GUIs<a class="headerlink" href="#problem-1-unresponsive-guis" title="Permalink to this headline">¶</a></h3>
+<p>Thanks to the single-threaded nature of the GUI frameworks, the various
+callbacks into Python land are executed in serial rather than in parallel: only
+one callback can be executing at any given time, and that callback must
+complete its execution before any other callback can start to execute. So while
+a particular callback is executing, the GUI cannot respond to other user
+interactions. This presents a problem if you want to run a calculation (for
+example) from within a GUI.</p>
+<p>The following example code demonstrates this effect. It provides a simple GUI
+wrapper for a slow calculation. In this case, the slowness is simulated via a
+call to <a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of GUI that runs a time-consuming calculation in the main thread.</span>
+
+<span class="sd">This example demonstrates that the GUI is unresponsive while the calculation</span>
+<span class="sd">is running.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">Range</span><span class="p">,</span> <span class="n">Str</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+
+
+<span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Square a number, slowly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Simulate a slow calculation</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">input</span> <span class="o">*</span> <span class="nb">input</span>
+
+
+<span class="k">class</span> <span class="nc">SlowSquareUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GUI wrapper for the slow_square computation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Value to square.</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+
+    <span class="c1">#: Status message.</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;Click the button to square the input&quot;</span><span class="p">)</span>
+
+    <span class="c1">#: Button to start calculation.</span>
+    <span class="n">square</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_run_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Calculating square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> ...&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">slow_square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">),</span>
+        <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">SlowSquareUI</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When you run this code, you should see a dialog that looks something like
+this (modulo platform-specific styling differences):</p>
+<img alt="Dialog with &quot;square&quot; button" src="../_images/calculate_in_main_thread.png" />
+<p>Before the “square” button is clicked, the input can be adjusted via
+keyboard and mouse, and the window can be resized. But once the “square”
+button is clicked, the GUI becomes unresponsive until the calculation
+completes 10 seconds later: the input cannot be adjusted, and the window
+cannot be resized.</p>
+<p>There a second, subtler, problem with this code. In the <code class="docutils literal notranslate"><span class="pre">_run_calculation</span></code>
+method, before we kick off the long-running calculation we update the UI’s
+status message to report that a calculation is in progress. We then update the
+message again at the end of that method with the result of the calculation. But
+in the GUI, depending on the toolkit and operating system in use, we may never
+see a message update for that first <code class="docutils literal notranslate"><span class="pre">self.message</span> <span class="pre">=</span></code> assignment. That’s
+because the graphical update occurs as the result of another task sitting in
+the event loop’s task queue, and our current callback is blocking that task
+from executing.</p>
+</section>
+<section id="problem-2-safely-updating-the-gui">
+<h3>Problem 2: Safely updating the GUI<a class="headerlink" href="#problem-2-safely-updating-the-gui" title="Permalink to this headline">¶</a></h3>
+<p>The solution to the responsiveness issue described in the previous section is
+straightforward: we move the calculation to a separate thread or process,
+freeing up the main thread so that the GUI can continue to respond to user
+interactions. This in itself doesn’t require Traits Futures: it could be
+accomplished directly by submitting the squaring jobs to a <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>
+worker pool, for example.</p>
+<p>But as soon as we move the calculation to a background thread, we run into a
+second issue: GUI toolkits generally require that their objects (widgets, etc.)
+are only manipulated from the thread on which they were created, which is
+usually the main thread. For example, given a <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> object <code class="docutils literal notranslate"><span class="pre">label</span></code>,
+calling <code class="docutils literal notranslate"><span class="pre">label.setText(&quot;some</span> <span class="pre">text&quot;)</span></code> from anything other than the thread that
+“owns” the <code class="docutils literal notranslate"><span class="pre">label</span></code> object is unsafe.</p>
+<p>To demonstrate this, here’s a variation of the example script above that
+dispatches squaring jobs to a background thread. Unlike the previous version,
+the GUI remains responsive and usable while a background job is executing.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of GUI that runs a time-consuming calculation in the background.</span>
+
+<span class="sd">This example demonstrates the difficulties of updating the</span>
+<span class="sd">main GUI in response to the results of the background task.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">Range</span><span class="p">,</span> <span class="n">Str</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+
+
+<span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Square a number, slowly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Simulate a slow calculation</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">input</span> <span class="o">*</span> <span class="nb">input</span>
+
+
+<span class="k">class</span> <span class="nc">SlowSquareUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GUI wrapper for the slow_square computation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: concurrent.futures executor providing the worker pool.</span>
+    <span class="n">worker_pool</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Executor</span><span class="p">)</span>
+
+    <span class="c1">#: Value to square.</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+
+    <span class="c1">#: Status message.</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;Click the button to square the input&quot;</span><span class="p">)</span>
+
+    <span class="c1">#: Button to start calculation.</span>
+    <span class="n">square</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_run_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Calculating square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> ...&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the status when the background calculation completes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">),</span>
+        <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">worker_pool</span><span class="p">:</span>
+        <span class="n">SlowSquareUI</span><span class="p">(</span><span class="n">worker_pool</span><span class="o">=</span><span class="n">worker_pool</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When you try this code, it may work perfectly for you, or it may crash with a
+segmentation fault. Or it may work perfectly during all your testing and only
+crash after it’s been deployed to a customer. The main cause of difficulty is
+the <code class="docutils literal notranslate"><span class="pre">future.add_done_callback</span></code> line. The callback it refers to,
+<code class="docutils literal notranslate"><span class="pre">self._update_message</span></code>, will (usually, but not always) be executed on the
+worker thread. That callback updates the <code class="docutils literal notranslate"><span class="pre">message</span></code> trait, which in turn
+triggers an update of the corresponding <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> widget, still on the worker
+thread.</p>
+<p>There are some other obvious issues with this code. There’s no mechanism in
+place to prevent multiple jobs from running at once. And the code that sets
+<code class="docutils literal notranslate"><span class="pre">self.message</span></code> looks up the <em>current</em> version of <code class="docutils literal notranslate"><span class="pre">self.input</span></code> rather than
+the actual input that was used, so you can end up with messages like this:</p>
+<img alt="Dialog showing 'The square of 11 is 4761'" src="../_images/bad_square.png" />
+<p>Fixing these issues without introducing additional thread-safety issues or
+additional thread-related complications (like locks to protect shared state)
+is non-trivial. One possibility is to use the <code class="docutils literal notranslate"><span class="pre">dispatch=&quot;ui&quot;</span></code> capability
+of Traits change handlers: the future’s “done” callback could set an <code class="docutils literal notranslate"><span class="pre">Event</span></code>
+trait, and listeners to that trait could then use <code class="docutils literal notranslate"><span class="pre">dispatch=&quot;ui&quot;</span></code> to ensure
+that they were run on the main thread. But this is clunky in practice and
+it’s still somewhat risky to have a trait (the <code class="docutils literal notranslate"><span class="pre">Event</span></code> trait) being updated
+from something other than the main thread: <em>any</em> listener attached to that
+event needs to be written to be thread safe, and it would be all too easy
+to accidentally introduce non-thread-safe listeners.</p>
+</section>
+<section id="solution-traits-futures">
+<h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Permalink to this headline">¶</a></h3>
+<p>Traits Futures provides a pattern for solving the above problems. As with
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
+the time of submission a “future” object is returned. That “future” object acts
+as the main thread’s “view” of the state of the background task. The key
+differences are:</p>
+<ul class="simple">
+<li><p>The returned “future” object has traits that can be conveniently listened to
+in the GUI with the usual Traits observation machinery.</p></li>
+<li><p>The Traits Futures machinery ensures that those attributes will always be
+updated on the main thread, so that listeners attached to those traits do
+not need to be thread safe.</p></li>
+</ul>
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Note the weasel word “essentially”. Some frameworks, on some platforms, may
+start auxiliary threads in order to faciliate communication between the
+operating system and the GUI framework. Nevertheless, those auxiliary
+threads remain largely invisible to the user, and the “single-threaded”
+conceptual model remains a useful one for the purposes of understanding and
+reasoning about the GUI behavior.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#why-traits-futures">Why Traits Futures?</a><ul>
+<li><a class="reference internal" href="#problem-1-unresponsive-guis">Problem 1: unresponsive GUIs</a></li>
+<li><a class="reference internal" href="#problem-2-safely-updating-the-gui">Problem 2: Safely updating the GUI</a></li>
+<li><a class="reference internal" href="#solution-traits-futures">Solution: Traits Futures</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Traits Futures: reactive background processing for Traits and TraitsUI</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="next chapter">Introduction</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/guide/overview.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.2.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
