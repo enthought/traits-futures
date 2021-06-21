@@ -15,7 +15,6 @@ Context providing multiprocessing-friendly worker pools, events, and routers.
 import concurrent.futures
 import multiprocessing
 
-from traits_futures.ets_context import ETSContext
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multiprocessing_router import MultiprocessingRouter
 
@@ -23,20 +22,10 @@ from traits_futures.multiprocessing_router import MultiprocessingRouter
 class MultiprocessingContext(IParallelContext):
     """
     Context for multiprocessing, suitable for use with the TraitsExecutor.
-
-    Parameters
-    ----------
-    gui_context : IGuiContext, optional
-        GUI context to use for interactions with the GUI event loop.
-        If not given, an :class:`ETSContext` instance is used.
     """
 
-    def __init__(self, gui_context=None):
-        if gui_context is None:
-            gui_context = ETSContext()
-
+    def __init__(self):
         self._closed = False
-        self._gui_context = gui_context
         self._manager = multiprocessing.Manager()
 
     def worker_pool(self, *, max_workers=None):
@@ -66,16 +55,21 @@ class MultiprocessingContext(IParallelContext):
         """
         return self._manager.Event()
 
-    def message_router(self):
+    def message_router(self, gui_context):
         """
         Return a message router suitable for use in this context.
+
+        Parameters
+        ----------
+        gui_context : IGuiContext
+            The GUI context providing the event loop to interact with.
 
         Returns
         -------
         message_router : MultiprocessingRouter
         """
         return MultiprocessingRouter(
-            gui_context=self._gui_context,
+            gui_context=gui_context,
             manager=self._manager,
         )
 
