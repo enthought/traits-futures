@@ -46,6 +46,8 @@ a multiprocessing context::
 Here's a complete TraitsUI example that makes use of this.
 
 .. literalinclude:: examples/background_processes.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 
 ..

@@ -50,6 +50,8 @@ wrapper for a slow calculation. In this case, the slowness is simulated via a
 call to :func:`time.sleep`.
 
 .. literalinclude:: examples/calculate_in_main_thread.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 When you run this code, you should see a dialog that looks something like
 this (modulo platform-specific styling differences):
@@ -95,6 +97,8 @@ dispatches squaring jobs to a background thread. Unlike the previous version,
 the GUI remains responsive and usable while a background job is executing.
 
 .. literalinclude:: examples/calculate_in_worker_thread.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 When you try this code, it may work perfectly for you, or it may crash with a
 segmentation fault. Or it may work perfectly during all your testing and only
