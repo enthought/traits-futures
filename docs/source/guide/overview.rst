@@ -96,7 +96,7 @@ the GUI remains responsive and usable while a background job is executing.
 
 .. literalinclude:: examples/calculate_in_worker_thread.py
 
-When you try this code, it make work perfectly for you, or it may crash with a
+When you try this code, it may work perfectly for you, or it may crash with a
 segmentation fault. Or it may work perfectly during all your testing and only
 crash after it's been deployed to a customer. The main cause of difficulty is
 the ``future.add_done_callback`` line. The callback it refers to,
