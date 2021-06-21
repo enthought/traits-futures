@@ -27,7 +27,7 @@ def slow_square(input):
     """
     # Simulate a slow calculation
     time.sleep(10.0)
-    return input*input
+    return input * input
 
 
 class SlowSquareUI(HasStrictTraits):
