@@ -143,6 +143,20 @@ differences are:
   updated on the main thread, so that listeners attached to those traits do
   not need to be thread safe.
 
+The effect is that, with a little bit of care, the GUI code can monitor the
+"future" object for changes as with any other traited object, and can avoid
+concerning itself with thread-safety and other threading-related issues. This
+helps to avoid a class of concurrency-related pitfalls when developing the GUI.
+
+Note however that there is a price to be paid for this safety and convenience:
+the relevant traits on the future object can only be updated when the GUI event
+loop is running, so Traits Futures fundamentally relies on the existence of a
+running event loop. For a running GUI application, this is of course not a
+problem, but unit tests will need to find a way to run the event loop in order
+to receive expected updates from background tasks, and some care can be needed
+during application shutdown.
+
+
 .. rubric:: Footnotes
 
 .. [#f1]
