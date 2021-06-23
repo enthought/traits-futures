@@ -10,7 +10,7 @@
    Thanks for using Enthought open source!
 
 
-.. _testing:
+.. _guide_testing:
 
 Testing Traits Futures code
 ===========================

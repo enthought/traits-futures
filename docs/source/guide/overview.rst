@@ -154,7 +154,7 @@ loop is running, so Traits Futures fundamentally relies on the existence of a
 running event loop. For a running GUI application, this is of course not a
 problem, but unit tests will need to find a way to run the event loop in order
 to receive expected updates from background tasks, and some care can be needed
-during application shutdown. See the :ref:`testing` section for some hints on
+during application shutdown. See the :ref:`guide_testing` section for some hints on
 writing unit tests for code that uses Traits Futures.
 
 
