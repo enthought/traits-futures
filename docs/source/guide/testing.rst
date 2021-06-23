@@ -10,6 +10,8 @@
    Thanks for using Enthought open source!
 
 
+.. _testing:
+
 Testing Traits Futures code
 ===========================
 
