@@ -314,6 +314,44 @@ class TraitsExecutor(HasStrictTraits):
         if not self._wrappers:
             self._stop()
 
+    def shutdown(self, wait=True):
+        """
+        Shut down this executor synchronously, abandoning any currently
+        executing futures.
+        """
+        # XXX Add wait=False option. What does this do if we own the
+        #     worker pool? Possibly an error in that case?
+        # XXX In case where we don't own the worker pool, we should wait
+        #     for all the relevant futures to complete.
+        # XXX Add suitable logging
+
+        # XXX Have bug at the level of the pinger:
+        #     ... it shouldn't be an (unexpected) error for the pinger
+        #         to send a ping after the pingee has been "disconnected".
+        #         disconnected should simply mean that the pingee doesn't
+        #         do anything in response to pings received, not that it
+        #         can't receive pings.
+        # ... and the asyncio pinger shouldn't be reaching into the pingee
+        #     to grab the event loop. :-(
+        #
+
+        if not self.running:
+            raise RuntimeError("Executor is not currently running.")
+
+        # For consistency, always go through the STOPPING state,
+        # even if there are no jobs outstanding.
+        self.state = STOPPING
+        logger.debug(f"{self} stopping")
+
+        for wrapper in self._wrappers:
+            future = wrapper.future
+            if future.cancellable:
+                future.cancel()
+            self._message_router.close_pipe(wrapper.receiver)
+
+        self._wrappers.clear()
+        self._stop()
+
     # Private traits ##########################################################
 
     #: Parallelization context
