@@ -64,6 +64,7 @@ class Pingee(wx.EvtHandler):
         Undo any connections made in the connect method.
         """
         self.Unbind(_PingEventBinder, handler=self._on_ping)
+        del self._on_ping
 
     def pinger(self):
         """

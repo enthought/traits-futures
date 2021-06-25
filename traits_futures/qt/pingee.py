@@ -53,7 +53,9 @@ class Pingee(QObject):
 
     @Slot()
     def _execute_ping_callback(self):
-        self._on_ping()
+        callback = getattr(self, "_on_ping", None)
+        if callback is not None:
+            callback()
 
     def connect(self):
         """
@@ -65,7 +67,7 @@ class Pingee(QObject):
         """
         Undo any connections made in the connect method.
         """
-        pass
+        del self._on_ping
 
     def pinger(self):
         """
