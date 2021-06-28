@@ -12,8 +12,6 @@
 Test support, providing the ability to run the event loop from tests.
 """
 
-import asyncio
-
 from traits_futures.i_event_loop_helper import IEventLoopHelper
 
 
@@ -21,19 +19,27 @@ from traits_futures.i_event_loop_helper import IEventLoopHelper
 class EventLoopHelper:
     """
     Support for running the asyncio event loop in unit tests.
+
+    Parameters
+    ----------
+    event_loop : asyncio.events.AbstractEventLoop
+        The asyncio event loop that this object wraps.
     """
+
+    def __init__(self, event_loop):
+        self._event_loop = event_loop
 
     def init(self):
         """
         Prepare the event loop for use.
         """
-        asyncio.set_event_loop(asyncio.new_event_loop())
+        pass
 
     def dispose(self):
         """
         Dispose of any resources used by this object.
         """
-        asyncio.get_event_loop().close()
+        self._event_loop = None
 
     def setattr_soon(self, obj, name, value):
         """
@@ -55,8 +61,7 @@ class EventLoopHelper:
         value : object
             Value to set the attribute to.
         """
-        event_loop = asyncio.get_event_loop()
-        event_loop.call_soon(setattr, obj, name, value)
+        self._event_loop.call_soon(setattr, obj, name, value)
 
     def run_until(self, object, trait, condition, timeout):
         """
@@ -85,7 +90,7 @@ class EventLoopHelper:
         """
         timed_out = []
 
-        event_loop = asyncio.get_event_loop()
+        event_loop = self._event_loop
 
         def stop_on_timeout():
             timed_out.append(True)
