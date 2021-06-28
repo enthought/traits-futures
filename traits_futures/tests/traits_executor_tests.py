@@ -192,16 +192,12 @@ class TraitsExecutorTests:
 
     def test_shutdown_goes_through_stopping_state(self):
         self.executor.shutdown()
-
         self.assertEqual(
             self.listener.states,
             [RUNNING, STOPPING, STOPPED],
         )
 
     def test_shutdown_waits_for_background_tasks(self):
-
-        # XXX Need to also check this in the context of a non-owned
-        # worker pool.
         starting = self._context.event()
         stopping = self._context.event()
         submit_call(self.executor, slow_call, starting, stopping)
