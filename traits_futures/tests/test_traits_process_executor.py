@@ -153,8 +153,9 @@ class TestTraitsExecutor(
 
     def tearDown(self):
         del self.listener
-        if not self.executor.stopped:
+        if self.executor.running:
             self.executor.stop()
+        if not self.executor.stopped:
             self.wait_until_stopped(self.executor)
         del self.executor
         self._context.close()
