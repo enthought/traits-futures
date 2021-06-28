@@ -12,11 +12,9 @@
 Tests for the asyncio implementation of IEventLoopHelper.
 """
 
-import asyncio
 import unittest
 
 from traits_futures.asyncio.context import AsyncioContext
-from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.tests.i_event_loop_helper_tests import (
     IEventLoopHelperTests,
 )
