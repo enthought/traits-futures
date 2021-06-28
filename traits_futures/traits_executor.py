@@ -342,18 +342,6 @@ class TraitsExecutor(HasStrictTraits):
             Maximum time to wait for background tasks to complete, in seconds.
             If not given, this method will wait indefinitely.
         """
-        # XXX Add wait=False option. What does this do if we own the
-        #     worker pool? Possibly an error in that case?
-        # XXX Consider separate method instead of wait=False.
-        # XXX Add suitable logging
-        # XXX Update documentation.
-        # XXX Convert examples to use shutdown where appropriate.
-        # XXX Refactor GuiTestAssistant to make executor creation
-        #     with the appropriate context easier.
-        # XXX Fix up missing self._gui_context provision in
-        #     executor creation.
-        # XXX Make long_running_task safer.
-
         if not self.running:
             raise RuntimeError("Executor is not currently running.")
 
