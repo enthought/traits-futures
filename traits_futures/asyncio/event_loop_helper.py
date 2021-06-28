@@ -27,13 +27,13 @@ class EventLoopHelper:
         """
         Prepare the event loop for use.
         """
-        asyncio.set_event_loop(asyncio.new_event_loop())
+        self._event_loop = asyncio.get_event_loop()
 
     def dispose(self):
         """
         Dispose of any resources used by this object.
         """
-        asyncio.get_event_loop().close()
+        self._event_loop = None
 
     def setattr_soon(self, obj, name, value):
         """
@@ -55,8 +55,7 @@ class EventLoopHelper:
         value : object
             Value to set the attribute to.
         """
-        event_loop = asyncio.get_event_loop()
-        event_loop.call_soon(setattr, obj, name, value)
+        self._event_loop.call_soon(setattr, obj, name, value)
 
     def run_until(self, object, trait, condition, timeout):
         """
@@ -85,7 +84,7 @@ class EventLoopHelper:
         """
         timed_out = []
 
-        event_loop = asyncio.get_event_loop()
+        event_loop = self._event_loop
 
         def stop_on_timeout():
             timed_out.append(True)
