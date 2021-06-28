@@ -202,7 +202,7 @@ class TestTraitsExecutorWithExternalWorkerPool(
     def setUp(self):
         GuiTestAssistant.setUp(self)
         self._context = MultithreadingContext()
-        self._worker_pool = concurrent.futures.ThreadPoolExecutor()
+        self._worker_pool = self._context.worker_pool()
         self.executor = TraitsExecutor(
             context=self._context,
             gui_context=self._gui_context,
@@ -217,8 +217,8 @@ class TestTraitsExecutorWithExternalWorkerPool(
         if not self.executor.stopped:
             self.wait_until_stopped(self.executor)
         del self.executor
-        self._context.close()
-        del self._context
         self._worker_pool.shutdown()
         del self._worker_pool
+        self._context.close()
+        del self._context
         GuiTestAssistant.tearDown(self)
