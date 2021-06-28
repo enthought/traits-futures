@@ -52,4 +52,4 @@ class AsyncioContext:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return EventLoopHelper()
+        return EventLoopHelper(event_loop=self._event_loop)

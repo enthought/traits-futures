@@ -21,9 +21,10 @@ from traits_futures.tests.i_event_loop_helper_tests import (
 
 
 @requires_wx
-class TestEventLoopHelper(unittest.TestCase, IEventLoopHelperTests):
-    def event_loop_helper_factory(self):
-        """Create an instance of the EventLoopHelper for testing."""
-        from traits_futures.wx.event_loop_helper import EventLoopHelper
+class TestEventLoopHelper(IEventLoopHelperTests, unittest.TestCase):
 
-        return EventLoopHelper()
+    def gui_context_factory(self):
+        """ Create a suitable IGuiContext instance. """
+        from traits_futures.wx.context import WxContext
+
+        return WxContext()

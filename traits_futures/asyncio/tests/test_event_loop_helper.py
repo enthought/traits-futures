@@ -12,15 +12,17 @@
 Tests for the asyncio implementation of IEventLoopHelper.
 """
 
+import asyncio
 import unittest
 
+from traits_futures.asyncio.context import AsyncioContext
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.tests.i_event_loop_helper_tests import (
     IEventLoopHelperTests,
 )
 
 
-class TestEventLoopHelper(unittest.TestCase, IEventLoopHelperTests):
+class TestEventLoopHelper(IEventLoopHelperTests, unittest.TestCase):
 
-    #: Zero-parameter callable that creates an instance of the EventLoopHelper.
-    event_loop_helper_factory = EventLoopHelper
+    #: Zero-parameter callable that creates a suitable IGuiContext instance.
+    gui_context_factory = AsyncioContext
