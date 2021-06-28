@@ -15,8 +15,6 @@ This module provides a way for a background thread to request that
 the main thread execute a (fixed, parameterless) callback.
 """
 
-import asyncio
-
 from traits_futures.i_pingee import IPingee, IPinger
 
 
@@ -37,11 +35,14 @@ class Pingee:
     on_ping : callable
         Zero-argument callable that's called on the main thread
         every time a ping is received.
+    event_loop : asyncio.events.AbstractEventLoop
+        The asyncio event loop that pings will be sent to.
+
     """
 
-    def __init__(self, on_ping):
+    def __init__(self, on_ping, event_loop):
         self._on_ping = on_ping
-        self._event_loop = asyncio.get_event_loop()
+        self._event_loop = event_loop
 
     def _execute_ping_callback(self):
         """
