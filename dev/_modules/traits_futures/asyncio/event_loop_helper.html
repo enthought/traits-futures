@@ -109,13 +109,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the event loop for use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">())</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.setattr_soon"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>    <span class="k">def</span> <span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -137,8 +137,7 @@
 <span class="sd">        value : object</span>
 <span class="sd">            Value to set the attribute to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-        <span class="n">event_loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="o">.</span><span class="n">call_soon</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.run_until"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -167,7 +166,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timed_out</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">event_loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span>
 
         <span class="k">def</span> <span class="nf">stop_on_timeout</span><span class="p">():</span>
             <span class="n">timed_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
