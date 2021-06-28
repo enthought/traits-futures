@@ -94,8 +94,6 @@
 <span class="sd">Test support, providing the ability to run the event loop from tests.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
-
 <span class="kn">from</span> <span class="nn">traits_futures.i_event_loop_helper</span> <span class="kn">import</span> <span class="n">IEventLoopHelper</span>
 
 
@@ -103,13 +101,21 @@
 <span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Support for running the asyncio event loop in unit tests.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    event_loop : asyncio.events.AbstractEventLoop</span>
+<span class="sd">        The asyncio event loop that this object wraps.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
 
 <div class="viewcode-block" id="EventLoopHelper.init"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the event loop for use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span></div>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

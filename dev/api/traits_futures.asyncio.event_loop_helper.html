@@ -96,9 +96,14 @@
 <p>Test support, providing the ability to run the event loop from tests.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.asyncio.event_loop_helper.EventLoopHelper">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">EventLoopHelper</span></span><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop_helper.html#EventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop_helper.EventLoopHelper" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">EventLoopHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop_helper.html#EventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop_helper.EventLoopHelper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Support for running the asyncio event loop in unit tests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_loop</strong> (<em>asyncio.events.AbstractEventLoop</em>) – The asyncio event loop that this object wraps.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.asyncio.event_loop_helper.EventLoopHelper.dispose">
 <span class="sig-name descname"><span class="pre">dispose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop_helper.html#EventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop_helper.EventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>

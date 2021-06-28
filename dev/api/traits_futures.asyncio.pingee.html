@@ -98,7 +98,7 @@
 the main thread execute a (fixed, parameterless) callback.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.asyncio.pingee.Pingee">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.pingee.</span></span><span class="sig-name descname"><span class="pre">Pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/pingee.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.pingee.Pingee" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.pingee.</span></span><span class="sig-name descname"><span class="pre">Pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/pingee.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.pingee.Pingee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Receiver for pings.</p>
 <p>Whenever a ping is received from a linked Pinger, the receiver
@@ -108,8 +108,11 @@ before use, and should call <code class="docutils literal notranslate"><span cla
 expected to receive pings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>on_ping</strong> (<em>callable</em>) – Zero-argument callable that’s called on the main thread
-every time a ping is received.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>on_ping</strong> (<em>callable</em>) – Zero-argument callable that’s called on the main thread
+every time a ping is received.</p></li>
+<li><p><strong>event_loop</strong> (<em>asyncio.events.AbstractEventLoop</em>) – The asyncio event loop that pings will be sent to.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">

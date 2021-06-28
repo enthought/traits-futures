@@ -103,12 +103,12 @@
 
 
 <div class="viewcode-block" id="TestEventLoopHelper"><a class="viewcode-back" href="../../../../api/traits_futures.qt.tests.test_event_loop_helper.html#traits_futures.qt.tests.test_event_loop_helper.TestEventLoopHelper">[docs]</a><span class="nd">@requires_qt</span>
-<span class="k">class</span> <span class="nc">TestEventLoopHelper</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">,</span> <span class="n">IEventLoopHelperTests</span><span class="p">):</span>
-<div class="viewcode-block" id="TestEventLoopHelper.event_loop_helper_factory"><a class="viewcode-back" href="../../../../api/traits_futures.qt.tests.test_event_loop_helper.html#traits_futures.qt.tests.test_event_loop_helper.TestEventLoopHelper.event_loop_helper_factory">[docs]</a>    <span class="k">def</span> <span class="nf">event_loop_helper_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an instance of the EventLoopHelper for testing.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">traits_futures.qt.event_loop_helper</span> <span class="kn">import</span> <span class="n">EventLoopHelper</span>
+<span class="k">class</span> <span class="nc">TestEventLoopHelper</span><span class="p">(</span><span class="n">IEventLoopHelperTests</span><span class="p">,</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestEventLoopHelper.gui_context_factory"><a class="viewcode-back" href="../../../../api/traits_futures.qt.tests.test_event_loop_helper.html#traits_futures.qt.tests.test_event_loop_helper.TestEventLoopHelper.gui_context_factory">[docs]</a>    <span class="k">def</span> <span class="nf">gui_context_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a suitable IGuiContext instance.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">traits_futures.qt.context</span> <span class="kn">import</span> <span class="n">QtContext</span>
 
-        <span class="k">return</span> <span class="n">EventLoopHelper</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="n">QtContext</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

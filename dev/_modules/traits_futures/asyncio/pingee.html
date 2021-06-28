@@ -97,8 +97,6 @@
 <span class="sd">the main thread execute a (fixed, parameterless) callback.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
-
 <span class="kn">from</span> <span class="nn">traits_futures.i_pingee</span> <span class="kn">import</span> <span class="n">IPingee</span><span class="p">,</span> <span class="n">IPinger</span>
 
 
@@ -119,16 +117,20 @@
 <span class="sd">    on_ping : callable</span>
 <span class="sd">        Zero-argument callable that&#39;s called on the main thread</span>
 <span class="sd">        every time a ping is received.</span>
+<span class="sd">    event_loop : asyncio.events.AbstractEventLoop</span>
+<span class="sd">        The asyncio event loop that pings will be sent to.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span> <span class="o">=</span> <span class="n">on_ping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
 
 <div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare Pingee to receive pings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span></div>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

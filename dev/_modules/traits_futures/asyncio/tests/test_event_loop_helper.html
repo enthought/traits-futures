@@ -96,16 +96,16 @@
 
 <span class="kn">import</span> <span class="nn">unittest</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.asyncio.event_loop_helper</span> <span class="kn">import</span> <span class="n">EventLoopHelper</span>
+<span class="kn">from</span> <span class="nn">traits_futures.asyncio.context</span> <span class="kn">import</span> <span class="n">AsyncioContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.tests.i_event_loop_helper_tests</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">IEventLoopHelperTests</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="TestEventLoopHelper"><a class="viewcode-back" href="../../../../api/traits_futures.asyncio.tests.test_event_loop_helper.html#traits_futures.asyncio.tests.test_event_loop_helper.TestEventLoopHelper">[docs]</a><span class="k">class</span> <span class="nc">TestEventLoopHelper</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">,</span> <span class="n">IEventLoopHelperTests</span><span class="p">):</span>
+<div class="viewcode-block" id="TestEventLoopHelper"><a class="viewcode-back" href="../../../../api/traits_futures.asyncio.tests.test_event_loop_helper.html#traits_futures.asyncio.tests.test_event_loop_helper.TestEventLoopHelper">[docs]</a><span class="k">class</span> <span class="nc">TestEventLoopHelper</span><span class="p">(</span><span class="n">IEventLoopHelperTests</span><span class="p">,</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-    <span class="c1">#: Zero-parameter callable that creates an instance of the EventLoopHelper.</span>
-    <span class="n">event_loop_helper_factory</span> <span class="o">=</span> <span class="n">EventLoopHelper</span></div>
+    <span class="c1">#: Zero-parameter callable that creates a suitable IGuiContext instance.</span>
+    <span class="n">gui_context_factory</span> <span class="o">=</span> <span class="n">AsyncioContext</span></div>
 </pre></div>
 
           </div>

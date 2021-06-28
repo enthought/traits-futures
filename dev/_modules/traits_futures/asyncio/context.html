@@ -93,6 +93,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">IGuiContext implementation for the main-thread asyncio event loop.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+
 <span class="kn">from</span> <span class="nn">traits_futures.asyncio.event_loop_helper</span> <span class="kn">import</span> <span class="n">EventLoopHelper</span>
 <span class="kn">from</span> <span class="nn">traits_futures.asyncio.pingee</span> <span class="kn">import</span> <span class="n">Pingee</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_gui_context</span> <span class="kn">import</span> <span class="n">IGuiContext</span>
@@ -103,6 +105,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    IGuiContext implementation for the main-thread asyncio event loop.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AsyncioContext.pingee"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext.pingee">[docs]</a>    <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -119,7 +124,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        pingee : IPingee</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="n">on_ping</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="n">on_ping</span><span class="p">,</span> <span class="n">event_loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AsyncioContext.event_loop_helper"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext.event_loop_helper">[docs]</a>    <span class="k">def</span> <span class="nf">event_loop_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -129,7 +134,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        event_loop_helper : IEventLoopHelper</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">EventLoopHelper</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="n">EventLoopHelper</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
