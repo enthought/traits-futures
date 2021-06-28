@@ -24,19 +24,6 @@ from traits.api import Bool, Event, HasStrictTraits, Int
 SAFETY_TIMEOUT = 5.0
 
 
-# XXX Lifetime issue:
-# - 1. Pingee created in main thread.
-# - 2. Pingee passed to background thread
-# - 3. Pingee disconnected in main thread
-# - 4. (sometime later) Pinger created in background thread
-
-# How is the background thread to know that the Pingee has been disconnected?
-# It can't. So it's not reasonable to say that "pinger" can only be called
-# for a connected pingee - it should be callable for _any_ pingee.
-
-# How to set this up for asyncio?
-
-
 class BackgroundPinger:
     """
     Object allowing pings to be sent from a background thread to a given
