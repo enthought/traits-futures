@@ -320,7 +320,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def shutdown(self, timeout=None):
         """
-        Shut this executor down, abandoning currently executing futures.
+        Shut this executor down, abandoning all currently executing futures.
 
         All currently executing futures that are cancellable will be cancelled.
 
@@ -335,6 +335,12 @@ class TraitsExecutor(HasStrictTraits):
 
         This method is not thread safe. It should only be called from the
         main thread.
+
+        Parameters
+        ----------
+        timeout : float, optional
+            Maximum time to wait for background tasks to complete, in seconds.
+            If not given, this method will wait indefinitely.
         """
         # XXX Add wait=False option. What does this do if we own the
         #     worker pool? Possibly an error in that case?
@@ -346,7 +352,7 @@ class TraitsExecutor(HasStrictTraits):
         #     with the appropriate context easier.
         # XXX Fix up missing self._gui_context provision in
         #     executor creation.
-        # XXX Add missing test for timeout.
+        # XXX Make long_running_task safer.
 
         if not self.running:
             raise RuntimeError("Executor is not currently running.")
@@ -365,7 +371,7 @@ class TraitsExecutor(HasStrictTraits):
         # Wait for underlying concurrent.futures futures to complete.
         cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
         logger.debug(f"Waiting for {len(cf_futures)} background tasks")
-        concurrent.futures.wait(cf_futures)
+        concurrent.futures.wait(cf_futures, timeout=timeout)
 
         self._wrappers.clear()
         self._stop()

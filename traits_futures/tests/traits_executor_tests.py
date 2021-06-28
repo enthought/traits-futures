@@ -209,6 +209,14 @@ class TraitsExecutorTests:
         self.executor.shutdown()
         self.assertTrue(stopping.is_set())
 
+    def test_shutdown_timeout(self):
+        start_time = time.monotonic()
+        with self.long_running_task(self.executor):
+            self.executor.shutdown(timeout=0.1)
+
+        actual_timeout = time.monotonic() - start_time
+        self.assertLess(actual_timeout, 1.0)
+
     def test_cant_submit_new_unless_running(self):
         with self.long_running_task(self.executor):
             self.executor.stop()
