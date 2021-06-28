@@ -346,6 +346,7 @@ class TraitsExecutor(HasStrictTraits):
         #     with the appropriate context easier.
         # XXX Fix up missing self._gui_context provision in
         #     executor creation.
+        # XXX Add missing test for timeout.
 
         if not self.running:
             raise RuntimeError("Executor is not currently running.")
