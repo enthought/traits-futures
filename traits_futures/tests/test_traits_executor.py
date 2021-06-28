@@ -11,7 +11,6 @@
 """
 Tests for the TraitsExecutor class.
 """
-import concurrent.futures
 import contextlib
 import unittest
 
