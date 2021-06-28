@@ -183,7 +183,7 @@ class IPingeeTests:
             ready = threading.Event()
             pinger_thread = threading.Thread(
                 target=send_delayed_ping,
-                args=(pingee, ready)
+                args=(pingee, ready),
             )
             pinger_thread.start()
 
