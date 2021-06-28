@@ -11,6 +11,8 @@
 """
 IGuiContext implementation for the main-thread asyncio event loop.
 """
+import asyncio
+
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.asyncio.pingee import Pingee
 from traits_futures.i_gui_context import IGuiContext
@@ -21,6 +23,9 @@ class AsyncioContext:
     """
     IGuiContext implementation for the main-thread asyncio event loop.
     """
+
+    def __init__(self):
+        self._event_loop = asyncio.get_event_loop()
 
     def pingee(self, on_ping):
         """
@@ -37,7 +42,7 @@ class AsyncioContext:
         -------
         pingee : IPingee
         """
-        return Pingee(on_ping=on_ping)
+        return Pingee(on_ping=on_ping, event_loop=self._event_loop)
 
     def event_loop_helper(self):
         """
@@ -47,4 +52,4 @@ class AsyncioContext:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return EventLoopHelper()
+        return EventLoopHelper(event_loop=self._event_loop)
