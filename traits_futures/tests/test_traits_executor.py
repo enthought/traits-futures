@@ -11,17 +11,13 @@
 """
 Tests for the TraitsExecutor class.
 """
+import concurrent.futures
 import contextlib
 import unittest
 
 from traits.api import Bool
 
-from traits_futures.api import (
-    CANCELLING,
-    MultithreadingContext,
-    submit_call,
-    TraitsExecutor,
-)
+from traits_futures.api import MultithreadingContext, TraitsExecutor
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.traits_executor_tests import (
     ExecutorListener,
@@ -146,44 +142,6 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             msg="Context unexpectedly created",
         )
 
-    def test_shutdown(self):
-        executor = TraitsExecutor(
-            context=self._context,
-            gui_context=self._gui_context,
-        )
-        int_future = submit_call(executor, int)
-        pow_future = submit_call(executor, pow, 3, 5)
-
-        # Shut down the executor without giving the futures an
-        # opportunity to update.
-        executor.shutdown()
-
-        self.assertTrue(executor.stopped, "Executor has stopped")
-        self.assertEqual(int_future.state, CANCELLING)
-        self.assertEqual(pow_future.state, CANCELLING)
-
-        # executor = TraitsExecutor(context=self._context)
-        # int_future = submit_call(executor, int)
-        # pow_future = submit_call(executor, pow, 3, 2)
-
-        # Stop the executor, abandoning
-        # executor.stop(abandon=True)
-
-        # XXX To do: refactor GuiTestAssistant to make executor creation
-        # with the appropriate context easier.
-
-        # XXX To do: fix up missing self._gui_context provision in
-        # executor creation.
-
-        # XXX: Question - should the executor state still move through
-        # "STOPPING". Probably, yes. Should test that.
-
-        # XXX Consider making abandon=True the default, and issuing
-        # a DeprecationWarning if abandon is not used. Or just switching
-        # the behaviour immediately.
-
-        # self.wait_until_stopped(executor)
-
     def wait_until_stopped(self, executor):
         """
         Wait for the executor to reach STOPPED state.
@@ -228,10 +186,39 @@ class TestTraitsExecutor(
 
     def tearDown(self):
         del self.listener
-        if not self.executor.stopped:
+        if self.executor.running:
             self.executor.stop()
+        if not self.executor.stopped:
             self.wait_until_stopped(self.executor)
         del self.executor
         self._context.close()
         del self._context
+        GuiTestAssistant.tearDown(self)
+
+
+class TestTraitsExecutorWithExternalWorkerPool(
+    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+):
+    def setUp(self):
+        GuiTestAssistant.setUp(self)
+        self._context = MultithreadingContext()
+        self._worker_pool = concurrent.futures.ThreadPoolExecutor()
+        self.executor = TraitsExecutor(
+            context=self._context,
+            gui_context=self._gui_context,
+            worker_pool=self._worker_pool,
+        )
+        self.listener = ExecutorListener(executor=self.executor)
+
+    def tearDown(self):
+        del self.listener
+        if self.executor.running:
+            self.executor.stop()
+        if not self.executor.stopped:
+            self.wait_until_stopped(self.executor)
+        del self.executor
+        self._context.close()
+        del self._context
+        self._worker_pool.shutdown()
+        del self._worker_pool
         GuiTestAssistant.tearDown(self)

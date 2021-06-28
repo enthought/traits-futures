@@ -16,6 +16,7 @@ in different contexts.
 import contextlib
 import queue
 import threading
+import time
 
 from traits.api import (
     Bool,
@@ -60,6 +61,18 @@ def test_iteration(*args, **kwargs):
 def test_progress(arg1, arg2, kwd1, kwd2, progress):
     """Simple test target for submit_progress."""
     return arg1, arg2, kwd1, kwd2
+
+
+def slow_call(starting, stopping):
+    """Target background task used to check waiting behaviour of 'shutdown'.
+
+    Parameters
+    ----------
+    starting, stopping : threading.Event
+    """
+    starting.set()
+    time.sleep(0.1)
+    stopping.set()
 
 
 class ExecutorListener(HasStrictTraits):
@@ -142,6 +155,63 @@ class TraitsExecutorTests:
         self.assertEqual(self.executor.state, STOPPED)
         with self.assertRaises(RuntimeError):
             self.executor.stop()
+
+    def test_shutdown_raises_if_stopping(self):
+        with self.long_running_task(self.executor):
+            self.assertEqual(self.executor.state, RUNNING)
+            self.executor.stop()
+
+            # Raises if in STOPPING mode.
+            self.assertEqual(self.executor.state, STOPPING)
+            with self.assertRaises(RuntimeError):
+                self.executor.shutdown()
+
+        self.wait_until_stopped(self.executor)
+
+    def test_shutdown_raises_if_stopped(self):
+        self.assertEqual(self.executor.state, RUNNING)
+        self.executor.stop()
+        self.wait_until_stopped(self.executor)
+        self.assertEqual(self.executor.state, STOPPED)
+
+        with self.assertRaises(RuntimeError):
+            self.executor.shutdown()
+
+    def test_shutdown_cancels_running_futures(self):
+        future = submit_call(self.executor, pow, 3, 5)
+        self.executor.shutdown()
+        self.assertEqual(future.state, CANCELLING)
+        self.assertTrue(self.executor.stopped)
+
+    def test_no_future_updates_after_shutdown(self):
+        future = submit_call(self.executor, pow, 3, 5)
+        self.executor.shutdown()
+        self.assertEqual(future.state, CANCELLING)
+        self.exercise_event_loop()
+        self.assertEqual(future.state, CANCELLING)
+
+    def test_shutdown_goes_through_stopping_state(self):
+        self.executor.shutdown()
+
+        self.assertEqual(
+            self.listener.states,
+            [RUNNING, STOPPING, STOPPED],
+        )
+
+    def test_shutdown_waits_for_background_tasks(self):
+
+        # XXX Need to also check this in the context of a non-owned
+        # worker pool.
+        starting = self._context.event()
+        stopping = self._context.event()
+        submit_call(self.executor, slow_call, starting, stopping)
+
+        # Make sure background task has started, else it might be
+        # cancelled altogether.
+        self.assertTrue(starting.wait(timeout=SAFETY_TIMEOUT))
+
+        self.executor.shutdown()
+        self.assertTrue(stopping.is_set())
 
     def test_cant_submit_new_unless_running(self):
         with self.long_running_task(self.executor):
@@ -362,6 +432,24 @@ class TraitsExecutorTests:
         self.assertIsInstance(future_or_exc, RuntimeError)
 
     # Helper methods and assertions ###########################################
+
+    def exercise_event_loop(self):
+        """
+        Exercise the event loop.
+
+        Places a new task on the event loop and runs the event loop
+        until that task is complete. The goal is to flush out any other
+        tasks that might already be in event loop tasks queue.
+        """
+
+        class Sentinel(HasStrictTraits):
+            #: Simple boolean flag.
+            flag = Bool(False)
+
+        sentinel = Sentinel()
+
+        self._event_loop_helper.setattr_soon(sentinel, "flag", True)
+        self.run_until(sentinel, "flag", lambda sentinel: sentinel.flag)
 
     def wait_until_stopped(self, executor):
         """

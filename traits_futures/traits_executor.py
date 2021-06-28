@@ -278,13 +278,17 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(receiver)
             raise
 
-        future_wrapper = FutureWrapper(future=future, receiver=receiver)
-        self._wrappers.add(future_wrapper)
-
         background_task_wrapper = BackgroundTaskWrapper(
             runner, sender, cancel_event
         )
-        self._worker_pool.submit(background_task_wrapper)
+        cf_future = self._worker_pool.submit(background_task_wrapper)
+
+        future_wrapper = FutureWrapper(
+            future=future,
+            cf_future=cf_future,
+            receiver=receiver,
+        )
+        self._wrappers.add(future_wrapper)
 
         logger.debug(f"{self} created future {future}")
         return future
@@ -314,26 +318,34 @@ class TraitsExecutor(HasStrictTraits):
         if not self._wrappers:
             self._stop()
 
-    def shutdown(self, wait=True):
+    def shutdown(self, timeout=None):
         """
-        Shut down this executor synchronously, abandoning any currently
-        executing futures.
+        Shut this executor down, abandoning currently executing futures.
+
+        All currently executing futures that are cancellable will be cancelled.
+
+        This method is blocking: it waits for associated background tasks
+        to complete, and if this executor owns its worker pool, it waits
+        for the worker pool to be shut down.
+
+        No further updates to a future's state will occur after this method
+        is called. In particular, any future that's cancelled by calling this
+        method will remain in CANCELLING state, and its state will never be
+        updated to CANCELLED.
+
+        This method is not thread safe. It should only be called from the
+        main thread.
         """
         # XXX Add wait=False option. What does this do if we own the
         #     worker pool? Possibly an error in that case?
-        # XXX In case where we don't own the worker pool, we should wait
-        #     for all the relevant futures to complete.
+        # XXX Consider separate method instead of wait=False.
         # XXX Add suitable logging
-
-        # XXX Have bug at the level of the pinger:
-        #     ... it shouldn't be an (unexpected) error for the pinger
-        #         to send a ping after the pingee has been "disconnected".
-        #         disconnected should simply mean that the pingee doesn't
-        #         do anything in response to pings received, not that it
-        #         can't receive pings.
-        # ... and the asyncio pinger shouldn't be reaching into the pingee
-        #     to grab the event loop. :-(
-        #
+        # XXX Update documentation.
+        # XXX Convert examples to use shutdown where appropriate.
+        # XXX Refactor GuiTestAssistant to make executor creation
+        #     with the appropriate context easier.
+        # XXX Fix up missing self._gui_context provision in
+        #     executor creation.
 
         if not self.running:
             raise RuntimeError("Executor is not currently running.")
@@ -348,6 +360,11 @@ class TraitsExecutor(HasStrictTraits):
             if future.cancellable:
                 future.cancel()
             self._message_router.close_pipe(wrapper.receiver)
+
+        # Wait for underlying concurrent.futures futures to complete.
+        cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
+        logger.debug(f"Waiting for {len(cf_futures)} background tasks")
+        concurrent.futures.wait(cf_futures)
 
         self._wrappers.clear()
         self._stop()
