@@ -62,6 +62,25 @@ def test_progress(arg1, arg2, kwd1, kwd2, progress):
     return arg1, arg2, kwd1, kwd2
 
 
+def wait_for_event(event, timeout):
+    """Wait for an event, and raise if it doesn't occur within a timeout.
+
+    Parameters
+    ----------
+    event : threading.Event
+        Event to wait for.
+    timeout : float
+        Maximum time to wait, in seconds.
+
+    Raises
+    ------
+    RuntimeError
+        If the event remains unset after the given timeout.
+    """
+    if not event.wait(timeout=timeout):
+        raise RuntimeError("Timed out waiting for event")
+
+
 class ExecutorListener(HasStrictTraits):
     """Listener for executor state changes."""
 
@@ -376,7 +395,7 @@ class TraitsExecutorTests:
         self.run_until(future, "state", lambda future: future.state == state)
 
     @contextlib.contextmanager
-    def long_running_task(self, executor):
+    def long_running_task(self, executor, timeout=SAFETY_TIMEOUT):
         """
         Simulate a long-running task being submitted to the executor.
 
@@ -384,6 +403,6 @@ class TraitsExecutorTests:
         """
         event = self._context.event()
         try:
-            yield submit_call(executor, event.wait)
+            yield submit_call(executor, wait_for_event, event, timeout)
         finally:
             event.set()
