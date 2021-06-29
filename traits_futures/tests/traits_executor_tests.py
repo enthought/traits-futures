@@ -65,6 +65,8 @@ def test_progress(arg1, arg2, kwd1, kwd2, progress):
 def wait_for_event(started, event, timeout):
     """Wait for an event, and raise if it doesn't occur within a timeout.
 
+    Also signals via an event when it starts executing.
+
     Parameters
     ----------
     started : threading.Event
