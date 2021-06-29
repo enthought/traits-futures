@@ -78,6 +78,8 @@ def slow_call(starting, stopping):
 def wait_for_event(started, event, timeout):
     """Wait for an event, and raise if it doesn't occur within a timeout.
 
+    Also signals via an event when it starts executing.
+
     Parameters
     ----------
     started : threading.Event
