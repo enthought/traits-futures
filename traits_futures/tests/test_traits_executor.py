@@ -221,3 +221,31 @@ class TestTraitsExecutor(
         self._context.close()
         del self._context
         GuiTestAssistant.tearDown(self)
+
+
+class TestTraitsExecutorWithExternalWorkerPool(
+    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+):
+    def setUp(self):
+        GuiTestAssistant.setUp(self)
+        self._context = MultithreadingContext()
+        self._worker_pool = self._context.worker_pool()
+        self.executor = TraitsExecutor(
+            context=self._context,
+            gui_context=self._gui_context,
+            worker_pool=self._worker_pool,
+        )
+        self.listener = ExecutorListener(executor=self.executor)
+
+    def tearDown(self):
+        del self.listener
+        if self.executor.running:
+            self.executor.stop()
+        if not self.executor.stopped:
+            self.wait_until_stopped(self.executor)
+        del self.executor
+        self._worker_pool.shutdown()
+        del self._worker_pool
+        self._context.close()
+        del self._context
+        GuiTestAssistant.tearDown(self)
