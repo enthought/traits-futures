@@ -20,7 +20,6 @@ import warnings
 from traits.api import (
     Any,
     Bool,
-    Enum,
     HasStrictTraits,
     Instance,
     on_trait_change,
@@ -32,28 +31,18 @@ from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
 from traits_futures.ets_context import ETSContext
+from traits_futures.executor_states import (
+    ExecutorState,
+    RUNNING,
+    STOPPED,
+    STOPPING,
+)
 from traits_futures.i_gui_context import IGuiContext
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 
 logger = logging.getLogger(__name__)
-
-
-# Executor states.
-
-#: Executor is currently running (this is the initial state).
-RUNNING = "running"
-
-#: Executor has been requested to stop. In this state, no new
-#: jobs can be submitted, and we're waiting for old ones to complete.
-STOPPING = "stopping"
-
-#: Executor is stopped.
-STOPPED = "stopped"
-
-#: Trait type representing the executor state.
-ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
 
 
 class TraitsExecutor(HasStrictTraits):

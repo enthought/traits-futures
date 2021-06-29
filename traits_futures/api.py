@@ -91,6 +91,12 @@ from traits_futures.background_progress import (
 )
 from traits_futures.base_future import BaseFuture
 from traits_futures.ets_context import ETSContext
+from traits_futures.executor_states import (
+    ExecutorState,
+    RUNNING,
+    STOPPED,
+    STOPPING,
+)
 from traits_futures.future_states import (
     CANCELLED,
     CANCELLING,
@@ -106,13 +112,7 @@ from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.i_task_specification import ITaskSpecification
 from traits_futures.multiprocessing_context import MultiprocessingContext
 from traits_futures.multithreading_context import MultithreadingContext
-from traits_futures.traits_executor import (
-    ExecutorState,
-    RUNNING,
-    STOPPED,
-    STOPPING,
-    TraitsExecutor,
-)
+from traits_futures.traits_executor import TraitsExecutor
 
 __all__ = [
     # Different types of Future
