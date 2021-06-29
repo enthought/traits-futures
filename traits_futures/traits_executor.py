@@ -354,22 +354,24 @@ class TraitsExecutor(HasStrictTraits):
         method will remain in CANCELLING state, and its state will never be
         updated to CANCELLED.
 
-        This method is not thread safe. It should only be called from the
-        main thread.
+        This method may be called at any time. If called on an executor
+        that's already stopped, this method does nothing.
 
         Parameters
         ----------
         timeout : float, optional
             Maximum time to wait for background tasks to complete, in seconds.
             If not given, this method will wait indefinitely.
-        """
-        # XXX Should be fine to call this method in 'stopping' state as
-        # well as 'running' state.
 
-        # XXX Actually, should be fine to call this method in _any_ state.
-        # And given that it's unpredictable whether a call to 'stop' will
-        # leave the executor in 'stopped' state or not, that's probably
-        # a better API.
+        Raises
+        ------
+        RuntimeError
+            If a timeout is given, and the background tasks fail to complete
+            within the given timeout. In this case the executor will remain
+            in STOPPING state.
+        """
+        if self.stopped:
+            return
 
         if self.stopped:
             raise RuntimeError("Executor has already stopped.")

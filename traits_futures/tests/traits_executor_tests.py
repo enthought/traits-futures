@@ -187,17 +187,13 @@ class TraitsExecutorTests:
         self.executor.shutdown(timeout=SAFETY_TIMEOUT)
         self.assertEqual(self.executor.state, STOPPED)
 
-    # XXX The above tests shutdown when the internal state is STOPPING. But we
-    #     also want to test shutdown when internal state is _TERMINATING
-
-    def test_shutdown_raises_if_stopped(self):
+    def test_shutdown_does_nothing_if_stopped(self):
         self.assertEqual(self.executor.state, RUNNING)
         self.executor.stop()
         self.wait_until_stopped(self.executor)
         self.assertEqual(self.executor.state, STOPPED)
-
-        with self.assertRaises(RuntimeError):
-            self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPED)
 
     def test_shutdown_cancels_running_futures(self):
         future = submit_call(self.executor, pow, 3, 5)
