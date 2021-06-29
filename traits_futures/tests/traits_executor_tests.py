@@ -62,11 +62,13 @@ def test_progress(arg1, arg2, kwd1, kwd2, progress):
     return arg1, arg2, kwd1, kwd2
 
 
-def wait_for_event(event, timeout):
+def wait_for_event(started, event, timeout):
     """Wait for an event, and raise if it doesn't occur within a timeout.
 
     Parameters
     ----------
+    started : threading.Event
+        Event set when this function starts executing.
     event : threading.Event
         Event to wait for.
     timeout : float
@@ -77,6 +79,7 @@ def wait_for_event(event, timeout):
     RuntimeError
         If the event remains unset after the given timeout.
     """
+    started.set()
     if not event.wait(timeout=timeout):
         raise RuntimeError("Timed out waiting for event")
 
@@ -399,10 +402,17 @@ class TraitsExecutorTests:
         """
         Simulate a long-running task being submitted to the executor.
 
-        The task finishes on exit of the with block.
+        This context manager waits for the task to start executing before
+        yielding the future associated to that task. The task will be
+        terminated either at timeout or on exit of the associated with block.
         """
+        started = self._context.event()
         event = self._context.event()
         try:
-            yield submit_call(executor, wait_for_event, event, timeout)
+            future = submit_call(
+                executor, wait_for_event, started, event, timeout
+            )
+            self.assertTrue(started.wait(timeout=timeout))
+            yield future
         finally:
             event.set()
