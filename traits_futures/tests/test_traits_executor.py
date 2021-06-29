@@ -16,7 +16,11 @@ import unittest
 
 from traits.api import Bool
 
-from traits_futures.api import MultithreadingContext, TraitsExecutor
+from traits_futures.api import (
+    ETSContext,
+    MultithreadingContext,
+    TraitsExecutor,
+)
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.traits_executor_tests import (
     ExecutorListener,
@@ -55,7 +59,11 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         GuiTestAssistant.tearDown(self)
 
     def test_max_workers(self):
-        executor = TraitsExecutor(max_workers=11, context=self._context)
+        executor = TraitsExecutor(
+            max_workers=11,
+            context=self._context,
+            gui_context=self._gui_context,
+        )
         self.assertEqual(executor._worker_pool._max_workers, 11)
         executor.stop()
         self.wait_until_stopped(executor)
@@ -67,29 +75,43 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
                     worker_pool=worker_pool,
                     max_workers=11,
                     context=self._context,
+                    gui_context=self._gui_context,
                 )
 
     def test_default_context(self):
-        with self.temporary_executor() as executor:
+        with self.temporary_executor(
+            gui_context=self._gui_context
+        ) as executor:
             self.assertIsInstance(executor._context, MultithreadingContext)
+
+    def test_default_gui_context(self):
+        with self.temporary_executor() as executor:
+            self.assertIsInstance(executor._gui_context, ETSContext)
 
     def test_externally_supplied_context(self):
         context = MultithreadingContext()
         try:
-            with self.temporary_executor(context=context) as executor:
+            with self.temporary_executor(
+                context=context, gui_context=self._gui_context
+            ) as executor:
                 self.assertIs(executor._context, context)
             self.assertFalse(context.closed)
         finally:
             context.close()
 
     def test_owned_context_closed_at_executor_stop(self):
-        with self.temporary_executor() as executor:
+        with self.temporary_executor(
+            gui_context=self._gui_context
+        ) as executor:
             context = executor._context
             self.assertFalse(context.closed)
         self.assertTrue(context.closed)
 
     def test_owned_worker_pool(self):
-        executor = TraitsExecutor(context=self._context)
+        executor = TraitsExecutor(
+            context=self._context,
+            gui_context=self._gui_context,
+        )
         worker_pool = executor._worker_pool
 
         executor.stop()
@@ -103,7 +125,9 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         with self.temporary_worker_pool() as worker_pool:
             with self.assertWarns(DeprecationWarning) as warning_info:
                 executor = TraitsExecutor(
-                    thread_pool=worker_pool, context=self._context
+                    thread_pool=worker_pool,
+                    context=self._context,
+                    gui_context=self._gui_context,
                 )
             executor.stop()
             self.wait_until_stopped(executor)
@@ -115,7 +139,9 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
     def test_shared_worker_pool(self):
         with self.temporary_worker_pool() as worker_pool:
             executor = TraitsExecutor(
-                worker_pool=worker_pool, context=self._context
+                worker_pool=worker_pool,
+                context=self._context,
+                gui_context=self._gui_context,
             )
             executor.stop()
             self.wait_until_stopped(executor)
@@ -128,7 +154,9 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         # An executor that has no jobs submitted to it should not
         # need to instantiate either the context or the message router.
         with self.temporary_worker_pool() as worker_pool:
-            executor = TrackingTraitsExecutor(worker_pool=worker_pool)
+            executor = TrackingTraitsExecutor(
+                worker_pool=worker_pool, gui_context=self._gui_context
+            )
             executor.stop()
             self.wait_until_stopped(executor)
 
