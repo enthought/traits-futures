@@ -154,13 +154,12 @@ class IPingeeTests:
     def test_ping_after_pingee_closed(self):
         def send_delayed_ping(pingee, ready):
             """
-            Simulate delayed creation of Pinger.
+            Simulate delayed creation and use of Pinger.
             """
             ready.wait(timeout=SAFETY_TIMEOUT)
             pinger = pingee.pinger()
             pinger.connect()
             try:
-                ready.wait(timeout=SAFETY_TIMEOUT)
                 pinger.ping()
             finally:
                 pinger.disconnect()
@@ -174,6 +173,7 @@ class IPingeeTests:
             )
             pinger_thread.start()
 
+        # Unblock the Pinger creation.
         ready.set()
 
         # There shouldn't be any ping-related activity queued on the event
