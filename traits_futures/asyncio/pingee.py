@@ -44,6 +44,14 @@ class Pingee:
         self._on_ping = on_ping
         self._event_loop = event_loop
 
+    def _execute_ping_callback(self):
+        """
+        Execute the ping callback, if this pingee is connected.
+        """
+        callback = getattr(self, "_on_ping", None)
+        if callback is not None:
+            callback()
+
     def connect(self):
         """
         Prepare Pingee to receive pings.
@@ -52,9 +60,9 @@ class Pingee:
 
     def disconnect(self):
         """
-        Undo any connections made in the connect method.
+        Disconnect from the on_ping callable.
         """
-        del self._event_loop
+        del self._on_ping
 
     def pinger(self):
         """
@@ -64,14 +72,15 @@ class Pingee:
         a background thread, and this method used within that background thread
         to create a pinger.
 
-        This method should only be called on a connected pingee.
+        This method should only be called after the 'connect' method has
+        been called.
 
         Returns
         -------
         pinger : Pinger
             New pinger, linked to this pingee.
         """
-        return Pinger(pingee=self)
+        return Pinger(pingee=self, event_loop=self._event_loop)
 
 
 @IPinger.register
@@ -84,10 +93,13 @@ class Pinger:
     pingee : Pingee
         The target receiver for the pings. The receiver must already be
         connected.
+    event_loop : asyncio.events.AbstractEventLoop
+        The asyncio event loop that will execute the ping callback.
     """
 
-    def __init__(self, pingee):
+    def __init__(self, pingee, event_loop):
         self.pingee = pingee
+        self.event_loop = event_loop
 
     def connect(self):
         """
@@ -107,5 +119,6 @@ class Pinger:
         """
         Send a ping to the receiver.
         """
-        event_loop = self.pingee._event_loop
-        event_loop.call_soon_threadsafe(self.pingee._on_ping)
+        self.event_loop.call_soon_threadsafe(
+            self.pingee._execute_ping_callback
+        )

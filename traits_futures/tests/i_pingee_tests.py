@@ -15,8 +15,9 @@ Test mixin for testing implementations of IPingee and IPinger interfaces.
 import contextlib
 import queue
 import threading
+import weakref
 
-from traits.api import Event, HasStrictTraits, Int
+from traits.api import Bool, Event, HasStrictTraits, Int
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -149,6 +150,63 @@ class IPingeeTests:
 
                 self.assertEventuallyPinged(listener1, ping_count=3)
                 self.assertEventuallyPinged(listener2, ping_count=4)
+
+    def test_ping_after_pingee_closed(self):
+        def send_delayed_ping(pingee, ready):
+            """
+            Simulate delayed creation and use of Pinger.
+            """
+            ready.wait(timeout=SAFETY_TIMEOUT)
+            pinger = pingee.pinger()
+            pinger.connect()
+            try:
+                pinger.ping()
+            finally:
+                pinger.disconnect()
+
+        listener = PingListener()
+        with self.connected_pingee(on_ping=listener.fire_ping) as pingee:
+            ready = threading.Event()
+            pinger_thread = threading.Thread(
+                target=send_delayed_ping,
+                args=(pingee, ready),
+            )
+            pinger_thread.start()
+
+        # Unblock the Pinger creation.
+        ready.set()
+
+        # There shouldn't be any ping-related activity queued on the event
+        # loop at this point. We exercise the event loop, in the hope
+        # of flushing out any such activity.
+
+        class Sentinel(HasStrictTraits):
+            #: Simple boolean flag.
+            flag = Bool(False)
+
+        sentinel = Sentinel()
+
+        self._event_loop_helper.setattr_soon(sentinel, "flag", True)
+        self.run_until(sentinel, "flag", lambda sentinel: sentinel.flag)
+
+        self.assertEqual(listener.ping_count, 0)
+
+    def test_disconnect_removes_callback_reference(self):
+        # Implementation detail: after disconnection, the pingee should
+        # no longer hold a reference to its callback.
+
+        def do_nothing():
+            pass
+
+        finalizer = weakref.finalize(do_nothing, lambda: None)
+
+        pingee = self._gui_context.pingee(on_ping=do_nothing)
+        pingee.connect()
+        del do_nothing
+
+        self.assertTrue(finalizer.alive)
+        pingee.disconnect()
+        self.assertFalse(finalizer.alive)
 
     def test_background_threads_finish_before_event_loop_starts(self):
         # Previous tests keep the background threads running until we've

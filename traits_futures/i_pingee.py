@@ -47,7 +47,9 @@ class IPingee(abc.ABC):
     @abc.abstractmethod
     def disconnect(self):
         """
-        Undo any connections made in the connect method.
+        Disconnect from the on_ping callable.
+
+        Pings that are received after this method is called will be ignored.
 
         Not thread-safe. This method should only be called in the main thread.
         """
@@ -61,7 +63,8 @@ class IPingee(abc.ABC):
         a background thread, and this method used within that background thread
         to create a pinger.
 
-        This method should only be called on a connected pingee.
+        This method should only be called after the 'connect' method has
+        been called.
 
         Returns
         -------

@@ -53,7 +53,9 @@ class Pingee(QObject):
 
     @Slot()
     def _execute_ping_callback(self):
-        self._on_ping()
+        callback = getattr(self, "_on_ping", None)
+        if callback is not None:
+            callback()
 
     def connect(self):
         """
@@ -63,9 +65,9 @@ class Pingee(QObject):
 
     def disconnect(self):
         """
-        Undo any connections made in the connect method.
+        Disconnect from the on_ping callable.
         """
-        pass
+        del self._on_ping
 
     def pinger(self):
         """
@@ -75,7 +77,8 @@ class Pingee(QObject):
         a background thread, and this method used within that background thread
         to create a pinger.
 
-        This method should only be called on a connected pingee.
+        This method should only be called after the 'connect' method has
+        been called.
 
         Returns
         -------
