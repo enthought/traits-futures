@@ -75,11 +75,13 @@ def slow_call(starting, stopping):
     stopping.set()
 
 
-def wait_for_event(event, timeout):
+def wait_for_event(started, event, timeout):
     """Wait for an event, and raise if it doesn't occur within a timeout.
 
     Parameters
     ----------
+    started : threading.Event
+        Event set when this function starts executing.
     event : threading.Event
         Event to wait for.
     timeout : float
@@ -90,6 +92,7 @@ def wait_for_event(event, timeout):
     RuntimeError
         If the event remains unset after the given timeout.
     """
+    started.set()
     if not event.wait(timeout=timeout):
         raise RuntimeError("Timed out waiting for event")
 
@@ -175,17 +178,17 @@ class TraitsExecutorTests:
         with self.assertRaises(RuntimeError):
             self.executor.stop()
 
-    def test_shutdown_raises_if_stopping(self):
+    def test_shutdown_when_already_stopping(self):
         with self.long_running_task(self.executor):
             self.assertEqual(self.executor.state, RUNNING)
             self.executor.stop()
 
-            # Raises if in STOPPING mode.
-            self.assertEqual(self.executor.state, STOPPING)
-            with self.assertRaises(RuntimeError):
-                self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPING)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPED)
 
-        self.wait_until_stopped(self.executor)
+    # XXX The above tests shutdown when the internal state is STOPPING. But we
+    #     also want to test shutdown when internal state is _TERMINATING
 
     def test_shutdown_raises_if_stopped(self):
         self.assertEqual(self.executor.state, RUNNING)
@@ -228,14 +231,18 @@ class TraitsExecutorTests:
         self.executor.shutdown(timeout=SAFETY_TIMEOUT)
         self.assertTrue(stopping.is_set())
 
-    # XXX Currently hanging; test needs a rethink.
-    def XXXtest_shutdown_timeout(self):
+    def test_shutdown_timeout(self):
         start_time = time.monotonic()
         with self.long_running_task(self.executor):
-            self.executor.shutdown(timeout=0.1)
+            with self.assertRaises(RuntimeError):
+                self.executor.shutdown(timeout=0.1)
 
         actual_timeout = time.monotonic() - start_time
         self.assertLess(actual_timeout, 1.0)
+        self.assertEqual(self.executor.state, STOPPING)
+
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPED)
 
     def test_cant_submit_new_unless_running(self):
         with self.long_running_task(self.executor):
@@ -494,8 +501,13 @@ class TraitsExecutorTests:
 
         The task finishes on exit of the with block.
         """
+        started = self._context.event()
         event = self._context.event()
         try:
-            yield submit_call(executor, wait_for_event, event, timeout)
+            future = submit_call(
+                executor, wait_for_event, started, event, timeout
+            )
+            self.assertTrue(started.wait(timeout=timeout))
+            yield future
         finally:
             event.set()

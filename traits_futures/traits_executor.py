@@ -366,25 +366,42 @@ class TraitsExecutor(HasStrictTraits):
         # XXX Should be fine to call this method in 'stopping' state as
         # well as 'running' state.
 
-        if not self.running:
-            raise RuntimeError(
-                "Executor is not currently running. "
-                "Executor state is {}".format(self.state)
-            )
+        # XXX Actually, should be fine to call this method in _any_ state.
+        # And given that it's unpredictable whether a call to 'stop' will
+        # leave the executor in 'stopped' state or not, that's probably
+        # a better API.
 
-        self._initiate_stop()
-        self._abandon_tasks()
+        if self.stopped:
+            raise RuntimeError("Executor has already stopped.")
+
+        if self.running:
+            self._initiate_stop()
+
+        if self._internal_state == STOPPING:
+            self._abandon_tasks()
 
         # Wait for underlying concurrent.futures futures to complete.
         cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
         logger.debug(f"Waiting for {len(cf_futures)} background tasks")
+        done, not_done = concurrent.futures.wait(cf_futures, timeout=timeout)
+        logger.debug(
+            f"{len(done)} tasks completed, {len(not_done)} tasks still running"
+        )
 
-        # XXX Fix transition on timeout: if futures are left, we shouldn't
-        # terminate, but instead stay in _TERMINATING state.
-        concurrent.futures.wait(cf_futures, timeout=timeout)
-        self._wrappers.clear()
+        # Remove wrappers for completed futures.
+        done_wrappers = [
+            wrapper for wrapper in self._wrappers if wrapper.cf_future in done
+        ]
+        for wrapper in done_wrappers:
+            self._wrappers.remove(wrapper)
+        assert len(self._wrappers) == len(not_done)
 
-        self._terminate()
+        if not_done:
+            raise RuntimeError(
+                "Shutdown timed out; " "f{len(not_done)} tasks still running"
+            )
+        else:
+            self._terminate()
 
     # State transitions #######################################################
 
