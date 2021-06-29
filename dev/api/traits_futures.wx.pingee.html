@@ -121,7 +121,7 @@ every time a ping is received.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.wx.pingee.Pingee.disconnect">
 <span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo any connections made in the connect method.</p>
+<dd><p>Disconnect from the on_ping callable.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -131,7 +131,8 @@ every time a ping is received.</p>
 <p>This method is thread-safe. Typically the pingee will be passed to
 a background thread, and this method used within that background thread
 to create a pinger.</p>
-<p>This method should only be called on a connected pingee.</p>
+<p>This method should only be called after the ‘connect’ method has
+been called.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>pinger</strong> – New pinger, linked to this pingee.</p>

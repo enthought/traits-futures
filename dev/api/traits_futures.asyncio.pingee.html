@@ -124,7 +124,7 @@ every time a ping is received.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.asyncio.pingee.Pingee.disconnect">
 <span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/pingee.html#Pingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.pingee.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo any connections made in the connect method.</p>
+<dd><p>Disconnect from the on_ping callable.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -134,7 +134,8 @@ every time a ping is received.</p></li>
 <p>This method is thread-safe. Typically the pingee will be passed to
 a background thread, and this method used within that background thread
 to create a pinger.</p>
-<p>This method should only be called on a connected pingee.</p>
+<p>This method should only be called after the ‘connect’ method has
+been called.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>pinger</strong> – New pinger, linked to this pingee.</p>
@@ -149,13 +150,16 @@ to create a pinger.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.asyncio.pingee.Pinger">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.pingee.</span></span><span class="sig-name descname"><span class="pre">Pinger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/pingee.html#Pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.pingee.Pinger" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.pingee.</span></span><span class="sig-name descname"><span class="pre">Pinger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/pingee.html#Pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.pingee.Pinger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Ping emitter, which can send pings to a receiver in a thread-safe manner.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pingee</strong> (<a class="reference internal" href="#traits_futures.asyncio.pingee.Pingee" title="traits_futures.asyncio.pingee.Pingee"><em>Pingee</em></a>) – The target receiver for the pings. The receiver must already be
-connected.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pingee</strong> (<a class="reference internal" href="#traits_futures.asyncio.pingee.Pingee" title="traits_futures.asyncio.pingee.Pingee"><em>Pingee</em></a>) – The target receiver for the pings. The receiver must already be
+connected.</p></li>
+<li><p><strong>event_loop</strong> (<em>asyncio.events.AbstractEventLoop</em>) – The asyncio event loop that will execute the ping callback.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">

@@ -122,7 +122,8 @@ every time a ping is received.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPingee.disconnect">
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.disconnect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo any connections made in the connect method.</p>
+<dd><p>Disconnect from the on_ping callable.</p>
+<p>Pings that are received after this method is called will be ignored.</p>
 <p>Not thread-safe. This method should only be called in the main thread.</p>
 </dd></dl>
 
@@ -133,7 +134,8 @@ every time a ping is received.</p>
 <p>This method is thread-safe. Typically the pingee will be passed to
 a background thread, and this method used within that background thread
 to create a pinger.</p>
-<p>This method should only be called on a connected pingee.</p>
+<p>This method should only be called after the ‘connect’ method has
+been called.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>pinger</strong> – New pinger, linked to this pingee.</p>

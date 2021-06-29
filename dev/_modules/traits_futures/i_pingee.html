@@ -129,7 +129,9 @@
 <div class="viewcode-block" id="IPingee.disconnect"><a class="viewcode-back" href="../../api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee.disconnect">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Undo any connections made in the connect method.</span>
+<span class="sd">        Disconnect from the on_ping callable.</span>
+
+<span class="sd">        Pings that are received after this method is called will be ignored.</span>
 
 <span class="sd">        Not thread-safe. This method should only be called in the main thread.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -143,7 +145,8 @@
 <span class="sd">        a background thread, and this method used within that background thread</span>
 <span class="sd">        to create a pinger.</span>
 
-<span class="sd">        This method should only be called on a connected pingee.</span>
+<span class="sd">        This method should only be called after the &#39;connect&#39; method has</span>
+<span class="sd">        been called.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

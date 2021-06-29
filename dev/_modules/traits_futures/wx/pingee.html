@@ -143,9 +143,10 @@
 
 <div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Undo any connections made in the connect method.</span>
+<span class="sd">        Disconnect from the on_ping callable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Unbind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Unbind</span><span class="p">(</span><span class="n">_PingEventBinder</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span></div>
 
 <div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -155,7 +156,8 @@
 <span class="sd">        a background thread, and this method used within that background thread</span>
 <span class="sd">        to create a pinger.</span>
 
-<span class="sd">        This method should only be called on a connected pingee.</span>
+<span class="sd">        This method should only be called after the &#39;connect&#39; method has</span>
+<span class="sd">        been called.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
