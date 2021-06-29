@@ -42,4 +42,4 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         working-directory: ${{ runner.temp }}
-        run: python -m unittest discover -v traits_futures
+        run: python -X faulthandler -m unittest discover -v traits_futures
