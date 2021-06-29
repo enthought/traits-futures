@@ -50,16 +50,11 @@ logger = logging.getLogger(__name__)
 # publicly visible state. The internal state keeps track of some extra
 # details about the shutdown.
 
-#: Internal state: 'shutdown' has been requested, but not all
-#: background tasks have been completed.
-_TERMINATING = "terminating"
-
 #: Mapping from each internal state to the corresponding user-visible state.
 _INTERNAL_STATE_TO_EXECUTOR_STATE = {
     RUNNING: RUNNING,
     STOPPING: STOPPING,
     STOPPED: STOPPED,
-    _TERMINATING: STOPPING,
 }
 
 #: Set of internal states that are considered to be "running" states.
@@ -311,11 +306,10 @@ class TraitsExecutor(HasStrictTraits):
         background_task_wrapper = BackgroundTaskWrapper(
             runner, sender, cancel_event
         )
-        cf_future = self._worker_pool.submit(background_task_wrapper)
+        self._worker_pool.submit(background_task_wrapper)
 
         future_wrapper = FutureWrapper(
             future=future,
-            cf_future=cf_future,
             receiver=receiver,
         )
         self._wrappers.add(future_wrapper)
@@ -334,75 +328,7 @@ class TraitsExecutor(HasStrictTraits):
         if not self._wrappers:
             self._complete_stop()
 
-    def shutdown(self, timeout=None):
-        """
-        Shut this executor down, abandoning all currently executing futures.
-
-        All currently executing futures that are cancellable will be cancelled.
-
-        This method is blocking: it waits for associated background tasks
-        to complete, and if this executor owns its worker pool, it waits
-        for the worker pool to be shut down.
-
-        No further updates to a future's state will occur after this method
-        is called. In particular, any future that's cancelled by calling this
-        method will remain in CANCELLING state, and its state will never be
-        updated to CANCELLED.
-
-        This method may be called at any time. If called on an executor
-        that's already stopped, this method does nothing.
-
-        Parameters
-        ----------
-        timeout : float, optional
-            Maximum time to wait for background tasks to complete, in seconds.
-            If not given, this method will wait indefinitely.
-
-        Raises
-        ------
-        RuntimeError
-            If a timeout is given, and the background tasks fail to complete
-            within the given timeout. In this case the executor will remain
-            in STOPPING state.
-        """
-        if self.stopped:
-            return
-
-        if self.running:
-            self._initiate_stop()
-        if self._internal_state == STOPPING:
-            self._abandon_tasks()
-        if self._wait_for_futures(timeout):
-            self._terminate()
-        else:
-            raise RuntimeError(
-                "Shutdown timed out; "
-                "f{len(self._wrappers)} tasks still running"
-            )
-
     # State transitions #######################################################
-
-    def _wait_for_futures(self, timeout):
-        """
-        Wait for concurrent.futures futures associated to pending tasks.
-
-        Returns True on success, False on timeout.
-        """
-        cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
-        logger.debug(f"Waiting for {len(cf_futures)} background tasks")
-        done, not_done = concurrent.futures.wait(cf_futures, timeout=timeout)
-        logger.debug(
-            f"{len(done)} tasks completed, {len(not_done)} tasks still running"
-        )
-
-        # Remove wrappers for completed futures.
-        done_wrappers = [
-            wrapper for wrapper in self._wrappers if wrapper.cf_future in done
-        ]
-        for wrapper in done_wrappers:
-            self._wrappers.remove(wrapper)
-
-        return not not_done
 
     def _stop_router(self):
         """
@@ -466,42 +392,6 @@ class TraitsExecutor(HasStrictTraits):
         """
         if self._internal_state == STOPPING:
             self._stop_router()
-            self._do_cleanup()
-            self._internal_state = STOPPED
-        else:
-            raise _StateTransitionError(
-                "Unexpected state transition in internal state {!r}".format(
-                    self._internal_state
-                )
-            )
-
-    def _abandon_tasks(self):
-        """
-        Stop routing messages from background tasks to the foreground futures.
-
-        This doesn't stop the background tasks from executing, but after this
-        method is called, the corresponding futures will no longer receive any
-        state updates in response to messages sent by the background task.
-
-        State: STOPPING -> _TERMINATING
-        """
-        if self._internal_state == STOPPING:
-            self._stop_router()
-            self._internal_state = _TERMINATING
-        else:
-            raise _StateTransitionError(
-                "Unexpected state transition in internal state {!r}".format(
-                    self._internal_state
-                )
-            )
-
-    def _terminate(self):
-        """
-        Complete executor shutdown.
-
-        State: _TERMINATING -> STOPPED
-        """
-        if self._internal_state == _TERMINATING:
             self._do_cleanup()
             self._internal_state = STOPPED
         else:
