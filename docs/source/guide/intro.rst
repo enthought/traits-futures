@@ -302,7 +302,7 @@ needed.
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
-.. |ExecutorState| replace:: :meth:`~traits_futures.traits_executor.ExecutorState`
+.. |ExecutorState| replace:: :meth:`~traits_futures.executor_states.ExecutorState`
 .. |RUNNING| replace:: :meth:`~traits_futures.traits_executor.RUNNING`
 .. |STOPPING| replace:: :meth:`~traits_futures.traits_executor.STOPPING`
 .. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
