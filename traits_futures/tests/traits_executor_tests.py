@@ -495,7 +495,9 @@ class TraitsExecutorTests:
         """
         Simulate a long-running task being submitted to the executor.
 
-        The task finishes on exit of the with block.
+        This context manager waits for the task to start executing before
+        yielding the future associated to that task. The task will be
+        terminated either at timeout or on exit of the associated with block.
         """
         started = self._context.event()
         event = self._context.event()
