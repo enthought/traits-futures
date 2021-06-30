@@ -335,25 +335,36 @@ class TraitsExecutor(HasStrictTraits):
         Stop the message router.
         """
         if self._have_message_router:
+            logger.debug(f"{self} stopping message router")
             for wrapper in self._wrappers:
                 self._message_router.close_pipe(wrapper.receiver)
             self._message_router.stop()
             self._message_router = None
             self._have_message_router = False
+            logger.debug(f"{self} stopping message router")
 
-    def _do_cleanup(self):
+    def _close_context(self):
         """
-        Close the context, shut down the worker pool if we own it.
+        Close the context, if we own it.
+        """
+        if self._own_context:
+            logger.debug(f"{self} closing context")
+            self._context.close()
+            logger.debug(f"{self} context closed")
+        self._context = None
+
+    def _shutdown_worker_pool(self):
+        """
+        Shut down the worker pool if we own it.
         """
         if self._own_worker_pool:
             logger.debug(f"{self} shutting down owned worker pool")
+            # The worker pool shutdown call is potentially blocking, but we
+            # should only ever reach this line when all the background tasks
+            # are complete, so in practice it should never block for long.
             self._worker_pool.shutdown()
             logger.debug(f"{self} worker pool is now shut down")
         self._worker_pool = None
-
-        if self._own_context:
-            self._context.close()
-        self._context = None
 
     def _cancel_tasks(self):
         """
@@ -392,7 +403,8 @@ class TraitsExecutor(HasStrictTraits):
         """
         if self._internal_state == STOPPING:
             self._stop_router()
-            self._do_cleanup()
+            self._close_context()
+            self._shutdown_worker_pool()
             self._internal_state = STOPPED
         else:
             raise _StateTransitionError(
