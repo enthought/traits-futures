@@ -372,7 +372,7 @@ class TraitsExecutor(HasStrictTraits):
             self._initiate_stop()
         if self._internal_state == STOPPING:
             self._abandon_tasks()
-        if self._wait_for_futures(timeout):
+        if self._wait_for_tasks(timeout):
             self._terminate()
         else:
             raise RuntimeError(
@@ -382,7 +382,7 @@ class TraitsExecutor(HasStrictTraits):
 
     # State transitions #######################################################
 
-    def _wait_for_futures(self, timeout):
+    def _wait_for_tasks(self, timeout):
         """
         Wait for concurrent.futures futures associated to pending tasks.
 
