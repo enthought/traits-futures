@@ -250,31 +250,95 @@ occurs after the |cancel| call.
 Stopping the executor
 ---------------------
 
-Like the various future classes, a |TraitsExecutor| also has a state trait, of
-type |ExecutorState|. This state is one of the following:
+To avoid unexpected side-effects during Python process finalization, it's
+recommended to shut down a running |TraitsExecutor| explicitly prior to process
+exit. This section describes the two methods available for this: |shutdown| and
+|stop|.
+
+Executor states
+~~~~~~~~~~~~~~~
+
+Like the various future classes, a |TraitsExecutor| also has a |state| trait,
+of type |ExecutorState|. This state is one of the following:
 
 |RUNNING|
-   The executor is running and accepting task submissions.
+   The executor is running and accepting task submissions. This is the state
+   of a newly-created executor.
 |STOPPING|
-   The user has requested that the executor stop, but there are still
-   running futures associated with this executor. An executor in |STOPPING|
-   state will not accept new task submissions.
+   Shutdown has been initiated or partially completed, but there are still
+   running background tasks associated with this executor. An executor in
+   |STOPPING| state will not accept new task submissions.
 |STOPPED|
-   The executor has stopped, and all futures associated with this
-   executor have finished. An executor in this state cannot be
-   used to submit new tasks, and cannot be restarted.
+   The executor has stopped, all resources associated with the executor have
+   been released, and all background tasks associated with this executor have
+   finished. An executor in |STOPPED| state will not accept new task
+   submissions, and cannot be restarted.
+
+Executor shutdown
+~~~~~~~~~~~~~~~~~
 
 Once a |TraitsExecutor| object is no longer needed (for example at application
-shutdown time), its |stop| method may be called. This cancels all current
-executing or waiting futures, puts the executor into |STOPPING| state and then
-returns.
+shutdown time), it can be shut down via its |shutdown| method. This method is
+blocking: it waits for all of the background tasks to complete before
+returning. In more detail, if called on a running executor, the |shutdown|
+method performs the following tasks, in order:
 
-Once all futures reach |CANCELLED| state, an executor in |STOPPING| state moves
-into |STOPPED| state. If the executor owns its worker pool, that worker pool is
-shut down immediately before moving into |STOPPED| state.
+* Moves the executor to |STOPPING| state.
+* Requests cancellation of all waiting or executing background tasks.
+* Disconnects the background tasks from their associated futures: the
+  futures will receive no further updates after |shutdown| returns.
+* Waits for all background tasks to complete.
+* Shuts down all resources used by the executor (including shutting down
+  the worker pool, if that worker pool is owned by the executor).
+* Moves the executor to |STOPPED| state.
 
-It's advisable to stop the executor explicitly and wait for it to reach
-|STOPPING| state before exiting an application using it.
+If called on an executor in |STOPPED| state, |shutdown| simply returns
+without taking any action. If called on an executor in |STOPPING| state,
+any of the above actions that have not already been taken will be taken.
+
+Note that because of the disconnection between the background tasks and
+associated futures, background tasks that have been cancelled will leave their
+associated futures in |CANCELLING| state. Those futures will never reach
+|CANCELLED| state, even under a running event loop.
+
+Shutdown with a timeout
+~~~~~~~~~~~~~~~~~~~~~~~
+
+To avoid blocking indefinitely, the |shutdown| method also accepts a
+``timeout`` parameter. If a timeout is given, that timeout is used when waiting
+for the background tasks to complete. If the background tasks fail to complete
+within the given timeout, |shutdown| will raise |RuntimeError| and on return
+from the method, the executor will be in |STOPPING| state. The worker pool used
+by the executor will not have been shut down.
+
+Non-blocking executor shutdown
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Occasionally, it may be desirable to shut down an executor during normal
+application execution, rather than at application shutdown time. In this
+situation calling |shutdown| is problematic, since that method is blocking and
+so will make the GUI unresponsive. Instead, users can call the non-blocking
+|stop| method. This method:
+
+* Moves the executor to |STOPPING| state.
+* Requests cancellation of all waiting or executing background tasks.
+
+The event loop can continue to run after calling the |stop| method. Under that
+running event loop, the futures will eventually reach a final state. When that
+happens, the system automatically:
+
+* Shuts down all resources used by the executor (including shutting down
+  the worker pool, if that worker pool is owned by the executor).
+* Moves the executor to |STOPPED| state.
+
+If there are no waiting or executing background tasks, then |stop| goes
+through all of the steps above at once, moving the executor through
+the |STOPPING| state to |STOPPED| state.
+
+Note that while |stop| can only be called on an executor in |RUNNING| state,
+it's always legal to call |shutdown| on an executor, regardless of the current
+state of that executor. In particular, calling |shutdown| after |stop| is
+permissible, but calling |stop| after |shutdown| would be an error.
 
 
 Using a shared worker pool
@@ -300,12 +364,14 @@ needed.
 .. |traits_futures.api| replace:: :mod:`traits_futures.api`
 
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
+.. |shutdown| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.shutdown`
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
+.. |state| replace:: :attr:`~traits_futures.traits_executor.TraitsExecutor.state`
 .. |ExecutorState| replace:: :meth:`~traits_futures.executor_states.ExecutorState`
-.. |RUNNING| replace:: :meth:`~traits_futures.traits_executor.RUNNING`
-.. |STOPPING| replace:: :meth:`~traits_futures.traits_executor.STOPPING`
-.. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
+.. |RUNNING| replace:: :data:`~traits_futures.executor_states.RUNNING`
+.. |STOPPING| replace:: :data:`~traits_futures.executor_states.STOPPING`
+.. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
 
 .. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
 
