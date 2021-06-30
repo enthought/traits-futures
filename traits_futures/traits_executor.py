@@ -395,10 +395,11 @@ class TraitsExecutor(HasStrictTraits):
             False if some background tasks were still running at timeout.
         """
         cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
-        logger.debug(f"Waiting for {len(cf_futures)} background tasks")
+        logger.debug(f"{self} waiting for {len(cf_futures)} background tasks")
         done, not_done = concurrent.futures.wait(cf_futures, timeout=timeout)
         logger.debug(
-            f"{len(done)} tasks completed, {len(not_done)} tasks still running"
+            f"{self} done waiting: {len(done)} tasks completed, "
+            f"{len(not_done)} tasks still running"
         )
 
         # Remove wrappers for completed futures.
@@ -449,14 +450,14 @@ class TraitsExecutor(HasStrictTraits):
         """
         Cancel all currently running tasks.
         """
-        logger.debug("Cancelling incomplete tasks")
+        logger.debug(f"{self} cancelling incomplete tasks")
         cancel_count = 0
         for wrapper in self._wrappers:
             future = wrapper.future
             if future.cancellable:
                 future.cancel()
                 cancel_count += 1
-        logger.debug(f"{cancel_count} tasks cancelled")
+        logger.debug(f"{self} cancelled {cancel_count} tasks")
 
     def _initiate_stop(self):
         """
@@ -577,7 +578,7 @@ class TraitsExecutor(HasStrictTraits):
     def __internal_state_changed(self, old_internal_state, new_internal_state):
         """Trait change handler for the "_internal_state" trait."""
         logger.debug(
-            "Executor internal state changed "
+            f"{self} internal state changed "
             f"from {old_internal_state} to {new_internal_state}"
         )
 
