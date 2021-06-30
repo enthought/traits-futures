@@ -164,14 +164,14 @@ result of the future is the expected one.</p></li>
 that the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method is not blocking and does not actually stop the
 executor - instead, it requests cancellation of all running futures and
 prevents new jobs from being scheduled. For the executor to eventually reach
-the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state, the GUI event loop must again be running, so we make a
+the <code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code> state, the GUI event loop must again be running, so we make a
 second use of <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui</span></code> in the <code class="docutils literal notranslate"><span class="pre">tearDown</span></code> method in the
 example.</p></li>
 </ul>
 <p>If you don’t need the result of the future (for example because you’re using
 the future for its side-effect rather than to perform a computation) then it’s
 safe to remove the wait for <code class="docutils literal notranslate"><span class="pre">future.done</span></code>, so long as you keep the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a>
-call and then wait for the executor to stop: the executor won’t reach <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code></a>
+call and then wait for the executor to stop: the executor won’t reach <code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code>
 state until all futures have completed.</p>
 </section>
 </section>

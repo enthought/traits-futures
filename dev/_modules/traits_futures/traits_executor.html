@@ -114,6 +114,12 @@
 <span class="kn">from</span> <span class="nn">traits_futures.background_iteration</span> <span class="kn">import</span> <span class="n">submit_iteration</span>
 <span class="kn">from</span> <span class="nn">traits_futures.background_progress</span> <span class="kn">import</span> <span class="n">submit_progress</span>
 <span class="kn">from</span> <span class="nn">traits_futures.ets_context</span> <span class="kn">import</span> <span class="n">ETSContext</span>
+<span class="kn">from</span> <span class="nn">traits_futures.executor_states</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ExecutorState</span><span class="p">,</span>
+    <span class="n">RUNNING</span><span class="p">,</span>
+    <span class="n">STOPPED</span><span class="p">,</span>
+    <span class="n">STOPPING</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_gui_context</span> <span class="kn">import</span> <span class="n">IGuiContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="kn">import</span> <span class="n">IParallelContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.multithreading_context</span> <span class="kn">import</span> <span class="n">MultithreadingContext</span>
@@ -122,20 +128,39 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="c1"># Executor states.</span>
+<span class="c1"># The TraitsExecutor class maintains an internal state that maps to the</span>
+<span class="c1"># publicly visible state. The internal state keeps track of some extra</span>
+<span class="c1"># details about the shutdown.</span>
 
-<span class="c1">#: Executor is currently running (this is the initial state).</span>
-<span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span>
+<span class="c1">#: Mapping from each internal state to the corresponding user-visible state.</span>
+<span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">RUNNING</span><span class="p">:</span> <span class="n">RUNNING</span><span class="p">,</span>
+    <span class="n">STOPPING</span><span class="p">:</span> <span class="n">STOPPING</span><span class="p">,</span>
+    <span class="n">STOPPED</span><span class="p">:</span> <span class="n">STOPPED</span><span class="p">,</span>
+<span class="p">}</span>
 
-<span class="c1">#: Executor has been requested to stop. In this state, no new</span>
-<span class="c1">#: jobs can be submitted, and we&#39;re waiting for old ones to complete.</span>
-<span class="n">STOPPING</span> <span class="o">=</span> <span class="s2">&quot;stopping&quot;</span>
+<span class="c1">#: Set of internal states that are considered to be &quot;running&quot; states.</span>
+<span class="n">_RUNNING_INTERNAL_STATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">internal_state</span>
+    <span class="k">for</span> <span class="n">internal_state</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">RUNNING</span>
+<span class="p">}</span>
 
-<span class="c1">#: Executor is stopped.</span>
-<span class="n">STOPPED</span> <span class="o">=</span> <span class="s2">&quot;stopped&quot;</span>
+<span class="c1">#: Set of internal states that are considered to be &quot;stopped&quot; states.</span>
+<span class="n">_STOPPED_INTERNAL_STATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">internal_state</span>
+    <span class="k">for</span> <span class="n">internal_state</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">STOPPED</span>
+<span class="p">}</span>
 
-<span class="c1">#: Trait type representing the executor state.</span>
-<span class="n">ExecutorState</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">STOPPING</span><span class="p">,</span> <span class="n">STOPPED</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">_StateTransitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception used to indicate a bad state transition.</span>
+
+<span class="sd">    Users should never see this exception. It always indicates an error in the</span>
+<span class="sd">    executor logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="TraitsExecutor"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor">[docs]</a><span class="k">class</span> <span class="nc">TraitsExecutor</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
@@ -174,7 +199,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: Current state of this executor.</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="n">ExecutorState</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">ExecutorState</span><span class="p">)</span>
 
     <span class="c1">#: Derived state: true if this executor is running; False if it&#39;s</span>
     <span class="c1">#: stopped or stopping.</span>
@@ -360,13 +385,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">close_pipe</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span>
             <span class="k">raise</span>
 
-        <span class="n">future_wrapper</span> <span class="o">=</span> <span class="n">FutureWrapper</span><span class="p">(</span><span class="n">future</span><span class="o">=</span><span class="n">future</span><span class="p">,</span> <span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">future_wrapper</span><span class="p">)</span>
-
         <span class="n">background_task_wrapper</span> <span class="o">=</span> <span class="n">BackgroundTaskWrapper</span><span class="p">(</span>
             <span class="n">runner</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancel_event</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">background_task_wrapper</span><span class="p">)</span>
+
+        <span class="n">future_wrapper</span> <span class="o">=</span> <span class="n">FutureWrapper</span><span class="p">(</span>
+            <span class="n">future</span><span class="o">=</span><span class="n">future</span><span class="p">,</span>
+            <span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">future_wrapper</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> created future </span><span class="si">{</span><span class="n">future</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
@@ -378,25 +406,102 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Executor is not currently running.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Cancel any futures that aren&#39;t already cancelled.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelling </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">)</span><span class="si">}</span><span class="s2"> unfinished futures&quot;</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
-                <span class="n">future</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">future</span>
-                <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">cancellable</span><span class="p">:</span>
-                    <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-
-        <span class="c1"># For consistency, we always go through the STOPPING state,</span>
-        <span class="c1"># even if there are no jobs.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">STOPPING</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopping&quot;</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initiate_stop</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span></div>
+
+    <span class="c1"># State transitions #######################################################</span>
+
+    <span class="k">def</span> <span class="nf">_stop_router</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop the message router.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopping message router&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">close_pipe</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="n">receiver</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> message router stopped&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_close_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the context, if we own it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_context</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> closing context&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> context closed&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_shutdown_worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shut down the worker pool if we own it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_worker_pool</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> shutting down owned worker pool&quot;</span><span class="p">)</span>
+            <span class="c1"># The worker pool shutdown call is potentially blocking, but we</span>
+            <span class="c1"># should only ever reach this line when all the background tasks</span>
+            <span class="c1"># are complete, so in practice it should never block for long.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> worker pool is now shut down&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_cancel_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel all currently running tasks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cancelling incomplete tasks&quot;</span><span class="p">)</span>
+        <span class="n">cancel_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+            <span class="n">future</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">future</span>
+            <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">cancellable</span><span class="p">:</span>
+                <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                <span class="n">cancel_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cancel_count</span><span class="si">}</span><span class="s2"> tasks cancelled&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_initiate_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prevent new tasks from being submitted and cancel existing tasks.</span>
+
+<span class="sd">        State: RUNNING -&gt; STOPPING</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_tasks</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">STOPPING</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected state transition in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_complete_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move to stopped state when all remaining futures have completed.</span>
+
+<span class="sd">        State: STOPPING -&gt; STOPPED</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_router</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_close_context</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shutdown_worker_pool</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">STOPPED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected state transition in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="c1"># Private traits ##########################################################</span>
+
+    <span class="c1">#: Internal state of the executor.</span>
+    <span class="n">_internal_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="n">RUNNING</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">))</span>
+
+    <span class="c1">#: Wrappers for currently-executing futures.</span>
+    <span class="n">_wrappers</span> <span class="o">=</span> <span class="n">Set</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">FutureWrapper</span><span class="p">))</span>
 
     <span class="c1">#: Parallelization context</span>
     <span class="n">_context</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">)</span>
@@ -421,25 +526,39 @@
     <span class="c1">#: True if we&#39;ve created a message router, and need to shut it down.</span>
     <span class="n">_have_message_router</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="c1">#: Wrappers for currently-executing futures.</span>
-    <span class="n">_wrappers</span> <span class="o">=</span> <span class="n">Set</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">FutureWrapper</span><span class="p">))</span>
-
     <span class="c1"># Private methods #########################################################</span>
 
+    <span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">_get_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">RUNNING</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;running&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
 
     <span class="k">def</span> <span class="nf">_get_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">STOPPED</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;stopped&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
 
-    <span class="k">def</span> <span class="nf">_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_state</span><span class="p">,</span> <span class="n">new_state</span><span class="p">):</span>
-        <span class="n">old_running</span> <span class="o">=</span> <span class="n">old_state</span> <span class="o">==</span> <span class="n">RUNNING</span>
-        <span class="n">new_running</span> <span class="o">=</span> <span class="n">new_state</span> <span class="o">==</span> <span class="n">RUNNING</span>
+    <span class="k">def</span> <span class="nf">__internal_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Executor internal state changed &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">old_internal_state</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_internal_state</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">old_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="n">old_internal_state</span><span class="p">]</span>
+        <span class="n">new_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="n">new_internal_state</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">old_state</span> <span class="o">!=</span> <span class="n">new_state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">old_state</span><span class="p">,</span> <span class="n">new_state</span><span class="p">)</span>
+
+        <span class="n">old_running</span> <span class="o">=</span> <span class="n">old_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
+        <span class="n">new_running</span> <span class="o">=</span> <span class="n">new_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
         <span class="k">if</span> <span class="n">old_running</span> <span class="o">!=</span> <span class="n">new_running</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="n">old_running</span><span class="p">,</span> <span class="n">new_running</span><span class="p">)</span>
 
-        <span class="n">old_stopped</span> <span class="o">=</span> <span class="n">old_state</span> <span class="o">==</span> <span class="n">STOPPED</span>
-        <span class="n">new_stopped</span> <span class="o">=</span> <span class="n">new_state</span> <span class="o">==</span> <span class="n">STOPPED</span>
+        <span class="n">old_stopped</span> <span class="o">=</span> <span class="n">old_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
+        <span class="n">new_stopped</span> <span class="o">=</span> <span class="n">new_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
         <span class="k">if</span> <span class="n">old_stopped</span> <span class="o">!=</span> <span class="n">new_stopped</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;stopped&quot;</span><span class="p">,</span> <span class="n">old_stopped</span><span class="p">,</span> <span class="n">new_stopped</span><span class="p">)</span>
 
@@ -471,30 +590,8 @@
         <span class="p">)</span>
         <span class="c1"># If we&#39;re in STOPPING state and the last future has just exited,</span>
         <span class="c1"># go to STOPPED state.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">STOPPING</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Go to STOPPED state, and shut down the worker pool if we own it.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">STOPPING</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_worker_pool</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> shutting down owned worker pool&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_context</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">STOPPED</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopped&quot;</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
