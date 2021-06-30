@@ -207,6 +207,7 @@ intersphinx_mapping = {
 # Automatically run sphinx-apidoc during build.
 def run_apidoc(app):
     import pathlib
+
     import sphinx.ext.apidoc
 
     source_dir = pathlib.Path(__file__).parent
@@ -221,8 +222,10 @@ def run_apidoc(app):
     args = [
         "--separate",
         "--no-toc",
-        "--templatedir", str(source_dir / "api" / "templates"),
-        "-o", str(source_dir/"api"),
+        "--templatedir",
+        str(source_dir / "api" / "templates"),
+        "-o",
+        str(source_dir / "api"),
         str(target_dir),
         *map(str, exclude_patterns),
     ]
