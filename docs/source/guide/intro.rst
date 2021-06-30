@@ -303,9 +303,9 @@ needed.
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
 .. |ExecutorState| replace:: :meth:`~traits_futures.executor_states.ExecutorState`
-.. |RUNNING| replace:: :meth:`~traits_futures.traits_executor.RUNNING`
-.. |STOPPING| replace:: :meth:`~traits_futures.traits_executor.STOPPING`
-.. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
+.. |RUNNING| replace:: :data:`~traits_futures.executor_states.RUNNING`
+.. |STOPPING| replace:: :data:`~traits_futures.executor_states.STOPPING`
+.. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
 
 .. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
 
