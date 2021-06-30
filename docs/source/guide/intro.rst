@@ -308,11 +308,11 @@ Shutdown with a timeout
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 To avoid blocking indefinitely, the |shutdown| method also accepts a
-``timeout`` parameter. If a timeout is given, that timeout is used when waiting
-for the background tasks to complete. If the background tasks fail to complete
-within the given timeout, |shutdown| will raise |RuntimeError| and on return
-from the method, the executor will be in |STOPPING| state. The worker pool used
-by the executor will not have been shut down.
+``timeout`` parameter. That timeout is used when waiting for the background
+tasks to complete. If the background tasks fail to complete within the given
+timeout, |shutdown| will raise |RuntimeError| and leave the executor in
+|STOPPING| state. The worker pool used by the executor will not have been shut
+down.
 
 Non-blocking executor shutdown
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -326,9 +326,10 @@ so will make the GUI unresponsive. Instead, users can call the non-blocking
 * Moves the executor to |STOPPING| state.
 * Requests cancellation of all waiting or executing background tasks.
 
-The event loop can continue to run after calling the |stop| method. Under that
-running event loop, the futures will eventually reach a final state. When that
-happens, the system automatically:
+Typically, the event loop will continue to run after calling the |stop| method.
+Under that running event loop, all futures will eventually reach one of the
+final states (|COMPLETED|, |FAILED| or |CANCELLED|). When that happens, the
+system automatically:
 
 * Shuts down the worker pool (if that worker pool is owned by the executor).
 * Moves the executor to |STOPPED| state.
