@@ -475,8 +475,8 @@ class TraitsExecutor(HasStrictTraits):
         if old_running != new_running:
             self.trait_property_changed("running", old_running, new_running)
 
-        old_stopped = old_state in _STOPPED_INTERNAL_STATES
-        new_stopped = new_state in _STOPPED_INTERNAL_STATES
+        old_stopped = old_internal_state in _STOPPED_INTERNAL_STATES
+        new_stopped = new_internal_state in _STOPPED_INTERNAL_STATES
         if old_stopped != new_stopped:
             self.trait_property_changed("stopped", old_stopped, new_stopped)
 
