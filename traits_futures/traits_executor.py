@@ -32,6 +32,12 @@ from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
 from traits_futures.ets_context import ETSContext
+from traits_futures.executor_states import (
+    ExecutorState,
+    RUNNING,
+    STOPPED,
+    STOPPING,
+)
 from traits_futures.i_gui_context import IGuiContext
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_context import MultithreadingContext
@@ -40,20 +46,39 @@ from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
 logger = logging.getLogger(__name__)
 
 
-# Executor states.
+# The TraitsExecutor class maintains an internal state that maps to the
+# publicly visible state. The internal state keeps track of some extra
+# details about the shutdown.
 
-#: Executor is currently running (this is the initial state).
-RUNNING = "running"
+#: Mapping from each internal state to the corresponding user-visible state.
+_INTERNAL_STATE_TO_EXECUTOR_STATE = {
+    RUNNING: RUNNING,
+    STOPPING: STOPPING,
+    STOPPED: STOPPED,
+}
 
-#: Executor has been requested to stop. In this state, no new
-#: jobs can be submitted, and we're waiting for old ones to complete.
-STOPPING = "stopping"
+#: Set of internal states that are considered to be "running" states.
+_RUNNING_INTERNAL_STATES = {
+    internal_state
+    for internal_state, state in _INTERNAL_STATE_TO_EXECUTOR_STATE.items()
+    if state == RUNNING
+}
 
-#: Executor is stopped.
-STOPPED = "stopped"
+#: Set of internal states that are considered to be "stopped" states.
+_STOPPED_INTERNAL_STATES = {
+    internal_state
+    for internal_state, state in _INTERNAL_STATE_TO_EXECUTOR_STATE.items()
+    if state == STOPPED
+}
 
-#: Trait type representing the executor state.
-ExecutorState = Enum(RUNNING, STOPPING, STOPPED)
+
+class _StateTransitionError(Exception):
+    """
+    Exception used to indicate a bad state transition.
+
+    Users should never see this exception. It always indicates an error in the
+    executor logic.
+    """
 
 
 class TraitsExecutor(HasStrictTraits):
@@ -92,7 +117,7 @@ class TraitsExecutor(HasStrictTraits):
     """
 
     #: Current state of this executor.
-    state = ExecutorState
+    state = Property(ExecutorState)
 
     #: Derived state: true if this executor is running; False if it's
     #: stopped or stopping.
@@ -278,13 +303,16 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.close_pipe(receiver)
             raise
 
-        future_wrapper = FutureWrapper(future=future, receiver=receiver)
-        self._wrappers.add(future_wrapper)
-
         background_task_wrapper = BackgroundTaskWrapper(
             runner, sender, cancel_event
         )
         self._worker_pool.submit(background_task_wrapper)
+
+        future_wrapper = FutureWrapper(
+            future=future,
+            receiver=receiver,
+        )
+        self._wrappers.add(future_wrapper)
 
         logger.debug(f"{self} created future {future}")
         return future
@@ -296,25 +324,102 @@ class TraitsExecutor(HasStrictTraits):
         if not self.running:
             raise RuntimeError("Executor is not currently running.")
 
-        # Cancel any futures that aren't already cancelled.
-        if self._wrappers:
-            logger.debug(
-                f"{self} cancelling {len(self._wrappers)} unfinished futures"
-            )
-            for wrapper in self._wrappers:
-                future = wrapper.future
-                if future.cancellable:
-                    future.cancel()
-
-        # For consistency, we always go through the STOPPING state,
-        # even if there are no jobs.
-        self.state = STOPPING
-        logger.debug(f"{self} stopping")
-
+        self._initiate_stop()
         if not self._wrappers:
-            self._stop()
+            self._complete_stop()
+
+    # State transitions #######################################################
+
+    def _stop_router(self):
+        """
+        Stop the message router.
+        """
+        if self._have_message_router:
+            logger.debug(f"{self} stopping message router")
+            for wrapper in self._wrappers:
+                self._message_router.close_pipe(wrapper.receiver)
+            self._message_router.stop()
+            self._message_router = None
+            self._have_message_router = False
+            logger.debug(f"{self} message router stopped")
+
+    def _close_context(self):
+        """
+        Close the context, if we own it.
+        """
+        if self._own_context:
+            logger.debug(f"{self} closing context")
+            self._context.close()
+            logger.debug(f"{self} context closed")
+        self._context = None
+
+    def _shutdown_worker_pool(self):
+        """
+        Shut down the worker pool if we own it.
+        """
+        if self._own_worker_pool:
+            logger.debug(f"{self} shutting down owned worker pool")
+            # The worker pool shutdown call is potentially blocking, but we
+            # should only ever reach this line when all the background tasks
+            # are complete, so in practice it should never block for long.
+            self._worker_pool.shutdown()
+            logger.debug(f"{self} worker pool is now shut down")
+        self._worker_pool = None
+
+    def _cancel_tasks(self):
+        """
+        Cancel all currently running tasks.
+        """
+        logger.debug("Cancelling incomplete tasks")
+        cancel_count = 0
+        for wrapper in self._wrappers:
+            future = wrapper.future
+            if future.cancellable:
+                future.cancel()
+                cancel_count += 1
+        logger.debug(f"{cancel_count} tasks cancelled")
+
+    def _initiate_stop(self):
+        """
+        Prevent new tasks from being submitted and cancel existing tasks.
+
+        State: RUNNING -> STOPPING
+        """
+        if self._internal_state == RUNNING:
+            self._cancel_tasks()
+            self._internal_state = STOPPING
+        else:
+            raise _StateTransitionError(
+                "Unexpected state transition in internal state {!r}".format(
+                    self._internal_state
+                )
+            )
+
+    def _complete_stop(self):
+        """
+        Move to stopped state when all remaining futures have completed.
+
+        State: STOPPING -> STOPPED
+        """
+        if self._internal_state == STOPPING:
+            self._stop_router()
+            self._close_context()
+            self._shutdown_worker_pool()
+            self._internal_state = STOPPED
+        else:
+            raise _StateTransitionError(
+                "Unexpected state transition in internal state {!r}".format(
+                    self._internal_state
+                )
+            )
 
     # Private traits ##########################################################
+
+    #: Internal state of the executor.
+    _internal_state = Enum(RUNNING, list(_INTERNAL_STATE_TO_EXECUTOR_STATE))
+
+    #: Wrappers for currently-executing futures.
+    _wrappers = Set(Instance(FutureWrapper))
 
     #: Parallelization context
     _context = Instance(IParallelContext)
@@ -339,25 +444,39 @@ class TraitsExecutor(HasStrictTraits):
     #: True if we've created a message router, and need to shut it down.
     _have_message_router = Bool(False)
 
-    #: Wrappers for currently-executing futures.
-    _wrappers = Set(Instance(FutureWrapper))
-
     # Private methods #########################################################
 
+    def _get_state(self):
+        """Property getter for the "state" trait."""
+        return _INTERNAL_STATE_TO_EXECUTOR_STATE[self._internal_state]
+
     def _get_running(self):
-        return self.state == RUNNING
+        """Property getter for the "running" trait."""
+        return self._internal_state in _RUNNING_INTERNAL_STATES
 
     def _get_stopped(self):
-        return self.state == STOPPED
+        """Property getter for the "stopped" trait."""
+        return self._internal_state in _STOPPED_INTERNAL_STATES
 
-    def _state_changed(self, old_state, new_state):
-        old_running = old_state == RUNNING
-        new_running = new_state == RUNNING
+    def __internal_state_changed(self, old_internal_state, new_internal_state):
+        """Trait change handler for the "_internal_state" trait."""
+        logger.debug(
+            "Executor internal state changed "
+            f"from {old_internal_state} to {new_internal_state}"
+        )
+
+        old_state = _INTERNAL_STATE_TO_EXECUTOR_STATE[old_internal_state]
+        new_state = _INTERNAL_STATE_TO_EXECUTOR_STATE[new_internal_state]
+        if old_state != new_state:
+            self.trait_property_changed("state", old_state, new_state)
+
+        old_running = old_internal_state in _RUNNING_INTERNAL_STATES
+        new_running = new_internal_state in _RUNNING_INTERNAL_STATES
         if old_running != new_running:
             self.trait_property_changed("running", old_running, new_running)
 
-        old_stopped = old_state == STOPPED
-        new_stopped = new_state == STOPPED
+        old_stopped = old_internal_state in _STOPPED_INTERNAL_STATES
+        new_stopped = new_internal_state in _STOPPED_INTERNAL_STATES
         if old_stopped != new_stopped:
             self.trait_property_changed("stopped", old_stopped, new_stopped)
 
@@ -389,27 +508,5 @@ class TraitsExecutor(HasStrictTraits):
         )
         # If we're in STOPPING state and the last future has just exited,
         # go to STOPPED state.
-        if self.state == STOPPING and not self._wrappers:
-            self._stop()
-
-    def _stop(self):
-        """
-        Go to STOPPED state, and shut down the worker pool if we own it.
-        """
-        assert self.state == STOPPING
-
-        if self._have_message_router:
-            self._message_router.stop()
-            self._message_router = None
-
-        if self._own_worker_pool:
-            logger.debug(f"{self} shutting down owned worker pool")
-            self._worker_pool.shutdown()
-        self._worker_pool = None
-
-        if self._own_context:
-            self._context.close()
-        self._context = None
-
-        self.state = STOPPED
-        logger.debug(f"{self} stopped")
+        if self._internal_state == STOPPING and not self._wrappers:
+            self._complete_stop()
