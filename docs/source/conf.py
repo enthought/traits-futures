@@ -202,3 +202,33 @@ intersphinx_mapping = {
     "traits": ("https://docs.enthought.com/traits", None),
     "traitsui": ("https://docs.enthought.com/traitsui", None),
 }
+
+
+# Automatically run sphinx-apidoc during build.
+def run_apidoc(app):
+    import pathlib
+    import sphinx.ext.apidoc
+
+    source_dir = pathlib.Path(__file__).parent
+    project_root = source_dir.parent.parent
+    target_dir = project_root / "traits_futures"
+
+    exclude_patterns = [
+        project_root / "*" / "tests" / "*.py",
+        project_root / "*" / "*" / "tests" / "*.py",
+    ]
+
+    args = [
+        "--separate",
+        "--no-toc",
+        "--templatedir", str(source_dir / "api" / "templates"),
+        "-o", str(source_dir/"api"),
+        str(target_dir),
+        *map(str, exclude_patterns),
+    ]
+
+    sphinx.ext.apidoc.main(args)
+
+
+def setup(app):
+    app.connect("builder-inited", run_apidoc)
