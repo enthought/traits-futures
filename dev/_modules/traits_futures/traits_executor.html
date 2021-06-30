@@ -452,14 +452,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel all currently running tasks.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cancelling incomplete tasks&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self}</span><span class="s2"> cancelling incomplete tasks&quot;</span><span class="p">)</span>
         <span class="n">cancel_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
             <span class="n">future</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">future</span>
             <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">cancellable</span><span class="p">:</span>
                 <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
                 <span class="n">cancel_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cancel_count</span><span class="si">}</span><span class="s2"> tasks cancelled&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelled </span><span class="si">{</span><span class="n">cancel_count</span><span class="si">}</span><span class="s2"> tasks&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_initiate_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -543,7 +543,7 @@
     <span class="k">def</span> <span class="nf">__internal_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;Executor internal state changed &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> internal state changed &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">old_internal_state</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_internal_state</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
