@@ -386,7 +386,11 @@ class TraitsExecutor(HasStrictTraits):
         """
         Wait for concurrent.futures futures associated to pending tasks.
 
-        Returns True on success, False on timeout.
+        Returns
+        -------
+        success : bool
+            True if all background tasks completed within the given timeout.
+            False if some background tasks were still running at timeout.
         """
         cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
         logger.debug(f"Waiting for {len(cf_futures)} background tasks")
