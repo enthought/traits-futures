@@ -50,8 +50,10 @@ logger = logging.getLogger(__name__)
 # publicly visible state. The internal state keeps track of some extra
 # details about the shutdown.
 
-#: Internal state: 'shutdown' has been requested, but not all
-#: background tasks have been completed.
+#: Internal state arising from a timeout on "shutdown": all tasks have been
+#: cancelled and the background tasks have been unlinked from their
+#: corresponding futures, but some background tasks may still be executing.
+#: Maps to the STOPPING public state.
 _TERMINATING = "terminating"
 
 #: Mapping from each internal state to the corresponding user-visible state.
