@@ -411,7 +411,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def _stop_router(self):
         """
-        Stop the message router and close the context.
+        Stop the message router.
         """
         if self._have_message_router:
             logger.debug(f"{self} stopping message router")
@@ -422,6 +422,10 @@ class TraitsExecutor(HasStrictTraits):
             self._have_message_router = False
             logger.debug(f"{self} message router stopped")
 
+    def _close_context(self):
+        """
+        Close the context, if we own it.
+        """
         if self._own_context:
             logger.debug(f"{self} closing context")
             self._context.close()
@@ -478,6 +482,7 @@ class TraitsExecutor(HasStrictTraits):
         """
         if self._internal_state == STOPPING:
             self._stop_router()
+            self._close_context()
             self._shutdown_worker_pool()
             self._internal_state = STOPPED
         else:
@@ -499,6 +504,7 @@ class TraitsExecutor(HasStrictTraits):
         """
         if self._internal_state == STOPPING:
             self._stop_router()
+            self._close_context()
             self._internal_state = _TERMINATING
         else:
             raise _StateTransitionError(
