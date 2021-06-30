@@ -421,6 +421,9 @@ class TraitsExecutor(HasStrictTraits):
         """
         if self._own_worker_pool:
             logger.debug(f"{self} shutting down owned worker pool")
+            # The worker pool shutdown call is potentially blocking, but we
+            # should only ever reach this line when all the background tasks
+            # are complete, so in practice it should never block for long.
             self._worker_pool.shutdown()
             logger.debug(f"{self} worker pool is now shut down")
         self._worker_pool = None
