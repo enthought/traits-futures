@@ -370,14 +370,14 @@ class TraitsExecutor(HasStrictTraits):
         """
         Cancel all currently running tasks.
         """
-        logger.debug("Cancelling incomplete tasks")
+        logger.debug("{self} cancelling incomplete tasks")
         cancel_count = 0
         for wrapper in self._wrappers:
             future = wrapper.future
             if future.cancellable:
                 future.cancel()
                 cancel_count += 1
-        logger.debug(f"{cancel_count} tasks cancelled")
+        logger.debug(f"{self} cancelled {cancel_count} tasks")
 
     def _initiate_stop(self):
         """
@@ -461,7 +461,7 @@ class TraitsExecutor(HasStrictTraits):
     def __internal_state_changed(self, old_internal_state, new_internal_state):
         """Trait change handler for the "_internal_state" trait."""
         logger.debug(
-            "Executor internal state changed "
+            f"{self} internal state changed "
             f"from {old_internal_state} to {new_internal_state}"
         )
 
