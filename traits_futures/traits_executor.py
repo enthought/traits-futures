@@ -341,7 +341,7 @@ class TraitsExecutor(HasStrictTraits):
             self._message_router.stop()
             self._message_router = None
             self._have_message_router = False
-            logger.debug(f"{self} stopping message router")
+            logger.debug(f"{self} message router stopped")
 
     def _close_context(self):
         """
