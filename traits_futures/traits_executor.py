@@ -400,11 +400,10 @@ class TraitsExecutor(HasStrictTraits):
         )
 
         # Remove wrappers for completed futures.
-        done_wrappers = [
+        done_wrappers = {
             wrapper for wrapper in self._wrappers if wrapper.cf_future in done
-        ]
-        for wrapper in done_wrappers:
-            self._wrappers.remove(wrapper)
+        }
+        self._wrappers -= done_wrappers
 
         return not not_done
 
