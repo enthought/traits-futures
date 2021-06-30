@@ -373,7 +373,7 @@ class TraitsExecutor(HasStrictTraits):
         if self.running:
             self._initiate_stop()
         if self._internal_state == STOPPING:
-            self._abandon_tasks()
+            self._unlink_tasks()
         if self._wait_for_tasks(timeout):
             self._terminate()
         else:
@@ -487,9 +487,9 @@ class TraitsExecutor(HasStrictTraits):
                 )
             )
 
-    def _abandon_tasks(self):
+    def _unlink_tasks(self):
         """
-        Stop routing messages from background tasks to the foreground futures.
+        Unlink background tasks from their corresponding futures.
 
         This doesn't stop the background tasks from executing, but after this
         method is called, the corresponding futures will no longer receive any
