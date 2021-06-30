@@ -252,8 +252,12 @@ Stopping the executor
 
 To avoid unexpected side-effects during Python process finalization, it's
 recommended to shut down a running |TraitsExecutor| explicitly prior to process
-exit. This section describes the two methods available for this: |shutdown| and
-|stop|.
+exit. Similarly, when writing a unit test that makes use of a |TraitsExecutor|,
+that executor should be shut down at test exit, to avoid potential for
+unexpected interactions with other tests.
+
+This section describes the two methods available for executor shutdown:
+|shutdown| and |stop|.
 
 Executor states
 ~~~~~~~~~~~~~~~
