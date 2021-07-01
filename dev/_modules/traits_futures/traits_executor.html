@@ -452,7 +452,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel all currently running tasks.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{self}</span><span class="s2"> cancelling incomplete tasks&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelling incomplete tasks&quot;</span><span class="p">)</span>
         <span class="n">cancel_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
             <span class="n">future</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">future</span>
