@@ -73,6 +73,7 @@ User Guide
    guide/toolkits.rst
    guide/testing.rst
    guide/advanced.rst
+   guide/examples.rst
 
 
 API Documentation
