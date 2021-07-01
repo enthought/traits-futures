@@ -233,7 +233,7 @@ def run_apidoc(app):
         "-o",
         source_dir / "api",
         target_dir,
-        *map(str, exclude_patterns),
+        *exclude_patterns,
     ]
 
     sphinx.ext.apidoc.main([str(arg) for arg in args])
