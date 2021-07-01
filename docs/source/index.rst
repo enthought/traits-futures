@@ -51,9 +51,9 @@ Limitations
 Quick start
 -----------
 
-Here's a complete example showing a minimal TraitsUI application that fires off
-a background computation when its "Calculate" button is pressed, and shows the
-result when it arrives.
+Here's a :download:`complete example <examples/quick_start.py>` showing a
+minimal TraitsUI application that fires off a background computation when its
+"Calculate" button is pressed, and shows the result when it arrives.
 
 .. literalinclude:: examples/quick_start.py
    :start-after: Thanks for using Enthought
@@ -82,6 +82,15 @@ API Documentation
    :maxdepth: 4
 
    api/traits_futures.rst
+
+
+Changelog
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   changes.rst
 
 
 Indices and tables
