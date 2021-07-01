@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Release 0.3.0 &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
+    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="_static/img/favicon.ico">
+    <link rel="index" title="Index" href="genindex.html" >
+    <link rel="search" title="Search" href="search.html" >
+    <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="index.html" >
+    <link rel="prev" title="traits_futures.wx.tests.test_pingee module" href="api/traits_futures.wx.tests.test_pingee.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="index.html">Traits Futures 0.3.0.dev0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="api/traits_futures.wx.tests.test_pingee.html" title="traits_futures.wx.tests.test_pingee module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <section id="release-0-3-0">
+<h1>Release 0.3.0<a class="headerlink" href="#release-0-3-0" title="Permalink to this headline">¶</a></h1>
+<p>Release date: XXXX-XX-XX</p>
+<section id="changes">
+<h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Python 3.5 is no longer supported. Traits Futures requires Python 3.6
+or later.</p></li>
+</ul>
+</section>
+</section>
+<section id="release-0-2-0">
+<h1>Release 0.2.0<a class="headerlink" href="#release-0-2-0" title="Permalink to this headline">¶</a></h1>
+<p>Release date: 2020-09-24</p>
+<p>This is a feature release of Traits Futures. The main features of this
+release are:</p>
+<ul class="simple">
+<li><p>Improved support for user-defined background task types.</p></li>
+<li><p>Easier creation of background calculations that can be (cooperatively)
+cancelled mid-calculation.</p></li>
+<li><p>Significant internal refactoring and cleanup, aimed at eventual support
+for alternative front ends (GUI event loops other than the Qt event
+loop) and back ends (e.g., multiprocessing).</p></li>
+<li><p>Improved and expanded documentation.</p></li>
+</ul>
+<p>There are no immediately API-breaking changes in this release: existing working
+code using Traits Futures 0.1.1 should continue to work with no changes
+required. However, some parts of the existing API have been deprecated, and
+will be removed in a future release. See the Changes section below for more
+details.</p>
+<p>Detailed changes follow. Note that the list below is not exhaustive: many
+more minor PRs have been omitted.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Users can now easily create their own background task types to supplement
+the provided task types (background calls, background iterations and
+background progress). A combination of a new <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a>
+interface and a convenience <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> base class support this.
+(#198)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> function now supports generator functions that
+return a result. This provides an easy way to submit background computations
+that can be cancelled mid-calculation. (#167)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> class now accepts a <code class="docutils literal notranslate"><span class="pre">max_workers</span></code> argument,
+which specifies the maximum number of workers for a worker pool created
+by the executor. (#125)</p></li>
+<li><p>There are new task submission functions <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>,
+<a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a>. These functions
+replace the eponymous existing <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> methods, which are
+now deprecated. (#166)</p></li>
+<li><p>There’s a new <a class="reference internal" href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface class in the
+<a class="reference internal" href="api/traits_futures.api.html#module-traits_futures.api" title="traits_futures.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures.api</span></code></a> module, to aid in typing and Trait declarations.
+(#169)</p></li>
+<li><p>A new <a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">IParallelContext</span></code></a> interface supports eventual addition
+of alternative back ends. The new <a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext" title="traits_futures.multithreading_context.MultithreadingContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingContext</span></code></a> class
+implements this interface and provides the default threading back-end.
+(#149)</p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>Changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and
+<a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> used to be writable. It’s now a read-only property
+that reflects the internal state. (#163)</p></li>
+<li><p>The default number of workers in an owned worker pool (that is, a worker pool
+created by a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>) has changed. Previously it was
+hard-coded as <code class="docutils literal notranslate"><span class="pre">4</span></code>. Now it defaults to whatever Python’s
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> executors give, but can be controlled by passing
+the <code class="docutils literal notranslate"><span class="pre">max_workers</span></code> argument. (#125)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">submit_call</span></code>, <code class="docutils literal notranslate"><span class="pre">submit_iteration</span></code> and <code class="docutils literal notranslate"><span class="pre">submit_progress</span></code>
+methods on the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> have been deprecated. Use the
+<a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and
+<a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> convenience functions instead. (#159)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">thread_pool</span></code> argument to <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> has been renamed
+to <code class="docutils literal notranslate"><span class="pre">worker_pool</span></code>. The original name is still available for backwards
+compatibility, but its use is deprecated. (#144, #148)</p></li>
+<li><p>Python 2.7 is no longer supported. Traits Futures requires Python &gt;= 3.5,
+and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
+#132, #133, #138, #145)</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Don’t create a new message router at executor shutdown time. (#187)</p></li>
+</ul>
+</section>
+<section id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fix some intermittent test failures due to test interactions. (#176)</p></li>
+<li><p>The ‘null’ backend that’s used for testing in the absence of a Qt backend
+now uses a <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>-based event loop instead of a custom event loop.
+(#107, #179)</p></li>
+<li><p>Rewrite the Qt <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> to react rather than polling. This
+significantly speeds up the test run. (#153)</p></li>
+<li><p>Ensure that all tests properly stop the executors they create. (#108, #146)</p></li>
+<li><p>Refactor the test structure in preparation for multiprocessing
+support. (#135, #141)</p></li>
+<li><p>Test the <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> class. (#109)</p></li>
+</ul>
+</section>
+<section id="developer-tooling">
+<h2>Developer tooling<a class="headerlink" href="#developer-tooling" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add a new <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ci</span> <span class="pre">shell</span></code> click cmd. (#204)</p></li>
+<li><p>Update edm version in CI. (#205)</p></li>
+<li><p>Add checks for missing or malformed copyright headers in Python files (and
+fix existing copyright headers). (#193)</p></li>
+<li><p>Add import order checks (and fix existing import order bugs). (#161)</p></li>
+<li><p>Add separate “build” and “ci” modes for setting up the development
+environment. (#104)</p></li>
+<li><p>Don’t pin dependent packages in the build environment. (#99)</p></li>
+</ul>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Update docs to use the Enthought Sphinx Theme. (#128)</p></li>
+<li><p>Autogenerated API documentation is now included in the documentation
+build. (#177, #181)</p></li>
+<li><p>Restructure the documentation to avoid nesting ‘User Guide’
+under ‘User Documentation’. (#191)</p></li>
+<li><p>Document creation of new background task types. (#198)</p></li>
+<li><p>Document use of <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> for interruptible tasks. (#188)</p></li>
+</ul>
+</section>
+</section>
+<section id="release-0-1-1">
+<h1>Release 0.1.1<a class="headerlink" href="#release-0-1-1" title="Permalink to this headline">¶</a></h1>
+<p>Release date: 2019-02-05</p>
+<p>This is a bugfix release, in preparation for the first public release to PyPI.
+There are no functional or API changes to the core library since 0.1.0 in this
+release.</p>
+<section id="id2">
+<h2>Fixes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
+in #118)</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>Changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add copyright headers to all Python and reST files. (#114, backported in
+#118)</p></li>
+</ul>
+</section>
+<section id="build">
+<h2>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Remove unnecessary bundle generation machinery. (#99, backported in #118)</p></li>
+</ul>
+</section>
+</section>
+<section id="release-0-1-0">
+<h1>Release 0.1.0<a class="headerlink" href="#release-0-1-0" title="Permalink to this headline">¶</a></h1>
+<p>Release date: 2018-08-08</p>
+<p>Initial release. Provides support for submitting background calls, iterations,
+and progress-reporting tasks for Traits UI applications based on Qt.</p>
+</section>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Release 0.3.0</a><ul>
+<li><a class="reference internal" href="#changes">Changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#release-0-2-0">Release 0.2.0</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#id1">Changes</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#developer-tooling">Developer tooling</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#release-0-1-1">Release 0.1.1</a><ul>
+<li><a class="reference internal" href="#id2">Fixes</a></li>
+<li><a class="reference internal" href="#id3">Changes</a></li>
+<li><a class="reference internal" href="#build">Build</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#release-0-1-0">Release 0.1.0</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api/traits_futures.wx.tests.test_pingee.html"
+                        title="previous chapter">traits_futures.wx.tests.test_pingee module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="_sources/changes.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.2.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
