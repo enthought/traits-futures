@@ -61,7 +61,8 @@ user after execution has started, the future may not move from |CANCELLING| to
 |CANCELLED| state until several seconds after cancellation is requested. Note,
 however, that the GUI will remain responsive and usable during those seconds.
 
-Here's a complete TraitsUI application that demonstrates this behaviour.
+Here's a :download:`complete TraitsUI application
+<examples/non_interruptible_task.py>` that demonstrates this behaviour.
 
 .. literalinclude:: examples/non_interruptible_task.py
    :start-after: Thanks for using Enthought
@@ -143,7 +144,8 @@ Here's a version of the approximation code that yields partial results at each
         return 4 * inside / total
 
 
-Here's a complete TraitsUI example making use of the above.
+Here's a :download:`complete TraitsUI example <examples/interruptible_task.py>`
+making use of the above.
 
 .. literalinclude:: examples/interruptible_task.py
    :start-after: Thanks for using Enthought
