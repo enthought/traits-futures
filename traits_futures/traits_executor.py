@@ -370,7 +370,7 @@ class TraitsExecutor(HasStrictTraits):
         """
         Cancel all currently running tasks.
         """
-        logger.debug("{self} cancelling incomplete tasks")
+        logger.debug(f"{self} cancelling incomplete tasks")
         cancel_count = 0
         for wrapper in self._wrappers:
             future = wrapper.future

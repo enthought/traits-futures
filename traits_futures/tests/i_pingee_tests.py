@@ -175,6 +175,7 @@ class IPingeeTests:
 
         # Unblock the Pinger creation.
         ready.set()
+        pinger_thread.join()
 
         # There shouldn't be any ping-related activity queued on the event
         # loop at this point. We exercise the event loop, in the hope
