@@ -9,72 +9,34 @@
 
    Thanks for using Enthought open source!
 
-Traits Futures
---------------
+Traits Futures allows a TraitsUI-based GUI application to execute one or more
+background tasks without blocking the main GUI, and provides mechanisms
+for those applications to *safely* update the GUI in response to full or
+partial results from the background tasks.
 
-The **traits_futures** package demonstrates robust design patterns for reactive
-background jobs triggered from a TraitsUI application.
+Detailed description
+--------------------
 
-Motivating example
-------------------
-A customer has asked you to wrap their black-box optimization code in a GUI.
+GUI applications that want to perform a long-running task in response to user
+interactions (for example, running a time-consuming calculation, or submitting
+a complex search query to a remote database) face two major issues:
 
-You build a simple TraitsUI GUI that allows the user to set inputs and options
-and then press the big green "Calculate" button. The requirements look
-something like this:
+* If the task is executed directly on the main thread, it blocks the GUI,
+  making the entire application appear unresponsive to the user.
+* It's not generally safe to update a GUI directly from a worker thread, so
+  a task run on a worker thread needs to find a way to safely communicate
+  events back to the main GUI thread.
 
-- The UI should remain usable and responsive while the background calculation
-  is running.
-- The UI should update (e.g., show a plot, or show results) in response to the
-  background calculation completing normally.
-- The background calculation should be cancellable.
-- The UI should react appropriately if the background calculation raises an
-  exception.
+For TraitsUI-based applications, Traits Futures provides a solution to these
+issues, similar in principle to the Python standard library
+``concurrent.futures`` package. Tasks are submitted to an executor, and on task
+submission the executor immediately returns a "future" object. That "future"
+object is a ``HasTraits`` instance, and has observable attributes ("traits")
+representing the application's view of the state of the background task. Rather
+than waiting on the future's state, an interested observer can listen to
+updates to those traits and update the GUI state as necessary when changes
+occur. The Traits Futures machinery ensures that updates to the future's traits
+always occur on the main thread, freeing observers from thread-safety concerns.
 
-And there are some further ease-of-development requirements:
-
-- As far as possible, the UI developer shouldn't have to think about managing
-  the background threads or re-dispatching incoming information from the
-  background task(s). The UI developer should be able to simply listen to and
-  react to suitable traits for information coming in from the background task.
-- It should be possible to switch between using background threads and
-  background process (and possibly also coroutines) with minimal effort.
-
-Getting started
----------------
-The ``ci`` helper package in the source repository aids in setting up a
-development environment and running tests and examples. It requires EDM, along
-with a Python bootstrap environment equipped with ``click`` and ``setuptools``.
-
-To create a development environment, run::
-
-    python -m ci build
-
-from the top-level of the repository, within the Python bootstrap environment.
-
-To run tests for the traits_futures EDM environment, do::
-
-    python -m ci test
-
-To run tests under coverage::
-
-    python -m ci coverage
-
-To run a style check::
-
-    python -m ci style
-
-To build the documentation::
-
-    python -m ci doc
-
-The example scripts can be run with::
-
-    python -m ci example <example-name>
-
-Run ``python -m ci example`` to see the list of available examples.
-
-All of the above commands take two options. The ``--python-version`` option
-lets you specify the Python version to use for the development environment. The
-``--toolkit`` option allows you to specify a GUI backend. Run ``python -m ci
-<command> --help`` for more information on any of these commands.
+For further information, see the documentation pages at
+https://docs.enthought.com/traits-futures/.
