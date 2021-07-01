@@ -54,8 +54,9 @@ available. In that case, Traits Futures can use the |AsyncioContext| to
 deliver results to the main thread's |asyncio| event loop instead of to
 a GUI framework's event loop.
 
-Here's an example script that uses the |AsyncioContext| in order to execute
-Traits Futures tasks within the context of an asyncio event loop.
+Here's an :download:`example script <examples/headless.py>` that uses the
+|AsyncioContext| in order to execute Traits Futures tasks within the context of
+an asyncio event loop.
 
 .. literalinclude:: examples/headless.py
 

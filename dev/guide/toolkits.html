@@ -126,8 +126,9 @@ able to execute in a environment that doesn’t have the Qt or Wx toolkits
 available. In that case, Traits Futures can use the <a class="reference internal" href="../api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext" title="traits_futures.asyncio.context.AsyncioContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioContext</span></code></a> to
 deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
 a GUI framework’s event loop.</p>
-<p>Here’s an example script that uses the <a class="reference internal" href="../api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext" title="traits_futures.asyncio.context.AsyncioContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioContext</span></code></a> in order to execute
-Traits Futures tasks within the context of an asyncio event loop.</p>
+<p>Here’s an <a class="reference download internal" download="" href="../_downloads/29ab09bdeb400827f4e78ea14e57d284/headless.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">script</span></code></a> that uses the
+<a class="reference internal" href="../api/traits_futures.asyncio.context.html#traits_futures.asyncio.context.AsyncioContext" title="traits_futures.asyncio.context.AsyncioContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioContext</span></code></a> in order to execute Traits Futures tasks within the context of
+an asyncio event loop.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>

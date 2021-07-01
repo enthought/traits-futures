@@ -132,7 +132,7 @@ to an executor via <a class="reference internal" href="../api/traits_futures.bac
 user after execution has started, the future may not move from <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLING" title="traits_futures.future_states.CANCELLING"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLING</span></code></a> to
 <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED" title="traits_futures.future_states.CANCELLED"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLED</span></code></a> state until several seconds after cancellation is requested. Note,
 however, that the GUI will remain responsive and usable during those seconds.</p>
-<p>Here’s a complete TraitsUI application that demonstrates this behaviour.</p>
+<p>Here’s a <a class="reference download internal" download="" href="../_downloads/bb1a105ec5a261876719b03029e0dcb5/non_interruptible_task.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">TraitsUI</span> <span class="pre">application</span></code></a> that demonstrates this behaviour.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Use Traits Futures to approximate π in the background.</span>
 
@@ -310,7 +310,8 @@ for those results.</p>
     <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">/</span> <span class="n">total</span>
 </pre></div>
 </div>
-<p>Here’s a complete TraitsUI example making use of the above.</p>
+<p>Here’s a <a class="reference download internal" download="" href="../_downloads/a9ed7eaacad7b1bd1181e5c2a5626aca/interruptible_task.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">TraitsUI</span> <span class="pre">example</span></code></a>
+making use of the above.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Use Traits Futures to approximate π in the background.</span>
 

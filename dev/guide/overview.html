@@ -116,9 +116,10 @@ complete its execution before any other callback can start to execute. So while
 a particular callback is executing, the GUI cannot respond to other user
 interactions. This presents a problem if you want to run a calculation (for
 example) from within a GUI.</p>
-<p>The following example code demonstrates this effect. It provides a simple GUI
-wrapper for a slow calculation. In this case, the slowness is simulated via a
-call to <a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
+<p>The following <a class="reference download internal" download="" href="../_downloads/94e32031bc02da6c1f63c0ff6c1d435b/calculate_in_main_thread.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">code</span></code></a>
+demonstrates this effect. It provides a simple GUI wrapper for a slow
+calculation. In this case, the slowness is simulated via a call to
+<a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Example of GUI that runs a time-consuming calculation in the main thread.</span>
 
@@ -205,7 +206,7 @@ are only manipulated from the thread on which they were created, which is
 usually the main thread. For example, given a <code class="docutils literal notranslate"><span class="pre">QLabel</span></code> object <code class="docutils literal notranslate"><span class="pre">label</span></code>,
 calling <code class="docutils literal notranslate"><span class="pre">label.setText(&quot;some</span> <span class="pre">text&quot;)</span></code> from anything other than the thread that
 “owns” the <code class="docutils literal notranslate"><span class="pre">label</span></code> object is unsafe.</p>
-<p>To demonstrate this, here’s a variation of the example script above that
+<p>To demonstrate this, here’s a <a class="reference download internal" download="" href="../_downloads/002fa2a944be97018cc8e001fdc0b1cf/calculate_in_worker_thread.py"><code class="xref download docutils literal notranslate"><span class="pre">variation</span></code></a> of the example script above that
 dispatches squaring jobs to a background thread. Unlike the previous version,
 the GUI remains responsive and usable while a background job is executing.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>

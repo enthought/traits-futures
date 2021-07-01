@@ -45,9 +45,10 @@ a particular callback is executing, the GUI cannot respond to other user
 interactions. This presents a problem if you want to run a calculation (for
 example) from within a GUI.
 
-The following example code demonstrates this effect. It provides a simple GUI
-wrapper for a slow calculation. In this case, the slowness is simulated via a
-call to :func:`time.sleep`.
+The following :download:`example code <examples/calculate_in_main_thread.py>`
+demonstrates this effect. It provides a simple GUI wrapper for a slow
+calculation. In this case, the slowness is simulated via a call to
+:func:`time.sleep`.
 
 .. literalinclude:: examples/calculate_in_main_thread.py
    :start-after: Thanks for using Enthought
@@ -92,7 +93,8 @@ usually the main thread. For example, given a ``QLabel`` object ``label``,
 calling ``label.setText("some text")`` from anything other than the thread that
 "owns" the ``label`` object is unsafe.
 
-To demonstrate this, here's a variation of the example script above that
+To demonstrate this, here's a :download:`variation
+<examples/calculate_in_worker_thread.py>` of the example script above that
 dispatches squaring jobs to a background thread. Unlike the previous version,
 the GUI remains responsive and usable while a background job is executing.
 

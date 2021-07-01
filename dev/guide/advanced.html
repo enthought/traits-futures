@@ -322,8 +322,162 @@ encapsulate that operation in a function:</p>
 </section>
 <section id="an-example-gui">
 <h3>An example GUI<a class="headerlink" href="#an-example-gui" title="Permalink to this headline">¶</a></h3>
-<p>Putting everything together, here’s an example GUI that makes use of the new
-background task type:</p>
+<p>Here’s the <a class="reference download internal" download="" href="../_downloads/c3ba6c80aacc0c4457e8c865f82049cf/fizz_buzz_task.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">script</span></code></a> obtained
+from putting together the above snippets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of a user-created background task type.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># This Python file provides supporting code for the &quot;advanced&quot; section of the</span>
+<span class="c1"># user guide. Because we&#39;re using pieces of the file for documentation</span>
+<span class="c1"># snippets, the overall structure of this file is a little odd, and doesn&#39;t</span>
+<span class="c1"># follow standard style guidelines (for example, placing imports at the top</span>
+<span class="c1"># of the file). The various &#39;# -- start&#39; and &#39;# -- end&#39; markers are there</span>
+<span class="c1"># to allow the documentation build to extract the appropriate pieces.</span>
+
+
+<span class="c1"># -- start message types</span>
+<span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz&quot;</span>
+<span class="n">BUZZ</span> <span class="o">=</span> <span class="s2">&quot;buzz&quot;</span>
+<span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
+<span class="c1"># -- end message types</span>
+
+
+<span class="c1"># -- start fizz_buzz --</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">def</span> <span class="nf">fizz_buzz</span><span class="p">(</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Count slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    send : callable(message_type, message_argument) -&gt; None</span>
+<span class="sd">        Callable accepting two arguments: a message type (a string) as the</span>
+<span class="sd">        first argument, and the message argument (if any) as the optional</span>
+<span class="sd">        second argument. The message argument should be pickleable, and</span>
+<span class="sd">        preferably immutable (or at least, not intended to be mutated). It</span>
+<span class="sd">        should return nothing.</span>
+<span class="sd">    cancelled : callable</span>
+<span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
+<span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
+<span class="sd">        otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
+
+        <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
+            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+            <span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="c1"># -- end fizz_buzz --</span>
+
+
+<span class="c1"># -- start FizzBuzzFuture --</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
+
+
+<span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Event fired whenever we get a FIZZ message. The payload is the</span>
+    <span class="c1">#: corresponding integer.</span>
+    <span class="n">fizz</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+
+    <span class="c1">#: Event fired whenever we get a BUZZ message. The payload is the</span>
+    <span class="c1">#: corresponding integer.</span>
+    <span class="n">buzz</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+
+    <span class="c1">#: Event fired whenever a FIZZ_BUZZ arrives from the background.</span>
+    <span class="c1">#: The payload is the corresponding integer.</span>
+    <span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_process_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fizz</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">_process_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buzz</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">_process_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">n</span>
+<span class="c1"># -- end FizzBuzzFuture --</span>
+
+
+<span class="c1"># -- start BackgroundFizzBuzz --</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
+
+
+<span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Task specification for Fizz Buzz background tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        FizzBuzzFuture</span>
+<span class="sd">            Future object that can be used to monitor the status of the</span>
+<span class="sd">            background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a background callable for this task specification.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        collections.abc.Callable</span>
+<span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
+<span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
+<span class="sd">            check whether cancellation has been requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">fizz_buzz</span>
+<span class="c1"># -- end BackgroundFizzBuzz</span>
+
+
+<span class="c1"># -- start submit_fizz_buzz</span>
+<span class="k">def</span> <span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    executor : TraitsExecutor</span>
+<span class="sd">        The executor to submit the task to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    future : FizzBuzzFuture</span>
+<span class="sd">        The future for the background task, allowing monitoring and</span>
+<span class="sd">        cancellation of the background task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundFizzBuzz</span><span class="p">()</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">future</span>
+<span class="c1"># -- end submit_fizz_buzz</span>
+</pre></div>
+</div>
+<p>And here’s an <a class="reference download internal" download="" href="../_downloads/7ccb602d9eec5511385b374338d26b47/fizz_buzz_ui.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">GUI</span></code></a> that makes use
+of the new background task type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Example of a custom background job type.</span>
 <span class="sd">&quot;&quot;&quot;</span>
