@@ -204,8 +204,14 @@ intersphinx_mapping = {
 }
 
 
-# Automatically run sphinx-apidoc during build.
 def run_apidoc(app):
+    """
+    Hook to run automated API documentation generation via sphinx-apidoc
+
+    Parameters
+    ----------
+    app : the Sphinx application
+    """
     import pathlib
 
     import sphinx.ext.apidoc
@@ -215,22 +221,22 @@ def run_apidoc(app):
     target_dir = project_root / "traits_futures"
 
     exclude_patterns = [
-        project_root / "*" / "tests" / "*.py",
-        project_root / "*" / "*" / "tests" / "*.py",
+        target_dir / "tests" / "*.py",
+        target_dir / "*" / "tests" / "*.py",
     ]
 
     args = [
         "--separate",
         "--no-toc",
         "--templatedir",
-        str(source_dir / "api" / "templates"),
+        source_dir / "api" / "templates",
         "-o",
-        str(source_dir / "api"),
-        str(target_dir),
+        source_dir / "api",
+        target_dir,
         *map(str, exclude_patterns),
     ]
 
-    sphinx.ext.apidoc.main(args)
+    sphinx.ext.apidoc.main([str(arg) for arg in args])
 
 
 def setup(app):
