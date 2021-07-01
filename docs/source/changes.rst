@@ -9,16 +9,14 @@
 
    Thanks for using Enthought open source!
 
-Changelog for Traits Futures
-============================
 
 Release 0.3.0
 -------------
 
-Release date: XXX
+Release date: XXXX-XX-XX
 
 Changes
--------
+~~~~~~~
 
 * Python 3.5 is no longer supported. Traits Futures requires Python 3.6
   or later.
@@ -54,43 +52,43 @@ Features
 
 * Users can now easily create their own background task types to supplement
   the provided task types (background calls, background iterations and
-  background progress). A combination of a new :class:`ITaskSpecification`
-  interface and a convenience :class:`BaseFuture` base class support this.
+  background progress). A combination of a new :class:`~.ITaskSpecification`
+  interface and a convenience :class:`~.BaseFuture` base class support this.
   (#198)
-* The :func:`submit_iteration` function now supports generator functions that
+* The :func:`~.submit_iteration` function now supports generator functions that
   return a result. This provides an easy way to submit background computations
   that can be cancelled mid-calculation. (#167)
-* The :class:`TraitsExecutor` class now accepts a ``max_workers`` argument,
+* The :class:`~.TraitsExecutor` class now accepts a ``max_workers`` argument,
   which specifies the maximum number of workers for a worker pool created
   by the executor. (#125)
-* There are new task submission functions :func:`submit_call`,
-  :func:`submit_iteration` and :func:`submit_progress`. These functions replace
-  the eponymous existing :class:`TraitsExecutor` methods, which are now
-  deprecated. (#166)
-* There's a new :class:`IFuture` interface class in the
+* There are new task submission functions :func:`~.submit_call`,
+  :func:`~.submit_iteration` and :func:`~.submit_progress`. These functions
+  replace the eponymous existing :class:`~.TraitsExecutor` methods, which are
+  now deprecated. (#166)
+* There's a new :class:`~.IFuture` interface class in the
   :mod:`traits_futures.api` module, to aid in typing and Trait declarations.
   (#169)
-* A new :class:`IParallelContext` interface supports eventual addition
-  of alternative back ends. The new :class:`MultithreadingContext` class
+* A new :class:`~.IParallelContext` interface supports eventual addition
+  of alternative back ends. The new :class:`~.MultithreadingContext` class
   implements this interface and provides the default threading back-end.
   (#149)
 
 Changes
 ~~~~~~~
 
-* The ``state`` trait of ``CallFuture``, ``IterationFuture`` and
-  ``ProgressFuture`` used to be writable. It's now a read-only property
+* The ``state`` trait of :class:`~.CallFuture`, :class:`~.IterationFuture` and
+  :class:`~.ProgressFuture` used to be writable. It's now a read-only property
   that reflects the internal state. (#163)
 * The default number of workers in an owned worker pool (that is, a worker pool
-  created by a :class:`TraitsExecutor`) has changed. Previously it was
+  created by a :class:`~.TraitsExecutor`) has changed. Previously it was
   hard-coded as ``4``. Now it defaults to whatever Python's
   :mod:`concurrent.futures` executors give, but can be controlled by passing
   the ``max_workers`` argument. (#125)
 * The ``submit_call``, ``submit_iteration`` and ``submit_progress``
-  methods on the :class:`TraitsExecutor` have been deprecated. Use the
-  :func:`submit_call`, :func:`submit_iteration` and :func:`submit_progress`
-  convenience functions instead. (#159)
-* The ``thread_pool`` argument to :class:`TraitsExecutor` has been renamed
+  methods on the :class:`~.TraitsExecutor` have been deprecated. Use the
+  :func:`~.submit_call`, :func:`~.submit_iteration` and
+  :func:`~.submit_progress` convenience functions instead. (#159)
+* The ``thread_pool`` argument to :class:`~.TraitsExecutor` has been renamed
   to ``worker_pool``. The original name is still available for backwards
   compatibility, but its use is deprecated. (#144, #148)
 * Python 2.7 is no longer supported. Traits Futures requires Python >= 3.5,
@@ -100,7 +98,7 @@ Changes
 Fixes
 ~~~~~
 
-* Don't create a new MessageRouter at executor shutdown time. (#187)
+* Don't create a new message router at executor shutdown time. (#187)
 
 Tests
 ~~~~~
@@ -137,7 +135,7 @@ Documentation
 * Restructure the documentation to avoid nesting 'User Guide'
   under 'User Documentation'. (#191)
 * Document creation of new background task types. (#198)
-* Document use of ``submit_iteration`` for interruptible tasks. (#188)
+* Document use of :func:`~.submit_iteration` for interruptible tasks. (#188)
 
 
 Release 0.1.1
@@ -145,18 +143,21 @@ Release 0.1.1
 
 Release date: 2019-02-05
 
-This is a bugfix release, in preparation for the first public release to PyPI. There
-are no functional or API changes to the core library since 0.1.0 in this release.
+This is a bugfix release, in preparation for the first public release to PyPI.
+There are no functional or API changes to the core library since 0.1.0 in this
+release.
 
 Fixes
 ~~~~~
 
-- Add missing ``long_description`` field in setup script. (#116, backported in #118)
+- Add missing ``long_description`` field in setup script. (#116, backported
+  in #118)
 
 Changes
 ~~~~~~~
 
-- Add copyright headers to all Python and reST files. (#114, backported in #118)
+- Add copyright headers to all Python and reST files. (#114, backported in
+  #118)
 
 Build
 ~~~~~

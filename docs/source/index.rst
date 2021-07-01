@@ -84,6 +84,15 @@ API Documentation
    api/traits_futures.rst
 
 
+Changelog
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   changes.rst
+
+
 Indices and tables
 ==================
 
