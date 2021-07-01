@@ -148,8 +148,15 @@ encapsulate that operation in a function:
 An example GUI
 ~~~~~~~~~~~~~~
 
-Putting everything together, here's an example GUI that makes use of the new
-background task type:
+Here's the :download:`complete script <examples/fizz_buzz_task.py>` obtained
+from putting together the above snippets:
+
+.. literalinclude:: examples/fizz_buzz_task.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
+
+And here's an :download:`example GUI <examples/fizz_buzz_ui.py>` that makes use
+of the new background task type:
 
 .. literalinclude:: examples/fizz_buzz_ui.py
    :start-after: Thanks for using Enthought

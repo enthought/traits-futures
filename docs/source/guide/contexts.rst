@@ -43,7 +43,8 @@ a multiprocessing context::
             traits_executor.stop()
             context.close()
 
-Here's a complete TraitsUI example that makes use of this.
+Here's a :download:`complete TraitsUI example
+<examples/background_processes.py>` that makes use of this.
 
 .. literalinclude:: examples/background_processes.py
    :start-after: Thanks for using Enthought

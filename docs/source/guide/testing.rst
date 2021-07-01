@@ -28,7 +28,8 @@ Traits Futures. Those tests face two main challenges:
 An example test
 ---------------
 
-Here's an example of testing a simple future.
+Here's an :download:`example <examples/test_future.py>` of testing a simple
+future.
 
 .. literalinclude:: examples/test_future.py
    :start-after: Thanks for using Enthought
