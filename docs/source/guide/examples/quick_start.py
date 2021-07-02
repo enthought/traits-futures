@@ -20,9 +20,8 @@ from traits.api import (
     Property,
     Str,
 )
-from traitsui.api import Item, UItem, View
-
 from traits_futures.api import CallFuture, submit_call, TraitsExecutor
+from traitsui.api import Item, UItem, View
 
 
 def slow_square(n):

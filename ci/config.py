@@ -42,6 +42,7 @@ DEFAULT_TOOLKIT = PYSIDE2
 # Location of repository root. Assumes that the ci script is being
 # run from the root of the repository.
 ROOT_DIR = os.path.abspath(".")
+EXAMPLES_DIR = os.path.join(ROOT_DIR, "docs", "source", "guide", "examples")
 PACKAGE_DIR = os.path.join(ROOT_DIR, PACKAGE_NAME)
 COVERAGE_DIR = os.path.join(ROOT_DIR, "coverage")
 
@@ -49,8 +50,7 @@ COVERAGE_DIR = os.path.join(ROOT_DIR, "coverage")
 # separately from each such directory.
 ISORT_ROOTS = [
     ROOT_DIR,
-    os.path.join(ROOT_DIR, "examples"),
-    os.path.join(ROOT_DIR, "docs", "source", "guide", "examples"),
+    EXAMPLES_DIR,
 ]
 
 # Locations of data directories for the ci package.
@@ -68,11 +68,11 @@ ENVIRONMENT_TEMPLATE = "{prefix}-{python_version}-{toolkit}"
 # EDM configuration file.
 EDM_CONFIGURATION = os.path.join(DATA, "edm.yml")
 
-# Mapping from example names to script filenames.
+# Mapping from example names to example script paths.
 EXAMPLES = {
-    "squares": "slow_squares.py",
-    "pi": "pi_iterations.py",
-    "primes": "prime_counting.py",
+    "squares": os.path.join(EXAMPLES_DIR, "slow_squares.py"),
+    "pi": os.path.join(EXAMPLES_DIR, "pi_iterations.py"),
+    "primes": os.path.join(EXAMPLES_DIR, "prime_counting.py"),
 }
 
 # Python runtime versions.
