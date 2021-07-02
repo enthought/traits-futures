@@ -3,4 +3,3 @@ include MANIFEST.in
 include README.rst
 include DEVELOP.rst
 graft docs
-graft examples
