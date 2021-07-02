@@ -248,7 +248,7 @@ def example(edm, python_version, toolkit, example_name):
     Run one of the examples.
     """
     pyenv = _get_devenv(edm, python_version, toolkit)
-    example_script = os.path.join("examples", cfg.EXAMPLES[example_name])
+    example_script = cfg.EXAMPLES[example_name]
     pyenv.python([example_script])
 
 
