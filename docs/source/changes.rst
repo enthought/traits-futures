@@ -15,7 +15,6 @@ Release 0.3.0
 
 Release date: XXXX-XX-XX
 
-
 Backwards-incompatible changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
