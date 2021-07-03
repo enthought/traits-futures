@@ -114,13 +114,12 @@ class BackgroundTaskWrapper:
             with self._sender:
                 self.send_control_message(STARTED)
                 try:
-                    result = (
-                        None
-                        if self._cancelled()
-                        else self._background_task(
+                    if self._cancelled():
+                        result = None
+                    else:
+                        result = self._background_task(
                             self.send_custom_message, self._cancelled
                         )
-                    )
                 except BaseException as e:
                     self.send_control_message(RAISED, marshal_exception(e))
                 else:
