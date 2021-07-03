@@ -37,7 +37,7 @@ import traits_futures.version
 
 # Sphinx versions older than 3.5 run into issues with the autodoc_mock_imports
 # setting below.
-needs_sphinx = '3.5'
+needs_sphinx = "3.5"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
