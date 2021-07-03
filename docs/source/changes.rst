@@ -15,11 +15,30 @@ Release 0.3.0
 
 Release date: XXXX-XX-XX
 
+
+Backwards-incompatible changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following backwards-incompatible changes may affect advanced users
+of Traits Futures.
+
+* The ``send`` callable passed to the background task now expects a single
+  Python object as an argument, rather than accepting a message type and
+  a message argument as separate arguments. Existing uses of the form
+  ``send(message_type, message_args)`` will need to be changed to
+  ``send((message_type, message_args))``. This affects those writing their
+  own background task types, but does not affect users of the existing
+  background task types.
+* The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
+  previously, it was writable.
+
+
 Changes
 ~~~~~~~
 
 * Python 3.5 is no longer supported. Traits Futures requires Python 3.6
   or later.
+
 
 
 Release 0.2.0

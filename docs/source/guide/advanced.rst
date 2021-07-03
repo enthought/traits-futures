@@ -26,7 +26,7 @@ of type ``"progress"`` to report progress, while the background iteration task
 sends messages of type ``"generated"``.
 
 If none of the standard task types meets your needs, it's possible to write
-your own background task type, that sends whatever message types you like. This
+your own background task type, that sends whatever messages you like. This
 section describes how to do this in detail.
 
 To create your own task type, you'll need three ingredients:
@@ -54,10 +54,13 @@ is accompanied by the corresponding number.
 Message types
 ~~~~~~~~~~~~~
 
-In general, a message sent from the background to the foreground has two parts:
-a message type, and an optional message argument. The message type should be a
-string, while the message argument can be any Python object (though it should
-usually be pickleable and immutable).
+In general, the message sent from the background task to the future can be any
+Python object, and the future can interpret the sent object in any way that it
+likes. However, the |BaseFuture| base class that we'll use below provides a
+default dispatcher for messages, and that dispatcher expects those messages to
+have the form ``(message_type, message_args)``. Here the message type should be
+a string that's valid as a Python identifier, while the message argument can be
+any Python object (though it should usually be pickleable and immutable).
 
 We first define named constants representing our three message types. This
 isn't strictly necessary, but it makes the code cleaner.
@@ -65,11 +68,6 @@ isn't strictly necessary, but it makes the code cleaner.
 .. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start message types
     :end-before: end message types
-
-Note that the message types are all strings. Ideally, those strings should be
-valid Python identifiers, since (as we'll see later) the default message
-dispatch mechanism uses these strings directly in the corresponding message
-handler names.
 
 The background callable
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,13 +97,15 @@ task type. The most convenient way to do this is to inherit from the
 |BaseFuture| class, which is a |HasStrictTraits| subclass that provides the
 |IFuture| interface. Messages coming into the |BaseFuture| instance from the
 background task are processed by the |task_sent| method. The default
-implementation of this method does a couple of things:
+implementation of this method expects incoming messages to have the
+form ``(message_type, message_arg)``, and does a couple of things:
 
 - it dispatches the argument of each message to a method named
   ``_process_<message_type>``.
 - it suppresses any messages that arrive after cancellation has been requested
 
-The |task_sent| method can be safely overridden by subclasses if some
+The |task_sent| method can be safely overridden by subclasses if messages
+do not have the form ``(message_type, message_arg)``, or if some
 other dispatch mechanism is wanted. For this example, we use the default
 dispatch mechanism, so all we need to do is to define methods
 ``_process_fizz``, ``_process_buzz`` and ``_process_fizz_buzz`` to handle
