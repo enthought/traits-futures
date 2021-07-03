@@ -15,8 +15,17 @@ Release 0.3.0
 
 Release date: XXXX-XX-XX
 
-Changes
-~~~~~~~
+Backwards-incompatible changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following backwards-incompatible changes may affect advanced users
+of Traits Futures.
+
+* The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
+  previously, it was writable.
+
+Other Changes
+~~~~~~~~~~~~~
 
 * Python 3.5 is no longer supported. Traits Futures requires Python 3.6
   or later.
