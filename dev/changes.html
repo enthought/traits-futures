@@ -86,8 +86,17 @@
   <section id="release-0-3-0">
 <h1>Release 0.3.0<a class="headerlink" href="#release-0-3-0" title="Permalink to this headline">¶</a></h1>
 <p>Release date: XXXX-XX-XX</p>
-<section id="changes">
-<h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
+<section id="backwards-incompatible-changes">
+<h2>Backwards-incompatible changes<a class="headerlink" href="#backwards-incompatible-changes" title="Permalink to this headline">¶</a></h2>
+<p>The following backwards-incompatible changes may affect advanced users
+of Traits Futures.</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of the <code class="docutils literal notranslate"><span class="pre">~.TraitsExecutor</span></code> is now read-only;
+previously, it was writable.</p></li>
+</ul>
+</section>
+<section id="other-changes">
+<h2>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Python 3.5 is no longer supported. Traits Futures requires Python 3.6
 or later.</p></li>
@@ -142,8 +151,8 @@ implements this interface and provides the default threading back-end.
 (#149)</p></li>
 </ul>
 </section>
-<section id="id1">
-<h2>Changes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<section id="changes">
+<h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and
 <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> used to be writable. It’s now a read-only property
@@ -218,15 +227,15 @@ under ‘User Documentation’. (#191)</p></li>
 <p>This is a bugfix release, in preparation for the first public release to PyPI.
 There are no functional or API changes to the core library since 0.1.0 in this
 release.</p>
-<section id="id2">
-<h2>Fixes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<section id="id1">
+<h2>Fixes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
 in #118)</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2>Changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<section id="id2">
+<h2>Changes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add copyright headers to all Python and reST files. (#114, backported in
 #118)</p></li>
@@ -258,12 +267,13 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Release 0.3.0</a><ul>
-<li><a class="reference internal" href="#changes">Changes</a></li>
+<li><a class="reference internal" href="#backwards-incompatible-changes">Backwards-incompatible changes</a></li>
+<li><a class="reference internal" href="#other-changes">Other Changes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-2-0">Release 0.2.0</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#id1">Changes</a></li>
+<li><a class="reference internal" href="#changes">Changes</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
 <li><a class="reference internal" href="#developer-tooling">Developer tooling</a></li>
@@ -271,8 +281,8 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-1-1">Release 0.1.1</a><ul>
-<li><a class="reference internal" href="#id2">Fixes</a></li>
-<li><a class="reference internal" href="#id3">Changes</a></li>
+<li><a class="reference internal" href="#id1">Fixes</a></li>
+<li><a class="reference internal" href="#id2">Changes</a></li>
 <li><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>
