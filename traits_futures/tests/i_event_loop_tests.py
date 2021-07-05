@@ -27,7 +27,7 @@ class IEventLoopTests:
     def tearDown(self):
         del self.context
 
-    def test_implements_i_gui_context(self):
+    def test_implements_i_event_loop(self):
         self.assertIsInstance(self.context, IEventLoop)
 
     def test_pingee(self):
