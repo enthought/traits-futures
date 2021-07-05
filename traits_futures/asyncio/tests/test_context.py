@@ -16,7 +16,7 @@ Tests for the asyncio GUI context.
 import unittest
 
 from traits_futures.asyncio.context import AsyncioEventLoop
-from traits_futures.tests.i_gui_context_tests import IEventLoopTests
+from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 
 class TestAsyncioEventLoop(IEventLoopTests, unittest.TestCase):

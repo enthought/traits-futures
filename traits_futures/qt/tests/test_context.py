@@ -16,7 +16,7 @@ Tests for the Qt GUI context.
 import unittest
 
 from traits_futures.testing.optional_dependencies import requires_qt
-from traits_futures.tests.i_gui_context_tests import IEventLoopTests
+from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 
 @requires_qt

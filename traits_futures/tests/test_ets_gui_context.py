@@ -23,7 +23,7 @@ from traits_futures.testing.optional_dependencies import (
     requires_qt,
     requires_wx,
 )
-from traits_futures.tests.i_gui_context_tests import IEventLoopTests
+from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 #: Code snippet to be executed with "python -c" in order to print the toolkit
 #: resolved by ETSEventLoop.
