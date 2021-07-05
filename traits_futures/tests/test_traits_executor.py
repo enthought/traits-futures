@@ -82,7 +82,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         with self.temporary_executor(event_loop=self._event_loop) as executor:
             self.assertIsInstance(executor._context, MultithreadingContext)
 
-    def test_default_gui_context(self):
+    def test_default_event_loop(self):
         with self.temporary_executor() as executor:
             self.assertIsInstance(executor._event_loop, ETSEventLoop)
 
