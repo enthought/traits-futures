@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>traits_futures.i_gui_context module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.i_event_loop module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
@@ -36,8 +36,8 @@
     <link rel="search" title="Search" href="../search.html" >
     <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
-    <link rel="next" title="traits_futures.i_message_router module" href="traits_futures.i_message_router.html" >
-    <link rel="prev" title="traits_futures.i_future module" href="traits_futures.i_future.html" > 
+    <link rel="next" title="traits_futures.i_event_loop_helper module" href="traits_futures.i_event_loop_helper.html" >
+    <link rel="prev" title="traits_futures.future_states module" href="traits_futures.future_states.html" > 
   </head>
   <body>
   <div class="container">
@@ -70,11 +70,11 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="traits_futures.i_message_router.html" title="traits_futures.i_message_router module"
+        <a href="traits_futures.i_event_loop_helper.html" title="traits_futures.i_event_loop_helper module"
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.i_future.html" title="traits_futures.i_future module"
+        <a href="traits_futures.future_states.html" title="traits_futures.future_states module"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -90,20 +90,20 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.i_gui_context">
-<span id="traits-futures-i-gui-context-module"></span><h1>traits_futures.i_gui_context module<a class="headerlink" href="#module-traits_futures.i_gui_context" title="Permalink to this headline">¶</a></h1>
-<p>Interface for GUI toolkit context objects.</p>
+  <section id="module-traits_futures.i_event_loop">
+<span id="traits-futures-i-event-loop-module"></span><h1>traits_futures.i_event_loop module<a class="headerlink" href="#module-traits_futures.i_event_loop" title="Permalink to this headline">¶</a></h1>
+<p>Interface for toolkit-specific event-loop details.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.i_gui_context.IGuiContext">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_gui_context.</span></span><span class="sig-name descname"><span class="pre">IGuiContext</span></span><a class="reference internal" href="../_modules/traits_futures/i_gui_context.html#IGuiContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_gui_context.IGuiContext" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop.IEventLoop">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_event_loop.</span></span><span class="sig-name descname"><span class="pre">IEventLoop</span></span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
-<p>Interface for objects usable in a GUI context.</p>
+<p>Interface for toolkit-specific event-loop details.</p>
 <p>An instance of this class provides consistent mechanisms to get
-objects related to the event loop for a particular choice of GUI
-toolkit or event loop.</p>
+objects related to a particular event loop (for example, that provided
+by a GUI toolkit).</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.i_gui_context.IGuiContext.event_loop_helper">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">event_loop_helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_gui_context.html#IGuiContext.event_loop_helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_gui_context.IGuiContext.event_loop_helper" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop.IEventLoop.helper">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop.helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop.helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new event loop helper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -116,8 +116,8 @@ toolkit or event loop.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.i_gui_context.IGuiContext.pingee">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_gui_context.html#IGuiContext.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_gui_context.IGuiContext.pingee" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop.IEventLoop.pingee">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop.pingee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new pingee.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -148,14 +148,14 @@ callable is ignored.</p>
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.i_future.html"
-                        title="previous chapter">traits_futures.i_future module</a></p>
+  <p class="topless"><a href="traits_futures.future_states.html"
+                        title="previous chapter">traits_futures.future_states module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.i_message_router.html"
-                        title="next chapter">traits_futures.i_message_router module</a></p>
+  <p class="topless"><a href="traits_futures.i_event_loop_helper.html"
+                        title="next chapter">traits_futures.i_event_loop_helper module</a></p>
   <h3>This Page</h3>
   <div>
-    <a href="../_sources/api/traits_futures.i_gui_context.rst.txt"
+    <a href="../_sources/api/traits_futures.i_event_loop.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
 <div id="searchbox" style="display: none" role="search">

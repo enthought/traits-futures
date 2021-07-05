@@ -113,14 +113,14 @@
 <span class="kn">from</span> <span class="nn">traits_futures.background_call</span> <span class="kn">import</span> <span class="n">submit_call</span>
 <span class="kn">from</span> <span class="nn">traits_futures.background_iteration</span> <span class="kn">import</span> <span class="n">submit_iteration</span>
 <span class="kn">from</span> <span class="nn">traits_futures.background_progress</span> <span class="kn">import</span> <span class="n">submit_progress</span>
-<span class="kn">from</span> <span class="nn">traits_futures.ets_context</span> <span class="kn">import</span> <span class="n">ETSContext</span>
+<span class="kn">from</span> <span class="nn">traits_futures.ets_event_loop</span> <span class="kn">import</span> <span class="n">ETSEventLoop</span>
 <span class="kn">from</span> <span class="nn">traits_futures.executor_states</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExecutorState</span><span class="p">,</span>
     <span class="n">RUNNING</span><span class="p">,</span>
     <span class="n">STOPPED</span><span class="p">,</span>
     <span class="n">STOPPING</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.i_gui_context</span> <span class="kn">import</span> <span class="n">IGuiContext</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop</span> <span class="kn">import</span> <span class="n">IEventLoop</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="kn">import</span> <span class="n">IParallelContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.multithreading_context</span> <span class="kn">import</span> <span class="n">MultithreadingContext</span>
 <span class="kn">from</span> <span class="nn">traits_futures.wrappers</span> <span class="kn">import</span> <span class="n">BackgroundTaskWrapper</span><span class="p">,</span> <span class="n">FutureWrapper</span>
@@ -192,10 +192,11 @@
 <span class="sd">        multithreading or multiprocessing). If not given, assumes</span>
 <span class="sd">        multithreading. Note that if both ``context`` and ``worker_pool``</span>
 <span class="sd">        are given, they must be compatible.</span>
-<span class="sd">    gui_context : IGuiContext, optional</span>
-<span class="sd">        Context providing information about which GUI event loop to use. If not</span>
-<span class="sd">        given, uses an :class:`~.ETSContext` instance, which determines the</span>
-<span class="sd">        appropriate toolkit based on availability.</span>
+<span class="sd">    event_loop : IEventLoop, optional</span>
+<span class="sd">        The event loop to use for message dispatch. If not given, uses an</span>
+<span class="sd">        :class:`~.ETSEventLoop` instance, which determines the appropriate</span>
+<span class="sd">        toolkit based on availability and the value of the ETS_TOOLKIT</span>
+<span class="sd">        environment variable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: Current state of this executor.</span>
@@ -216,7 +217,7 @@
         <span class="n">worker_pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gui_context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">event_loop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">traits</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">traits</span><span class="p">)</span>
@@ -235,8 +236,8 @@
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
 
-        <span class="k">if</span> <span class="n">gui_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_gui_context</span> <span class="o">=</span> <span class="n">gui_context</span>
+        <span class="k">if</span> <span class="n">event_loop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
 
         <span class="n">own_worker_pool</span> <span class="o">=</span> <span class="n">worker_pool</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">own_worker_pool</span><span class="p">:</span>
@@ -506,8 +507,8 @@
     <span class="c1">#: Parallelization context</span>
     <span class="n">_context</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">)</span>
 
-    <span class="c1">#: GUI toolkit context</span>
-    <span class="n">_gui_context</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IGuiContext</span><span class="p">)</span>
+    <span class="c1">#: Event loop used for message dispatch</span>
+    <span class="n">_event_loop</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IEventLoop</span><span class="p">)</span>
 
     <span class="c1">#: True if we own this context, else False.</span>
     <span class="n">_own_context</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -564,16 +565,16 @@
 
     <span class="k">def</span> <span class="nf">__message_router_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Toolkit-specific message router.</span>
-        <span class="n">router</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">message_router</span><span class="p">(</span><span class="n">gui_context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_gui_context</span><span class="p">)</span>
+        <span class="n">router</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">message_router</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="p">)</span>
         <span class="n">router</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">router</span>
 
-    <span class="k">def</span> <span class="nf">__gui_context_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># By default we use the &quot;ETS&quot; GUI context, which chooses which</span>
-        <span class="c1"># GUI toolkit to use based on the ETS_TOOLKIT environment variable</span>
+    <span class="k">def</span> <span class="nf">__event_loop_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># By default we use the &quot;ETS&quot; event loop, which chooses which</span>
+        <span class="c1"># event loop to use based on the ETS_TOOLKIT environment variable</span>
         <span class="c1"># and the available installed packages.</span>
-        <span class="k">return</span> <span class="n">ETSContext</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ETSEventLoop</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__context_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># By default, we use multithreading.</span>

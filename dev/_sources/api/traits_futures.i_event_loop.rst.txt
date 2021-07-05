@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.asyncio.context module
-======================================
+traits\_futures.i\_event\_loop module
+=====================================
 
-.. automodule:: traits_futures.asyncio.context
+.. automodule:: traits_futures.i_event_loop
    :members:
    :undoc-members:
    :show-inheritance:

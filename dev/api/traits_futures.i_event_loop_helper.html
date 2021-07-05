@@ -37,7 +37,7 @@
     <link rel="top" title="Traits Futures 0.3.0.dev0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.i_future module" href="traits_futures.i_future.html" >
-    <link rel="prev" title="traits_futures.future_states module" href="traits_futures.future_states.html" > 
+    <link rel="prev" title="traits_futures.i_event_loop module" href="traits_futures.i_event_loop.html" > 
   </head>
   <body>
   <div class="container">
@@ -74,7 +74,7 @@
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="traits_futures.future_states.html" title="traits_futures.future_states module"
+        <a href="traits_futures.i_event_loop.html" title="traits_futures.i_event_loop module"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -106,7 +106,7 @@ is in testing.</p>
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">dispose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dispose of any resources used by this object.</p>
 <p>This method is not thread-safe. It should always be called on the
-main GUI thread.</p>
+event loop’s thread.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -114,7 +114,7 @@ main GUI thread.</p>
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare the event loop for use.</p>
 <p>This method is not thread-safe. It should always be called on the
-main GUI thread.</p>
+event loop’s thread.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -124,7 +124,7 @@ main GUI thread.</p>
 <p>The condition is re-evaluated, with the object as argument, every time
 the trait changes.</p>
 <p>This method is not thread-safe. It should always be called on the
-main GUI thread.</p>
+event loop’s thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -148,8 +148,8 @@ called with <em>object</em> as the only input.</p></li>
 <dd><p>Arrange for an attribute to be set once the event loop is running.</p>
 <p>In typical usage, <em>obj</em> will be a <code class="docutils literal notranslate"><span class="pre">HasTraits</span></code> instance and
 <em>name</em> will be the name of a trait on <em>obj</em>.</p>
-<p>This method is not thread-safe. It’s designed to be called
-from the main thread.</p>
+<p>This method is not thread-safe. It should always be called on the
+event loop’s thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -176,8 +176,8 @@ a traited attribute.</p></li>
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.future_states.html"
-                        title="previous chapter">traits_futures.future_states module</a></p>
+  <p class="topless"><a href="traits_futures.i_event_loop.html"
+                        title="previous chapter">traits_futures.i_event_loop module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="traits_futures.i_future.html"
                         title="next chapter">traits_futures.i_future module</a></p>

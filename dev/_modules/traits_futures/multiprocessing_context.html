@@ -137,21 +137,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="MultiprocessingContext.message_router"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.message_router">[docs]</a>    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gui_context</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiprocessingContext.message_router"><a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.message_router">[docs]</a>    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a message router suitable for use in this context.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        gui_context : IGuiContext</span>
-<span class="sd">            The GUI context providing the event loop to interact with.</span>
+<span class="sd">        event_loop : IEventLoop</span>
+<span class="sd">            The event loop to interact with.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        message_router : MultiprocessingRouter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MultiprocessingRouter</span><span class="p">(</span>
-            <span class="n">gui_context</span><span class="o">=</span><span class="n">gui_context</span><span class="p">,</span>
+            <span class="n">event_loop</span><span class="o">=</span><span class="n">event_loop</span><span class="p">,</span>
             <span class="n">manager</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="p">,</span>
         <span class="p">)</span></div>
 

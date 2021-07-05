@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.ets\_context module
-===================================
+traits\_futures.wx.event\_loop module
+=====================================
 
-.. automodule:: traits_futures.ets_context
+.. automodule:: traits_futures.wx.event_loop
    :members:
    :undoc-members:
    :show-inheritance:

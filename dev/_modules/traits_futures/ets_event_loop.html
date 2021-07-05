@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.i_gui_context &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.ets_event_loop &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
@@ -79,7 +79,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <h1>Source code for traits_futures.i_gui_context</h1><div class="highlight"><pre>
+  <h1>Source code for traits_futures.ets_event_loop</h1><div class="highlight"><pre>
 <span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
@@ -91,23 +91,36 @@
 <span class="c1"># Thanks for using Enthought open source!</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Interface for GUI toolkit context objects.</span>
+<span class="sd">Event loop with toolkit selection matching that of ETS.</span>
+
+<span class="sd">This module provides an IEventLoop implementation that&#39;s determined in the</span>
+<span class="sd">same way that the toolkit is determined for TraitsUI and Pyface, using the</span>
+<span class="sd">ETS_TOOLKIT environment variable if set, and examining the available toolkits</span>
+<span class="sd">if not.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop</span> <span class="kn">import</span> <span class="n">IEventLoop</span>
 
 
-<div class="viewcode-block" id="IGuiContext"><a class="viewcode-back" href="../../api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext">[docs]</a><span class="k">class</span> <span class="nc">IGuiContext</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="ETSEventLoop"><a class="viewcode-back" href="../../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop">[docs]</a><span class="nd">@IEventLoop</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">ETSEventLoop</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Interface for objects usable in a GUI context.</span>
+<span class="sd">    IEventLoop implementation with lazily-determined toolkit.</span>
 
-<span class="sd">    An instance of this class provides consistent mechanisms to get</span>
-<span class="sd">    objects related to the event loop for a particular choice of GUI</span>
-<span class="sd">    toolkit or event loop.</span>
+<span class="sd">    The first time this event loop is used, an appropriate toolkit will</span>
+<span class="sd">    be selected.</span>
+
+<span class="sd">    The toolkit selection mechanism used matches that used by Pyface, and</span>
+<span class="sd">    is based on the value of the ETS_TOOLKIT environment variable, followed</span>
+<span class="sd">    an examination of the available setuptools entry points under the</span>
+<span class="sd">    entry point group &quot;traits_futures.event_loops&quot;.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="IGuiContext.pingee"><a class="viewcode-back" href="../../api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext.pingee">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_event_loop</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ETSEventLoop.pingee"><a class="viewcode-back" href="../../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.pingee">[docs]</a>    <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new pingee.</span>
 
@@ -121,17 +134,34 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        pingee : IPingee</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolkit_event_loop</span><span class="o">.</span><span class="n">pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="IGuiContext.event_loop_helper"><a class="viewcode-back" href="../../api/traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext.event_loop_helper">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">event_loop_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ETSEventLoop.helper"><a class="viewcode-back" href="../../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.helper">[docs]</a>    <span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new event loop helper.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        event_loop_helper : IEventLoopHelper</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolkit_event_loop</span><span class="o">.</span><span class="n">helper</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">toolkit_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find and fix the toolkit, using the same mechanism that Pyface uses to</span>
+<span class="sd">        find its toolkits.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">pyface.base_toolkit</span> <span class="kn">import</span> <span class="n">find_toolkit</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_event_loop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">toolkit_event_loop_class</span> <span class="o">=</span> <span class="n">find_toolkit</span><span class="p">(</span>
+                <span class="s2">&quot;traits_futures.event_loops&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_event_loop</span> <span class="o">=</span> <span class="n">toolkit_event_loop_class</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_event_loop</span></div>
 </pre></div>
 
           </div>

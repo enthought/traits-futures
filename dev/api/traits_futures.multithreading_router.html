@@ -122,7 +122,7 @@ sender will be in a background thread.</p>
 sender will be in a background thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>gui_context</strong> (<a class="reference internal" href="traits_futures.i_gui_context.html#traits_futures.i_gui_context.IGuiContext" title="traits_futures.i_gui_context.IGuiContext"><em>IGuiContext</em></a>) – GUI context to use for interactions with the GUI event loop.</p>
+<dd class="field-odd"><p><strong>event_loop</strong> (<a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><em>IEventLoop</em></a>) – The event loop used to trigger message dispatch.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -143,9 +143,9 @@ can reach that receiver.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.multithreading_router.MultithreadingRouter.gui_context">
-<span class="sig-name descname"><span class="pre">gui_context</span></span><em class="property"> <span class="pre">=</span> <span class="pre">self._route_message)</span></em><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.gui_context" title="Permalink to this definition">¶</a></dt>
-<dd><p>GUI context to use for interactions with the GUI event loop.</p>
+<dt class="sig sig-object py" id="traits_futures.multithreading_router.MultithreadingRouter.event_loop">
+<span class="sig-name descname"><span class="pre">event_loop</span></span><em class="property"> <span class="pre">=</span> <span class="pre">self._route_message)</span></em><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.event_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>The event loop used to trigger message dispatch.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -213,7 +213,7 @@ thread.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Id of the matching receiver; used for message routing.</p></li>
-<li><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><em>IPingee</em></a>) – Recipient for pings, used to notify the GUI thread that there’s
+<li><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><em>IPingee</em></a>) – Recipient for pings, used to notify the event loop that there’s
 a message pending.</p></li>
 <li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.9)"><em>queue.Queue</em></a>) – Thread-safe queue for passing messages to the foreground.</p></li>
 </ul>

@@ -9,10 +9,10 @@
 
    Thanks for using Enthought open source!
 
-traits\_futures.qt.context module
-=================================
+traits\_futures.qt.event\_loop module
+=====================================
 
-.. automodule:: traits_futures.qt.context
+.. automodule:: traits_futures.qt.event_loop
    :members:
    :undoc-members:
    :show-inheritance:

@@ -136,20 +136,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="MultithreadingContext.message_router"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router">[docs]</a>    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gui_context</span><span class="p">):</span>
+<div class="viewcode-block" id="MultithreadingContext.message_router"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router">[docs]</a>    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a message router suitable for use in this context.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        gui_context : IGuiContext</span>
-<span class="sd">            The GUI context providing the event loop to interact with.</span>
+<span class="sd">        event_loop : IEventLoop</span>
+<span class="sd">            The event loop used to trigger message dispatch.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        message_router : MultithreadingRouter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MultithreadingRouter</span><span class="p">(</span><span class="n">gui_context</span><span class="o">=</span><span class="n">gui_context</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">MultithreadingRouter</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="n">event_loop</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingContext.close"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
