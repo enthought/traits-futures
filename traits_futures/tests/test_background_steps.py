@@ -15,9 +15,14 @@ Tests for the background steps task.
 
 import unittest
 
-from traits_futures.api import MultithreadingContext, TraitsExecutor
+from traits_futures.api import (
+    MultithreadingContext,
+    StepsFuture,
+    TraitsExecutor,
+)
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.tests.background_steps_tests import BackgroundStepsTests
+from traits_futures.tests.common_future_tests import CommonFutureTests
 
 
 class TestBackgroundSteps(
@@ -35,3 +40,8 @@ class TestBackgroundSteps(
         self.halt_executor()
         self._context.close()
         GuiTestAssistant.tearDown(self)
+
+
+class TestStepsFuture(CommonFutureTests, unittest.TestCase):
+    def setUp(self):
+        self.future_class = StepsFuture
