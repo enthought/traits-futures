@@ -112,7 +112,7 @@ class BackgroundTaskWrapper:
                         result = None
                     else:
                         result = self._background_task(
-                            self.send_custom_message, self._cancelled
+                            self._send_custom_message, self._cancelled
                         )
                 except BaseException as e:
                     self._sender.send((RAISED, marshal_exception(e)))
@@ -125,7 +125,7 @@ class BackgroundTaskWrapper:
             logger.exception("Unexpected exception in background task.")
             raise
 
-    def send_custom_message(self, message_type, message_args=None):
+    def _send_custom_message(self, message_type, message_args=None):
         """
         Send a custom message from the background task to the future.
 
