@@ -305,7 +305,7 @@ class TraitsExecutor(HasStrictTraits):
             raise
 
         background_task_wrapper = BackgroundTaskWrapper(
-            runner, sender, cancel_event
+            runner, sender, cancel_event.is_set
         )
         self._worker_pool.submit(background_task_wrapper)
 
