@@ -206,7 +206,7 @@ intersphinx_mapping = {
 
 def run_apidoc(app):
     """
-    Hook to run automated API documentation generation via sphinx-apidoc
+    Hook to generate API documentation via sphinx-apidoc
 
     Parameters
     ----------
