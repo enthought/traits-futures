@@ -30,13 +30,13 @@ from traits_futures.i_future import IFuture
 logger = logging.getLogger(__name__)
 
 
-#: Prefix used for custom messages.
-CUSTOM = "custom"
+# Messages sent by the BackgroundTaskWrapper, and interpreted by the
+# FutureWrapper.
 
-#: Prefix used for control messages.
-CONTROL = "control"
-
-# Control messages sent by the wrapper, and interpreted by the FutureWrapper.
+#: Custom message from the future. The argument is a pair
+#: (message_type, message_args); the message type and message args
+#: are interpreted by the future.
+SENT = "sent"
 
 #: Control message sent before we start to process the target callable.
 #: The argument is always ``None``.
@@ -65,27 +65,21 @@ class FutureWrapper(HasStrictTraits):
     #: Object that receives messages from the background task.
     receiver = Instance(HasTraits)
 
-    #: Bool recording whether the future has completed or not.
+    #: Bool recording whether the future has completed or not. The
+    #: executor listens to this trait to decide when it can clean up
+    #: its own internal state.
     done = Bool(False)
 
-    @on_trait_change("future:done")
-    def _update_done(self, new_done):
-        self.done = new_done
-
     @on_trait_change("receiver:message")
-    def _receive_message(self, message):
+    def _dispatch_to_future(self, message):
         """
-        Pass on a message to the appropriate future.
+        Pass on a message to the future.
         """
-        message_kind, message = message
-
-        if message_kind == CUSTOM:
-            self.future._task_sent(message)
-        else:
-            assert message_kind == CONTROL
-            message_type, message_arg = message
-            method_name = "_task_{}".format(message_type)
-            getattr(self.future, method_name)(message_arg)
+        message_type, message_arg = message
+        method_name = "_task_{}".format(message_type)
+        getattr(self.future, method_name)(message_arg)
+        if message_type in {RAISED, RETURNED}:
+            self.done = True
 
 
 class BackgroundTaskWrapper:
@@ -104,27 +98,26 @@ class BackgroundTaskWrapper:
         whether cancellation has been requested.
     """
 
-    def __init__(self, background_task, sender, cancel_event):
+    def __init__(self, background_task, sender, cancelled):
         self._background_task = background_task
         self._sender = sender
-        self._cancel_event = cancel_event
+        self._cancelled = cancelled
 
     def __call__(self):
         try:
             with self._sender:
-                self.send_control_message(STARTED)
+                self._sender.send((STARTED, None))
                 try:
-                    result = (
-                        None
-                        if self._cancel_event.is_set()
-                        else self._background_task(
-                            self.send_custom_message, self._cancel_event.is_set
+                    if self._cancelled():
+                        result = None
+                    else:
+                        result = self._background_task(
+                            self._send_custom_message, self._cancelled
                         )
-                    )
                 except BaseException as e:
-                    self.send_control_message(RAISED, marshal_exception(e))
+                    self._sender.send((RAISED, marshal_exception(e)))
                 else:
-                    self.send_control_message(RETURNED, result)
+                    self._sender.send((RETURNED, result))
         except BaseException:
             # We'll only ever get here in the case of a coding error. But in
             # case that happens, it's useful to have the exception logged to
@@ -132,16 +125,7 @@ class BackgroundTaskWrapper:
             logger.exception("Unexpected exception in background task.")
             raise
 
-    def send_control_message(self, message_type, message_args=None):
-        """
-        Send a control message from the background task to the future.
-
-        These messages apply to all futures, and are used to communicate
-        changes to the state of the future.
-        """
-        self._sender.send((CONTROL, (message_type, message_args)))
-
-    def send_custom_message(self, message_type, message_args=None):
+    def _send_custom_message(self, message_type, message_args=None):
         """
         Send a custom message from the background task to the future.
 
@@ -153,4 +137,4 @@ class BackgroundTaskWrapper:
             Any arguments providing additional information for the message.
             If not given, ``None`` is passed.
         """
-        self._sender.send((CUSTOM, (message_type, message_args)))
+        self._sender.send((SENT, (message_type, message_args)))
