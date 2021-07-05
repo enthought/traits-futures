@@ -28,7 +28,7 @@ class TestBackgroundCall(
         self._context = MultithreadingContext()
         self.executor = TraitsExecutor(
             context=self._context,
-            gui_context=self._event_loop,
+            event_loop=self._event_loop,
         )
 
     def tearDown(self):

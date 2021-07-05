@@ -110,7 +110,7 @@ class TraitsExecutor(HasStrictTraits):
         multithreading or multiprocessing). If not given, assumes
         multithreading. Note that if both ``context`` and ``worker_pool``
         are given, they must be compatible.
-    gui_context : IEventLoop, optional
+    event_loop : IEventLoop, optional
         Context providing information about which GUI event loop to use. If not
         given, uses an :class:`~.ETSEventLoop` instance, which determines the
         appropriate toolkit based on availability.
@@ -134,7 +134,7 @@ class TraitsExecutor(HasStrictTraits):
         worker_pool=None,
         max_workers=None,
         context=None,
-        gui_context=None,
+        event_loop=None,
         **traits,
     ):
         super().__init__(**traits)
@@ -153,8 +153,8 @@ class TraitsExecutor(HasStrictTraits):
         if context is not None:
             self._context = context
 
-        if gui_context is not None:
-            self._event_loop = gui_context
+        if event_loop is not None:
+            self._event_loop = event_loop
 
         own_worker_pool = worker_pool is None
         if own_worker_pool:
@@ -482,7 +482,7 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        router = self._context.message_router(gui_context=self._event_loop)
+        router = self._context.message_router(event_loop=self._event_loop)
         router.start()
         self._have_message_router = True
         return router

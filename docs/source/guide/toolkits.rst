@@ -24,7 +24,7 @@ Specifying a toolkit
 --------------------
 
 To explicitly specify which toolkit to use, you need to provide the
-``gui_context`` parameter when instantiating the |TraitsExecutor|. The library
+``event_loop`` parameter when instantiating the |TraitsExecutor|. The library
 currently provides four different GUI contexts: |AsyncioEventLoop|, |QtEventLoop|,
 |WxEventLoop| and |ETSEventLoop|. The first three correspond to the |asyncio|
 event loop, the Qt event loop and the Wx event loop respectively.

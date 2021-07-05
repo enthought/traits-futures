@@ -64,7 +64,7 @@ def print_progress(event):
 
 
 if __name__ == "__main__":
-    traits_executor = TraitsExecutor(gui_context=AsyncioEventLoop())
+    traits_executor = TraitsExecutor(event_loop=AsyncioEventLoop())
     traits_future = submit_iteration(traits_executor, approximate_pi)
     traits_future.observe(print_progress, "result_event")
 

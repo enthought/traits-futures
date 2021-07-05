@@ -183,7 +183,7 @@ class MultithreadingRouter(HasRequiredTraits):
 
     Parameters
     ----------
-    gui_context : IEventLoop
+    event_loop : IEventLoop
         GUI context to use for interactions with the GUI event loop.
 
     """
@@ -207,7 +207,7 @@ class MultithreadingRouter(HasRequiredTraits):
 
         self._message_queue = queue.Queue()
 
-        self._pingee = self.gui_context.pingee(on_ping=self._route_message)
+        self._pingee = self.event_loop.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._running = True
@@ -312,7 +312,7 @@ class MultithreadingRouter(HasRequiredTraits):
     # Public traits ###########################################################
 
     #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IEventLoop, required=True)
+    event_loop = Instance(IEventLoop, required=True)
 
     # Private traits ##########################################################
 

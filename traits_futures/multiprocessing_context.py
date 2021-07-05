@@ -55,13 +55,13 @@ class MultiprocessingContext(IParallelContext):
         """
         return self._manager.Event()
 
-    def message_router(self, gui_context):
+    def message_router(self, event_loop):
         """
         Return a message router suitable for use in this context.
 
         Parameters
         ----------
-        gui_context : IEventLoop
+        event_loop : IEventLoop
             The GUI context providing the event loop to interact with.
 
         Returns
@@ -69,7 +69,7 @@ class MultiprocessingContext(IParallelContext):
         message_router : MultiprocessingRouter
         """
         return MultiprocessingRouter(
-            gui_context=gui_context,
+            event_loop=event_loop,
             manager=self._manager,
         )
 

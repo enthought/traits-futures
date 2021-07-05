@@ -209,7 +209,7 @@ class MultiprocessingRouter(HasRequiredTraits):
 
     Parameters
     ----------
-    gui_context : IEventLoop
+    event_loop : IEventLoop
         GUI context to use for interactions with the GUI event loop.
     manager : multiprocessing.Manager
         Manager to be used for creating the shared-process queue.
@@ -235,7 +235,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self.manager.Queue()
 
-        self._pingee = self.gui_context.pingee(on_ping=self._route_message)
+        self._pingee = self.event_loop.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._monitor_thread = threading.Thread(
@@ -362,7 +362,7 @@ class MultiprocessingRouter(HasRequiredTraits):
     # Public traits ###########################################################
 
     #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IEventLoop, required=True)
+    event_loop = Instance(IEventLoop, required=True)
 
     #: Manager, used to create message queues.
     manager = Instance(multiprocessing.managers.BaseManager, required=True)

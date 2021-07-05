@@ -67,7 +67,7 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
         # Trait fired, but condition still never true.
         executor = TraitsExecutor(
             context=MultithreadingContext(),
-            gui_context=self._event_loop,
+            event_loop=self._event_loop,
         )
         future = submit_call(executor, int, "111")
         start_time = time.monotonic()
@@ -107,7 +107,7 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
         # Trait fired, condition starts false but becomes true.
         executor = TraitsExecutor(
             context=MultithreadingContext(),
-            gui_context=self._event_loop,
+            event_loop=self._event_loop,
         )
 
         # Case 1: condition true on second trait change event.
