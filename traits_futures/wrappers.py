@@ -71,7 +71,7 @@ class FutureWrapper(HasStrictTraits):
     done = Bool(False)
 
     @on_trait_change("receiver:message")
-    def _receive_message(self, message):
+    def _dispatch_to_future(self, message):
         """
         Pass on a message to the future.
         """
