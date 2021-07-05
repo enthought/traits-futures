@@ -78,7 +78,7 @@ GUI contexts
 - :class:`~.ETSEventLoop`
 
 """
-from traits_futures.asyncio.context import AsyncioEventLoop
+from traits_futures.asyncio.event_loop import AsyncioEventLoop
 from traits_futures.background_call import CallFuture, submit_call
 from traits_futures.background_iteration import (
     IterationFuture,

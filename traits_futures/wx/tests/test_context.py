@@ -25,6 +25,6 @@ class TestWxEventLoop(IEventLoopTests, unittest.TestCase):
     #: Factory for instances of the context
     def context_factory(self):
         """Factory for instances of the context."""
-        from traits_futures.wx.context import WxEventLoop
+        from traits_futures.wx.event_loop import WxEventLoop
 
         return WxEventLoop()

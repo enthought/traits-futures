@@ -22,6 +22,6 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 @requires_qt
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
     def event_loop_factory(self):
-        from traits_futures.qt.context import QtEventLoop
+        from traits_futures.qt.event_loop import QtEventLoop
 
         return QtEventLoop()

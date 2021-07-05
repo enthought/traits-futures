@@ -13,7 +13,7 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
-from traits_futures.asyncio.context import AsyncioEventLoop
+from traits_futures.asyncio.event_loop import AsyncioEventLoop
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging

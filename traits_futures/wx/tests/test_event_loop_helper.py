@@ -24,6 +24,6 @@ from traits_futures.tests.i_event_loop_helper_tests import (
 class TestEventLoopHelper(IEventLoopHelperTests, unittest.TestCase):
     def event_loop_factory(self):
         """Create a suitable IEventLoop instance."""
-        from traits_futures.wx.context import WxEventLoop
+        from traits_futures.wx.event_loop import WxEventLoop
 
         return WxEventLoop()

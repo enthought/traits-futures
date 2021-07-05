@@ -14,7 +14,7 @@ Tests for the asyncio implementation of IEventLoopHelper.
 
 import unittest
 
-from traits_futures.asyncio.context import AsyncioEventLoop
+from traits_futures.asyncio.event_loop import AsyncioEventLoop
 from traits_futures.tests.i_event_loop_helper_tests import (
     IEventLoopHelperTests,
 )
