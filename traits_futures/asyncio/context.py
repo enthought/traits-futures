@@ -15,7 +15,7 @@ import asyncio
 
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.asyncio.pingee import Pingee
-from traits_futures.i_gui_context import IEventLoop
+from traits_futures.i_event_loop import IEventLoop
 
 
 @IEventLoop.register

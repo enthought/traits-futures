@@ -17,7 +17,7 @@ ETS_TOOLKIT environment variable if set, and examining the available toolkits
 if not.
 """
 
-from traits_futures.i_gui_context import IEventLoop
+from traits_futures.i_event_loop import IEventLoop
 
 
 @IEventLoop.register

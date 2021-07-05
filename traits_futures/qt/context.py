@@ -14,7 +14,7 @@ IEventLoop implementation for the Qt event loop.
 # We import QtCore to force an ImportError if Qt is not installed.
 from pyface.qt import QtCore  # noqa: F401
 
-from traits_futures.i_gui_context import IEventLoop
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.qt.event_loop_helper import EventLoopHelper
 from traits_futures.qt.pingee import Pingee
 

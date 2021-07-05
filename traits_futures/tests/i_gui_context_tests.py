@@ -10,8 +10,8 @@
 
 """ Mixin tests for testing implementations of IEventLoop. """
 
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_event_loop_helper import IEventLoopHelper
-from traits_futures.i_gui_context import IEventLoop
 from traits_futures.i_pingee import IPingee
 
 

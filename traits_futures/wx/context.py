@@ -14,7 +14,7 @@ IEventLoop implementation for the wx event loop.
 # Force an ImportError if wxPython is not installed.
 import wx  # noqa: F401
 
-from traits_futures.i_gui_context import IEventLoop
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.wx.event_loop_helper import EventLoopHelper
 from traits_futures.wx.pingee import Pingee
 

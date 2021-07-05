@@ -38,7 +38,7 @@ from traits_futures.executor_states import (
     STOPPED,
     STOPPING,
 )
-from traits_futures.i_gui_context import IEventLoop
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper

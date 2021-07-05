@@ -106,8 +106,8 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_future import IFuture
-from traits_futures.i_gui_context import IEventLoop
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.i_task_specification import ITaskSpecification
 from traits_futures.multiprocessing_context import MultiprocessingContext

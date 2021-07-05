@@ -30,7 +30,7 @@ from traits.api import (
     provides,
 )
 
-from traits_futures.i_gui_context import IEventLoop
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
