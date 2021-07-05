@@ -28,6 +28,7 @@ class TestApi(unittest.TestCase):
             IEventLoop,
             IFuture,
             IParallelContext,
+            IStepsReporter,
             ITaskSpecification,
             IterationFuture,
             MultiprocessingContext,

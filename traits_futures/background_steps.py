@@ -9,12 +9,12 @@
 # Thanks for using Enthought open source!
 
 """
-Background task for an interruptible progress-reporting callable.
+Support for an interruptible progress-reporting callable.
 
-This module defines a Traits Futures task specification and a corresponding
-future for tasks that execute in the background and report progress information
-to the foreground. The points at which progress is reported also represent
-points at which the task can be interrupted.
+This module defines a task specification and a corresponding future for tasks
+that execute in the background and report progress information to the
+foreground. The points at which progress is reported also represent points at
+which the task can be interrupted.
 
 """
 
@@ -36,11 +36,13 @@ from traits_futures.i_task_specification import ITaskSpecification
 
 
 class StepsCancelled(Exception):
-    """The user has cancelled this background task."""
+    """
+    Exception raised interally when the user cancels the background task.
+    """
 
 
 class IStepsReporter(ABC):
-    """Communicate progress information about a background job."""
+    """Interface for step-reporting object passed to the background job."""
 
     def start(self, message=None, steps=-1):
         """Start reporting progress.
@@ -86,6 +88,7 @@ class IStepsReporter(ABC):
 
 #: Message sent on a start or step operation. Argument is a tuple
 #: (step, steps, message), with:
+#:
 #: * step: int or None - number of completed steps so far
 #: * steps: int or None - total number of steps, if known
 #: * message: str or None - message to display for this step
