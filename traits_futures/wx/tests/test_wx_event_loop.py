@@ -9,22 +9,22 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the Wx GUI context.
+Tests for the Wx event loop.
 """
 
 
 import unittest
 
 from traits_futures.testing.optional_dependencies import requires_wx
-from traits_futures.tests.i_gui_context_tests import IGuiContextTests
+from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 
 @requires_wx
-class TestWxContext(IGuiContextTests, unittest.TestCase):
+class TestWxEventLoop(IEventLoopTests, unittest.TestCase):
 
-    #: Factory for instances of the context
-    def context_factory(self):
-        """Factory for instances of the context."""
-        from traits_futures.wx.context import WxContext
+    #: Factory for instances of the event loop.
+    def event_loop_factory(self):
+        """Factory for instances of the event loop."""
+        from traits_futures.wx.event_loop import WxEventLoop
 
-        return WxContext()
+        return WxEventLoop()

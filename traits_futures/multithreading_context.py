@@ -54,20 +54,20 @@ class MultithreadingContext(IParallelContext):
         """
         return threading.Event()
 
-    def message_router(self, gui_context):
+    def message_router(self, event_loop):
         """
         Return a message router suitable for use in this context.
 
         Parameters
         ----------
-        gui_context : IGuiContext
-            The GUI context providing the event loop to interact with.
+        event_loop : IEventLoop
+            The event loop used to trigger message dispatch.
 
         Returns
         -------
         message_router : MultithreadingRouter
         """
-        return MultithreadingRouter(gui_context=gui_context)
+        return MultithreadingRouter(event_loop=event_loop)
 
     def close(self):
         """

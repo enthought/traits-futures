@@ -41,7 +41,7 @@ occur:
 - the monitor thread receives the message (using *its* local proxy for the
   process message queue) and places the message onto the local message queue.
   It also pings the pingee.
-- assuming a running GUI event loop, the pingee receives the ping and executes
+- assuming a running event loop, the pingee receives the ping and executes
   the :meth:`MultiprocessingRouter._route_message` callback
 - the ``_route_message`` callback pulls the next message from the local message
   queue, inspects it to determine which receiver it should be sent to, and
@@ -68,7 +68,7 @@ from traits.api import (
     provides,
 )
 
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
@@ -209,8 +209,8 @@ class MultiprocessingRouter(HasRequiredTraits):
 
     Parameters
     ----------
-    gui_context : IGuiContext
-        GUI context to use for interactions with the GUI event loop.
+    event_loop : IEventLoop
+        The event loop used to trigger message dispatch.
     manager : multiprocessing.Manager
         Manager to be used for creating the shared-process queue.
     """
@@ -235,7 +235,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         self._local_message_queue = queue.Queue()
         self._process_message_queue = self.manager.Queue()
 
-        self._pingee = self.gui_context.pingee(on_ping=self._route_message)
+        self._pingee = self.event_loop.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._monitor_thread = threading.Thread(
@@ -361,8 +361,8 @@ class MultiprocessingRouter(HasRequiredTraits):
 
     # Public traits ###########################################################
 
-    #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IGuiContext, required=True)
+    #: The event loop used to trigger message dispatch.
+    event_loop = Instance(IEventLoop, required=True)
 
     #: Manager, used to create message queues.
     manager = Instance(multiprocessing.managers.BaseManager, required=True)
@@ -425,7 +425,7 @@ def monitor_queue(process_queue, local_queue, pingee):
     local_queue : queue.Queue
         Queue to transfer those messages to.
     pingee : IPingee
-        Recipient for pings, used to notify the GUI thread that there's
+        Recipient for pings, used to notify the event loop that there's
         a message pending.
 
     """

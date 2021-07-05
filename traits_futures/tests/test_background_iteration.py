@@ -33,7 +33,7 @@ class TestBackgroundIteration(
         self._context = MultithreadingContext()
         self.executor = TraitsExecutor(
             context=self._context,
-            gui_context=self._gui_context,
+            event_loop=self._event_loop,
         )
 
     def tearDown(self):
