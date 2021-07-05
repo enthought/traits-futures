@@ -125,7 +125,7 @@ class StepsReporter(HasStrictTraits):
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
-        self._send(STEP, (0, steps, message))
+        self._send((STEP, (0, steps, message)))
 
     def step(self, message=None, step=None, steps=None):
         """Emit a step event.
@@ -147,7 +147,7 @@ class StepsReporter(HasStrictTraits):
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
-        self._send(STEP, (step, steps, message))
+        self._send((STEP, (step, steps, message)))
 
     # Private traits ##########################################################
 
