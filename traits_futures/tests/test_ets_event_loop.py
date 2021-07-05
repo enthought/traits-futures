@@ -29,7 +29,7 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 #: resolved by ETSEventLoop.
 PRINT_TOOLKIT = """
 from traits_futures.ets_event_loop import ETSEventLoop
-print(type(ETSEventLoop().toolkit_context).__name__)
+print(type(ETSEventLoop().toolkit_event_loop).__name__)
 """
 
 
@@ -84,9 +84,10 @@ class TestToolkitSelection(unittest.TestCase):
         self.assertEqual(find_selected_toolkit("null"), "AsyncioEventLoop")
 
     def test_no_ets_toolkit_var(self):
-        toolkit_context = find_selected_toolkit()
+        toolkit_event_loop = find_selected_toolkit()
         # We'll get different results depending on the environment that
         # the toolkit selection is performed in.
         self.assertIn(
-            toolkit_context, ["QtEventLoop", "WxEventLoop", "AsyncioEventLoop"]
+            toolkit_event_loop,
+            ["QtEventLoop", "WxEventLoop", "AsyncioEventLoop"],
         )

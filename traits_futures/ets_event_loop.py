@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Context with toolkit selection matching that of ETS.
+Event loop with toolkit selection matching that of ETS.
 
 This module provides an IEventLoop implementation that's determined in the
 same way that the toolkit is determined for TraitsUI and Pyface, using the
@@ -25,7 +25,7 @@ class ETSEventLoop:
     """
     IEventLoop implementation with lazily-determined toolkit.
 
-    The first time this context is used, an appropriate toolkit will
+    The first time this event loop is used, an appropriate toolkit will
     be selected.
 
     The toolkit selection mechanism used matches that used by Pyface, and
@@ -36,7 +36,7 @@ class ETSEventLoop:
     """
 
     def __init__(self):
-        self._toolkit_context = None
+        self._toolkit_event_loop = None
 
     def pingee(self, on_ping):
         """
@@ -53,7 +53,7 @@ class ETSEventLoop:
         -------
         pingee : IPingee
         """
-        return self.toolkit_context.pingee(on_ping)
+        return self.toolkit_event_loop.pingee(on_ping)
 
     def event_loop_helper(self):
         """
@@ -63,18 +63,20 @@ class ETSEventLoop:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return self.toolkit_context.event_loop_helper()
+        return self.toolkit_event_loop.event_loop_helper()
 
     @property
-    def toolkit_context(self):
+    def toolkit_event_loop(self):
         """
-        Fix the toolkit for this context, using the same mechanism as Pyface
-        uses to find its toolkits.
+        Find and fix the toolkit, using the same mechanism that Pyface uses to
+        find its toolkits.
         """
         from pyface.base_toolkit import find_toolkit
 
-        if self._toolkit_context is None:
-            toolkit_context_class = find_toolkit("traits_futures.event_loops")
-            self._toolkit_context = toolkit_context_class()
+        if self._toolkit_event_loop is None:
+            toolkit_event_loop_class = find_toolkit(
+                "traits_futures.event_loops"
+            )
+            self._toolkit_event_loop = toolkit_event_loop_class()
 
-        return self._toolkit_context
+        return self._toolkit_event_loop
