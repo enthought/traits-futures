@@ -44,7 +44,7 @@ class IEventLoopHelperTests:
     """
 
     #: Factory for the GUI context. This should be a zero-argument callable
-    #: that provides an IGuiContext instance. Must be overridden in subclasses
+    #: that provides an IEventLoop instance. Must be overridden in subclasses
     #: to run these tests with a particular toolkit.
     gui_context_factory = None
 

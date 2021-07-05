@@ -11,19 +11,19 @@
 """
 Context with toolkit selection matching that of ETS.
 
-This module provides an IGuiContext implementation that's determined in the
+This module provides an IEventLoop implementation that's determined in the
 same way that the toolkit is determined for TraitsUI and Pyface, using the
 ETS_TOOLKIT environment variable if set, and examining the available toolkits
 if not.
 """
 
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 
 
-@IGuiContext.register
+@IEventLoop.register
 class ETSContext:
     """
-    IGuiContext implementation with lazily-determined toolkit.
+    IEventLoop implementation with lazily-determined toolkit.
 
     The first time this context is used, an appropriate toolkit will
     be selected.

@@ -16,11 +16,11 @@ Tests for the Qt GUI context.
 import unittest
 
 from traits_futures.testing.optional_dependencies import requires_qt
-from traits_futures.tests.i_gui_context_tests import IGuiContextTests
+from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 
 @requires_qt
-class TestQtContext(IGuiContextTests, unittest.TestCase):
+class TestQtContext(IEventLoopTests, unittest.TestCase):
     def context_factory(self):
         """Factory for instances of the context."""
         from traits_futures.qt.context import QtContext

@@ -23,7 +23,7 @@ from traits_futures.testing.optional_dependencies import (
     requires_qt,
     requires_wx,
 )
-from traits_futures.tests.i_gui_context_tests import IGuiContextTests
+from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 #: Code snippet to be executed with "python -c" in order to print the toolkit
 #: resolved by ETSContext.
@@ -64,7 +64,7 @@ def find_selected_toolkit(ets_toolkit=None):
     return process.stdout.rstrip()
 
 
-class TestETSContext(IGuiContextTests, unittest.TestCase):
+class TestETSContext(IEventLoopTests, unittest.TestCase):
     #: Factory for instances of the context.
     context_factory = ETSContext
 

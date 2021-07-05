@@ -73,7 +73,7 @@ Parallelism contexts
 GUI contexts
 ------------
 
-- :class:`~.IGuiContext`
+- :class:`~.IEventLoop`
 - :class:`~.AsyncioContext`
 - :class:`~.ETSContext`
 
@@ -107,7 +107,7 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_future import IFuture
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.i_task_specification import ITaskSpecification
 from traits_futures.multiprocessing_context import MultiprocessingContext
@@ -148,7 +148,7 @@ __all__ = [
     "MultiprocessingContext",
     "MultithreadingContext",
     # GUI contexts
-    "IGuiContext",
+    "IEventLoop",
     "AsyncioContext",
     "ETSContext",
 ]

@@ -30,7 +30,7 @@ from traits.api import (
     provides,
 )
 
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
@@ -183,7 +183,7 @@ class MultithreadingRouter(HasRequiredTraits):
 
     Parameters
     ----------
-    gui_context : IGuiContext
+    gui_context : IEventLoop
         GUI context to use for interactions with the GUI event loop.
 
     """
@@ -312,7 +312,7 @@ class MultithreadingRouter(HasRequiredTraits):
     # Public traits ###########################################################
 
     #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IGuiContext, required=True)
+    gui_context = Instance(IEventLoop, required=True)
 
     # Private traits ##########################################################
 

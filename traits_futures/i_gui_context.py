@@ -15,7 +15,7 @@ Interface for GUI toolkit context objects.
 import abc
 
 
-class IGuiContext(abc.ABC):
+class IEventLoop(abc.ABC):
     """
     Interface for objects usable in a GUI context.
 

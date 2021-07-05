@@ -9,20 +9,20 @@
 # Thanks for using Enthought open source!
 
 """
-IGuiContext implementation for the Qt event loop.
+IEventLoop implementation for the Qt event loop.
 """
 # We import QtCore to force an ImportError if Qt is not installed.
 from pyface.qt import QtCore  # noqa: F401
 
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 from traits_futures.qt.event_loop_helper import EventLoopHelper
 from traits_futures.qt.pingee import Pingee
 
 
-@IGuiContext.register
+@IEventLoop.register
 class QtContext:
     """
-    IGuiContext implementation for the Qt event loop.
+    IEventLoop implementation for the Qt event loop.
     """
 
     def pingee(self, on_ping):

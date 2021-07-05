@@ -64,7 +64,7 @@ class IParallelContext(abc.ABC):
 
         Parameters
         ----------
-        gui_context : IGuiContext
+        gui_context : IEventLoop
             The GUI context providing the event loop to interact with.
 
         Returns

@@ -8,18 +8,18 @@
 #
 # Thanks for using Enthought open source!
 
-""" Mixin tests for testing implementations of IGuiContext. """
+""" Mixin tests for testing implementations of IEventLoop. """
 
 from traits_futures.i_event_loop_helper import IEventLoopHelper
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 from traits_futures.i_pingee import IPingee
 
 
-class IGuiContextTests:
-    """Mixin providing tests for implementations of IGuiContext."""
+class IEventLoopTests:
+    """Mixin providing tests for implementations of IEventLoop."""
 
     #: Override this in subclasses.
-    context_factory = IGuiContext
+    context_factory = IEventLoop
 
     def setUp(self):
         self.context = self.context_factory()
@@ -28,7 +28,7 @@ class IGuiContextTests:
         del self.context
 
     def test_implements_i_gui_context(self):
-        self.assertIsInstance(self.context, IGuiContext)
+        self.assertIsInstance(self.context, IEventLoop)
 
     def test_pingee(self):
         pingee = self.context.pingee(on_ping=lambda: None)

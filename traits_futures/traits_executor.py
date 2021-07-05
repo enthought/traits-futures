@@ -38,7 +38,7 @@ from traits_futures.executor_states import (
     STOPPED,
     STOPPING,
 )
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
@@ -110,7 +110,7 @@ class TraitsExecutor(HasStrictTraits):
         multithreading or multiprocessing). If not given, assumes
         multithreading. Note that if both ``context`` and ``worker_pool``
         are given, they must be compatible.
-    gui_context : IGuiContext, optional
+    gui_context : IEventLoop, optional
         Context providing information about which GUI event loop to use. If not
         given, uses an :class:`~.ETSContext` instance, which determines the
         appropriate toolkit based on availability.
@@ -425,7 +425,7 @@ class TraitsExecutor(HasStrictTraits):
     _context = Instance(IParallelContext)
 
     #: GUI toolkit context
-    _gui_context = Instance(IGuiContext)
+    _gui_context = Instance(IEventLoop)
 
     #: True if we own this context, else False.
     _own_context = Bool(False)

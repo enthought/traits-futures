@@ -16,11 +16,11 @@ Tests for the Wx GUI context.
 import unittest
 
 from traits_futures.testing.optional_dependencies import requires_wx
-from traits_futures.tests.i_gui_context_tests import IGuiContextTests
+from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 
 @requires_wx
-class TestWxContext(IGuiContextTests, unittest.TestCase):
+class TestWxContext(IEventLoopTests, unittest.TestCase):
 
     #: Factory for instances of the context
     def context_factory(self):

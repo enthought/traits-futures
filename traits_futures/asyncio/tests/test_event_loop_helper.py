@@ -22,5 +22,5 @@ from traits_futures.tests.i_event_loop_helper_tests import (
 
 class TestEventLoopHelper(IEventLoopHelperTests, unittest.TestCase):
 
-    #: Zero-parameter callable that creates a suitable IGuiContext instance.
+    #: Zero-parameter callable that creates a suitable IEventLoop instance.
     gui_context_factory = AsyncioContext

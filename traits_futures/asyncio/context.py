@@ -9,19 +9,19 @@
 # Thanks for using Enthought open source!
 
 """
-IGuiContext implementation for the main-thread asyncio event loop.
+IEventLoop implementation for the main-thread asyncio event loop.
 """
 import asyncio
 
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.asyncio.pingee import Pingee
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_gui_context import IEventLoop
 
 
-@IGuiContext.register
+@IEventLoop.register
 class AsyncioContext:
     """
-    IGuiContext implementation for the main-thread asyncio event loop.
+    IEventLoop implementation for the main-thread asyncio event loop.
     """
 
     def __init__(self):
