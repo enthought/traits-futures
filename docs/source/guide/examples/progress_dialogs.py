@@ -12,9 +12,6 @@
 Demo script for modal progress dialog.
 """
 
-# import pyface.qt.QtCore
-
-# import atexit
 import concurrent.futures
 import time
 
@@ -87,7 +84,4 @@ def main():
 
 
 if __name__ == "__main__":
-    print("Starting main")
     main()
-    print("Left main")
-    print("Shutting down interpreter")
