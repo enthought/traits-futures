@@ -227,22 +227,15 @@ class BaseFuture(HasStrictTraits):
         message : tuple(str, object)
             Message from the background task, in the form (message_type,
             message_args).
-
-        Returns
-        -------
-        done : bool
-            True if this will be the last message received from the background
-            task, else False. For this method, it's always False.
         """
 
         if self._internal_state == _CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
-            return False
+            pass
         elif self._internal_state == EXECUTING:
             message_type, message_arg = message
             method_name = "_process_{}".format(message_type)
             getattr(self, method_name)(message_arg)
-            return False
         else:
             raise _StateTransitionError(
                 "Unexpected custom message in internal state {!r}".format(
@@ -258,19 +251,11 @@ class BaseFuture(HasStrictTraits):
         ----------
         none : NoneType
             This parameter is unused.
-
-        Returns
-        -------
-        done : bool
-            True if this will be the last message received from the background
-            task, else False. For this method, it's always False.
         """
         if self._internal_state == _INITIALIZED:
             self._internal_state = EXECUTING
-            return False
         elif self._internal_state == _CANCELLING_BEFORE_STARTED:
             self._internal_state = _CANCELLING_AFTER_STARTED
-            return False
         else:
             raise _StateTransitionError(
                 "Unexpected 'started' message in internal state {!r}".format(
@@ -286,21 +271,13 @@ class BaseFuture(HasStrictTraits):
         ----------
         result : any
             The object returned by the background task.
-
-        Returns
-        -------
-        done : bool
-            True if this will be the last message received from the background
-            task, else False. For this method, it's always True.
         """
         if self._internal_state == EXECUTING:
             self._cancel = None
             self._result = result
             self._internal_state = COMPLETED
-            return True
         elif self._internal_state == _CANCELLING_AFTER_STARTED:
             self._internal_state = CANCELLED
-            return True
         else:
             raise _StateTransitionError(
                 "Unexpected 'returned' message in internal state {!r}".format(
@@ -317,21 +294,13 @@ class BaseFuture(HasStrictTraits):
         exception_info : tuple(str, str, str)
             Tuple containing exception information in string form:
             (exception type, exception value, formatted traceback).
-
-        Returns
-        -------
-        done : bool
-            True if this will be the last message received from the background
-            task, else False. For this method, it's always True.
         """
         if self._internal_state == EXECUTING:
             self._cancel = None
             self._exception = exception_info
             self._internal_state = FAILED
-            return True
         elif self._internal_state == _CANCELLING_AFTER_STARTED:
             self._internal_state = CANCELLED
-            return True
         else:
             raise _StateTransitionError(
                 "Unexpected 'raised' message in internal state {!r}".format(

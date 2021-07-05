@@ -77,8 +77,8 @@ class FutureWrapper(HasStrictTraits):
         """
         message_type, message_arg = message
         method_name = "_task_{}".format(message_type)
-        done = getattr(self.future, method_name)(message_arg)
-        if done:
+        getattr(self.future, method_name)(message_arg)
+        if message_type in {RAISED, RETURNED}:
             self.done = True
 
 
