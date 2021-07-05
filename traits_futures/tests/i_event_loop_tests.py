@@ -19,7 +19,7 @@ class IEventLoopTests:
     """Mixin providing tests for implementations of IEventLoop."""
 
     #: Override this in subclasses.
-    event_loop = IEventLoop
+    event_loop_factory = IEventLoop
 
     def setUp(self):
         self.event_loop = self.event_loop_factory()
