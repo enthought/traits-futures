@@ -1,10 +1,12 @@
-# Enthought product code
-#
-# (C) Copyright 2013-2021 Enthought, Inc., Austin, TX
+# (C) Copyright 2018-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
-# This file and its contents are confidential information and NOT open source.
-# Distribution is prohibited.
+# This software is provided without warranty under the terms of the BSD
+# license included in LICENSE.txt and may be redistributed only under
+# the conditions described in the aforementioned license. The license
+# is also available online at http://www.enthought.com/licenses/BSD.txt
+#
+# Thanks for using Enthought open source!
 
 """
 Background task for an interruptible progress-reporting callable.
