@@ -110,41 +110,6 @@ whether cancellation has been requested.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wrappers.BackgroundTaskWrapper.send_control_message">
-<span class="sig-name descname"><span class="pre">send_control_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_control_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_control_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a control message from the background task to the future.</p>
-<p>These messages apply to all futures, and are used to communicate
-changes to the state of the future.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message">
-<span class="sig-name descname"><span class="pre">send_custom_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_custom_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a custom message from the background task to the future.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The message type.</p></li>
-<li><p><strong>message_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a><em>, </em><em>optional</em>) – Any arguments providing additional information for the message.
-If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is passed.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.CONTROL">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">CONTROL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'control'</span></em><a class="headerlink" href="#traits_futures.wrappers.CONTROL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prefix used for control messages.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.CUSTOM">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">CUSTOM</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'custom'</span></em><a class="headerlink" href="#traits_futures.wrappers.CUSTOM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prefix used for custom messages.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -157,7 +122,9 @@ delegates custom messages to the future.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.done">
 <span class="sig-name descname"><span class="pre">done</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bool recording whether the future has completed or not.</p>
+<dd><p>Bool recording whether the future has completed or not. The
+executor listens to this trait to decide when it can clean up
+its own internal state.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -186,6 +153,14 @@ callable. The argument is a tuple containing exception information.</p>
 <span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">RETURNED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'returned'</span></em><a class="headerlink" href="#traits_futures.wrappers.RETURNED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control message sent to indicate that the background callable succeeded
 and returned a result. The argument is that result.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="traits_futures.wrappers.SENT">
+<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">SENT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'sent'</span></em><a class="headerlink" href="#traits_futures.wrappers.SENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom message from the future. The argument is a pair
+(message_type, message_args); the message type and message args
+are interpreted by the future.</p>
 </dd></dl>
 
 <dl class="py data">
