@@ -28,16 +28,12 @@ from traits.api import (
     Tuple,
 )
 
-from traits_futures.api import (
-    BaseFuture,
-    CANCELLED,
-    COMPLETED,
-    FAILED,
-    ITaskSpecification,
-)
+from traits_futures.base_future import BaseFuture
+from traits_futures.future_states import FAILED
+from traits_futures.i_task_specification import ITaskSpecification
 
 
-class TaskCancelled(Exception):
+class StepsCancelled(Exception):
     """The user has cancelled this background task."""
 
 
@@ -59,7 +55,7 @@ class IStepsReporter(ABC):
 
         Raises
         ------
-        TaskCancelled
+        StepsCancelled
             If the user has called ``cancel()`` before this.
         """
 
@@ -79,7 +75,7 @@ class IStepsReporter(ABC):
 
         Raises
         ------
-        TaskCancelled
+        StepsCancelled
             If the user has called ``cancel()`` before this.
         """
 
@@ -120,7 +116,7 @@ class StepsReporter(HasStrictTraits):
 
         Raises
         ------
-        TaskCancelled
+        StepsCancelled
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
@@ -142,7 +138,7 @@ class StepsReporter(HasStrictTraits):
 
         Raises
         ------
-        TaskCancelled
+        StepsCancelled
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
@@ -165,11 +161,11 @@ class StepsReporter(HasStrictTraits):
 
         Raises
         ------
-        TaskCancelled
+        StepsCancelled
             If the task has been cancelled.
         """
         if self._cancelled():
-            raise TaskCancelled("Cancellation requested via the future")
+            raise StepsCancelled("Cancellation requested via the future")
 
 
 class StepsBackgroundTask:
@@ -191,7 +187,7 @@ class StepsBackgroundTask:
             result = self.callable(
                 *self.args, **self.kwargs, progress=progress
             )
-        except TaskCancelled:
+        except StepsCancelled:
             return None
         else:
             return result
@@ -241,27 +237,6 @@ class StepsFuture(BaseFuture):
                 "Task state is {}".format(self.state)
             )
         return self._error
-
-    def outcome(self):
-        """
-        Either returns the result of the background task, or
-        re-raises the exception that the background task raised.
-
-        Raises
-        ------
-        RuntimeError
-            If the background task has not yet completed.
-        """
-        if self.state == COMPLETED:
-            return self.result
-        elif self.state == FAILED:
-            raise self.error
-        elif self.state == CANCELLED:
-            raise TaskCancelled("Task was cancelled")
-        else:
-            raise RuntimeError(
-                "Task has not completed - no outcome is available."
-            )
 
     # Private traits ##########################################################
 
