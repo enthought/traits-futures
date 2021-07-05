@@ -46,7 +46,7 @@ def find_selected_toolkit(ets_toolkit=None):
     Returns
     -------
     selected_toolkit : str
-        Name of the toolkit context class selected.
+        Name of the toolkit event loop class selected.
     """
     env = os.environ.copy()
     env.pop("ETS_TOOLKIT", None)
