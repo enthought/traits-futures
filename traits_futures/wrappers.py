@@ -125,16 +125,13 @@ class BackgroundTaskWrapper:
             logger.exception("Unexpected exception in background task.")
             raise
 
-    def _send_custom_message(self, message_type, message_args=None):
+    def _send_custom_message(self, message):
         """
         Send a custom message from the background task to the future.
 
         Parameters
         ----------
-        message_type : str
-            The message type.
-        message_args : object, optional
-            Any arguments providing additional information for the message.
-            If not given, ``None`` is passed.
+        message : object
+            The message to be sent.
         """
-        self._sender.send((SENT, (message_type, message_args)))
+        self._sender.send((SENT, message))
