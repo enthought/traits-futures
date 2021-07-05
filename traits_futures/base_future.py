@@ -231,7 +231,7 @@ class BaseFuture(HasStrictTraits):
 
         if self._internal_state == _CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
-            pass
+            return
         elif self._internal_state == EXECUTING:
             message_type, message_arg = message
             method_name = "_process_{}".format(message_type)
