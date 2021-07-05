@@ -102,7 +102,7 @@ class BackgroundCallTests:
         future = submit_call(self.executor, event.set)
         listener = CallFutureListener(future=future)
 
-        # Ensure the background task is past the cancel_event.is_set() check.
+        # Ensure the background task is past the cancellation check.
         self.assertTrue(event.wait(timeout=TIMEOUT))
 
         # And _now_ cancel before we process any messages.
