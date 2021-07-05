@@ -9,17 +9,20 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the asyncio GUI context.
+Tests for the Qt event loop.
 """
 
 
 import unittest
 
-from traits_futures.asyncio.context import AsyncioContext
-from traits_futures.tests.i_gui_context_tests import IGuiContextTests
+from traits_futures.testing.optional_dependencies import requires_qt
+from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 
-class TestAsyncioContext(IGuiContextTests, unittest.TestCase):
+@requires_qt
+class TestQtEventLoop(IEventLoopTests, unittest.TestCase):
+    def event_loop_factory(self):
+        """Factory for instances of the event loop."""
+        from traits_futures.qt.event_loop import QtEventLoop
 
-    #: Factory for instances of the context.
-    context_factory = AsyncioContext
+        return QtEventLoop()

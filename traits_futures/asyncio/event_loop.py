@@ -9,22 +9,24 @@
 # Thanks for using Enthought open source!
 
 """
-Interface for GUI toolkit context objects.
+IEventLoop implementation for the main-thread asyncio event loop.
 """
+import asyncio
 
-import abc
+from traits_futures.asyncio.event_loop_helper import EventLoopHelper
+from traits_futures.asyncio.pingee import Pingee
+from traits_futures.i_event_loop import IEventLoop
 
 
-class IGuiContext(abc.ABC):
+@IEventLoop.register
+class AsyncioEventLoop:
     """
-    Interface for objects usable in a GUI context.
-
-    An instance of this class provides consistent mechanisms to get
-    objects related to the event loop for a particular choice of GUI
-    toolkit or event loop.
+    IEventLoop implementation for the main-thread asyncio event loop.
     """
 
-    @abc.abstractmethod
+    def __init__(self):
+        self._event_loop = asyncio.get_event_loop()
+
     def pingee(self, on_ping):
         """
         Return a new pingee.
@@ -40,9 +42,9 @@ class IGuiContext(abc.ABC):
         -------
         pingee : IPingee
         """
+        return Pingee(on_ping=on_ping, event_loop=self._event_loop)
 
-    @abc.abstractmethod
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 
@@ -50,3 +52,4 @@ class IGuiContext(abc.ABC):
         -------
         event_loop_helper : IEventLoopHelper
         """
+        return EventLoopHelper(event_loop=self._event_loop)
