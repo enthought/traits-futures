@@ -3,6 +3,9 @@ name: Run test suite for PySide2 and wxPython
 on:
   pull_request
 
+env:
+  PYTHON_UNBUFFERED: 1
+
 jobs:
   tests-pyside2:
     strategy:

@@ -5,6 +5,9 @@ on:
     # Run at 04:35 UTC every Sunday
     - cron: '35 4 * * 0'
 
+env:
+  PYTHON_UNBUFFERED: 1
+
 jobs:
   test-bleeding-edge:
     strategy:
