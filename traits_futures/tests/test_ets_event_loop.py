@@ -65,8 +65,8 @@ def find_selected_toolkit(ets_toolkit=None):
 
 
 class TestETSEventLoop(IEventLoopTests, unittest.TestCase):
-    #: Factory for instances of the context.
-    context_factory = ETSEventLoop
+    #: Factory for instances of the event loop.
+    event_loop_factory = ETSEventLoop
 
 
 class TestToolkitSelection(unittest.TestCase):

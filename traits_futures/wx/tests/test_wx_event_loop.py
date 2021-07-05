@@ -22,9 +22,9 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 @requires_wx
 class TestWxEventLoop(IEventLoopTests, unittest.TestCase):
 
-    #: Factory for instances of the context
-    def context_factory(self):
-        """Factory for instances of the context."""
+    #: Factory for instances of the event loop.
+    def event_loop_factory(self):
+        """Factory for instances of the event loop."""
         from traits_futures.wx.event_loop import WxEventLoop
 
         return WxEventLoop()

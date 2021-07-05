@@ -21,5 +21,5 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 class TestAsyncioEventLoop(IEventLoopTests, unittest.TestCase):
 
-    #: Factory for instances of the context.
-    context_factory = AsyncioEventLoop
+    #: Factory for instances of the event loop.
+    event_loop_factory = AsyncioEventLoop

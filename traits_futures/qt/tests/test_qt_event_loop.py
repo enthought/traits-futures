@@ -21,8 +21,8 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 
 @requires_qt
 class TestQtEventLoop(IEventLoopTests, unittest.TestCase):
-    def context_factory(self):
-        """Factory for instances of the context."""
+    def event_loop_factory(self):
+        """Factory for instances of the event loop."""
         from traits_futures.qt.event_loop import QtEventLoop
 
         return QtEventLoop()

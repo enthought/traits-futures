@@ -19,21 +19,21 @@ class IEventLoopTests:
     """Mixin providing tests for implementations of IEventLoop."""
 
     #: Override this in subclasses.
-    context_factory = IEventLoop
+    event_loop = IEventLoop
 
     def setUp(self):
-        self.context = self.context_factory()
+        self.event_loop = self.event_loop_factory()
 
     def tearDown(self):
-        del self.context
+        del self.event_loop
 
     def test_implements_i_event_loop(self):
-        self.assertIsInstance(self.context, IEventLoop)
+        self.assertIsInstance(self.event_loop, IEventLoop)
 
     def test_pingee(self):
-        pingee = self.context.pingee(on_ping=lambda: None)
+        pingee = self.event_loop.pingee(on_ping=lambda: None)
         self.assertIsInstance(pingee, IPingee)
 
     def test_event_loop_helper(self):
-        event_loop_helper = self.context.helper()
+        event_loop_helper = self.event_loop.helper()
         self.assertIsInstance(event_loop_helper, IEventLoopHelper)
