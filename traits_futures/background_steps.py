@@ -18,20 +18,13 @@ which the task can be interrupted.
 
 """
 
+# XXX Consider renaming the 'progress' argument to 'reporter'.
+
 from abc import ABC
 
-from traits.api import (
-    Callable,
-    Dict,
-    HasStrictTraits,
-    Instance,
-    Int,
-    Str,
-    Tuple,
-)
+from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple
 
 from traits_futures.base_future import BaseFuture
-from traits_futures.future_states import FAILED
 from traits_futures.i_task_specification import ITaskSpecification
 
 
@@ -44,7 +37,9 @@ class StepsCancelled(Exception):
 class IStepsReporter(ABC):
     """Interface for step-reporting object passed to the background job."""
 
-    def start(self, message=None, steps=-1):
+    # XXX steps should have a default of None, not -1. The -1 should be
+    # used only in the dialog.
+    def start(self, message=None, steps=None):
         """Start reporting progress.
 
         Parameters
@@ -106,7 +101,7 @@ class StepsReporter(HasStrictTraits):
 
     """
 
-    def start(self, message=None, steps=-1):
+    def start(self, message=None, steps=None):
         """Start reporting progress.
 
         Parameters
@@ -147,6 +142,9 @@ class StepsReporter(HasStrictTraits):
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
+        if steps is None:
+            steps = -1
+
         self._send((STEP, (step, steps, message)))
 
     # Private traits ##########################################################
@@ -214,40 +212,6 @@ class StepsFuture(BaseFuture):
     #: or from cancellation.
     message = Str()
 
-    @property
-    def error(self):
-        """
-        The exception raised by the background task, if any.
-
-        This attribute is only available if the state of this future is
-        ``FAILED``. If the future has not reached the ``FAILED`` state, any
-        attempt to access this attribute will raise an ``AttributeError.``
-
-        Returns
-        -------
-        exception: BaseException
-            The exception object raised by the background task.
-
-        Raises
-        ------
-        AttributeError
-            If the task is still executing, or was cancelled, or completed
-            without raising an exception.
-        """
-        if self.state != FAILED:
-            raise AttributeError(
-                "No exception information available. Task has "
-                "not yet completed, or was cancelled, or completed "
-                "without an exception. "
-                "Task state is {}".format(self.state)
-            )
-        return self._error
-
-    # Private traits ##########################################################
-
-    #: Any exception raised by the background task.
-    _error = Instance(BaseException, allow_none=True)
-
     # Private methods #########################################################
 
     def _process_step(self, step_event):
@@ -263,12 +227,6 @@ class StepsFuture(BaseFuture):
             self.step += 1
         else:
             self.step = step
-
-    def _process_error(self, error):
-        """
-        Process an ERROR message from the background task.
-        """
-        self._error = error
 
 
 @ITaskSpecification.register

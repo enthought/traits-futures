@@ -9,7 +9,9 @@
 # Thanks for using Enthought open source!
 
 
-from traits_futures.api import IStepsReporter, submit_steps
+from traits.api import HasStrictTraits, Instance, List, on_trait_change, Str
+
+from traits_futures.api import IStepsReporter, StepsFuture, submit_steps
 
 
 def check_steps_reporter_interface(progress):
@@ -22,6 +24,20 @@ def check_steps_reporter_interface(progress):
         return True
 
 
+class StepsListener(HasStrictTraits):
+    """
+    Listener recording state changes for a StepsFuture.
+    """
+
+    messages = List(Str)
+
+    future = Instance(StepsFuture)
+
+    @on_trait_change("future:message")
+    def _update_messages(self, message):
+        self.messages.append(message)
+
+
 class BackgroundStepsTests:
     def test_progress_implements_i_steps_reporter(self):
         future = submit_steps(self.executor, check_steps_reporter_interface)
@@ -29,6 +45,21 @@ class BackgroundStepsTests:
 
         self.assertResult(future, True)
         self.assertNoException(future)
+
+    def test_simple_messages(self):
+        def send_messages(self, progress):
+            progress.start("Uploading files")
+            progress.step("Uploaded file 1")
+            progress.step("Uploaded file 2")
+
+        future = submit_steps(self.executor, send_messages)
+        listener = StepsListener(future=future)
+        self.wait_until_done(future)
+
+        self.assertEqual(
+            listener.messages,
+            ["Uploading files", "Uploaded file 1", "Uploaded file 2"],
+        )
 
     # Helper functions
 
