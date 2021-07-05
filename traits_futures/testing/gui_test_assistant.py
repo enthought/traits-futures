@@ -34,10 +34,10 @@ class GuiTestAssistant:
     #: Factory for the GUI context. This should be a zero-argument callable
     #: that provides an IEventLoop instance. Override in subclasses to
     #: run tests with a particular toolkit.
-    gui_context_factory = AsyncioEventLoop
+    event_loop_factory = AsyncioEventLoop
 
     def setUp(self):
-        self._event_loop = self.gui_context_factory()
+        self._event_loop = self.event_loop_factory()
         self._event_loop_helper = self._event_loop.event_loop_helper()
         self._event_loop_helper.init()
 

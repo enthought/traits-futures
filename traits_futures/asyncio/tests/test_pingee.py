@@ -21,4 +21,4 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
 
-    gui_context_factory = AsyncioEventLoop
+    event_loop_factory = AsyncioEventLoop

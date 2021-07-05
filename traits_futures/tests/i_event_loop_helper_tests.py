@@ -46,10 +46,10 @@ class IEventLoopHelperTests:
     #: Factory for the GUI context. This should be a zero-argument callable
     #: that provides an IEventLoop instance. Must be overridden in subclasses
     #: to run these tests with a particular toolkit.
-    gui_context_factory = None
+    event_loop_factory = None
 
     def setUp(self):
-        self._event_loop = self.gui_context_factory()
+        self._event_loop = self.event_loop_factory()
 
     def tearDown(self):
         del self._event_loop
