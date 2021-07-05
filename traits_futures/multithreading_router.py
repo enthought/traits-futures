@@ -30,7 +30,7 @@ from traits.api import (
     provides,
 )
 
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_message_router import (
     IMessageReceiver,
     IMessageRouter,
@@ -64,7 +64,7 @@ class MultithreadingSender:
     connection_id : int
         Id of the matching receiver; used for message routing.
     pingee : IPingee
-        Recipient for pings, used to notify the GUI thread that there's
+        Recipient for pings, used to notify the event loop that there's
         a message pending.
     message_queue : queue.Queue
         Thread-safe queue for passing messages to the foreground.
@@ -183,8 +183,8 @@ class MultithreadingRouter(HasRequiredTraits):
 
     Parameters
     ----------
-    gui_context : IGuiContext
-        GUI context to use for interactions with the GUI event loop.
+    event_loop : IEventLoop
+        The event loop used to trigger message dispatch.
 
     """
 
@@ -207,7 +207,7 @@ class MultithreadingRouter(HasRequiredTraits):
 
         self._message_queue = queue.Queue()
 
-        self._pingee = self.gui_context.pingee(on_ping=self._route_message)
+        self._pingee = self.event_loop.pingee(on_ping=self._route_message)
         self._pingee.connect()
 
         self._running = True
@@ -311,8 +311,8 @@ class MultithreadingRouter(HasRequiredTraits):
 
     # Public traits ###########################################################
 
-    #: GUI context to use for interactions with the GUI event loop.
-    gui_context = Instance(IGuiContext, required=True)
+    #: The event loop used to trigger message dispatch.
+    event_loop = Instance(IEventLoop, required=True)
 
     # Private traits ##########################################################
 
