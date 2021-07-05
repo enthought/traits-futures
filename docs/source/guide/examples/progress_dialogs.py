@@ -16,7 +16,7 @@ import concurrent.futures
 import time
 
 from traits.api import Any, Button, HasStrictTraits, Instance, List, Range
-from traits_futures.api import TraitsExecutor, submit_steps
+from traits_futures.api import submit_steps, TraitsExecutor
 from traitsui.api import Item, View
 
 from background_progress_dialog import ProgressFutureDialog

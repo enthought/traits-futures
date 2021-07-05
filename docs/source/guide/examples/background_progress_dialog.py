@@ -17,7 +17,6 @@ from pyface.qt import QtCore, QtGui
 from traits.api import Any, Bool, Instance, Int, on_trait_change
 from traits_futures.api import EXECUTING, StepsFuture
 
-
 # XXX Fix behaviour on dialog close button. Should match pressing the
 #  "cancelling" button. (What do users want?)
 # Similarly for doing a Ctrl-C
