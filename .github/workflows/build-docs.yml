@@ -6,7 +6,7 @@ on:
     - main
 
 env:
-  PYTHON_UNBUFFERED: 1
+  PYTHONUNBUFFERED: 1
 
 jobs:
   docs:
