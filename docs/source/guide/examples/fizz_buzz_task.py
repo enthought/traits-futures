@@ -37,12 +37,10 @@ def fizz_buzz(send, cancelled):
 
     Parameters
     ----------
-    send : callable(message_type, message_argument) -> None
-        Callable accepting two arguments: a message type (a string) as the
-        first argument, and the message argument (if any) as the optional
-        second argument. The message argument should be pickleable, and
-        preferably immutable (or at least, not intended to be mutated). It
-        should return nothing.
+    send : callable(object) -> None
+        Callable accepting the message to be sent, and returning nothing. The
+        message argument should be pickleable, and preferably immutable (or at
+        least, not intended to be mutated).
     cancelled : callable
         Callable accepting no arguments and returning a boolean result. It
         returns ``True`` if cancellation has been requested, and ``False``
@@ -55,11 +53,11 @@ def fizz_buzz(send, cancelled):
         n_is_multiple_of_5 = n % 5 == 0
 
         if n_is_multiple_of_3 and n_is_multiple_of_5:
-            send(FIZZ_BUZZ, n)
+            send((FIZZ_BUZZ, n))
         elif n_is_multiple_of_3:
-            send(FIZZ, n)
+            send((FIZZ, n))
         elif n_is_multiple_of_5:
-            send(BUZZ, n)
+            send((BUZZ, n))
 
         time.sleep(1.0)
         n += 1
