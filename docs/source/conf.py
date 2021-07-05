@@ -202,3 +202,43 @@ intersphinx_mapping = {
     "traits": ("https://docs.enthought.com/traits", None),
     "traitsui": ("https://docs.enthought.com/traitsui", None),
 }
+
+
+def run_apidoc(app, config):
+    """
+    Hook to generate API documentation via sphinx-apidoc
+
+    Parameters
+    ----------
+    app : the Sphinx application
+    config : the Sphinx configuration
+    """
+    import pathlib
+
+    import sphinx.ext.apidoc
+
+    source_dir = pathlib.Path(__file__).parent
+    project_root = source_dir.parent.parent
+    target_dir = project_root / "traits_futures"
+
+    exclude_patterns = [
+        target_dir / "tests" / "*.py",
+        target_dir / "*" / "tests" / "*.py",
+    ]
+
+    args = [
+        "--separate",
+        "--no-toc",
+        "--templatedir",
+        source_dir / "api" / "templates",
+        "-o",
+        source_dir / "api",
+        target_dir,
+        *exclude_patterns,
+    ]
+
+    sphinx.ext.apidoc.main([str(arg) for arg in args])
+
+
+def setup(app):
+    app.connect("config-inited", run_apidoc)
