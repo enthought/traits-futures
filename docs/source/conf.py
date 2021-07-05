@@ -204,13 +204,14 @@ intersphinx_mapping = {
 }
 
 
-def run_apidoc(app):
+def run_apidoc(app, config):
     """
     Hook to generate API documentation via sphinx-apidoc
 
     Parameters
     ----------
     app : the Sphinx application
+    config : the Sphinx configuration
     """
     import pathlib
 
@@ -240,4 +241,4 @@ def run_apidoc(app):
 
 
 def setup(app):
-    app.connect("builder-inited", run_apidoc)
+    app.connect("config-inited", run_apidoc)
