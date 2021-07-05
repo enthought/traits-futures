@@ -42,7 +42,7 @@ class IEventLoop(abc.ABC):
         """
 
     @abc.abstractmethod
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 

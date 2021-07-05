@@ -38,7 +38,7 @@ class GuiTestAssistant:
 
     def setUp(self):
         self._event_loop = self.event_loop_factory()
-        self._event_loop_helper = self._event_loop.event_loop_helper()
+        self._event_loop_helper = self._event_loop.helper()
         self._event_loop_helper.init()
 
     def tearDown(self):

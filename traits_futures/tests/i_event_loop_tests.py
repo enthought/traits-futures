@@ -35,5 +35,5 @@ class IEventLoopTests:
         self.assertIsInstance(pingee, IPingee)
 
     def test_event_loop_helper(self):
-        event_loop_helper = self.context.event_loop_helper()
+        event_loop_helper = self.context.helper()
         self.assertIsInstance(event_loop_helper, IEventLoopHelper)

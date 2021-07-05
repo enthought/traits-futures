@@ -44,7 +44,7 @@ class AsyncioEventLoop:
         """
         return Pingee(on_ping=on_ping, event_loop=self._event_loop)
 
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 

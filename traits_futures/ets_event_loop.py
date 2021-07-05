@@ -55,7 +55,7 @@ class ETSEventLoop:
         """
         return self.toolkit_event_loop.pingee(on_ping)
 
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 
@@ -63,7 +63,7 @@ class ETSEventLoop:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return self.toolkit_event_loop.event_loop_helper()
+        return self.toolkit_event_loop.helper()
 
     @property
     def toolkit_event_loop(self):

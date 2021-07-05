@@ -42,7 +42,7 @@ class QtEventLoop:
         """
         return Pingee(on_ping=on_ping)
 
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 
