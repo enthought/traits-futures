@@ -18,7 +18,7 @@ import subprocess
 import sys
 import unittest
 
-from traits_futures.ets_context import ETSEventLoop
+from traits_futures.ets_event_loop import ETSEventLoop
 from traits_futures.testing.optional_dependencies import (
     requires_qt,
     requires_wx,
@@ -28,7 +28,7 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 #: Code snippet to be executed with "python -c" in order to print the toolkit
 #: resolved by ETSEventLoop.
 PRINT_TOOLKIT = """
-from traits_futures.ets_context import ETSEventLoop
+from traits_futures.ets_event_loop import ETSEventLoop
 print(type(ETSEventLoop().toolkit_context).__name__)
 """
 

@@ -31,7 +31,7 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
-from traits_futures.ets_context import ETSEventLoop
+from traits_futures.ets_event_loop import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
     RUNNING,

@@ -90,7 +90,7 @@ from traits_futures.background_progress import (
     submit_progress,
 )
 from traits_futures.base_future import BaseFuture
-from traits_futures.ets_context import ETSEventLoop
+from traits_futures.ets_event_loop import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
     RUNNING,
