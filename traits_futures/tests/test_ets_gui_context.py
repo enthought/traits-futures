@@ -18,7 +18,7 @@ import subprocess
 import sys
 import unittest
 
-from traits_futures.ets_context import ETSContext
+from traits_futures.ets_context import ETSEventLoop
 from traits_futures.testing.optional_dependencies import (
     requires_qt,
     requires_wx,
@@ -26,10 +26,10 @@ from traits_futures.testing.optional_dependencies import (
 from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 #: Code snippet to be executed with "python -c" in order to print the toolkit
-#: resolved by ETSContext.
+#: resolved by ETSEventLoop.
 PRINT_TOOLKIT = """
-from traits_futures.ets_context import ETSContext
-print(type(ETSContext().toolkit_context).__name__)
+from traits_futures.ets_context import ETSEventLoop
+print(type(ETSEventLoop().toolkit_context).__name__)
 """
 
 
@@ -64,29 +64,29 @@ def find_selected_toolkit(ets_toolkit=None):
     return process.stdout.rstrip()
 
 
-class TestETSContext(IEventLoopTests, unittest.TestCase):
+class TestETSEventLoop(IEventLoopTests, unittest.TestCase):
     #: Factory for instances of the context.
-    context_factory = ETSContext
+    context_factory = ETSEventLoop
 
 
 class TestToolkitSelection(unittest.TestCase):
     @requires_qt
     def test_selects_qt(self):
-        self.assertEqual(find_selected_toolkit("qt"), "QtContext")
-        self.assertEqual(find_selected_toolkit("qt4"), "QtContext")
+        self.assertEqual(find_selected_toolkit("qt"), "QtEventLoop")
+        self.assertEqual(find_selected_toolkit("qt4"), "QtEventLoop")
 
     @requires_wx
     def test_selects_wx(self):
-        self.assertEqual(find_selected_toolkit("wx"), "WxContext")
+        self.assertEqual(find_selected_toolkit("wx"), "WxEventLoop")
 
     def test_null_selects_asyncio(self):
-        self.assertEqual(find_selected_toolkit("asyncio"), "AsyncioContext")
-        self.assertEqual(find_selected_toolkit("null"), "AsyncioContext")
+        self.assertEqual(find_selected_toolkit("asyncio"), "AsyncioEventLoop")
+        self.assertEqual(find_selected_toolkit("null"), "AsyncioEventLoop")
 
     def test_no_ets_toolkit_var(self):
         toolkit_context = find_selected_toolkit()
         # We'll get different results depending on the environment that
         # the toolkit selection is performed in.
         self.assertIn(
-            toolkit_context, ["QtContext", "WxContext", "AsyncioContext"]
+            toolkit_context, ["QtEventLoop", "WxEventLoop", "AsyncioEventLoop"]
         )

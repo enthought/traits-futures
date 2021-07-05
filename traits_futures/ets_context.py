@@ -21,7 +21,7 @@ from traits_futures.i_gui_context import IEventLoop
 
 
 @IEventLoop.register
-class ETSContext:
+class ETSEventLoop:
     """
     IEventLoop implementation with lazily-determined toolkit.
 

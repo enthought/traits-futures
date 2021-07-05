@@ -65,11 +65,11 @@ setup(
     ],
     entry_points={
         "traits_futures.event_loops": [
-            "asyncio = traits_futures.asyncio.context:AsyncioContext",
-            "null = traits_futures.asyncio.context:AsyncioContext",
-            "qt = traits_futures.qt.context:QtContext",
-            "qt4 = traits_futures.qt.context:QtContext",
-            "wx = traits_futures.wx.context:WxContext",
+            "asyncio = traits_futures.asyncio.context:AsyncioEventLoop",
+            "null = traits_futures.asyncio.context:AsyncioEventLoop",
+            "qt = traits_futures.qt.context:QtEventLoop",
+            "qt4 = traits_futures.qt.context:QtEventLoop",
+            "wx = traits_futures.wx.context:WxEventLoop",
         ],
     },
     python_requires=">=3.6",

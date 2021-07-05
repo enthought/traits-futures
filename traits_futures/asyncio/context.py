@@ -19,7 +19,7 @@ from traits_futures.i_gui_context import IEventLoop
 
 
 @IEventLoop.register
-class AsyncioContext:
+class AsyncioEventLoop:
     """
     IEventLoop implementation for the main-thread asyncio event loop.
     """

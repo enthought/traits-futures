@@ -13,7 +13,7 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
-from traits_futures.asyncio.context import AsyncioContext
+from traits_futures.asyncio.context import AsyncioEventLoop
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
@@ -34,7 +34,7 @@ class GuiTestAssistant:
     #: Factory for the GUI context. This should be a zero-argument callable
     #: that provides an IEventLoop instance. Override in subclasses to
     #: run tests with a particular toolkit.
-    gui_context_factory = AsyncioContext
+    gui_context_factory = AsyncioEventLoop
 
     def setUp(self):
         self._event_loop = self.gui_context_factory()

@@ -74,11 +74,11 @@ GUI contexts
 ------------
 
 - :class:`~.IEventLoop`
-- :class:`~.AsyncioContext`
-- :class:`~.ETSContext`
+- :class:`~.AsyncioEventLoop`
+- :class:`~.ETSEventLoop`
 
 """
-from traits_futures.asyncio.context import AsyncioContext
+from traits_futures.asyncio.context import AsyncioEventLoop
 from traits_futures.background_call import CallFuture, submit_call
 from traits_futures.background_iteration import (
     IterationFuture,
@@ -90,7 +90,7 @@ from traits_futures.background_progress import (
     submit_progress,
 )
 from traits_futures.base_future import BaseFuture
-from traits_futures.ets_context import ETSContext
+from traits_futures.ets_context import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
     RUNNING,
@@ -149,6 +149,6 @@ __all__ = [
     "MultithreadingContext",
     # GUI contexts
     "IEventLoop",
-    "AsyncioContext",
-    "ETSContext",
+    "AsyncioEventLoop",
+    "ETSEventLoop",
 ]

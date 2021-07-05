@@ -15,10 +15,14 @@ Running Traits Futures without a GUI, using the asyncio event loop.
 import asyncio
 import random
 
-from traits_futures.api import AsyncioContext, submit_iteration, TraitsExecutor
+from traits_futures.api import (
+    AsyncioEventLoop,
+    submit_iteration,
+    TraitsExecutor,
+)
 
 
-def approximate_pi(sample_count=10**8, report_interval=10 ** 6):
+def approximate_pi(sample_count=10 ** 8, report_interval=10 ** 6):
     """
     Yield successive approximations to π via Monte Carlo methods.
     """
@@ -38,6 +42,7 @@ async def future_wrapper(traits_future):
     """
     Wrap a Traits Futures future as a schedulable coroutine.
     """
+
     def set_result(event):
         traits_future = event.object
         asyncio_future.set_result(traits_future.result)
@@ -59,7 +64,7 @@ def print_progress(event):
 
 
 if __name__ == "__main__":
-    traits_executor = TraitsExecutor(gui_context=AsyncioContext())
+    traits_executor = TraitsExecutor(gui_context=AsyncioEventLoop())
     traits_future = submit_iteration(traits_executor, approximate_pi)
     traits_future.observe(print_progress, "result_event")
 

@@ -24,6 +24,6 @@ from traits_futures.tests.i_event_loop_helper_tests import (
 class TestEventLoopHelper(IEventLoopHelperTests, unittest.TestCase):
     def gui_context_factory(self):
         """Create a suitable IEventLoop instance."""
-        from traits_futures.qt.context import QtContext
+        from traits_futures.qt.context import QtEventLoop
 
-        return QtContext()
+        return QtEventLoop()

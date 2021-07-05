@@ -20,7 +20,7 @@ from traits_futures.qt.pingee import Pingee
 
 
 @IEventLoop.register
-class QtContext:
+class QtEventLoop:
     """
     IEventLoop implementation for the Qt event loop.
     """

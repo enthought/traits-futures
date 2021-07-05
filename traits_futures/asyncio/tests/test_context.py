@@ -15,11 +15,11 @@ Tests for the asyncio GUI context.
 
 import unittest
 
-from traits_futures.asyncio.context import AsyncioContext
+from traits_futures.asyncio.context import AsyncioEventLoop
 from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 
-class TestAsyncioContext(IEventLoopTests, unittest.TestCase):
+class TestAsyncioEventLoop(IEventLoopTests, unittest.TestCase):
 
     #: Factory for instances of the context.
-    context_factory = AsyncioContext
+    context_factory = AsyncioEventLoop

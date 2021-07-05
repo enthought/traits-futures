@@ -20,11 +20,11 @@ from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 
 @requires_wx
-class TestWxContext(IEventLoopTests, unittest.TestCase):
+class TestWxEventLoop(IEventLoopTests, unittest.TestCase):
 
     #: Factory for instances of the context
     def context_factory(self):
         """Factory for instances of the context."""
-        from traits_futures.wx.context import WxContext
+        from traits_futures.wx.context import WxEventLoop
 
-        return WxContext()
+        return WxEventLoop()

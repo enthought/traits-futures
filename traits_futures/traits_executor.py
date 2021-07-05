@@ -31,7 +31,7 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
-from traits_futures.ets_context import ETSContext
+from traits_futures.ets_context import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
     RUNNING,
@@ -112,7 +112,7 @@ class TraitsExecutor(HasStrictTraits):
         are given, they must be compatible.
     gui_context : IEventLoop, optional
         Context providing information about which GUI event loop to use. If not
-        given, uses an :class:`~.ETSContext` instance, which determines the
+        given, uses an :class:`~.ETSEventLoop` instance, which determines the
         appropriate toolkit based on availability.
     """
 
@@ -491,7 +491,7 @@ class TraitsExecutor(HasStrictTraits):
         # By default we use the "ETS" GUI context, which chooses which
         # GUI toolkit to use based on the ETS_TOOLKIT environment variable
         # and the available installed packages.
-        return ETSContext()
+        return ETSEventLoop()
 
     def __context_default(self):
         # By default, we use multithreading.

@@ -20,7 +20,7 @@ from traits_futures.wx.pingee import Pingee
 
 
 @IEventLoop.register
-class WxContext:
+class WxEventLoop:
     """
     IEventLoop implementation for the wx event loop.
     """

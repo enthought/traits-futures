@@ -20,9 +20,9 @@ from traits_futures.tests.i_gui_context_tests import IEventLoopTests
 
 
 @requires_qt
-class TestQtContext(IEventLoopTests, unittest.TestCase):
+class TestQtEventLoop(IEventLoopTests, unittest.TestCase):
     def context_factory(self):
         """Factory for instances of the context."""
-        from traits_futures.qt.context import QtContext
+        from traits_futures.qt.context import QtEventLoop
 
-        return QtContext()
+        return QtEventLoop()

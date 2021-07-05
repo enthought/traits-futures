@@ -25,12 +25,12 @@ Specifying a toolkit
 
 To explicitly specify which toolkit to use, you need to provide the
 ``gui_context`` parameter when instantiating the |TraitsExecutor|. The library
-currently provides four different GUI contexts: |AsyncioContext|, |QtContext|,
-|WxContext| and |ETSContext|. The first three correspond to the |asyncio|
+currently provides four different GUI contexts: |AsyncioEventLoop|, |QtEventLoop|,
+|WxEventLoop| and |ETSEventLoop|. The first three correspond to the |asyncio|
 event loop, the Qt event loop and the Wx event loop respectively.
 
 By default, if no gui context is explicitly specified, an instance of
-|ETSContext| is used. This follows the usual ETS rules to determine which
+|ETSEventLoop| is used. This follows the usual ETS rules to determine which
 toolkit to use based on the value of the ``ETS_TOOLKIT`` environment variable,
 on whether any other part of the ETS machinery has already "fixed" the toolkit,
 and on which toolkits are available in the current Python environment.
@@ -50,12 +50,12 @@ directly.
 However, you may find yourself in a situation where you already have Traits
 Futures-based code that was written for a GUI setting, but that you want to be
 able to execute in a environment that doesn't have the Qt or Wx toolkits
-available. In that case, Traits Futures can use the |AsyncioContext| to
+available. In that case, Traits Futures can use the |AsyncioEventLoop| to
 deliver results to the main thread's |asyncio| event loop instead of to
 a GUI framework's event loop.
 
 Here's an :download:`example script <examples/headless.py>` that uses the
-|AsyncioContext| in order to execute Traits Futures tasks within the context of
+|AsyncioEventLoop| in order to execute Traits Futures tasks within the context of
 an asyncio event loop.
 
 .. literalinclude:: examples/headless.py
@@ -66,8 +66,8 @@ an asyncio event loop.
 
 .. |asyncio| replace:: :mod:`asyncio`
 .. |concurrent.futures| replace:: :mod:`concurrent.futures`
-.. |AsyncioContext| replace:: :class:`~.AsyncioContext`
-.. |ETSContext| replace:: :class:`~.ETSContext`
-.. |QtContext| replace:: :class:`~.QtContext`
-.. |WxContext| replace:: :class:`~.WxContext`
+.. |AsyncioEventLoop| replace:: :class:`~.AsyncioEventLoop`
+.. |ETSEventLoop| replace:: :class:`~.ETSEventLoop`
+.. |QtEventLoop| replace:: :class:`~.QtEventLoop`
+.. |WxEventLoop| replace:: :class:`~.WxEventLoop`
 .. |TraitsExecutor| replace:: :class:`~.TraitsExecutor`

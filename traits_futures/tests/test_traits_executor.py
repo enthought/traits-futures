@@ -17,7 +17,7 @@ import unittest
 from traits.api import Bool
 
 from traits_futures.api import (
-    ETSContext,
+    ETSEventLoop,
     MultithreadingContext,
     TraitsExecutor,
 )
@@ -84,7 +84,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
 
     def test_default_gui_context(self):
         with self.temporary_executor() as executor:
-            self.assertIsInstance(executor._event_loop, ETSContext)
+            self.assertIsInstance(executor._event_loop, ETSEventLoop)
 
     def test_externally_supplied_context(self):
         context = MultithreadingContext()

@@ -15,7 +15,7 @@ import contextlib
 import unittest
 
 from traits_futures.api import (
-    ETSContext,
+    ETSEventLoop,
     MultiprocessingContext,
     MultithreadingContext,
     TraitsExecutor,
@@ -66,7 +66,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
 
     def test_default_gui_context(self):
         with self.temporary_executor() as executor:
-            self.assertIsInstance(executor._event_loop, ETSContext)
+            self.assertIsInstance(executor._event_loop, ETSEventLoop)
 
     def test_externally_supplied_context(self):
         context = MultiprocessingContext()
