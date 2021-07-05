@@ -86,9 +86,9 @@ class IStepsReporter(ABC):
 
 #: Message sent on a start or step operation. Argument is a tuple
 #: (step, steps, message), with:
-#:   step: int or None - number of completed steps so far
-#:   steps: int or None - total number of steps, if known
-#:   message: str or None - message to display for this step
+#: * step: int or None - number of completed steps so far
+#: * steps: int or None - total number of steps, if known
+#: * message: str or None - message to display for this step
 STEP = "step"
 
 
