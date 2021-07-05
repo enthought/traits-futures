@@ -337,7 +337,7 @@ class TraitsExecutor(HasStrictTraits):
         if not self._wrappers:
             self._complete_stop()
 
-    def shutdown(self, timeout=None):
+    def shutdown(self, *, timeout=None):
         """
         Shut this executor down, abandoning all currently executing futures.
 
