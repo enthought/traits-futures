@@ -23,8 +23,3 @@ traits\_futures.wx package
    traits_futures.wx.context
    traits_futures.wx.event_loop_helper
    traits_futures.wx.pingee
-
-
-.. toctree::
-
-   traits_futures.wx.tests

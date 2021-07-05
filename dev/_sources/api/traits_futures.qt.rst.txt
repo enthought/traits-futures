@@ -23,8 +23,3 @@ traits\_futures.qt package
    traits_futures.qt.context
    traits_futures.qt.event_loop_helper
    traits_futures.qt.pingee
-
-
-.. toctree::
-
-   traits_futures.qt.tests

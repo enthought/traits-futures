@@ -23,8 +23,3 @@ traits\_futures.asyncio package
    traits_futures.asyncio.context
    traits_futures.asyncio.event_loop_helper
    traits_futures.asyncio.pingee
-
-
-.. toctree::
-
-   traits_futures.asyncio.tests
