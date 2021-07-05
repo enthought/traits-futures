@@ -102,7 +102,7 @@ a suitable string. For example, the background progress task sends messages
 of type <code class="docutils literal notranslate"><span class="pre">&quot;progress&quot;</span></code> to report progress, while the background iteration task
 sends messages of type <code class="docutils literal notranslate"><span class="pre">&quot;generated&quot;</span></code>.</p>
 <p>If none of the standard task types meets your needs, it’s possible to write
-your own background task type, that sends whatever message types you like. This
+your own background task type, that sends whatever messages you like. This
 section describes how to do this in detail.</p>
 <p>To create your own task type, you’ll need three ingredients:</p>
 <ul class="simple">
@@ -126,10 +126,13 @@ multiples of 5, and “Fizz Buzz” messages on multiples of 15. Each message
 is accompanied by the corresponding number.</p>
 <section id="message-types">
 <h3>Message types<a class="headerlink" href="#message-types" title="Permalink to this headline">¶</a></h3>
-<p>In general, a message sent from the background to the foreground has two parts:
-a message type, and an optional message argument. The message type should be a
-string, while the message argument can be any Python object (though it should
-usually be pickleable and immutable).</p>
+<p>In general, the message sent from the background task to the future can be any
+Python object, and the future can interpret the sent object in any way that it
+likes. However, the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> base class that we’ll use below provides a
+default dispatcher for messages, and that dispatcher expects those messages to
+have the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_args)</span></code>. Here the message type should be
+a string that’s valid as a Python identifier, while the message argument can be
+any Python object (though it should usually be pickleable and immutable).</p>
 <p>We first define named constants representing our three message types. This
 isn’t strictly necessary, but it makes the code cleaner.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz&quot;</span>
@@ -137,10 +140,6 @@ isn’t strictly necessary, but it makes the code cleaner.</p>
 <span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
 </pre></div>
 </div>
-<p>Note that the message types are all strings. Ideally, those strings should be
-valid Python identifiers, since (as we’ll see later) the default message
-dispatch mechanism uses these strings directly in the corresponding message
-handler names.</p>
 </section>
 <section id="the-background-callable">
 <h3>The background callable<a class="headerlink" href="#the-background-callable" title="Permalink to this headline">¶</a></h3>
@@ -159,12 +158,10 @@ callable which can be used to check for cancellation requests. Here’s the
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    send : callable(message_type, message_argument) -&gt; None</span>
-<span class="sd">        Callable accepting two arguments: a message type (a string) as the</span>
-<span class="sd">        first argument, and the message argument (if any) as the optional</span>
-<span class="sd">        second argument. The message argument should be pickleable, and</span>
-<span class="sd">        preferably immutable (or at least, not intended to be mutated). It</span>
-<span class="sd">        should return nothing.</span>
+<span class="sd">    send : callable(object) -&gt; None</span>
+<span class="sd">        Callable accepting the message to be sent, and returning nothing. The</span>
+<span class="sd">        message argument should be pickleable, and preferably immutable (or at</span>
+<span class="sd">        least, not intended to be mutated).</span>
 <span class="sd">    cancelled : callable</span>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
@@ -177,11 +174,11 @@ callable which can be used to check for cancellation requests. Here’s the
         <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -200,13 +197,15 @@ task type. The most convenient way to do this is to inherit from the
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> class, which is a <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a> subclass that provides the
 <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface. Messages coming into the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance from the
 background task are processed by the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_task_sent</span></code> method. The default
-implementation of this method does a couple of things:</p>
+implementation of this method expects incoming messages to have the
+form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, and does a couple of things:</p>
 <ul class="simple">
 <li><p>it dispatches the argument of each message to a method named
 <code class="docutils literal notranslate"><span class="pre">_process_&lt;message_type&gt;</span></code>.</p></li>
 <li><p>it suppresses any messages that arrive after cancellation has been requested</p></li>
 </ul>
-<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">_task_sent</span></code> method can be safely overridden by subclasses if some
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">_task_sent</span></code> method can be safely overridden by subclasses if messages
+do not have the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, or if some
 other dispatch mechanism is wanted. For this example, we use the default
 dispatch mechanism, so all we need to do is to define methods
 <code class="docutils literal notranslate"><span class="pre">_process_fizz</span></code>, <code class="docutils literal notranslate"><span class="pre">_process_buzz</span></code> and <code class="docutils literal notranslate"><span class="pre">_process_fizz_buzz</span></code> to handle
@@ -353,12 +352,10 @@ from putting together the above snippets:</p>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    send : callable(message_type, message_argument) -&gt; None</span>
-<span class="sd">        Callable accepting two arguments: a message type (a string) as the</span>
-<span class="sd">        first argument, and the message argument (if any) as the optional</span>
-<span class="sd">        second argument. The message argument should be pickleable, and</span>
-<span class="sd">        preferably immutable (or at least, not intended to be mutated). It</span>
-<span class="sd">        should return nothing.</span>
+<span class="sd">    send : callable(object) -&gt; None</span>
+<span class="sd">        Callable accepting the message to be sent, and returning nothing. The</span>
+<span class="sd">        message argument should be pickleable, and preferably immutable (or at</span>
+<span class="sd">        least, not intended to be mutated).</span>
 <span class="sd">    cancelled : callable</span>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
@@ -371,11 +368,11 @@ from putting together the above snippets:</p>
         <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>

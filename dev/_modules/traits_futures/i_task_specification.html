@@ -122,13 +122,10 @@
 <span class="sd">        by the callable, will be recorded in the corresponding future.</span>
 
 <span class="sd">        The ``send`` argument can be used by the background task to send</span>
-<span class="sd">        messages back to the main thread of execution. It&#39;s a callable that can</span>
-<span class="sd">        be used either in the form ``send(message_type)`` or in the form</span>
-<span class="sd">        ``send(message_type, message_args)``. Here ``message_type`` is a simple</span>
-<span class="sd">        constant (typically a string), and ``message_args`` is a single Python</span>
-<span class="sd">        object containing optional arguments for the message. The arguments to</span>
-<span class="sd">        ``send`` should typically be both immutable and pickleable. ``send``</span>
-<span class="sd">        returns no useful result.</span>
+<span class="sd">        messages back to the main thread of execution. It&#39;s a callable that</span>
+<span class="sd">        should be called as ``send(message)``, where ``message`` is an</span>
+<span class="sd">        arbitrary Python object. The argument to ``send`` should typically be</span>
+<span class="sd">        both immutable and pickleable. ``send`` returns no useful result.</span>
 
 <span class="sd">        The ``cancelled`` argument may be used by the background task to check</span>
 <span class="sd">        whether cancellation has been requested. When called with no arguments,</span>

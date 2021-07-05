@@ -91,6 +91,13 @@
 <p>The following backwards-incompatible changes may affect advanced users
 of Traits Futures.</p>
 <ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">send</span></code> callable passed to the background task now expects a single
+Python object as an argument, rather than accepting a message type and
+a message argument as separate arguments. Existing uses of the form
+<code class="docutils literal notranslate"><span class="pre">send(message_type,</span> <span class="pre">message_args)</span></code> will need to be changed to
+<code class="docutils literal notranslate"><span class="pre">send((message_type,</span> <span class="pre">message_args))</span></code>. This affects those writing their
+own background task types, but does not affect users of the existing
+background task types.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of the <code class="docutils literal notranslate"><span class="pre">~.TraitsExecutor</span></code> is now read-only;
 previously, it was writable.</p></li>
 </ul>

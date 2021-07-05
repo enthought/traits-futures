@@ -115,13 +115,10 @@ BackgroundIteration and others.</p>
 <p>Any exception raised while executing the callable, or result returned
 by the callable, will be recorded in the corresponding future.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">send</span></code> argument can be used by the background task to send
-messages back to the main thread of execution. It’s a callable that can
-be used either in the form <code class="docutils literal notranslate"><span class="pre">send(message_type)</span></code> or in the form
-<code class="docutils literal notranslate"><span class="pre">send(message_type,</span> <span class="pre">message_args)</span></code>. Here <code class="docutils literal notranslate"><span class="pre">message_type</span></code> is a simple
-constant (typically a string), and <code class="docutils literal notranslate"><span class="pre">message_args</span></code> is a single Python
-object containing optional arguments for the message. The arguments to
-<code class="docutils literal notranslate"><span class="pre">send</span></code> should typically be both immutable and pickleable. <code class="docutils literal notranslate"><span class="pre">send</span></code>
-returns no useful result.</p>
+messages back to the main thread of execution. It’s a callable that
+should be called as <code class="docutils literal notranslate"><span class="pre">send(message)</span></code>, where <code class="docutils literal notranslate"><span class="pre">message</span></code> is an
+arbitrary Python object. The argument to <code class="docutils literal notranslate"><span class="pre">send</span></code> should typically be
+both immutable and pickleable. <code class="docutils literal notranslate"><span class="pre">send</span></code> returns no useful result.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> argument may be used by the background task to check
 whether cancellation has been requested. When called with no arguments,
 it returns either <code class="docutils literal notranslate"><span class="pre">True</span></code> to indicate that cancellation has been
