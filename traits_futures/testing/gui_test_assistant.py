@@ -37,14 +37,14 @@ class GuiTestAssistant:
     gui_context_factory = AsyncioContext
 
     def setUp(self):
-        self._gui_context = self.gui_context_factory()
-        self._event_loop_helper = self._gui_context.event_loop_helper()
+        self._event_loop = self.gui_context_factory()
+        self._event_loop_helper = self._event_loop.event_loop_helper()
         self._event_loop_helper.init()
 
     def tearDown(self):
         self._event_loop_helper.dispose()
         del self._event_loop_helper
-        del self._gui_context
+        del self._event_loop
 
     def run_until(self, object, trait, condition, timeout=SAFETY_TIMEOUT):
         """

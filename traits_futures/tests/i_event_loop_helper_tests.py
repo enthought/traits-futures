@@ -49,13 +49,13 @@ class IEventLoopHelperTests:
     gui_context_factory = None
 
     def setUp(self):
-        self._gui_context = self.gui_context_factory()
+        self._event_loop = self.gui_context_factory()
 
     def tearDown(self):
-        del self._gui_context
+        del self._event_loop
 
     def test_instance_of_i_event_loop_helper(self):
-        event_loop_helper = self._gui_context.event_loop_helper()
+        event_loop_helper = self._event_loop.event_loop_helper()
         self.assertIsInstance(event_loop_helper, IEventLoopHelper)
 
     def test_run_until_when_condition_becomes_true(self):
@@ -126,7 +126,7 @@ class IEventLoopHelperTests:
         The event loop helper is properly shut down on exit of the
         corresponding with block.
         """
-        event_loop_helper = self._gui_context.event_loop_helper()
+        event_loop_helper = self._event_loop.event_loop_helper()
         event_loop_helper.init()
         try:
             yield event_loop_helper

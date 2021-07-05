@@ -44,7 +44,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         executor = TraitsExecutor(
             max_workers=11,
             context=self._context,
-            gui_context=self._gui_context,
+            gui_context=self._event_loop,
         )
         self.assertEqual(executor._worker_pool._max_workers, 11)
         executor.stop()
@@ -57,24 +57,22 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
                     worker_pool=worker_pool,
                     max_workers=11,
                     context=self._context,
-                    gui_context=self._gui_context,
+                    gui_context=self._event_loop,
                 )
 
     def test_default_context(self):
-        with self.temporary_executor(
-            gui_context=self._gui_context
-        ) as executor:
+        with self.temporary_executor(gui_context=self._event_loop) as executor:
             self.assertIsInstance(executor._context, MultithreadingContext)
 
     def test_default_gui_context(self):
         with self.temporary_executor() as executor:
-            self.assertIsInstance(executor._gui_context, ETSContext)
+            self.assertIsInstance(executor._event_loop, ETSContext)
 
     def test_externally_supplied_context(self):
         context = MultiprocessingContext()
         try:
             with self.temporary_executor(
-                context=context, gui_context=self._gui_context
+                context=context, gui_context=self._event_loop
             ) as executor:
                 self.assertIs(executor._context, context)
             self.assertFalse(context.closed)
@@ -82,9 +80,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             context.close()
 
     def test_owned_context_closed_at_executor_stop(self):
-        with self.temporary_executor(
-            gui_context=self._gui_context
-        ) as executor:
+        with self.temporary_executor(gui_context=self._event_loop) as executor:
             context = executor._context
             self.assertFalse(context.closed)
         self.assertTrue(context.closed)
@@ -92,7 +88,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
     def test_owned_worker_pool(self):
         executor = TraitsExecutor(
             context=self._context,
-            gui_context=self._gui_context,
+            gui_context=self._event_loop,
         )
         worker_pool = executor._worker_pool
 
@@ -109,7 +105,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
                 executor = TraitsExecutor(
                     thread_pool=worker_pool,
                     context=self._context,
-                    gui_context=self._gui_context,
+                    gui_context=self._event_loop,
                 )
             executor.stop()
             self.wait_until_stopped(executor)
@@ -123,7 +119,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             executor = TraitsExecutor(
                 worker_pool=worker_pool,
                 context=self._context,
-                gui_context=self._gui_context,
+                gui_context=self._event_loop,
             )
             executor.stop()
             self.wait_until_stopped(executor)
@@ -170,7 +166,7 @@ class TestTraitsExecutor(
         self._context = MultiprocessingContext()
         self.executor = TraitsExecutor(
             context=self._context,
-            gui_context=self._gui_context,
+            gui_context=self._event_loop,
         )
         self.listener = ExecutorListener(executor=self.executor)
 

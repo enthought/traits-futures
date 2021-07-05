@@ -154,7 +154,7 @@ class TraitsExecutor(HasStrictTraits):
             self._context = context
 
         if gui_context is not None:
-            self._gui_context = gui_context
+            self._event_loop = gui_context
 
         own_worker_pool = worker_pool is None
         if own_worker_pool:
@@ -425,7 +425,7 @@ class TraitsExecutor(HasStrictTraits):
     _context = Instance(IParallelContext)
 
     #: GUI toolkit context
-    _gui_context = Instance(IEventLoop)
+    _event_loop = Instance(IEventLoop)
 
     #: True if we own this context, else False.
     _own_context = Bool(False)
@@ -482,12 +482,12 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        router = self._context.message_router(gui_context=self._gui_context)
+        router = self._context.message_router(gui_context=self._event_loop)
         router.start()
         self._have_message_router = True
         return router
 
-    def __gui_context_default(self):
+    def __event_loop_default(self):
         # By default we use the "ETS" GUI context, which chooses which
         # GUI toolkit to use based on the ETS_TOOLKIT environment variable
         # and the available installed packages.
