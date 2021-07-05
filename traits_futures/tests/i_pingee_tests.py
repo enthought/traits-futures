@@ -201,7 +201,7 @@ class IPingeeTests:
 
         finalizer = weakref.finalize(do_nothing, lambda: None)
 
-        pingee = self._gui_context.pingee(on_ping=do_nothing)
+        pingee = self._event_loop.pingee(on_ping=do_nothing)
         pingee.connect()
         del do_nothing
 
@@ -243,7 +243,7 @@ class IPingeeTests:
         on_ping : callable
             Callback to execute whenever a ping is received.
         """
-        pingee = self._gui_context.pingee(on_ping=on_ping)
+        pingee = self._event_loop.pingee(on_ping=on_ping)
         pingee.connect()
         try:
             yield pingee

@@ -9,23 +9,21 @@
 # Thanks for using Enthought open source!
 
 """
-IGuiContext implementation for the main-thread asyncio event loop.
+IEventLoop implementation for the wx event loop.
 """
-import asyncio
+# Force an ImportError if wxPython is not installed.
+import wx  # noqa: F401
 
-from traits_futures.asyncio.event_loop_helper import EventLoopHelper
-from traits_futures.asyncio.pingee import Pingee
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_event_loop import IEventLoop
+from traits_futures.wx.event_loop_helper import EventLoopHelper
+from traits_futures.wx.pingee import Pingee
 
 
-@IGuiContext.register
-class AsyncioContext:
+@IEventLoop.register
+class WxEventLoop:
     """
-    IGuiContext implementation for the main-thread asyncio event loop.
+    IEventLoop implementation for the wx event loop.
     """
-
-    def __init__(self):
-        self._event_loop = asyncio.get_event_loop()
 
     def pingee(self, on_ping):
         """
@@ -42,9 +40,9 @@ class AsyncioContext:
         -------
         pingee : IPingee
         """
-        return Pingee(on_ping=on_ping, event_loop=self._event_loop)
+        return Pingee(on_ping=on_ping)
 
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 
@@ -52,4 +50,4 @@ class AsyncioContext:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return EventLoopHelper(event_loop=self._event_loop)
+        return EventLoopHelper()

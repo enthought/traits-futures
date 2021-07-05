@@ -9,34 +9,34 @@
 # Thanks for using Enthought open source!
 
 """
-Context with toolkit selection matching that of ETS.
+Event loop with toolkit selection matching that of ETS.
 
-This module provides an IGuiContext implementation that's determined in the
+This module provides an IEventLoop implementation that's determined in the
 same way that the toolkit is determined for TraitsUI and Pyface, using the
 ETS_TOOLKIT environment variable if set, and examining the available toolkits
 if not.
 """
 
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_event_loop import IEventLoop
 
 
-@IGuiContext.register
-class ETSContext:
+@IEventLoop.register
+class ETSEventLoop:
     """
-    IGuiContext implementation with lazily-determined toolkit.
+    IEventLoop implementation with lazily-determined toolkit.
 
-    The first time this context is used, an appropriate toolkit will
+    The first time this event loop is used, an appropriate toolkit will
     be selected.
 
     The toolkit selection mechanism used matches that used by Pyface, and
     is based on the value of the ETS_TOOLKIT environment variable, followed
     an examination of the available setuptools entry points under the
-    entry point group "traits_futures.gui_contexts".
+    entry point group "traits_futures.event_loops".
 
     """
 
     def __init__(self):
-        self._toolkit_context = None
+        self._toolkit_event_loop = None
 
     def pingee(self, on_ping):
         """
@@ -53,9 +53,9 @@ class ETSContext:
         -------
         pingee : IPingee
         """
-        return self.toolkit_context.pingee(on_ping)
+        return self.toolkit_event_loop.pingee(on_ping)
 
-    def event_loop_helper(self):
+    def helper(self):
         """
         Return a new event loop helper.
 
@@ -63,18 +63,20 @@ class ETSContext:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return self.toolkit_context.event_loop_helper()
+        return self.toolkit_event_loop.helper()
 
     @property
-    def toolkit_context(self):
+    def toolkit_event_loop(self):
         """
-        Fix the toolkit for this context, using the same mechanism as Pyface
-        uses to find its toolkits.
+        Find and fix the toolkit, using the same mechanism that Pyface uses to
+        find its toolkits.
         """
         from pyface.base_toolkit import find_toolkit
 
-        if self._toolkit_context is None:
-            toolkit_context_class = find_toolkit("traits_futures.gui_contexts")
-            self._toolkit_context = toolkit_context_class()
+        if self._toolkit_event_loop is None:
+            toolkit_event_loop_class = find_toolkit(
+                "traits_futures.event_loops"
+            )
+            self._toolkit_event_loop = toolkit_event_loop_class()
 
-        return self._toolkit_context
+        return self._toolkit_event_loop

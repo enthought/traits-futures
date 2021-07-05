@@ -9,22 +9,22 @@
 # Thanks for using Enthought open source!
 
 """
-IGuiContext implementation for the wx event loop.
+Interface for toolkit-specific event-loop details.
 """
-# Force an ImportError if wxPython is not installed.
-import wx  # noqa: F401
 
-from traits_futures.i_gui_context import IGuiContext
-from traits_futures.wx.event_loop_helper import EventLoopHelper
-from traits_futures.wx.pingee import Pingee
+import abc
 
 
-@IGuiContext.register
-class WxContext:
+class IEventLoop(abc.ABC):
     """
-    IGuiContext implementation for the wx event loop.
+    Interface for toolkit-specific event-loop details.
+
+    An instance of this class provides consistent mechanisms to get
+    objects related to a particular event loop (for example, that provided
+    by a GUI toolkit).
     """
 
+    @abc.abstractmethod
     def pingee(self, on_ping):
         """
         Return a new pingee.
@@ -40,9 +40,9 @@ class WxContext:
         -------
         pingee : IPingee
         """
-        return Pingee(on_ping=on_ping)
 
-    def event_loop_helper(self):
+    @abc.abstractmethod
+    def helper(self):
         """
         Return a new event loop helper.
 
@@ -50,4 +50,3 @@ class WxContext:
         -------
         event_loop_helper : IEventLoopHelper
         """
-        return EventLoopHelper()

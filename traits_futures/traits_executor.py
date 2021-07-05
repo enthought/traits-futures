@@ -31,14 +31,14 @@ from traits.api import (
 from traits_futures.background_call import submit_call
 from traits_futures.background_iteration import submit_iteration
 from traits_futures.background_progress import submit_progress
-from traits_futures.ets_context import ETSContext
+from traits_futures.ets_event_loop import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
     RUNNING,
     STOPPED,
     STOPPING,
 )
-from traits_futures.i_gui_context import IGuiContext
+from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
@@ -117,10 +117,11 @@ class TraitsExecutor(HasStrictTraits):
         multithreading or multiprocessing). If not given, assumes
         multithreading. Note that if both ``context`` and ``worker_pool``
         are given, they must be compatible.
-    gui_context : IGuiContext, optional
-        Context providing information about which GUI event loop to use. If not
-        given, uses an :class:`~.ETSContext` instance, which determines the
-        appropriate toolkit based on availability.
+    event_loop : IEventLoop, optional
+        The event loop to use for message dispatch. If not given, uses an
+        :class:`~.ETSEventLoop` instance, which determines the appropriate
+        toolkit based on availability and the value of the ETS_TOOLKIT
+        environment variable.
     """
 
     #: Current state of this executor.
@@ -141,7 +142,7 @@ class TraitsExecutor(HasStrictTraits):
         worker_pool=None,
         max_workers=None,
         context=None,
-        gui_context=None,
+        event_loop=None,
         **traits,
     ):
         super().__init__(**traits)
@@ -160,8 +161,8 @@ class TraitsExecutor(HasStrictTraits):
         if context is not None:
             self._context = context
 
-        if gui_context is not None:
-            self._gui_context = gui_context
+        if event_loop is not None:
+            self._event_loop = event_loop
 
         own_worker_pool = worker_pool is None
         if own_worker_pool:
@@ -311,7 +312,7 @@ class TraitsExecutor(HasStrictTraits):
             raise
 
         background_task_wrapper = BackgroundTaskWrapper(
-            runner, sender, cancel_event
+            runner, sender, cancel_event.is_set
         )
         cf_future = self._worker_pool.submit(background_task_wrapper)
 
@@ -541,8 +542,8 @@ class TraitsExecutor(HasStrictTraits):
     #: Parallelization context
     _context = Instance(IParallelContext)
 
-    #: GUI toolkit context
-    _gui_context = Instance(IGuiContext)
+    #: Event loop used for message dispatch
+    _event_loop = Instance(IEventLoop)
 
     #: True if we own this context, else False.
     _own_context = Bool(False)
@@ -599,16 +600,16 @@ class TraitsExecutor(HasStrictTraits):
 
     def __message_router_default(self):
         # Toolkit-specific message router.
-        router = self._context.message_router(gui_context=self._gui_context)
+        router = self._context.message_router(event_loop=self._event_loop)
         router.start()
         self._have_message_router = True
         return router
 
-    def __gui_context_default(self):
-        # By default we use the "ETS" GUI context, which chooses which
-        # GUI toolkit to use based on the ETS_TOOLKIT environment variable
+    def __event_loop_default(self):
+        # By default we use the "ETS" event loop, which chooses which
+        # event loop to use based on the ETS_TOOLKIT environment variable
         # and the available installed packages.
-        return ETSContext()
+        return ETSEventLoop()
 
     def __context_default(self):
         # By default, we use multithreading.
