@@ -31,7 +31,7 @@ class ETSContext:
     The toolkit selection mechanism used matches that used by Pyface, and
     is based on the value of the ETS_TOOLKIT environment variable, followed
     an examination of the available setuptools entry points under the
-    entry point group "traits_futures.gui_contexts".
+    entry point group "traits_futures.event_loops".
 
     """
 
@@ -74,7 +74,7 @@ class ETSContext:
         from pyface.base_toolkit import find_toolkit
 
         if self._toolkit_context is None:
-            toolkit_context_class = find_toolkit("traits_futures.gui_contexts")
+            toolkit_context_class = find_toolkit("traits_futures.event_loops")
             self._toolkit_context = toolkit_context_class()
 
         return self._toolkit_context

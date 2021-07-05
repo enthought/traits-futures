@@ -64,7 +64,7 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
     entry_points={
-        "traits_futures.gui_contexts": [
+        "traits_futures.event_loops": [
             "asyncio = traits_futures.asyncio.context:AsyncioContext",
             "null = traits_futures.asyncio.context:AsyncioContext",
             "qt = traits_futures.qt.context:QtContext",
