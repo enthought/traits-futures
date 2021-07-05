@@ -38,7 +38,6 @@ Other Changes
   or later.
 
 
-
 Release 0.2.0
 -------------
 
