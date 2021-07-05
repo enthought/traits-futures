@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the Qt GUI context.
+Tests for the Qt event loop.
 """
 
 

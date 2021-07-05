@@ -111,9 +111,10 @@ class TraitsExecutor(HasStrictTraits):
         multithreading. Note that if both ``context`` and ``worker_pool``
         are given, they must be compatible.
     event_loop : IEventLoop, optional
-        Context providing information about which GUI event loop to use. If not
-        given, uses an :class:`~.ETSEventLoop` instance, which determines the
-        appropriate toolkit based on availability.
+        The event loop to use for message dispatch. If not given, uses an
+        :class:`~.ETSEventLoop` instance, which determines the appropriate
+        toolkit based on availability and the value of the ETS_TOOLKIT
+        environment variable.
     """
 
     #: Current state of this executor.
@@ -424,7 +425,7 @@ class TraitsExecutor(HasStrictTraits):
     #: Parallelization context
     _context = Instance(IParallelContext)
 
-    #: GUI toolkit context
+    #: Event loop used for message dispatch
     _event_loop = Instance(IEventLoop)
 
     #: True if we own this context, else False.
@@ -488,8 +489,8 @@ class TraitsExecutor(HasStrictTraits):
         return router
 
     def __event_loop_default(self):
-        # By default we use the "ETS" GUI context, which chooses which
-        # GUI toolkit to use based on the ETS_TOOLKIT environment variable
+        # By default we use the "ETS" event loop, which chooses which
+        # event loop to use based on the ETS_TOOLKIT environment variable
         # and the available installed packages.
         return ETSEventLoop()
 

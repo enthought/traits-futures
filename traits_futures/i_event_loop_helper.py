@@ -30,7 +30,7 @@ class IEventLoopHelper(abc.ABC):
         Prepare the event loop for use.
 
         This method is not thread-safe. It should always be called on the
-        main GUI thread.
+        event loop's thread.
         """
 
     @abc.abstractmethod
@@ -39,7 +39,7 @@ class IEventLoopHelper(abc.ABC):
         Dispose of any resources used by this object.
 
         This method is not thread-safe. It should always be called on the
-        main GUI thread.
+        event loop's thread.
         """
 
     @abc.abstractmethod
@@ -50,8 +50,8 @@ class IEventLoopHelper(abc.ABC):
         In typical usage, *obj* will be a ``HasTraits`` instance and
         *name* will be the name of a trait on *obj*.
 
-        This method is not thread-safe. It's designed to be called
-        from the main thread.
+        This method is not thread-safe. It should always be called on the
+        event loop's thread.
 
         Parameters
         ----------
@@ -73,7 +73,7 @@ class IEventLoopHelper(abc.ABC):
         the trait changes.
 
         This method is not thread-safe. It should always be called on the
-        main GUI thread.
+        event loop's thread.
 
         Parameters
         ----------

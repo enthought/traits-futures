@@ -21,7 +21,7 @@ In more detail, an :class:`IMessageRouter` instance is responsible for:
 - Creating "pipes". A pipe is a pair of linked :class:`IMessageSender` and
   :class:`IMessageReceiver` objects that provide communications between a
   background task and a foreground receiver.
-- Ensuring that messages are routed appropriately via a running GUI event loop.
+- Ensuring that messages are routed appropriately via a running event loop.
 - Disposing of pipes on request.
 
 The message routing layer of Traits Futures provides no meaning or structure to

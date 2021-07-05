@@ -70,8 +70,8 @@ Parallelism contexts
 - :class:`~.MultiprocessingContext`
 - :class:`~.MultithreadingContext`
 
-GUI contexts
-------------
+Event loops
+-----------
 
 - :class:`~.IEventLoop`
 - :class:`~.AsyncioEventLoop`
@@ -147,7 +147,7 @@ __all__ = [
     "IParallelContext",
     "MultiprocessingContext",
     "MultithreadingContext",
-    # GUI contexts
+    # Event loops
     "IEventLoop",
     "AsyncioEventLoop",
     "ETSEventLoop",

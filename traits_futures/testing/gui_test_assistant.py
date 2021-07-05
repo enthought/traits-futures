@@ -31,7 +31,7 @@ class GuiTestAssistant:
     Most of the logic is devolved to a toolkit-specific EventLoopHelper class.
     """
 
-    #: Factory for the GUI context. This should be a zero-argument callable
+    #: Factory for the event loop. This should be a zero-argument callable
     #: that provides an IEventLoop instance. Override in subclasses to
     #: run tests with a particular toolkit.
     event_loop_factory = AsyncioEventLoop

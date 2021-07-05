@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Interface for GUI toolkit context objects.
+Interface for toolkit-specific event-loop details.
 """
 
 import abc
@@ -17,11 +17,11 @@ import abc
 
 class IEventLoop(abc.ABC):
     """
-    Interface for objects usable in a GUI context.
+    Interface for toolkit-specific event-loop details.
 
     An instance of this class provides consistent mechanisms to get
-    objects related to the event loop for a particular choice of GUI
-    toolkit or event loop.
+    objects related to a particular event loop (for example, that provided
+    by a GUI toolkit).
     """
 
     @abc.abstractmethod

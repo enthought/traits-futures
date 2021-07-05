@@ -64,7 +64,7 @@ class MultithreadingSender:
     connection_id : int
         Id of the matching receiver; used for message routing.
     pingee : IPingee
-        Recipient for pings, used to notify the GUI thread that there's
+        Recipient for pings, used to notify the event loop that there's
         a message pending.
     message_queue : queue.Queue
         Thread-safe queue for passing messages to the foreground.
@@ -184,7 +184,7 @@ class MultithreadingRouter(HasRequiredTraits):
     Parameters
     ----------
     event_loop : IEventLoop
-        GUI context to use for interactions with the GUI event loop.
+        The event loop used to trigger message dispatch.
 
     """
 
@@ -311,7 +311,7 @@ class MultithreadingRouter(HasRequiredTraits):
 
     # Public traits ###########################################################
 
-    #: GUI context to use for interactions with the GUI event loop.
+    #: The event loop used to trigger message dispatch.
     event_loop = Instance(IEventLoop, required=True)
 
     # Private traits ##########################################################

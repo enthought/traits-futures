@@ -38,12 +38,12 @@ class IEventLoopHelperTests:
     """
     Mixin for testing IEventLoopHelper implementations.
 
-    Unlike other similar gui-context-specific test helpers, this mixin
+    Unlike other similar event-loop-specific test helpers, this mixin
     should *not* be used alongside the GuiTestAssistant: it's testing
     the foundations that the GuiTestAssistant is built on.
     """
 
-    #: Factory for the GUI context. This should be a zero-argument callable
+    #: Factory for the event loop. This should be a zero-argument callable
     #: that provides an IEventLoop instance. Must be overridden in subclasses
     #: to run these tests with a particular toolkit.
     event_loop_factory = None

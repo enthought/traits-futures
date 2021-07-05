@@ -61,7 +61,7 @@ class MultithreadingContext(IParallelContext):
         Parameters
         ----------
         event_loop : IEventLoop
-            The GUI context providing the event loop to interact with.
+            The event loop used to trigger message dispatch.
 
         Returns
         -------

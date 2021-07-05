@@ -41,7 +41,7 @@ occur:
 - the monitor thread receives the message (using *its* local proxy for the
   process message queue) and places the message onto the local message queue.
   It also pings the pingee.
-- assuming a running GUI event loop, the pingee receives the ping and executes
+- assuming a running event loop, the pingee receives the ping and executes
   the :meth:`MultiprocessingRouter._route_message` callback
 - the ``_route_message`` callback pulls the next message from the local message
   queue, inspects it to determine which receiver it should be sent to, and
@@ -210,7 +210,7 @@ class MultiprocessingRouter(HasRequiredTraits):
     Parameters
     ----------
     event_loop : IEventLoop
-        GUI context to use for interactions with the GUI event loop.
+        The event loop used to trigger message dispatch.
     manager : multiprocessing.Manager
         Manager to be used for creating the shared-process queue.
     """
@@ -361,7 +361,7 @@ class MultiprocessingRouter(HasRequiredTraits):
 
     # Public traits ###########################################################
 
-    #: GUI context to use for interactions with the GUI event loop.
+    #: The event loop used to trigger message dispatch.
     event_loop = Instance(IEventLoop, required=True)
 
     #: Manager, used to create message queues.
@@ -425,7 +425,7 @@ def monitor_queue(process_queue, local_queue, pingee):
     local_queue : queue.Queue
         Queue to transfer those messages to.
     pingee : IPingee
-        Recipient for pings, used to notify the GUI thread that there's
+        Recipient for pings, used to notify the event loop that there's
         a message pending.
 
     """

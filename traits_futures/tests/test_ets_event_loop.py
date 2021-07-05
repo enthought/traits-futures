@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the ETS gui context.
+Tests for the ETS event loop.
 """
 
 

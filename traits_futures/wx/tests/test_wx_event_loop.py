@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the Wx GUI context.
+Tests for the Wx event loop.
 """
 
 
