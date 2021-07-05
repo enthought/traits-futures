@@ -70,7 +70,7 @@ class ProgressReporter:
         """
         if self.cancelled():
             raise ProgressCancelled("Task was cancelled")
-        self.send(PROGRESS, progress_info)
+        self.send((PROGRESS, progress_info))
 
 
 class ProgressBackgroundTask:

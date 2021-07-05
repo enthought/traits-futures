@@ -46,7 +46,7 @@ class IterationBackgroundTask:
                 # exception carries that value. Return it.
                 return e.value
 
-            send(GENERATED, result)
+            send((GENERATED, result))
             # Don't keep a reference around until the next iteration.
             del result
 

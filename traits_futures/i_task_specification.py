@@ -40,13 +40,10 @@ class ITaskSpecification(ABC):
         by the callable, will be recorded in the corresponding future.
 
         The ``send`` argument can be used by the background task to send
-        messages back to the main thread of execution. It's a callable that can
-        be used either in the form ``send(message_type)`` or in the form
-        ``send(message_type, message_args)``. Here ``message_type`` is a simple
-        constant (typically a string), and ``message_args`` is a single Python
-        object containing optional arguments for the message. The arguments to
-        ``send`` should typically be both immutable and pickleable. ``send``
-        returns no useful result.
+        messages back to the main thread of execution. It's a callable that
+        should be called as ``send(message)``, where ``message`` is an
+        arbitrary Python object. The argument to ``send`` should typically be
+        both immutable and pickleable. ``send`` returns no useful result.
 
         The ``cancelled`` argument may be used by the background task to check
         whether cancellation has been requested. When called with no arguments,
