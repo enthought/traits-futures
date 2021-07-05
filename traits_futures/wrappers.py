@@ -98,23 +98,22 @@ class BackgroundTaskWrapper:
         whether cancellation has been requested.
     """
 
-    def __init__(self, background_task, sender, cancel_event):
+    def __init__(self, background_task, sender, cancelled):
         self._background_task = background_task
         self._sender = sender
-        self._cancel_event = cancel_event
+        self._cancelled = cancelled
 
     def __call__(self):
         try:
             with self._sender:
                 self._sender.send((STARTED, None))
                 try:
-                    result = (
-                        None
-                        if self._cancel_event.is_set()
-                        else self._background_task(
-                            self.send_custom_message, self._cancel_event.is_set
+                    if self._cancelled():
+                        result = None
+                    else:
+                        result = self._background_task(
+                            self.send_custom_message, self._cancelled
                         )
-                    )
                 except BaseException as e:
                     self._sender.send((RAISED, marshal_exception(e)))
                 else:
