@@ -13,7 +13,7 @@ Tests for the background iteration functionality.
 """
 import weakref
 
-from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
+from traits.api import Any, HasStrictTraits, Instance, List, observe
 
 from traits_futures.api import (
     CANCELLED,
@@ -127,16 +127,18 @@ class IterationFutureListener(HasStrictTraits):
     #: List of results from the future.
     results = List(Any())
 
-    @on_trait_change("future:state")
-    def record_state_change(self, obj, name, old_state, new_state):
+    @observe("future:state")
+    def record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change("future:result_event")
-    def record_iteration_result(self, result):
+    @observe("future:result_event")
+    def record_iteration_result(self, event):
+        result = event.new
         self.results.append(result)
 
 

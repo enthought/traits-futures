@@ -16,7 +16,7 @@ from traits.api import (
     HasStrictTraits,
     Instance,
     Int,
-    on_trait_change,
+    observe,
     Property,
     Str,
 )
@@ -52,8 +52,8 @@ class QuickStartExample(HasStrictTraits):
     #: Boolean used to decide whether to enable the "calculate" button.
     no_running_future = Property(Bool(), observe="future:done")
 
-    @on_trait_change("calculate")
-    def _submit_background_call(self):
+    @observe("calculate")
+    def _submit_background_call(self, event):
         # Returns immediately.
         input = self.input
         self.input_for_calculation = self.input
@@ -62,8 +62,9 @@ class QuickStartExample(HasStrictTraits):
         # Keep a record so that we can present messages accurately.
         self.input_for_calculation = input
 
-    @on_trait_change("future:done")
-    def _report_result(self, future, name, done):
+    @observe("future:done")
+    def _report_result(self, event):
+        future = event.object
         self.message = "The square of {} is {}.".format(
             self.input_for_calculation, future.result
         )
