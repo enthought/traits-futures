@@ -18,10 +18,7 @@ def check_steps_reporter_interface(progress):
     """
     Check that 'progress' has been declared to support the right interface.
     """
-    if not isinstance(progress, IStepsReporter):
-        raise RuntimeError()
-    else:
-        return True
+    return isinstance(progress, IStepsReporter)
 
 
 class StepsListener(HasStrictTraits):
@@ -29,37 +26,69 @@ class StepsListener(HasStrictTraits):
     Listener recording state changes for a StepsFuture.
     """
 
-    messages = List(Str)
+    state_changes = List()
 
     future = Instance(StepsFuture)
 
-    @on_trait_change("future:message")
+    @on_trait_change("future:message,future:step,future:steps")
     def _update_messages(self, message):
         self.messages.append(message)
 
 
+# Consider (a) storing the state on the StepsReporter, so that it can be
+# accessed directly by the writer of the function, and then (b) there
+# can be a single simple message type which sends the state (message, step, steps)
+# to the foreground. We can add helper functions to do things like increment
+# the step and set a new message all at the same time.
+
+# State is:
+# - step: number of completed steps
+# - steps: total number of steps
+# - message: description of step currently in progress
+
+# XXX Simplest use-case: no calls to progress at all; just a long-running task.
+# XXX Next simplest: progress.step("uploading file 1"), progress.step("uploading file 2")
+# XXX Next simplest: progress.steps = 2; progress.step("..."), progress.step("...")
+# XXX Advanced: progress.sync() / progress.update() / .... after manual changes.
+
+# XXX Does the steps reporter actually _need_ to be a `HasStrictTraits` class?
+
 class BackgroundStepsTests:
     def test_progress_implements_i_steps_reporter(self):
         future = submit_steps(self.executor, check_steps_reporter_interface)
-        self.wait_until_done(future)
+        result = self.wait_for_result(future)
+        self.assertTrue(result)
 
-        self.assertResult(future, True)
-        self.assertNoException(future)
+    def test_initial_values(self):
+        def do_nothing(progress):
+            return 23
+
+        future = submit_steps(self.executor, do_nothing)
+
+        self.assertIsNone(future.message)
+        self.assertIsNone(future.steps)
+        self.assertEqual(future.step, 0)
+
+        result = self.wait_for_result(future)
+        self.assertEqual(result, 23)
 
     def test_simple_messages(self):
-        def send_messages(self, progress):
-            progress.start("Uploading files")
-            progress.step("Uploaded file 1")
-            progress.step("Uploaded file 2")
+        def send_messages(progress):
+            progress.step("Uploading file 1")
+            progress.step("Uploading file 2")
 
         future = submit_steps(self.executor, send_messages)
         listener = StepsListener(future=future)
-        self.wait_until_done(future)
+        self.wait_for_result(future)
 
-        self.assertEqual(
-            listener.messages,
-            ["Uploading files", "Uploaded file 1", "Uploaded file 2"],
-        )
+        expected_changes = [
+            dict(message="Uploading file 1", step=0),
+            dict(message="Uploading file 2", step=1),
+        ]
+
+        actual_changes = listener.all_state_changes
+
+        self.assertEqual(expected_changes, actual_changes)
 
     # Helper functions
 
@@ -72,14 +101,6 @@ class BackgroundStepsTests:
         self.run_until(executor, "stopped", lambda executor: executor.stopped)
         del self.executor
 
-    def wait_until_done(self, future):
+    def wait_for_result(self, future):
         self.run_until(future, "done", lambda future: future.done)
-
-    # Assertions
-
-    def assertResult(self, future, expected_result):
-        self.assertEqual(future.result, expected_result)
-
-    def assertNoException(self, future):
-        with self.assertRaises(AttributeError):
-            future.exception
+        return future.result

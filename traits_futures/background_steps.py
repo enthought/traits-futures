@@ -19,10 +19,11 @@ which the task can be interrupted.
 """
 
 # XXX Consider renaming the 'progress' argument to 'reporter'.
+# XXX manually test the dialog! Does it work with the default future state?
 
 from abc import ABC
 
-from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple
+from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple, Union
 
 from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
@@ -37,8 +38,6 @@ class StepsCancelled(Exception):
 class IStepsReporter(ABC):
     """Interface for step-reporting object passed to the background job."""
 
-    # XXX steps should have a default of None, not -1. The -1 should be
-    # used only in the dialog.
     def start(self, message=None, steps=None):
         """Start reporting progress.
 
@@ -201,16 +200,14 @@ class StepsFuture(BaseFuture):
     Object representing the front-end handle to a background call.
     """
 
-    #: Total number of steps.
-    #: A value of -1 implies that the number of steps is unknown.
-    steps = Int(-1)
+    #: Total number of steps, if known. None if not known.
+    steps = Union(None, Int())
 
-    #: The most recently completed step.
+    #: The most recently completed step, if any.
     step = Int(0)
 
-    #: Most recently received message from either the background task
-    #: or from cancellation.
-    message = Str()
+    #: Most recently received message from the background task.
+    message = Union(None, Str())
 
     # Private methods #########################################################
 
