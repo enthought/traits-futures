@@ -5,6 +5,9 @@ on:
     branches:
     - main
 
+env:
+  PYTHONUNBUFFERED: 1
+
 jobs:
   docs:
     runs-on: ubuntu-latest
