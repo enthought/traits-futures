@@ -206,11 +206,11 @@
         <span class="k">def</span> <span class="nf">stop_on_timeout</span><span class="p">():</span>
             <span class="n">qt_app</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">stop_if_condition</span><span class="p">():</span>
+        <span class="k">def</span> <span class="nf">stop_if_condition</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
                 <span class="n">qt_app</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="nb">object</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">stop_if_condition</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">stop_if_condition</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># The condition may have become True before we</span>
             <span class="c1"># started listening to changes. So start with a check.</span>
@@ -225,7 +225,7 @@
                     <span class="n">timeout_timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
                     <span class="n">timeout_timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">stop_on_timeout</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="nb">object</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">stop_if_condition</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">stop_if_condition</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">timed_out</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
