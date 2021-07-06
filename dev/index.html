@@ -130,7 +130,7 @@ minimal TraitsUI application that fires off a background computation when its
     <span class="n">HasStrictTraits</span><span class="p">,</span>
     <span class="n">Instance</span><span class="p">,</span>
     <span class="n">Int</span><span class="p">,</span>
-    <span class="n">on_trait_change</span><span class="p">,</span>
+    <span class="n">observe</span><span class="p">,</span>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
@@ -166,8 +166,8 @@ minimal TraitsUI application that fires off a background computation when its
     <span class="c1">#: Boolean used to decide whether to enable the &quot;calculate&quot; button.</span>
     <span class="n">no_running_future</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
 
-    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="c1"># Returns immediately.</span>
         <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
@@ -176,8 +176,9 @@ minimal TraitsUI application that fires off a background computation when its
         <span class="c1"># Keep a record so that we can present messages accurately.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="nb">input</span>
 
-    <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;The square of </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span><span class="p">,</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span>
         <span class="p">)</span>

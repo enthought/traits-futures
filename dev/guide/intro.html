@@ -231,8 +231,9 @@ expect to return a result. Once the state of the corresponding future reaches
 <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.COMPLETED" title="traits_futures.future_states.COMPLETED"><code class="xref py py-data docutils literal notranslate"><span class="pre">COMPLETED</span></code></a>, the result of the call is available via the <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.
 Assuming that your calculation future is stored in a trait called <code class="docutils literal notranslate"><span class="pre">future</span></code>,
 you might use this as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@on_trait_change</span><span class="p">(</span><span class="s1">&#39;future:done&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_update_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">done</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;future:done&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_update_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">my_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -243,8 +244,9 @@ as the cases where the task is still executing or has yet to start running.</p>
 <p>A <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> object also receives progress information send by the
 background task via its <code class="docutils literal notranslate"><span class="pre">progress</span></code> event trait. You might use that
 trait like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@on_trait_change</span><span class="p">(</span><span class="s1">&#39;future:progress&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_report_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress_info</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;future:progress&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_report_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="n">progress_info</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
     <span class="n">current_step</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">,</span> <span class="n">matches</span> <span class="o">=</span> <span class="n">progress_info</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2"> chunks processed. </span><span class="si">{}</span><span class="s2"> matches so far&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">current_step</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">,</span> <span class="n">matches</span><span class="p">)</span>
@@ -254,8 +256,9 @@ trait like this:</p>
 on each iteration, but doesn’t necessarily give a final result. Its
 <code class="docutils literal notranslate"><span class="pre">result_event</span></code> trait is an <code class="docutils literal notranslate"><span class="pre">Event</span></code> that you can hook listeners up to in
 order to receive the iteration results. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@on_trait_change</span><span class="p">(</span><span class="s1">&#39;future:result_event&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;future:result_event&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">update_plot_data</span><span class="p">()</span>
 </pre></div>
