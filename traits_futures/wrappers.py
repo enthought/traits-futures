@@ -17,13 +17,7 @@ These are used by the TraitsExecutor machinery.
 import concurrent.futures
 import logging
 
-from traits.api import (
-    Bool,
-    HasStrictTraits,
-    HasTraits,
-    Instance,
-    on_trait_change,
-)
+from traits.api import Bool, HasStrictTraits, HasTraits, Instance, observe
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.i_future import IFuture
@@ -74,11 +68,12 @@ class FutureWrapper(HasStrictTraits):
     #: its own internal state.
     done = Bool(False)
 
-    @on_trait_change("receiver:message")
-    def _dispatch_to_future(self, message):
+    @observe("receiver:message")
+    def _dispatch_to_future(self, event):
         """
         Pass on a message to the future.
         """
+        message = event.new
         message_type, message_arg = message
         method_name = "_task_{}".format(message_type)
         getattr(self.future, method_name)(message_arg)

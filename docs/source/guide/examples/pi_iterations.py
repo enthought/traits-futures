@@ -27,7 +27,7 @@ from traits.api import (
     Instance,
     Int,
     List,
-    on_trait_change,
+    observe,
     Property,
     Tuple,
 )
@@ -100,13 +100,13 @@ class PiIterator(Handler):
     approximate = Button()
 
     #: Is the approximate button enabled?
-    approximate_enabled = Property(Bool(), depends_on="future.state")
+    approximate_enabled = Property(Bool(), observe="future.state")
 
     #: Button to cancel the pi approximation.
     cancel = Button()
 
     #: Is the cancel button enabled?
-    cancel_enabled = Property(Bool(), depends_on="future.state")
+    cancel_enabled = Property(Bool(), observe="future.state")
 
     #: Maximum number of points to show in the plot.
     max_points = Int(100)
@@ -130,12 +130,13 @@ class PiIterator(Handler):
     def _cancel_fired(self):
         self.future.cancel()
 
-    @on_trait_change("future")
-    def _reset_results(self):
+    @observe("future")
+    def _reset_results(self, event):
         self.results = []
 
-    @on_trait_change("future:result_event")
-    def _record_result(self, result):
+    @observe("future:result_event")
+    def _record_result(self, event):
+        result = event.new
         self.results.append(result)
         self._update_plot_data()
 

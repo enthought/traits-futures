@@ -22,7 +22,7 @@ from traits_futures.api import (
 )
 
 
-def approximate_pi(sample_count=10**8, report_interval=10 ** 6):
+def approximate_pi(sample_count=10 ** 8, report_interval=10 ** 6):
     """
     Yield successive approximations to π via Monte Carlo methods.
     """
@@ -42,6 +42,7 @@ async def future_wrapper(traits_future):
     """
     Wrap a Traits Futures future as a schedulable coroutine.
     """
+
     def set_result(event):
         traits_future = event.object
         asyncio_future.set_result(traits_future.result)

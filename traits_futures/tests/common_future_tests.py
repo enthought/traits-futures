@@ -11,7 +11,7 @@
 """
 Test methods run for all future types.
 """
-from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
+from traits.api import Any, Bool, HasStrictTraits, List, observe, Tuple
 
 from traits_futures.api import IFuture
 from traits_futures.base_future import _StateTransitionError
@@ -37,12 +37,14 @@ class FutureListener(HasStrictTraits):
     #: Changes to the 'done' trait.
     done_changes = List(Tuple(Bool(), Bool()))
 
-    @on_trait_change("future:cancellable")
-    def _record_cancellable_change(self, object, name, old, new):
+    @observe("future:cancellable")
+    def _record_cancellable_change(self, event):
+        old, new = event.old, event.new
         self.cancellable_changes.append((old, new))
 
-    @on_trait_change("future:done")
-    def _record_done_change(self, object, name, old, new):
+    @observe("future:done")
+    def _record_done_change(self, event):
+        old, new = event.old, event.new
         self.done_changes.append((old, new))
 
 
@@ -55,7 +57,7 @@ class CommonFutureTests:
         # Triples (state, cancellable, done)
         states = []
 
-        def record_states():
+        def record_states(event=None):
             """Record the future's state and derived traits."""
             states.append((future.state, future.cancellable, future.done))
 
@@ -63,9 +65,9 @@ class CommonFutureTests:
         future = self.future_class()
         future._executor_initialized(dummy_cancel_callback)
 
-        future.on_trait_change(record_states, "cancellable")
-        future.on_trait_change(record_states, "done")
-        future.on_trait_change(record_states, "state")
+        future.observe(record_states, "cancellable")
+        future.observe(record_states, "done")
+        future.observe(record_states, "state")
 
         # Record initial, synthesize some state changes, then record final.
         record_states()

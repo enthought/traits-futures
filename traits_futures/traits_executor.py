@@ -23,7 +23,7 @@ from traits.api import (
     Enum,
     HasStrictTraits,
     Instance,
-    on_trait_change,
+    observe,
     Property,
     Set,
 )
@@ -576,8 +576,11 @@ class TraitsExecutor(HasStrictTraits):
         """Property getter for the "stopped" trait."""
         return self._internal_state in _STOPPED_INTERNAL_STATES
 
-    def __internal_state_changed(self, old_internal_state, new_internal_state):
+    @observe("_internal_state")
+    def _update_property_traits(self, event):
         """Trait change handler for the "_internal_state" trait."""
+        old_internal_state, new_internal_state = event.old, event.new
+
         logger.debug(
             f"{self} internal state changed "
             f"from {old_internal_state} to {new_internal_state}"
@@ -617,8 +620,9 @@ class TraitsExecutor(HasStrictTraits):
         self._own_context = True
         return context
 
-    @on_trait_change("_wrappers:done")
-    def _untrack_future(self, wrapper, name, is_done):
+    @observe("_wrappers:items:done")
+    def _untrack_future(self, event):
+        wrapper = event.object
         self._message_router.close_pipe(wrapper.receiver)
         self._wrappers.remove(wrapper)
         logger.debug(

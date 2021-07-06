@@ -14,7 +14,7 @@ Test mixin for testing IEventLoopHelper implementations.
 
 import contextlib
 
-from traits.api import Bool, Event, HasStrictTraits, Int, on_trait_change
+from traits.api import Bool, Event, HasStrictTraits, Int, observe
 
 from traits_futures.i_event_loop_helper import IEventLoopHelper
 
@@ -29,8 +29,8 @@ class HasFlag(HasStrictTraits):
     #: Counter for number of pings received.
     ping_count = Int()
 
-    @on_trait_change("ping")
-    def increment_ping_count(self):
+    @observe("ping")
+    def increment_ping_count(self, event):
         self.ping_count += 1
 
 

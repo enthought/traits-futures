@@ -16,14 +16,7 @@ import contextlib
 import logging
 import threading
 
-from traits.api import (
-    Any,
-    HasStrictTraits,
-    Instance,
-    List,
-    on_trait_change,
-    Str,
-)
+from traits.api import Any, HasStrictTraits, Instance, List, observe, Str
 
 from traits_futures.i_message_router import IMessageReceiver
 from traits_futures.i_parallel_context import IParallelContext
@@ -63,8 +56,9 @@ class ReceiverListener(HasStrictTraits):
     #: Received messages
     messages = List(Any())
 
-    @on_trait_change("receiver:message")
-    def _record_message(self, message):
+    @observe("receiver:message")
+    def _record_message(self, event):
+        message = event.new
         self.messages.append(message)
 
 

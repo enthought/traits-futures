@@ -69,11 +69,11 @@ class InterruptibleTaskExample(HasStrictTraits):
 
     #: Button to calculate, plus its enabled state.
     calculate = Button()
-    can_calculate = Property(Bool(), depends_on="future")
+    can_calculate = Property(Bool(), observe="future")
 
     #: Button to cancel, plus its enabled state.
     cancel = Button()
-    can_cancel = Property(Bool(), depends_on="future.cancellable")
+    can_cancel = Property(Bool(), observe="future.cancellable")
 
     @observe("calculate")
     def _submit_calculation(self, event):
