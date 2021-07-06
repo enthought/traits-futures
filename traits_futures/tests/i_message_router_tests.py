@@ -16,14 +16,7 @@ import contextlib
 import logging
 import threading
 
-from traits.api import (
-    Any,
-    HasStrictTraits,
-    Instance,
-    List,
-    observe,
-    Str,
-)
+from traits.api import Any, HasStrictTraits, Instance, List, observe, Str
 
 from traits_futures.i_message_router import IMessageReceiver
 from traits_futures.i_parallel_context import IParallelContext

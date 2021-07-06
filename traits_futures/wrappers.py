@@ -16,13 +16,7 @@ These are used by the TraitsExecutor machinery.
 
 import logging
 
-from traits.api import (
-    Bool,
-    HasStrictTraits,
-    HasTraits,
-    Instance,
-    observe,
-)
+from traits.api import Bool, HasStrictTraits, HasTraits, Instance, observe
 
 from traits_futures.exception_handling import marshal_exception
 from traits_futures.i_future import IFuture
