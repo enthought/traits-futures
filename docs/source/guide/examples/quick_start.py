@@ -50,7 +50,7 @@ class QuickStartExample(HasStrictTraits):
     calculate = Button()
 
     #: Boolean used to decide whether to enable the "calculate" button.
-    no_running_future = Property(Bool(), depends_on="future:done")
+    no_running_future = Property(Bool(), observe="future:done")
 
     @observe("calculate")
     def _submit_background_call(self, event):

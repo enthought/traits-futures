@@ -100,13 +100,13 @@ class PiIterator(Handler):
     approximate = Button()
 
     #: Is the approximate button enabled?
-    approximate_enabled = Property(Bool(), depends_on="future.state")
+    approximate_enabled = Property(Bool(), observe="future.state")
 
     #: Button to cancel the pi approximation.
     cancel = Button()
 
     #: Is the cancel button enabled?
-    cancel_enabled = Property(Bool(), depends_on="future.state")
+    cancel_enabled = Property(Bool(), observe="future.state")
 
     #: Maximum number of points to show in the plot.
     max_points = Int(100)
