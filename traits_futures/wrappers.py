@@ -21,7 +21,7 @@ from traits.api import (
     HasStrictTraits,
     HasTraits,
     Instance,
-    on_trait_change,
+    observe,
 )
 
 from traits_futures.exception_handling import marshal_exception
@@ -70,11 +70,12 @@ class FutureWrapper(HasStrictTraits):
     #: its own internal state.
     done = Bool(False)
 
-    @on_trait_change("receiver:message")
-    def _dispatch_to_future(self, message):
+    @observe("receiver:message")
+    def _dispatch_to_future(self, event):
         """
         Pass on a message to the future.
         """
+        message = event.new
         message_type, message_arg = message
         method_name = "_task_{}".format(message_type)
         getattr(self.future, method_name)(message_arg)

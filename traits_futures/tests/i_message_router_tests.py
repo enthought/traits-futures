@@ -21,7 +21,7 @@ from traits.api import (
     HasStrictTraits,
     Instance,
     List,
-    on_trait_change,
+    observe,
     Str,
 )
 
@@ -63,8 +63,9 @@ class ReceiverListener(HasStrictTraits):
     #: Received messages
     messages = List(Any())
 
-    @on_trait_change("receiver:message")
-    def _record_message(self, message):
+    @observe("receiver:message")
+    def _record_message(self, event):
+        message = event.new
         self.messages.append(message)
 
 

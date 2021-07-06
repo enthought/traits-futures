@@ -22,7 +22,7 @@ from traits.api import (
     HasStrictTraits,
     Instance,
     List,
-    on_trait_change,
+    observe,
     Property,
     Tuple,
 )
@@ -101,20 +101,23 @@ class ExecutorListener(HasStrictTraits):
     #: Changes to the 'stopped' trait value.
     stopped_changes = List(Tuple(Bool(), Bool()))
 
-    @on_trait_change("executor:state")
-    def _record_state_change(self, obj, name, old_state, new_state):
+    @observe("executor:state")
+    def _record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change("executor:running")
-    def _record_running_change(self, object, name, old, new):
+    @observe("executor:running")
+    def _record_running_change(self, event):
+        old, new = event.old, event.new
         self.running_changes.append((old, new))
 
-    @on_trait_change("executor:stopped")
-    def _record_stopped_change(self, object, name, old, new):
+    @observe("executor:stopped")
+    def _record_stopped_change(self, event):
+        old, new = event.old, event.new
         self.stopped_changes.append((old, new))
 
 

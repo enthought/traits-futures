@@ -176,8 +176,9 @@ expect to return a result. Once the state of the corresponding future reaches
 Assuming that your calculation future is stored in a trait called ``future``,
 you might use this as follows::
 
-    @on_trait_change('future:done')
-    def _update_result(self, future, name, done):
+    @observe('future:done')
+    def _update_result(self, event):
+        future = event.object
         self.my_results.append(future.result)
 
 Any attempt to access ``future.result`` before the future completes
@@ -189,8 +190,9 @@ A |ProgressFuture| object also receives progress information send by the
 background task via its ``progress`` event trait. You might use that
 trait like this::
 
-    @on_trait_change('future:progress')
-    def _report_progress(self, progress_info):
+    @observe('future:progress')
+    def _report_progress(self, event):
+        progress_info = event.new
         current_step, max_steps, matches = progress_info
         self.message = "{} of {} chunks processed. {} matches so far".format(
             current_step, max_steps, matches)
@@ -200,8 +202,9 @@ on each iteration, but doesn't necessarily give a final result. Its
 ``result_event`` trait is an ``Event`` that you can hook listeners up to in
 order to receive the iteration results. For example::
 
-    @on_trait_change('future:result_event')
-    def _record_result(self, result):
+    @observe('future:result_event')
+    def _record_result(self, event):
+        result = event.new
         self.results.append(result)
         self.update_plot_data()
 

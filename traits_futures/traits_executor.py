@@ -23,7 +23,7 @@ from traits.api import (
     Enum,
     HasStrictTraits,
     Instance,
-    on_trait_change,
+    observe,
     Property,
     Set,
 )
@@ -500,8 +500,9 @@ class TraitsExecutor(HasStrictTraits):
         self._own_context = True
         return context
 
-    @on_trait_change("_wrappers:done")
-    def _untrack_future(self, wrapper, name, is_done):
+    @observe("_wrappers:items:done")
+    def _untrack_future(self, event):
+        wrapper = event.object
         self._message_router.close_pipe(wrapper.receiver)
         self._wrappers.remove(wrapper)
         logger.debug(
