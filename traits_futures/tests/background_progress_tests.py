@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 
-from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
+from traits.api import Any, HasStrictTraits, Instance, List, observe
 
 from traits_futures.api import (
     CANCELLED,
@@ -119,16 +119,18 @@ class ProgressFutureListener(HasStrictTraits):
     #: List of progress messages received.
     progress = List(Any())
 
-    @on_trait_change("future:state")
-    def record_state_change(self, obj, name, old_state, new_state):
+    @observe("future:state")
+    def record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change("future:progress")
-    def record_progress(self, progress_info):
+    @observe("future:progress")
+    def record_progress(self, event):
+        progress_info = event.new
         self.progress.append(progress_info)
 
 

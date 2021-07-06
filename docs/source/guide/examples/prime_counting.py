@@ -21,7 +21,7 @@ from traits.api import (
     HasStrictTraits,
     Instance,
     Int,
-    on_trait_change,
+    observe,
     Property,
     Str,
 )
@@ -97,23 +97,27 @@ class ProgressDialog(Dialog, HasStrictTraits):
         self._progress_bar = QtGui.QProgressBar(dialog)
         return self._progress_bar
 
-    @on_trait_change("message")
-    def _update_message(self, message):
+    @observe("message")
+    def _update_message(self, event):
+        message = event.new
         if self._message_control is not None:
             self._message_control.setText(message)
 
-    @on_trait_change("maximum")
-    def _update_progress_bar_maximum(self, maximum):
+    @observe("maximum")
+    def _update_progress_bar_maximum(self, event):
+        maximum = event.new
         if self._progress_bar is not None:
             self._progress_bar.setMaximum(maximum)
 
-    @on_trait_change("value")
-    def _update_progress_bar_value(self, value):
+    @observe("value")
+    def _update_progress_bar_value(self, event):
+        value = event.new
         if self._progress_bar is not None:
             self._progress_bar.setValue(value)
 
-    @on_trait_change("future:progress")
-    def _report_progress(self, progress_info):
+    @observe("future:progress")
+    def _report_progress(self, event):
+        progress_info = event.new
         current_step, max_steps, count_so_far = progress_info
         self.maximum = max_steps
         self.value = current_step
@@ -121,13 +125,13 @@ class ProgressDialog(Dialog, HasStrictTraits):
             current_step, max_steps, count_so_far
         )
 
-    @on_trait_change("closing")
-    def _cancel_future_if_necessary(self):
+    @observe("closing")
+    def _cancel_future_if_necessary(self, event):
         if self.future is not None and self.future.cancellable:
             self.future.cancel()
 
-    @on_trait_change("future:done")
-    def _respond_to_completion(self):
+    @observe("future:done")
+    def _respond_to_completion(self, event):
         self.future = None
         self.close()
 
@@ -192,7 +196,7 @@ class PrimeCounter(Handler):
     count = Button()
 
     #: Bool indicating when the count should be enabled.
-    count_enabled = Property(Bool, depends_on="future.done")
+    count_enabled = Property(Bool, observe="future.done")
 
     #: Result from the previous run.
     result_message = Str("No previous result")
@@ -224,8 +228,9 @@ class PrimeCounter(Handler):
     def _get_count_enabled(self):
         return self.future is None or self.future.done
 
-    @on_trait_change("future:done")
-    def _report_result(self, future, name, done):
+    @observe("future:done")
+    def _report_result(self, event):
+        future = event.object
         if future.state == COMPLETED:
             self.result_message = "There are {} primes smaller than {}".format(
                 future.result,

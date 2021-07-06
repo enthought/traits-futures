@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 
-from traits.api import HasStrictTraits, Instance, List, on_trait_change
+from traits.api import HasStrictTraits, Instance, List, observe
 
 from traits_futures.api import (
     CallFuture,
@@ -57,8 +57,9 @@ class CallFutureListener(HasStrictTraits):
     #: List of states of that future.
     states = List(FutureState)
 
-    @on_trait_change("future:state")
-    def record_state_change(self, obj, name, old_state, new_state):
+    @observe("future:state")
+    def record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.

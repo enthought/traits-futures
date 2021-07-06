@@ -34,6 +34,7 @@ of Traits Futures.
 Other Changes
 ~~~~~~~~~~~~~
 
+* Traits Futures now requires Traits 6.2.0 or later.
 * Python 3.5 is no longer supported. Traits Futures requires Python 3.6
   or later.
 
