@@ -459,8 +459,11 @@ class TraitsExecutor(HasStrictTraits):
         """Property getter for the "stopped" trait."""
         return self._internal_state in _STOPPED_INTERNAL_STATES
 
-    def __internal_state_changed(self, old_internal_state, new_internal_state):
+    @observe("_internal_state")
+    def _update_property_traits(self, event):
         """Trait change handler for the "_internal_state" trait."""
+        old_internal_state, new_internal_state = event.old, event.new
+
         logger.debug(
             f"{self} internal state changed "
             f"from {old_internal_state} to {new_internal_state}"
