@@ -300,29 +300,92 @@ occurs after the <a class="reference internal" href="../api/traits_futures.base_
 </section>
 <section id="stopping-the-executor">
 <h2>Stopping the executor<a class="headerlink" href="#stopping-the-executor" title="Permalink to this headline">¶</a></h2>
-<p>Like the various future classes, a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> also has a state trait, of
-type <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.ExecutorState" title="traits_futures.executor_states.ExecutorState"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ExecutorState</span></code></a>. This state is one of the following:</p>
+<p>To avoid unexpected side-effects during Python process finalization, it’s
+recommended to shut down a running <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> explicitly prior to process
+exit. Similarly, when writing a unit test that makes use of a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>,
+that executor should be shut down at test exit, to avoid potential for
+unexpected interactions with other tests.</p>
+<p>This section describes the two methods available for executor shutdown:
+<a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> and <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a>.</p>
+<section id="executor-states">
+<h3>Executor states<a class="headerlink" href="#executor-states" title="Permalink to this headline">¶</a></h3>
+<p>Like the various future classes, a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> also has a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.state" title="traits_futures.traits_executor.TraitsExecutor.state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">state</span></code></a> trait,
+of type <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.ExecutorState" title="traits_futures.executor_states.ExecutorState"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ExecutorState</span></code></a>. This state is one of the following:</p>
 <dl class="simple">
-<dt><a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.RUNNING" title="traits_futures.executor_states.RUNNING"><code class="xref py py-data docutils literal notranslate"><span class="pre">RUNNING</span></code></a></dt><dd><p>The executor is running and accepting task submissions.</p>
+<dt><a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.RUNNING" title="traits_futures.executor_states.RUNNING"><code class="xref py py-data docutils literal notranslate"><span class="pre">RUNNING</span></code></a></dt><dd><p>The executor is running and accepting task submissions. This is the state
+of a newly-created executor.</p>
 </dd>
-<dt><a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a></dt><dd><p>The user has requested that the executor stop, but there are still
-running futures associated with this executor. An executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a>
-state will not accept new task submissions.</p>
+<dt><a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a></dt><dd><p>Shutdown has been initiated or partially completed, but there are still
+running background tasks associated with this executor. An executor in
+<a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state will not accept new task submissions.</p>
 </dd>
-<dt><a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a></dt><dd><p>The executor has stopped, and all futures associated with this
-executor have finished. An executor in this state cannot be
-used to submit new tasks, and cannot be restarted.</p>
+<dt><a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a></dt><dd><p>The executor has stopped, all resources associated with the executor have
+been released, and all background tasks associated with this executor have
+finished. An executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state will not accept new task
+submissions, and cannot be restarted.</p>
 </dd>
 </dl>
+</section>
+<section id="executor-shutdown">
+<h3>Executor shutdown<a class="headerlink" href="#executor-shutdown" title="Permalink to this headline">¶</a></h3>
 <p>Once a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> object is no longer needed (for example at application
-shutdown time), its <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method may be called. This cancels all current
-executing or waiting futures, puts the executor into <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state and then
-returns.</p>
-<p>Once all futures reach <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED" title="traits_futures.future_states.CANCELLED"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLED</span></code></a> state, an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state moves
-into <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state. If the executor owns its worker pool, that worker pool is
-shut down immediately before moving into <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state.</p>
-<p>It’s advisable to stop the executor explicitly and wait for it to reach
-<a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state before exiting an application using it.</p>
+shutdown time), it can be shut down via its <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method. This method is
+blocking: it waits for all of the background tasks to complete before
+returning. In more detail, if called on a running executor, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a>
+method performs the following tasks, in order:</p>
+<ul class="simple">
+<li><p>Moves the executor to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state.</p></li>
+<li><p>Requests cancellation of all waiting or executing background tasks.</p></li>
+<li><p>Unlinks all background tasks from their associated futures: the
+futures will receive no further updates after <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> returns.</p></li>
+<li><p>Waits for all background tasks to complete.</p></li>
+<li><p>Shuts down the worker pool (if that worker pool is owned by the executor).</p></li>
+<li><p>Moves the executor to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state.</p></li>
+</ul>
+<p>If called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> simply returns
+without taking any action. If called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state,
+any of the above actions that have not already been taken will be taken.</p>
+<p>Note that because of the unlinking of the background tasks and their
+associated futures, background tasks that have been cancelled will leave their
+associated futures in <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLING" title="traits_futures.future_states.CANCELLING"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLING</span></code></a> state. Those futures will never reach
+<a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED" title="traits_futures.future_states.CANCELLED"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLED</span></code></a> state, even under a running event loop.</p>
+</section>
+<section id="shutdown-with-a-timeout">
+<h3>Shutdown with a timeout<a class="headerlink" href="#shutdown-with-a-timeout" title="Permalink to this headline">¶</a></h3>
+<p>To avoid blocking indefinitely, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method also accepts a
+<code class="docutils literal notranslate"><span class="pre">timeout</span></code> parameter. That timeout is used when waiting for the background
+tasks to complete. If the background tasks fail to complete within the given
+timeout, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> and leave the executor in
+<a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state. The worker pool used by the executor will not have been shut
+down.</p>
+</section>
+<section id="non-blocking-executor-shutdown">
+<h3>Non-blocking executor shutdown<a class="headerlink" href="#non-blocking-executor-shutdown" title="Permalink to this headline">¶</a></h3>
+<p>Occasionally, it may be desirable to shut down an executor during normal
+application execution, rather than at application shutdown time. In this
+situation calling <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> is problematic, since that method is blocking and
+so will make the GUI unresponsive. Instead, users can call the non-blocking
+<a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method. This method:</p>
+<ul class="simple">
+<li><p>Moves the executor to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state.</p></li>
+<li><p>Requests cancellation of all waiting or executing background tasks.</p></li>
+</ul>
+<p>Typically, the event loop will continue to run after calling the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method.
+Under that running event loop, all futures will eventually reach one of the
+final states (<a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.COMPLETED" title="traits_futures.future_states.COMPLETED"><code class="xref py py-data docutils literal notranslate"><span class="pre">COMPLETED</span></code></a>, <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.FAILED" title="traits_futures.future_states.FAILED"><code class="xref py py-data docutils literal notranslate"><span class="pre">FAILED</span></code></a> or <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED" title="traits_futures.future_states.CANCELLED"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLED</span></code></a>). When that happens, the
+system automatically:</p>
+<ul class="simple">
+<li><p>Shuts down the worker pool (if that worker pool is owned by the executor).</p></li>
+<li><p>Moves the executor to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state.</p></li>
+</ul>
+<p>If there are no waiting or executing background tasks, then <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> goes
+through all of the steps above at once, moving the executor through
+the <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state.</p>
+<p>Note that while <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> can only be called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.RUNNING" title="traits_futures.executor_states.RUNNING"><code class="xref py py-data docutils literal notranslate"><span class="pre">RUNNING</span></code></a> state,
+it’s always legal to call <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> on an executor, regardless of the current
+state of that executor. In particular, calling <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> after <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> is
+permissible, but calling <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> after <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> would be an error.</p>
+</section>
 </section>
 <section id="using-a-shared-worker-pool">
 <h2>Using a shared worker pool<a class="headerlink" href="#using-a-shared-worker-pool" title="Permalink to this headline">¶</a></h2>
@@ -360,7 +423,13 @@ needed.</p>
 <li><a class="reference internal" href="#cancelling-the-background-task">Cancelling the background task</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#stopping-the-executor">Stopping the executor</a></li>
+<li><a class="reference internal" href="#stopping-the-executor">Stopping the executor</a><ul>
+<li><a class="reference internal" href="#executor-states">Executor states</a></li>
+<li><a class="reference internal" href="#executor-shutdown">Executor shutdown</a></li>
+<li><a class="reference internal" href="#shutdown-with-a-timeout">Shutdown with a timeout</a></li>
+<li><a class="reference internal" href="#non-blocking-executor-shutdown">Non-blocking executor shutdown</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#using-a-shared-worker-pool">Using a shared worker pool</a></li>
 </ul>
 </li>

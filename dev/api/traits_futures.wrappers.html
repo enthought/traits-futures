@@ -120,6 +120,12 @@ whether cancellation has been requested.</p></li>
 <p>This wrapper handles control messages from the background task, and
 delegates custom messages to the future.</p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.cf_future">
+<span class="sig-name descname"><span class="pre">cf_future</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Instance(concurrent.futures.Future)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.cf_future" title="Permalink to this definition">¶</a></dt>
+<dd><p>The concurrent.futures future associated to the background task.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.done">
 <span class="sig-name descname"><span class="pre">done</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bool recording whether the future has completed or not. The
@@ -130,7 +136,7 @@ its own internal state.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.future">
 <span class="sig-name descname"><span class="pre">future</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
-<dd><p>Future being wrapped</p>
+<dd><p>The Traits Futures future being wrapped</p>
 </dd></dl>
 
 <dl class="py attribute">
