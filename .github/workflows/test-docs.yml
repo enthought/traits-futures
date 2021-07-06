@@ -3,6 +3,9 @@ name: Check that documentation builds cleanly
 on:
   pull_request
 
+env:
+  PYTHONUNBUFFERED: 1
+
 jobs:
   docs:
     runs-on: ubuntu-latest
