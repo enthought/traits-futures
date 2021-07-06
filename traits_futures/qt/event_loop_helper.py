@@ -124,11 +124,11 @@ class EventLoopHelper:
         def stop_on_timeout():
             qt_app.exit(1)
 
-        def stop_if_condition():
+        def stop_if_condition(event):
             if condition(object):
                 qt_app.exit(0)
 
-        object.on_trait_change(stop_if_condition, trait)
+        object.observe(stop_if_condition, trait)
         try:
             # The condition may have become True before we
             # started listening to changes. So start with a check.
@@ -143,7 +143,7 @@ class EventLoopHelper:
                     timeout_timer.stop()
                     timeout_timer.timeout.disconnect(stop_on_timeout)
         finally:
-            object.on_trait_change(stop_if_condition, trait, remove=True)
+            object.observe(stop_if_condition, trait, remove=True)
 
         if timed_out:
             raise RuntimeError(

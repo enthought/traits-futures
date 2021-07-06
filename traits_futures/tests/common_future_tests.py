@@ -57,7 +57,7 @@ class CommonFutureTests:
         # Triples (state, cancellable, done)
         states = []
 
-        def record_states():
+        def record_states(event=None):
             """Record the future's state and derived traits."""
             states.append((future.state, future.cancellable, future.done))
 
@@ -65,9 +65,9 @@ class CommonFutureTests:
         future = self.future_class()
         future._executor_initialized(dummy_cancel_callback)
 
-        future.on_trait_change(record_states, "cancellable")
-        future.on_trait_change(record_states, "done")
-        future.on_trait_change(record_states, "state")
+        future.observe(record_states, "cancellable")
+        future.observe(record_states, "done")
+        future.observe(record_states, "state")
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
