@@ -14,6 +14,7 @@ Wrappers for the background task callable and the foreground future.
 These are used by the TraitsExecutor machinery.
 """
 
+import concurrent.futures
 import logging
 
 from traits.api import Bool, HasStrictTraits, HasTraits, Instance, observe
@@ -53,8 +54,11 @@ class FutureWrapper(HasStrictTraits):
     delegates custom messages to the future.
     """
 
-    #: Future being wrapped
+    #: The Traits Futures future being wrapped
     future = Instance(IFuture)
+
+    #: The concurrent.futures future associated to the background task.
+    cf_future = Instance(concurrent.futures.Future)
 
     #: Object that receives messages from the background task.
     receiver = Instance(HasTraits)
