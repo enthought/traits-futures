@@ -127,7 +127,7 @@ class FuturesListener(HasStrictTraits):
     futures = List(Instance(CallFuture))
 
     #: True when all futures have completed.
-    all_done = Property(Bool(), depends_on="futures:done")
+    all_done = Property(Bool(), observe="futures:items:done")
 
     def _get_all_done(self):
         return all(future.done for future in self.futures)

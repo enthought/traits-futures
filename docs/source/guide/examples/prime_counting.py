@@ -192,7 +192,7 @@ class PrimeCounter(Handler):
     count = Button()
 
     #: Bool indicating when the count should be enabled.
-    count_enabled = Property(Bool, depends_on="future.done")
+    count_enabled = Property(Bool, observe="future.done")
 
     #: Result from the previous run.
     result_message = Str("No previous result")
