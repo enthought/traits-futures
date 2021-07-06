@@ -1,4 +1,6 @@
 [tool.black]
 line-length = 79
 target-version = ['py36']
-exclude = "/docs/source/guide/examples"
+# black introduces extra blank lines that we don't want in the Sphinx
+# rendering. xref: https://github.com/sphinx-doc/sphinx/issues/9407
+exclude = "/docs/source/guide/examples/fizz_buzz_task.py"
