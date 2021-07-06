@@ -164,7 +164,7 @@ minimal TraitsUI application that fires off a background computation when its
     <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
     <span class="c1">#: Boolean used to decide whether to enable the &quot;calculate&quot; button.</span>
-    <span class="n">no_running_future</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="n">no_running_future</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
 
     <span class="nd">@on_trait_change</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

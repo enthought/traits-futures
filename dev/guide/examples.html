@@ -466,7 +466,7 @@ GUI as the background computation progresses.</p>
     <span class="n">count</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
     <span class="c1">#: Bool indicating when the count should be enabled.</span>
-    <span class="n">count_enabled</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">,</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future.done&quot;</span><span class="p">)</span>
+    <span class="n">count_enabled</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">,</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.done&quot;</span><span class="p">)</span>
 
     <span class="c1">#: Result from the previous run.</span>
     <span class="n">result_message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;No previous result&quot;</span><span class="p">)</span>
@@ -639,13 +639,13 @@ updated live with each new value reported by the background task.</p>
     <span class="n">approximate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
     <span class="c1">#: Is the approximate button enabled?</span>
-    <span class="n">approximate_enabled</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future.state&quot;</span><span class="p">)</span>
+    <span class="n">approximate_enabled</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.state&quot;</span><span class="p">)</span>
 
     <span class="c1">#: Button to cancel the pi approximation.</span>
     <span class="n">cancel</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
     <span class="c1">#: Is the cancel button enabled?</span>
-    <span class="n">cancel_enabled</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future.state&quot;</span><span class="p">)</span>
+    <span class="n">cancel_enabled</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.state&quot;</span><span class="p">)</span>
 
     <span class="c1">#: Maximum number of points to show in the plot.</span>
     <span class="n">max_points</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
