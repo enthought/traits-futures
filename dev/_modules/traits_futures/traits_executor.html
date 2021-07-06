@@ -541,8 +541,11 @@
         <span class="sd">&quot;&quot;&quot;Property getter for the &quot;stopped&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
 
-    <span class="k">def</span> <span class="nf">__internal_state_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span><span class="p">):</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;_internal_state&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_update_property_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">old</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> internal state changed &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">old_internal_state</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_internal_state</span><span class="si">}</span><span class="s2">&quot;</span>
