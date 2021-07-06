@@ -152,7 +152,7 @@ of an asyncio event loop.</p>
 <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">,</span> <span class="n">report_interval</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">6</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">,</span> <span class="n">report_interval</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">6</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Yield successive approximations to π via Monte Carlo methods.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -172,6 +172,7 @@ of an asyncio event loop.</p>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap a Traits Futures future as a schedulable coroutine.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">set_result</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
         <span class="n">traits_future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
         <span class="n">asyncio_future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">traits_future</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
