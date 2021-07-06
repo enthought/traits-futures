@@ -18,6 +18,7 @@ from traits.api import (
     Callable,
     Enum,
     HasStrictTraits,
+    observe,
     Property,
     provides,
     Str,
@@ -377,8 +378,11 @@ class BaseFuture(HasStrictTraits):
         """Property getter for the "done" trait."""
         return self._internal_state in _DONE_INTERNAL_STATES
 
-    def __internal_state_changed(self, old_internal_state, new_internal_state):
+    @observe("_internal_state")
+    def _update_property_traits(self, event):
         """Trait change handler for the "_internal_state" trait."""
+        old_internal_state, new_internal_state = event.old, event.new
+
         old_state = _INTERNAL_STATE_TO_STATE[old_internal_state]
         new_state = _INTERNAL_STATE_TO_STATE[new_internal_state]
         if old_state != new_state:
