@@ -250,8 +250,8 @@ class TraitsExecutorTests:
             )
 
         results = []
-        future.on_trait_change(
-            lambda result: results.append(result), "result_event"
+        future.observe(
+            lambda event: results.append(event.new), "result_event"
         )
 
         self.wait_until_done(future)
@@ -295,7 +295,7 @@ class TraitsExecutorTests:
         # Triples (state, running, stopped).
         states = []
 
-        def record_states():
+        def record_states(event=None):
             states.append(
                 (
                     self.executor.state,
@@ -304,9 +304,9 @@ class TraitsExecutorTests:
                 )
             )
 
-        self.executor.on_trait_change(record_states, "running")
-        self.executor.on_trait_change(record_states, "stopped")
-        self.executor.on_trait_change(record_states, "state")
+        self.executor.observe(record_states, "running")
+        self.executor.observe(record_states, "stopped")
+        self.executor.observe(record_states, "state")
         submit_call(self.executor, int)
 
         # Record states before, during, and after stopping.

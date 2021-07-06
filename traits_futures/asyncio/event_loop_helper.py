@@ -96,11 +96,11 @@ class EventLoopHelper:
             timed_out.append(True)
             event_loop.stop()
 
-        def stop_if_condition():
+        def stop_if_condition(event):
             if condition(object):
                 event_loop.stop()
 
-        object.on_trait_change(stop_if_condition, trait)
+        object.observe(stop_if_condition, trait)
         try:
             # The condition may have become True before we
             # started listening to changes. So start with a check.
@@ -111,7 +111,7 @@ class EventLoopHelper:
                 finally:
                     timer_handle.cancel()
         finally:
-            object.on_trait_change(stop_if_condition, trait, remove=True)
+            object.observe(stop_if_condition, trait, remove=True)
 
         if timed_out:
             raise RuntimeError(

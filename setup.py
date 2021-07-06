@@ -31,7 +31,7 @@ def get_long_description():
 
 install_requires = [
     "pyface",
-    "traits",
+    "traits>=6.2.0",
 ]
 
 
