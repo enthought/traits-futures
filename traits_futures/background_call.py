@@ -79,7 +79,7 @@ class BackgroundCall(HasStrictTraits):
         return CallBackgroundTask(
             callable=self.callable,
             args=self.args,
-            kwargs=self.kwargs.copy(),
+            kwargs=self.kwargs,
         )
 
 
