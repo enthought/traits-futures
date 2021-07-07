@@ -415,6 +415,12 @@ class MultiprocessingRouter(HasRequiredTraits):
     # Private methods #########################################################
 
     def _unlink_from_event_loop(self):
+        """
+        Unlink this router from the event loop.
+
+        After this call, the router will no longer react to any pending
+        tasks on the event loop.
+        """
         if self._pingee is not None:
             self._pingee.disconnect()
             self._pingee = None
