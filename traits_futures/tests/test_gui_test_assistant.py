@@ -24,11 +24,6 @@ from traits_futures.api import (
 )
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 
-#: Maximum timeout for blocking calls, in seconds. A successful test should
-#: never hit this timeout - it's there to prevent a failing test from hanging
-#: forever and blocking the rest of the test suite.
-SAFETY_TIMEOUT = 5.0
-
 
 class Dummy(HasStrictTraits):
     never_fired = Event()

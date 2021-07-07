@@ -107,5 +107,4 @@ class GuiTestAssistant:
             sentinel,
             "flag",
             lambda sentinel: sentinel.flag,
-            timeout=SAFETY_TIMEOUT,
         )
