@@ -87,7 +87,7 @@ class GuiTestAssistant:
         """
         self._event_loop_helper.run_until(object, trait, condition, timeout)
 
-    def exercise_event_loop(self, timeout=SAFETY_TIMEOUT):
+    def exercise_event_loop(self):
         """
         Exercise the event loop.
 
@@ -100,12 +100,6 @@ class GuiTestAssistant:
         "check that nothing bad happens as a result of other pending event
         loop tasks", but it's not safe to use it for tests that *require*
         pending event loop tasks to be processed.
-
-        Parameters
-        ----------
-        timeout : float, optional.
-            Maximum time to run the event loop for. Defaults to
-            a value of SAFETY_TIMEOUT, for safety.
         """
         sentinel = _HasBool()
         self._event_loop_helper.setattr_soon(sentinel, "flag", True)
@@ -113,5 +107,4 @@ class GuiTestAssistant:
             sentinel,
             "flag",
             lambda sentinel: sentinel.flag,
-            timeout=SAFETY_TIMEOUT,
         )
