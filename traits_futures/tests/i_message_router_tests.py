@@ -333,6 +333,26 @@ class IMessageRouterTests:
 
         self.assertLess(actual_timeout, 1.0)
 
+    def test_route_until_timeout_not_reset(self):
+        # Regression test for a bug introduced during development of
+        # PR enthought/traits-futures#378 - we were waiting for time
+        # 'timeout' on every iteration of the loop instead of using
+        # the recalculated time remaining.
+        with self.started_router() as router:
+            sender, receiver = router.pipe()
+            try:
+                listener = ReceiverListener(receiver=receiver)
+                self.send_messages_from_worker(sender, range(20), message_delay=0.05)
+                with self.assertRaises(RuntimeError):
+                    router.route_until(lambda: False, timeout=0.1)
+            finally:
+                router.close_pipe(receiver)
+
+        # With a timeout of 0.1 and only one message sent every 0.05 seconds,
+        # we should have got at most 2 messages before timeout. To avoid
+        # spurious failures due to timing variations, we allow up to 4.
+        self.assertLessEqual(len(listener.messages), 4)
+
     def test_route_until_second_call_after_timeout(self):
         with self.started_router() as router:
             with self.assertRaises(RuntimeError):
@@ -389,25 +409,33 @@ class IMessageRouterTests:
         finally:
             router.stop()
 
-    def send_messages_from_worker(self, sender, messages):
+    def send_messages_from_worker(self, sender, messages, message_delay=None):
         """
         Send messages to a router from a background thread.
 
-        Returns
-        -------
-        receiver : IMessageReceiver
-            The receiver that should receive the sent messages.
+        Parameters
+        ----------
+        sender : IMessageSender
+            Used to send the messages.
+        messages : list
+            List of Python objects to be sent.
+        message_delay : float, optional
+            Time delay before sending each message.
         """
-        sender_thread = threading.Thread(
-            target=self._send_messages_target, args=(sender, messages)
-        )
+
+        def _send_messages_target():
+            """
+            Target callable.
+            """
+            with sender:
+                for message in messages:
+                    if message_delay is not None:
+                        time.sleep(message_delay)
+                    sender.send(message)
+
+        sender_thread = threading.Thread(target=_send_messages_target)
         sender_thread.start()
         sender_thread.join()
-
-    def _send_messages_target(self, sender, messages):
-        with sender:
-            for message in messages:
-                sender.send(message)
 
     def assertEventuallyReceives(
         self, listener, messages, *, timeout=SAFETY_TIMEOUT
