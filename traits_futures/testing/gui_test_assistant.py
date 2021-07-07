@@ -103,8 +103,4 @@ class GuiTestAssistant:
         """
         sentinel = _HasBool()
         self._event_loop_helper.setattr_soon(sentinel, "flag", True)
-        self.run_until(
-            sentinel,
-            "flag",
-            lambda sentinel: sentinel.flag,
-        )
+        self.run_until(sentinel, "flag", lambda sentinel: sentinel.flag)
