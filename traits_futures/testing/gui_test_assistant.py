@@ -13,12 +13,25 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
+from traits.api import Bool, HasStrictTraits
+
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
 #: forever and blocking the rest of the test suite.
 SAFETY_TIMEOUT = 5.0
+
+
+class _HasBool(HasStrictTraits):
+    """
+    Simple HasTraits class with a single mutable trait.
+
+    Used in tests that need something mutable and observable.
+    """
+
+    #: Simple boolean flag.
+    flag = Bool(False)
 
 
 class GuiTestAssistant:
@@ -73,3 +86,26 @@ class GuiTestAssistant:
             true or not at that point.
         """
         self._event_loop_helper.run_until(object, trait, condition, timeout)
+
+    def exercise_event_loop(self):
+        """
+        Exercise the event loop.
+
+        Places a new task on the event loop and runs the event loop
+        until that task is complete. The goal is to flush out any other
+        tasks that might already be in event loop tasks queue.
+
+        Note that there's no guarantee that this will execute other pending
+        event loop tasks. So this method is useful for tests of the form
+        "check that nothing bad happens as a result of other pending event
+        loop tasks", but it's not safe to use it for tests that *require*
+        pending event loop tasks to be processed.
+        """
+        sentinel = _HasBool()
+        self._event_loop_helper.setattr_soon(sentinel, "flag", True)
+        self.run_until(
+            sentinel,
+            "flag",
+            lambda sentinel: sentinel.flag,
+            timeout=SAFETY_TIMEOUT,
+        )
