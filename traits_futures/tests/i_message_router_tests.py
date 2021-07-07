@@ -15,6 +15,7 @@ Common tests for testing implementations of the IMessageRouter interface.
 import contextlib
 import logging
 import threading
+import time
 
 from traits.api import Any, HasStrictTraits, Instance, List, observe, Str
 
@@ -284,6 +285,84 @@ class IMessageRouterTests:
                 with self.assertRaises(RuntimeError):
                     sender.start()
 
+    def test_route_until(self):
+        # When we've sent messages (e.g., from a background thread), we can
+        # drive the router manually to receive those messages.
+
+        messages = ["abc", "def"]
+
+        with self.started_router() as router:
+            sender, receiver = router.pipe()
+            try:
+                listener = ReceiverListener(receiver=receiver)
+                self.send_messages_from_worker(sender, messages)
+                router.route_until(
+                    lambda: len(listener.messages) >= len(messages),
+                    timeout=SAFETY_TIMEOUT,
+                )
+            finally:
+                router.close_pipe(receiver)
+
+        self.assertEqual(listener.messages, messages)
+
+    def test_route_until_without_timeout(self):
+        # This test is mildly dangerous: if something goes wrong, it could
+        # hang indefinitely. xref: enthought/traits-futures#310
+
+        messages = ["abc"]
+
+        with self.started_router() as router:
+            sender, receiver = router.pipe()
+            try:
+                listener = ReceiverListener(receiver=receiver)
+                self.send_messages_from_worker(sender, messages)
+                router.route_until(
+                    lambda: len(listener.messages) >= len(messages),
+                )
+            finally:
+                router.close_pipe(receiver)
+
+        self.assertEqual(listener.messages, messages)
+
+    def test_route_until_timeout(self):
+        with self.started_router() as router:
+            start_time = time.monotonic()
+            with self.assertRaises(RuntimeError):
+                router.route_until(lambda: False, timeout=0.1)
+            actual_timeout = time.monotonic() - start_time
+
+        self.assertLess(actual_timeout, 1.0)
+
+    def test_route_until_second_call_after_timeout(self):
+        with self.started_router() as router:
+            with self.assertRaises(RuntimeError):
+                router.route_until(lambda: False, timeout=0.1)
+            # Just check that the first call hasn't put the router into
+            # an unusable state.
+            router.route_until(lambda: True, timeout=SAFETY_TIMEOUT)
+
+    def test_event_loop_after_route_until(self):
+        # This tests a potentially problematic situation:
+        # - route_until processes at least one message manually
+        # - the 'ping' for that message is still on the event loop
+        # - when the event loop is started, it tries to get that same message
+        #   from the message queue, but no such message exists
+        messages = ["abc"]
+
+        with self.started_router() as router:
+            sender, receiver = router.pipe()
+            try:
+                listener = ReceiverListener(receiver=receiver)
+                self.send_messages_from_worker(sender, messages)
+                router.route_until(
+                    lambda: len(listener.messages) >= len(messages),
+                )
+                self.exercise_event_loop(timeout=SAFETY_TIMEOUT)
+            finally:
+                router.close_pipe(receiver)
+
+    # XXX Fix docstrings of implementations of the interface.
+
     # Helper functions and assertions
 
     @contextlib.contextmanager
@@ -310,6 +389,26 @@ class IMessageRouterTests:
             yield router
         finally:
             router.stop()
+
+    def send_messages_from_worker(self, sender, messages):
+        """
+        Send messages to a router from a background thread.
+
+        Returns
+        -------
+        receiver : IMessageReceiver
+            The receiver that should receive the sent messages.
+        """
+        sender_thread = threading.Thread(
+            target=self._send_messages_target, args=(sender, messages)
+        )
+        sender_thread.start()
+        sender_thread.join()
+
+    def _send_messages_target(self, sender, messages):
+        with sender:
+            for message in messages:
+                sender.send(message)
 
     def assertEventuallyReceives(
         self, listener, messages, *, timeout=SAFETY_TIMEOUT

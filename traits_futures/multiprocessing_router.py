@@ -55,6 +55,7 @@ import logging
 import multiprocessing.managers
 import queue
 import threading
+import time
 
 from traits.api import (
     Any,
@@ -359,6 +360,26 @@ class MultiprocessingRouter(HasRequiredTraits):
             f"{self} closed pipe #{connection_id} with receiver {receiver}"
         )
 
+    def route_until(self, condition, timeout=None):
+        if timeout is None:
+            while not condition():
+                self._route_message()
+        else:
+            end_time = time.monotonic() + timeout
+            while not condition():
+                time_remaining = end_time - time.monotonic()
+                if time_remaining < 0.0:
+                    break
+                try:
+                    self._route_message(timeout=timeout)
+                except queue.Empty:
+                    break
+            else:
+                # Success: condition became true.
+                return
+
+            raise RuntimeError("Timed out waiting for messages")
+
     # Public traits ###########################################################
 
     #: The event loop used to trigger message dispatch.
@@ -392,8 +413,8 @@ class MultiprocessingRouter(HasRequiredTraits):
 
     # Private methods #########################################################
 
-    def _route_message(self):
-        connection_id, message = self._local_message_queue.get()
+    def _route_message(self, timeout=None):
+        connection_id, message = self._local_message_queue.get(timeout=timeout)
         try:
             receiver = self._receivers[connection_id]
         except KeyError:
