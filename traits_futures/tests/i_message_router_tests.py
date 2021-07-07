@@ -27,7 +27,7 @@ from traits_futures.i_parallel_context import IParallelContext
 SAFETY_TIMEOUT = 10.0
 
 
-def send_messages(sender, messages):
+def send_messages(sender, messages, message_delay=None):
     """
     Send a sequence of messages using the given sender.
 
@@ -37,10 +37,14 @@ def send_messages(sender, messages):
         The sender to use to send messages.
     messages : list
         List of objects to send.
+    message_delay : float, optional
+        If given, the time to sleep before sending each message.
     """
     sender.start()
     try:
         for message in messages:
+            if message_delay is not None:
+                time.sleep(message_delay)
             sender.send(message)
     finally:
         sender.stop()
@@ -291,17 +295,18 @@ class IMessageRouterTests:
 
         messages = ["abc", "def"]
 
-        with self.started_router() as router:
-            sender, receiver = router.pipe()
-            try:
-                listener = ReceiverListener(receiver=receiver)
-                self.send_messages_from_worker(sender, messages)
-                router.route_until(
-                    lambda: len(listener.messages) >= len(messages),
-                    timeout=SAFETY_TIMEOUT,
-                )
-            finally:
-                router.close_pipe(receiver)
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+                    worker_pool.submit(send_messages, sender, messages)
+                    router.route_until(
+                        lambda: len(listener.messages) >= len(messages),
+                        timeout=SAFETY_TIMEOUT,
+                    )
+                finally:
+                    router.close_pipe(receiver)
 
         self.assertEqual(listener.messages, messages)
 
@@ -311,16 +316,19 @@ class IMessageRouterTests:
 
         messages = ["abc"]
 
-        with self.started_router() as router:
-            sender, receiver = router.pipe()
-            try:
-                listener = ReceiverListener(receiver=receiver)
-                self.send_messages_from_worker(sender, messages)
-                router.route_until(
-                    lambda: len(listener.messages) >= len(messages),
-                )
-            finally:
-                router.close_pipe(receiver)
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+
+                    worker_pool.submit(send_messages, sender, messages)
+
+                    router.route_until(
+                        lambda: len(listener.messages) >= len(messages),
+                    )
+                finally:
+                    router.close_pipe(receiver)
 
         self.assertEqual(listener.messages, messages)
 
@@ -333,20 +341,25 @@ class IMessageRouterTests:
 
         self.assertLess(actual_timeout, 1.0)
 
-    def test_route_until_timeout_not_reset(self):
-        # Regression test for a bug introduced during development of
-        # PR enthought/traits-futures#378 - we were waiting for time
-        # 'timeout' on every iteration of the loop instead of using
-        # the recalculated time remaining.
-        with self.started_router() as router:
-            sender, receiver = router.pipe()
-            try:
-                listener = ReceiverListener(receiver=receiver)
-                self.send_messages_from_worker(sender, range(20), message_delay=0.05)
-                with self.assertRaises(RuntimeError):
-                    router.route_until(lambda: False, timeout=0.1)
-            finally:
-                router.close_pipe(receiver)
+    def test_route_until_timeout_with_repeated_messages(self):
+        # Check for one plausible variety of implementation bug: re-using
+        # the original timeout on each message get operation instead of
+        # re-calculating the time to wait.
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+
+                    # Send one seconds' worth of messages, but timeout after
+                    # 0.1 seconds.
+                    worker_pool.submit(
+                        send_messages, sender, range(20), message_delay=0.05
+                    )
+                    with self.assertRaises(RuntimeError):
+                        router.route_until(lambda: False, timeout=0.1)
+                finally:
+                    router.close_pipe(receiver)
 
         # With a timeout of 0.1 and only one message sent every 0.05 seconds,
         # we should have got at most 2 messages before timeout. To avoid
@@ -370,17 +383,18 @@ class IMessageRouterTests:
         #   up blocking forever.
         messages = ["abc"]
 
-        with self.started_router() as router:
-            sender, receiver = router.pipe()
-            try:
-                listener = ReceiverListener(receiver=receiver)
-                self.send_messages_from_worker(sender, messages)
-                router.route_until(
-                    lambda: len(listener.messages) >= len(messages),
-                )
-                self.exercise_event_loop()
-            finally:
-                router.close_pipe(receiver)
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+                    worker_pool.submit(send_messages, sender, messages)
+                    router.route_until(
+                        lambda: len(listener.messages) >= len(messages),
+                    )
+                    self.exercise_event_loop()
+                finally:
+                    router.close_pipe(receiver)
 
     # Helper functions and assertions
 
@@ -408,34 +422,6 @@ class IMessageRouterTests:
             yield router
         finally:
             router.stop()
-
-    def send_messages_from_worker(self, sender, messages, message_delay=None):
-        """
-        Send messages to a router from a background thread.
-
-        Parameters
-        ----------
-        sender : IMessageSender
-            Used to send the messages.
-        messages : list
-            List of Python objects to be sent.
-        message_delay : float, optional
-            Time delay before sending each message.
-        """
-
-        def _send_messages_target():
-            """
-            Target callable.
-            """
-            with sender:
-                for message in messages:
-                    if message_delay is not None:
-                        time.sleep(message_delay)
-                    sender.send(message)
-
-        sender_thread = threading.Thread(target=_send_messages_target)
-        sender_thread.start()
-        sender_thread.join()
 
     def assertEventuallyReceives(
         self, listener, messages, *, timeout=SAFETY_TIMEOUT
