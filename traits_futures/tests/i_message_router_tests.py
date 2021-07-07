@@ -362,8 +362,6 @@ class IMessageRouterTests:
             finally:
                 router.close_pipe(receiver)
 
-    # XXX Fix docstrings of implementations of the interface.
-
     # Helper functions and assertions
 
     @contextlib.contextmanager
