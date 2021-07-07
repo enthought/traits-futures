@@ -396,7 +396,7 @@ class MultiprocessingRouter(HasRequiredTraits):
                 if time_remaining < 0.0:
                     break
                 try:
-                    self._route_message(timeout=timeout)
+                    self._route_message(timeout=time_remaining)
                 except queue.Empty:
                     break
             else:
