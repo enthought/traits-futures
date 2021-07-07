@@ -287,8 +287,7 @@ class MultiprocessingRouter(HasRequiredTraits):
         # reference.
         self._process_message_queue = None
 
-        self._pingee.disconnect()
-        self._pingee = None
+        self._unlink_from_event_loop()
 
         self._local_message_queue = None
 
@@ -361,6 +360,8 @@ class MultiprocessingRouter(HasRequiredTraits):
         )
 
     def route_until(self, condition, timeout=None):
+        self._unlink_from_event_loop()
+
         if timeout is None:
             while not condition():
                 self._route_message()
@@ -412,6 +413,11 @@ class MultiprocessingRouter(HasRequiredTraits):
     _running = Bool(False)
 
     # Private methods #########################################################
+
+    def _unlink_from_event_loop(self):
+        if self._pingee is not None:
+            self._pingee.disconnect()
+            self._pingee = None
 
     def _route_message(self, timeout=None):
         connection_id, message = self._local_message_queue.get(timeout=timeout)

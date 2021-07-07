@@ -237,8 +237,7 @@ class MultithreadingRouter(HasRequiredTraits):
         if self._receivers:
             logger.warning(f"{self} has {len(self._receivers)} unclosed pipes")
 
-        self._pingee.disconnect()
-        self._pingee = None
+        self._unlink_from_event_loop()
 
         self._message_queue = None
 
@@ -311,6 +310,8 @@ class MultithreadingRouter(HasRequiredTraits):
         )
 
     def route_until(self, condition, timeout=None):
+        self._unlink_from_event_loop()
+
         if timeout is None:
             while not condition():
                 self._route_message()
@@ -353,6 +354,11 @@ class MultithreadingRouter(HasRequiredTraits):
     _running = Bool(False)
 
     # Private methods #########################################################
+
+    def _unlink_from_event_loop(self):
+        if self._pingee is not None:
+            self._pingee.disconnect()
+            self._pingee = None
 
     def _route_message(self, timeout=None):
         connection_id, message = self._message_queue.get(timeout=timeout)

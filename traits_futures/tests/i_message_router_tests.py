@@ -346,7 +346,8 @@ class IMessageRouterTests:
         # - route_until processes at least one message manually
         # - the 'ping' for that message is still on the event loop
         # - when the event loop is started, it tries to get that same message
-        #   from the message queue, but no such message exists
+        #   from the message queue, but no such message exists, so we end
+        #   up blocking forever.
         messages = ["abc"]
 
         with self.started_router() as router:
@@ -357,7 +358,7 @@ class IMessageRouterTests:
                 router.route_until(
                     lambda: len(listener.messages) >= len(messages),
                 )
-                self.exercise_event_loop(timeout=SAFETY_TIMEOUT)
+                self.exercise_event_loop()
             finally:
                 router.close_pipe(receiver)
 
