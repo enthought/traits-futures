@@ -292,8 +292,6 @@ method performs the following tasks, in order:
 
 * Moves the executor to |STOPPING| state.
 * Requests cancellation of all waiting or executing background tasks.
-* Unlinks all background tasks from their associated futures: the
-  futures will receive no further updates after |shutdown| returns.
 * Waits for all background tasks to complete.
 * Shuts down the worker pool (if that worker pool is owned by the executor).
 * Moves the executor to |STOPPED| state.
