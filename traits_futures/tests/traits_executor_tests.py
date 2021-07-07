@@ -325,9 +325,7 @@ class TraitsExecutorTests:
             )
 
         results = []
-        future.observe(
-            lambda event: results.append(event.new), "result_event"
-        )
+        future.observe(lambda event: results.append(event.new), "result_event")
 
         self.wait_until_done(future)
         self.assertEqual(
