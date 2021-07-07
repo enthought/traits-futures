@@ -242,7 +242,7 @@ class IMessageRouter(Interface):
         condition : callable
             Zero-argument callable returning a boolean. When this condition
             becomes true, this method will stop routing messages. If the
-            condition is already true on entry, no messages will be router.
+            condition is already true on entry, no messages will be routed.
         timeout : float, optional
             Maximum number of seconds to route messages for.
 
