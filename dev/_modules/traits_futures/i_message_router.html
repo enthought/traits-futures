@@ -305,6 +305,33 @@
 <span class="sd">        ------</span>
 <span class="sd">        RuntimeError</span>
 <span class="sd">            If the router is not currently running.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageRouter.route_until"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.route_until">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manually drive the router until a given condition occurs, or timeout.</span>
+
+<span class="sd">        This is primarily used as part of a clean shutdown.</span>
+
+<span class="sd">        Note: this has the side-effect of moving the router from &quot;event loop&quot;</span>
+<span class="sd">        mode to &quot;manual&quot; mode. This mode switch is permanent, in the sense that</span>
+<span class="sd">        after this point, the router will no longer respond to pings: any</span>
+<span class="sd">        messages will need to be processed through this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        condition : callable</span>
+<span class="sd">            Zero-argument callable returning a boolean. When this condition</span>
+<span class="sd">            becomes true, this method will stop routing messages. If the</span>
+<span class="sd">            condition is already true on entry, no messages will be routed.</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum number of seconds to route messages for.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the condition did not become true before timeout.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div></div>
 </pre></div>
 

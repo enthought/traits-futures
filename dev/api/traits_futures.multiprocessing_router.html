@@ -213,6 +213,30 @@ messages, while the receiver remains in the foreground.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.route_until">
+<span class="sig-name descname"><span class="pre">route_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.route_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.route_until" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually drive the router until a given condition occurs, or timeout.</p>
+<p>This is primarily used as part of a clean shutdown.</p>
+<p>Note: this has the side-effect of moving the router from “event loop”
+mode to “manual” mode. This mode switch is permanent, in the sense that
+after this point, the router will no longer respond to pings: any
+messages will need to be processed through this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> (<em>callable</em>) – Zero-argument callable returning a boolean. When this condition
+becomes true, this method will stop routing messages. If the
+condition is already true on entry, no messages will be routed.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.start">
 <span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start routing messages.</p>

@@ -99,6 +99,7 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
@@ -318,8 +319,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">)</span><span class="si">}</span><span class="s2"> unclosed pipes&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unlink_from_event_loop</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -391,6 +391,52 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> closed pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2"> with receiver </span><span class="si">{</span><span class="n">receiver</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="MultithreadingRouter.route_until"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.route_until">[docs]</a>    <span class="k">def</span> <span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manually drive the router until a given condition occurs, or timeout.</span>
+
+<span class="sd">        This is primarily used as part of a clean shutdown.</span>
+
+<span class="sd">        Note: this has the side-effect of moving the router from &quot;event loop&quot;</span>
+<span class="sd">        mode to &quot;manual&quot; mode. This mode switch is permanent, in the sense that</span>
+<span class="sd">        after this point, the router will no longer respond to pings: any</span>
+<span class="sd">        messages will need to be processed through this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        condition : callable</span>
+<span class="sd">            Zero-argument callable returning a boolean. When this condition</span>
+<span class="sd">            becomes true, this method will stop routing messages. If the</span>
+<span class="sd">            condition is already true on entry, no messages will be routed.</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum number of seconds to route messages for.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the condition did not become true before timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unlink_from_event_loop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
+                <span class="n">time_remaining</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">time_remaining</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">time_remaining</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Success: condition became true.</span>
+                <span class="k">return</span>
+
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Timed out waiting for messages&quot;</span><span class="p">)</span></div>
+
     <span class="c1"># Public traits ###########################################################</span>
 
     <span class="c1">#: The event loop used to trigger message dispatch.</span>
@@ -415,8 +461,19 @@
 
     <span class="c1"># Private methods #########################################################</span>
 
-    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_unlink_from_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unlink this router from the event loop.</span>
+
+<span class="sd">        After this call, the router will no longer react to any pending</span>
+<span class="sd">        tasks on the event loop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
