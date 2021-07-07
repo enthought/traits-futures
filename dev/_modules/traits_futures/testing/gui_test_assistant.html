@@ -95,12 +95,25 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">HasStrictTraits</span>
+
 <span class="kn">from</span> <span class="nn">traits_futures.asyncio.event_loop</span> <span class="kn">import</span> <span class="n">AsyncioEventLoop</span>
 
 <span class="c1">#: Maximum timeout for blocking calls, in seconds. A successful test should</span>
 <span class="c1">#: never hit this timeout - it&#39;s there to prevent a failing test from hanging</span>
 <span class="c1">#: forever and blocking the rest of the test suite.</span>
 <span class="n">SAFETY_TIMEOUT</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+
+<span class="k">class</span> <span class="nc">_HasBool</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple HasTraits class with a single mutable trait.</span>
+
+<span class="sd">    Used in tests that need something mutable and observable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Simple boolean flag.</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="GuiTestAssistant"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant">[docs]</a><span class="k">class</span> <span class="nc">GuiTestAssistant</span><span class="p">:</span>
@@ -154,7 +167,25 @@
 <span class="sd">            If timeout is reached, regardless of whether the condition is</span>
 <span class="sd">            true or not at that point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GuiTestAssistant.exercise_event_loop"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.exercise_event_loop">[docs]</a>    <span class="k">def</span> <span class="nf">exercise_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Exercise the event loop.</span>
+
+<span class="sd">        Places a new task on the event loop and runs the event loop</span>
+<span class="sd">        until that task is complete. The goal is to flush out any other</span>
+<span class="sd">        tasks that might already be in event loop tasks queue.</span>
+
+<span class="sd">        Note that there&#39;s no guarantee that this will execute other pending</span>
+<span class="sd">        event loop tasks. So this method is useful for tests of the form</span>
+<span class="sd">        &quot;check that nothing bad happens as a result of other pending event</span>
+<span class="sd">        loop tasks&quot;, but it&#39;s not safe to use it for tests that *require*</span>
+<span class="sd">        pending event loop tasks to be processed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sentinel</span> <span class="o">=</span> <span class="n">_HasBool</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">setattr_soon</span><span class="p">(</span><span class="n">sentinel</span><span class="p">,</span> <span class="s2">&quot;flag&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="n">sentinel</span><span class="p">,</span> <span class="s2">&quot;flag&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">sentinel</span><span class="p">:</span> <span class="n">sentinel</span><span class="o">.</span><span class="n">flag</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
