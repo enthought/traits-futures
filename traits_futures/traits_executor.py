@@ -375,13 +375,27 @@ class TraitsExecutor(HasStrictTraits):
             self._initiate_stop()
         if self._internal_state == STOPPING:
             self._unlink_tasks()
-        if self._wait_for_tasks(timeout):
-            self._terminate()
-        else:
-            raise RuntimeError(
-                "Shutdown timed out; "
-                "f{len(self._wrappers)} tasks still running"
-            )
+
+        assert self._internal_state == _TERMINATING
+
+        if self._have_message_router:
+            # Route message until either all futures are complete, or
+            # timeout.
+            try:
+                self._message_router.route_until(
+                    lambda: not self._wrappers,
+                    timeout=timeout,
+                )
+            except RuntimeError as exc:
+                # Re-raise with a more targeted error message.
+                raise RuntimeError(
+                    "Shutdown timed out; "
+                    "f{len(self._wrappers)} tasks still running"
+                ) from exc
+
+        assert not self._wrappers
+
+        self._terminate()
 
     # State transitions #######################################################
 
@@ -505,8 +519,6 @@ class TraitsExecutor(HasStrictTraits):
         State: STOPPING -> _TERMINATING
         """
         if self._internal_state == STOPPING:
-            self._stop_router()
-            self._close_context()
             self._internal_state = _TERMINATING
         else:
             raise _StateTransitionError(
@@ -522,6 +534,8 @@ class TraitsExecutor(HasStrictTraits):
         State: _TERMINATING -> STOPPED
         """
         if self._internal_state == _TERMINATING:
+            self._stop_router()
+            self._close_context()
             self._shutdown_worker_pool()
             self._internal_state = STOPPED
         else:

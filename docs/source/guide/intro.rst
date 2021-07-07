@@ -302,10 +302,6 @@ If called on an executor in |STOPPED| state, |shutdown| simply returns
 without taking any action. If called on an executor in |STOPPING| state,
 any of the above actions that have not already been taken will be taken.
 
-Note that because of the unlinking of the background tasks and their
-associated futures, background tasks that have been cancelled will leave their
-associated futures in |CANCELLING| state. Those futures will never reach
-|CANCELLED| state, even under a running event loop.
 
 Shutdown with a timeout
 ~~~~~~~~~~~~~~~~~~~~~~~
