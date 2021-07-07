@@ -12,7 +12,7 @@
 Tests for the GuiTestAssistant.
 """
 import time
-import unittest
+import unittest.mock
 
 from traits.api import Event, HasStrictTraits
 
@@ -127,3 +127,17 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
             condition=lambda executor: executor.stopped,
         )
         self.assertTrue(executor.stopped)
+
+    def test_exercise_event_loop(self):
+        # There's little that we can usefully test here: exercising the event
+        # loop is *likely* to flush out pending events, but there are no
+        # *guaranteed* observable changes from exercising the event loop. So we
+        # merely call the method to check that it exists, and check that
+        # the event loop helper's run_until was called as a side-effect.
+        with unittest.mock.patch.object(
+            self._event_loop_helper,
+            "run_until",
+            wraps=self._event_loop_helper.run_until,
+        ) as mock_run_until:
+            self.exercise_event_loop()
+        mock_run_until.assert_called()

@@ -17,7 +17,7 @@ import queue
 import threading
 import weakref
 
-from traits.api import Bool, Event, HasStrictTraits, Int
+from traits.api import Event, HasStrictTraits, Int
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -180,16 +180,7 @@ class IPingeeTests:
         # There shouldn't be any ping-related activity queued on the event
         # loop at this point. We exercise the event loop, in the hope
         # of flushing out any such activity.
-
-        class Sentinel(HasStrictTraits):
-            #: Simple boolean flag.
-            flag = Bool(False)
-
-        sentinel = Sentinel()
-
-        self._event_loop_helper.setattr_soon(sentinel, "flag", True)
-        self.run_until(sentinel, "flag", lambda sentinel: sentinel.flag)
-
+        self.exercise_event_loop()
         self.assertEqual(listener.ping_count, 0)
 
     def test_disconnect_removes_callback_reference(self):

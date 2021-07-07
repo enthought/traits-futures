@@ -463,24 +463,6 @@ class TraitsExecutorTests:
 
     # Helper methods and assertions ###########################################
 
-    def exercise_event_loop(self):
-        """
-        Exercise the event loop.
-
-        Places a new task on the event loop and runs the event loop
-        until that task is complete. The goal is to flush out any other
-        tasks that might already be in event loop tasks queue.
-        """
-
-        class Sentinel(HasStrictTraits):
-            #: Simple boolean flag.
-            flag = Bool(False)
-
-        sentinel = Sentinel()
-
-        self._event_loop_helper.setattr_soon(sentinel, "flag", True)
-        self.run_until(sentinel, "flag", lambda sentinel: sentinel.flag)
-
     def wait_until_stopped(self, executor):
         """
         Wait for the executor to reach STOPPED state.
