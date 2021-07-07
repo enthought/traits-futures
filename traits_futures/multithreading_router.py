@@ -17,6 +17,7 @@ import collections.abc
 import itertools
 import logging
 import queue
+import time
 
 from traits.api import (
     Any,
@@ -236,8 +237,7 @@ class MultithreadingRouter(HasRequiredTraits):
         if self._receivers:
             logger.warning(f"{self} has {len(self._receivers)} unclosed pipes")
 
-        self._pingee.disconnect()
-        self._pingee = None
+        self._unlink_from_event_loop()
 
         self._message_queue = None
 
@@ -309,6 +309,52 @@ class MultithreadingRouter(HasRequiredTraits):
             f"{self} closed pipe #{connection_id} with receiver {receiver}"
         )
 
+    def route_until(self, condition, timeout=None):
+        """
+        Manually drive the router until a given condition occurs, or timeout.
+
+        This is primarily used as part of a clean shutdown.
+
+        Note: this has the side-effect of moving the router from "event loop"
+        mode to "manual" mode. This mode switch is permanent, in the sense that
+        after this point, the router will no longer respond to pings: any
+        messages will need to be processed through this function.
+
+        Parameters
+        ----------
+        condition : callable
+            Zero-argument callable returning a boolean. When this condition
+            becomes true, this method will stop routing messages. If the
+            condition is already true on entry, no messages will be routed.
+        timeout : float, optional
+            Maximum number of seconds to route messages for.
+
+        Raises
+        ------
+        RuntimeError
+            If the condition did not become true before timeout.
+        """
+        self._unlink_from_event_loop()
+
+        if timeout is None:
+            while not condition():
+                self._route_message()
+        else:
+            end_time = time.monotonic() + timeout
+            while not condition():
+                time_remaining = end_time - time.monotonic()
+                if time_remaining < 0.0:
+                    break
+                try:
+                    self._route_message(timeout=time_remaining)
+                except queue.Empty:
+                    break
+            else:
+                # Success: condition became true.
+                return
+
+            raise RuntimeError("Timed out waiting for messages")
+
     # Public traits ###########################################################
 
     #: The event loop used to trigger message dispatch.
@@ -333,8 +379,19 @@ class MultithreadingRouter(HasRequiredTraits):
 
     # Private methods #########################################################
 
-    def _route_message(self):
-        connection_id, message = self._message_queue.get()
+    def _unlink_from_event_loop(self):
+        """
+        Unlink this router from the event loop.
+
+        After this call, the router will no longer react to any pending
+        tasks on the event loop.
+        """
+        if self._pingee is not None:
+            self._pingee.disconnect()
+            self._pingee = None
+
+    def _route_message(self, timeout=None):
+        connection_id, message = self._message_queue.get(timeout=timeout)
         try:
             receiver = self._receivers[connection_id]
         except KeyError:

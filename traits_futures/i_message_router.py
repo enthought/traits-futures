@@ -224,3 +224,30 @@ class IMessageRouter(Interface):
         RuntimeError
             If the router is not currently running.
         """
+
+    @abc.abstractmethod
+    def route_until(self, condition, timeout=None):
+        """
+        Manually drive the router until a given condition occurs, or timeout.
+
+        This is primarily used as part of a clean shutdown.
+
+        Note: this has the side-effect of moving the router from "event loop"
+        mode to "manual" mode. This mode switch is permanent, in the sense that
+        after this point, the router will no longer respond to pings: any
+        messages will need to be processed through this function.
+
+        Parameters
+        ----------
+        condition : callable
+            Zero-argument callable returning a boolean. When this condition
+            becomes true, this method will stop routing messages. If the
+            condition is already true on entry, no messages will be routed.
+        timeout : float, optional
+            Maximum number of seconds to route messages for.
+
+        Raises
+        ------
+        RuntimeError
+            If the condition did not become true before timeout.
+        """

@@ -15,6 +15,7 @@ Common tests for testing implementations of the IMessageRouter interface.
 import contextlib
 import logging
 import threading
+import time
 
 from traits.api import Any, HasStrictTraits, Instance, List, observe, Str
 
@@ -26,7 +27,7 @@ from traits_futures.i_parallel_context import IParallelContext
 SAFETY_TIMEOUT = 10.0
 
 
-def send_messages(sender, messages):
+def send_messages(sender, messages, message_delay=None):
     """
     Send a sequence of messages using the given sender.
 
@@ -36,10 +37,14 @@ def send_messages(sender, messages):
         The sender to use to send messages.
     messages : list
         List of objects to send.
+    message_delay : float, optional
+        If given, the time to sleep before sending each message.
     """
     sender.start()
     try:
         for message in messages:
+            if message_delay is not None:
+                time.sleep(message_delay)
             sender.send(message)
     finally:
         sender.stop()
@@ -283,6 +288,113 @@ class IMessageRouterTests:
                 sender.stop()
                 with self.assertRaises(RuntimeError):
                     sender.start()
+
+    def test_route_until(self):
+        # When we've sent messages (e.g., from a background thread), we can
+        # drive the router manually to receive those messages.
+
+        messages = ["abc", "def"]
+
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+                    worker_pool.submit(send_messages, sender, messages)
+                    router.route_until(
+                        lambda: len(listener.messages) >= len(messages),
+                        timeout=SAFETY_TIMEOUT,
+                    )
+                finally:
+                    router.close_pipe(receiver)
+
+        self.assertEqual(listener.messages, messages)
+
+    def test_route_until_without_timeout(self):
+        # This test is mildly dangerous: if something goes wrong, it could
+        # hang indefinitely. xref: enthought/traits-futures#310
+
+        messages = ["abc"]
+
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+
+                    worker_pool.submit(send_messages, sender, messages)
+
+                    router.route_until(
+                        lambda: len(listener.messages) >= len(messages),
+                    )
+                finally:
+                    router.close_pipe(receiver)
+
+        self.assertEqual(listener.messages, messages)
+
+    def test_route_until_timeout(self):
+        with self.started_router() as router:
+            start_time = time.monotonic()
+            with self.assertRaises(RuntimeError):
+                router.route_until(lambda: False, timeout=0.1)
+            actual_timeout = time.monotonic() - start_time
+
+        self.assertLess(actual_timeout, 1.0)
+
+    def test_route_until_timeout_with_repeated_messages(self):
+        # Check for one plausible variety of implementation bug: re-using
+        # the original timeout on each message get operation instead of
+        # re-calculating the time to wait.
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+
+                    # Send one seconds' worth of messages, but timeout after
+                    # 0.1 seconds.
+                    worker_pool.submit(
+                        send_messages, sender, range(20), message_delay=0.05
+                    )
+                    with self.assertRaises(RuntimeError):
+                        router.route_until(lambda: False, timeout=0.1)
+                finally:
+                    router.close_pipe(receiver)
+
+        # With a timeout of 0.1 and only one message sent every 0.05 seconds,
+        # we should have got at most 2 messages before timeout. To avoid
+        # spurious failures due to timing variations, we allow up to 4.
+        self.assertLessEqual(len(listener.messages), 4)
+
+    def test_route_until_second_call_after_timeout(self):
+        with self.started_router() as router:
+            with self.assertRaises(RuntimeError):
+                router.route_until(lambda: False, timeout=0.1)
+            # Just check that the first call hasn't put the router into
+            # an unusable state.
+            router.route_until(lambda: True, timeout=SAFETY_TIMEOUT)
+
+    def test_event_loop_after_route_until(self):
+        # This tests a potentially problematic situation:
+        # - route_until processes at least one message manually
+        # - the 'ping' for that message is still on the event loop
+        # - when the event loop is started, it tries to get that same message
+        #   from the message queue, but no such message exists, so we end
+        #   up blocking forever.
+        messages = ["abc"]
+
+        with self.context.worker_pool() as worker_pool:
+            with self.started_router() as router:
+                sender, receiver = router.pipe()
+                try:
+                    listener = ReceiverListener(receiver=receiver)
+                    worker_pool.submit(send_messages, sender, messages)
+                    router.route_until(
+                        lambda: len(listener.messages) >= len(messages),
+                    )
+                    self.exercise_event_loop()
+                finally:
+                    router.close_pipe(receiver)
 
     # Helper functions and assertions
 
