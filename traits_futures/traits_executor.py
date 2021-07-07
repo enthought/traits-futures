@@ -378,7 +378,7 @@ class TraitsExecutor(HasStrictTraits):
         assert self._internal_state == _TERMINATING
 
         if self._have_message_router:
-            # Route message until either all futures are complete, or
+            # Route messages until either all futures are complete, or
             # timeout.
             try:
                 self._message_router.route_until(
