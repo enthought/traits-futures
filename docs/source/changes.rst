@@ -15,6 +15,15 @@ Release 0.3.0
 
 Release date: XXXX-XX-XX
 
+Features
+~~~~~~~~
+
+* Multiprocessing support: the :class:`~.TraitsExecutor` can now submit
+  background tasks to a process pool instead of a thread pool. Note: since this
+  support has not yet been tested in the wild, this support is provisional -
+  the API and the capabilities may change in a future release. Feedback is
+  welcome!
+
 Backwards-incompatible changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
