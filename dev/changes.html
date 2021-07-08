@@ -86,6 +86,16 @@
   <section id="release-0-3-0">
 <h1>Release 0.3.0<a class="headerlink" href="#release-0-3-0" title="Permalink to this headline">¶</a></h1>
 <p>Release date: XXXX-XX-XX</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Multiprocessing support: the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> can now submit
+background tasks to a process pool instead of a thread pool. Note: since this
+support has not yet been tested in the wild, this support is provisional -
+the API and the capabilities may change in a future release. Feedback is
+welcome!</p></li>
+</ul>
+</section>
 <section id="backwards-incompatible-changes">
 <h2>Backwards-incompatible changes<a class="headerlink" href="#backwards-incompatible-changes" title="Permalink to this headline">¶</a></h2>
 <p>The following backwards-incompatible changes may affect advanced users
@@ -132,8 +142,8 @@ will be removed in a future release. See the Changes section below for more
 details.</p>
 <p>Detailed changes follow. Note that the list below is not exhaustive: many
 more minor PRs have been omitted.</p>
-<section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<section id="id1">
+<h2>Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Users can now easily create their own background task types to supplement
 the provided task types (background calls, background iterations and
@@ -235,15 +245,15 @@ under ‘User Documentation’. (#191)</p></li>
 <p>This is a bugfix release, in preparation for the first public release to PyPI.
 There are no functional or API changes to the core library since 0.1.0 in this
 release.</p>
-<section id="id1">
-<h2>Fixes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<section id="id2">
+<h2>Fixes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
 in #118)</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>Changes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<section id="id3">
+<h2>Changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add copyright headers to all Python and reST files. (#114, backported in
 #118)</p></li>
@@ -275,12 +285,13 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Release 0.3.0</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#backwards-incompatible-changes">Backwards-incompatible changes</a></li>
 <li><a class="reference internal" href="#other-changes">Other Changes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-2-0">Release 0.2.0</a><ul>
-<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#id1">Features</a></li>
 <li><a class="reference internal" href="#changes">Changes</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
@@ -289,8 +300,8 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-1-1">Release 0.1.1</a><ul>
-<li><a class="reference internal" href="#id1">Fixes</a></li>
-<li><a class="reference internal" href="#id2">Changes</a></li>
+<li><a class="reference internal" href="#id2">Fixes</a></li>
+<li><a class="reference internal" href="#id3">Changes</a></li>
 <li><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>

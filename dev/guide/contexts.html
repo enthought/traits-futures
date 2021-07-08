@@ -90,6 +90,12 @@
             
   <section id="contexts-and-multiprocessing">
 <h1>Contexts and multiprocessing<a class="headerlink" href="#contexts-and-multiprocessing" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The multiprocessing support in Traits Futures is provisional. The API
+is subject to change in future releases. Feedback on the feature is
+welcome.</p>
+</div>
 <p>By default, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> submits its background tasks to a thread pool.
 In some cases, for example in the case of multiple heavily CPU-bound background
 tasks, it may be desirable to run the background tasks in separate processes
