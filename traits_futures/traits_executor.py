@@ -303,12 +303,8 @@ class TraitsExecutor(HasStrictTraits):
         cancel_event = self._context.event()
 
         sender, receiver = self._message_router.pipe()
-        try:
-            runner = task.background_task()
-            future = task.future()
-        except Exception:
-            self._message_router.close_pipe(receiver)
-            raise
+        runner = task.background_task()
+        future = task.future()
 
         background_task_wrapper = BackgroundTaskWrapper(
             runner, sender, cancel_event.is_set
