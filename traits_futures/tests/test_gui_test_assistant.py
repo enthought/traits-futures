@@ -24,6 +24,11 @@ from traits_futures.api import (
 )
 from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 
+#: Maximum timeout for blocking calls, in seconds. A successful test should
+#: never hit this timeout - it's there to prevent a failing test from hanging
+#: forever and blocking the rest of the test suite.
+SAFETY_TIMEOUT = 5.0
+
 
 class Dummy(HasStrictTraits):
     never_fired = Event()
@@ -80,12 +85,7 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
             )
         actual_timeout = time.monotonic() - start_time
 
-        executor.stop()
-        self.run_until(
-            executor,
-            "stopped",
-            condition=lambda executor: executor.stopped,
-        )
+        executor.shutdown(timeout=SAFETY_TIMEOUT)
         self.assertLess(actual_timeout, 1.0)
 
     def test_run_until_timeout_with_true_condition(self):

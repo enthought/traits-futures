@@ -26,6 +26,11 @@ from traits_futures.tests.traits_executor_tests import (
     TraitsExecutorTests,
 )
 
+#: Maximum timeout for blocking calls, in seconds. A successful test should
+#: never hit this timeout - it's there to prevent a failing test from hanging
+#: forever and blocking the rest of the test suite.
+SAFETY_TIMEOUT = 5.0
+
 
 class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
@@ -33,10 +38,6 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         self._context = MultiprocessingContext()
 
     def tearDown(self):
-        if hasattr(self, "executor"):
-            self.executor.stop()
-            self.wait_until_stopped(self.executor)
-            del self.executor
         self._context.close()
         GuiTestAssistant.tearDown(self)
 
@@ -47,8 +48,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             event_loop=self._event_loop,
         )
         self.assertEqual(executor._worker_pool._max_workers, 11)
-        executor.stop()
-        self.wait_until_stopped(executor)
+        executor.shutdown(timeout=SAFETY_TIMEOUT)
 
     def test_max_workers_mutually_exclusive_with_worker_pool(self):
         with self.temporary_worker_pool() as worker_pool:
@@ -92,8 +92,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         )
         worker_pool = executor._worker_pool
 
-        executor.stop()
-        self.wait_until_stopped(executor)
+        executor.shutdown(timeout=SAFETY_TIMEOUT)
 
         # Check that the internally-created worker pool has been shut down.
         with self.assertRaises(RuntimeError):
@@ -107,8 +106,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
                     context=self._context,
                     event_loop=self._event_loop,
                 )
-            executor.stop()
-            self.wait_until_stopped(executor)
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
 
         # Check we're using the right stack level in the warning.
         _, _, this_module = __name__.rpartition(".")
@@ -121,8 +119,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
                 context=self._context,
                 event_loop=self._event_loop,
             )
-            executor.stop()
-            self.wait_until_stopped(executor)
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
 
             # Check that the the shared worker pool is still usable.
             cf_future = worker_pool.submit(int)
@@ -154,8 +151,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         try:
             yield executor
         finally:
-            executor.stop()
-            self.wait_until_stopped(executor)
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
 
 
 class TestTraitsExecutor(
@@ -172,10 +168,7 @@ class TestTraitsExecutor(
 
     def tearDown(self):
         del self.listener
-        if self.executor.running:
-            self.executor.stop()
-        if not self.executor.stopped:
-            self.wait_until_stopped(self.executor)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
         del self.executor
         self._context.close()
         del self._context
