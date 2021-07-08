@@ -273,8 +273,7 @@ class BackgroundCallTests:
         Wait for the executor to stop.
         """
         executor = self.executor
-        executor.stop()
-        self.run_until(executor, "stopped", lambda executor: executor.stopped)
+        executor.shutdown(timeout=TIMEOUT)
         del self.executor
 
     def wait_until_done(self, future):
