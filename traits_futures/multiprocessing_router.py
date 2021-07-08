@@ -234,11 +234,9 @@ class MultiprocessingRouter(HasRequiredTraits):
             raise RuntimeError("Router is already running")
 
         self._local_message_queue = queue.Queue()
+        self._link_to_event_loop()
+
         self._process_message_queue = self.manager.Queue()
-
-        self._pingee = self.event_loop.pingee(on_ping=self._route_message)
-        self._pingee.connect()
-
         self._monitor_thread = threading.Thread(
             target=monitor_queue,
             args=(
@@ -433,21 +431,45 @@ class MultiprocessingRouter(HasRequiredTraits):
     #: Receiver for the "message_sent" signal.
     _pingee = Instance(IPingee)
 
+    #: Bool keeping track of whether we're linked to the event loop
+    #: or not.
+    _linked = Bool(False)
+
     #: Router status: True if running, False if stopped.
     _running = Bool(False)
 
     # Private methods #########################################################
 
+    def _link_to_event_loop(self):
+        """
+        Link this router to the event loop.
+        """
+        if self._linked:
+            # Raise, because lifetime management of self._pingee is delicate,
+            # so if we ever get here then something likely needs fixing.
+            raise RuntimeError("Already linked to the event loop")
+
+        self._pingee = self.event_loop.pingee(on_ping=self._route_message)
+        self._pingee.connect()
+        self._linked = True
+
     def _unlink_from_event_loop(self):
         """
-        Unlink this router from the event loop.
+        Unlink this router from the event loop, if it's linked.
 
         After this call, the router will no longer react to any pending
         tasks on the event loop.
         """
-        if self._pingee is not None:
+        if self._linked:
+            # Note: it might be tempting to set self._pingee to None at this
+            # point, and to use the None-ness (or not) of self._pingee to avoid
+            # needing self._linked. But it's important not to do so: we need to
+            # be sure that the main thread reference to the Pingee outlives any
+            # reference on background threads. Otherwise we end up collection a
+            # Qt object (the Pingee) on a thread other than the one it was
+            # created on, and that's unsafe in general.
             self._pingee.disconnect()
-            self._pingee = None
+            self._linked = False
 
     def _route_message(self, timeout=None):
         connection_id, message = self._local_message_queue.get(timeout=timeout)
