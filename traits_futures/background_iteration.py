@@ -107,7 +107,7 @@ class BackgroundIteration(HasStrictTraits):
         return IterationBackgroundTask(
             callable=self.callable,
             args=self.args,
-            kwargs=self.kwargs.copy(),
+            kwargs=self.kwargs,
         )
 
 

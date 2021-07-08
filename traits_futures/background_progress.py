@@ -88,10 +88,12 @@ class ProgressBackgroundTask:
 
     def __call__(self, send, cancelled):
         progress = ProgressReporter(send=send, cancelled=cancelled)
-        self.kwargs["progress"] = progress.report
-
         try:
-            return self.callable(*self.args, **self.kwargs)
+            return self.callable(
+                *self.args,
+                **self.kwargs,
+                progress=progress.report,
+            )
         except ProgressCancelled:
             return None
 
@@ -148,13 +150,10 @@ class BackgroundProgress(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        if "progress" in self.kwargs:
-            raise TypeError("progress may not be passed as a named argument")
-
         return ProgressBackgroundTask(
             callable=self.callable,
             args=self.args,
-            kwargs=self.kwargs.copy(),
+            kwargs=self.kwargs,
         )
 
 
@@ -182,5 +181,8 @@ def submit_progress(executor, callable, *args, **kwargs):
     future : ProgressFuture
         Object representing the state of the background task.
     """
+    if "progress" in kwargs:
+        raise TypeError("progress may not be passed as a named argument")
+
     task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs)
     return executor.submit(task)
