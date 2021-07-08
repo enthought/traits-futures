@@ -32,7 +32,7 @@ def slow_square(n):
 
 class QuickStartExample(HasStrictTraits):
     #: The executor to submit tasks to.
-    executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
     future = Instance(CallFuture)
@@ -58,7 +58,7 @@ class QuickStartExample(HasStrictTraits):
         input = self.input
         self.input_for_calculation = self.input
         self.message = "Calculating square of {} ...".format(input)
-        self.future = submit_call(self.executor, slow_square, input)
+        self.future = submit_call(self.traits_executor, slow_square, input)
         # Keep a record so that we can present messages accurately.
         self.input_for_calculation = input
 
@@ -80,4 +80,9 @@ class QuickStartExample(HasStrictTraits):
     )
 
 
-QuickStartExample().configure_traits()
+if __name__ == "__main__":
+    traits_executor = TraitsExecutor()
+    try:
+        QuickStartExample(traits_executor=traits_executor).configure_traits()
+    finally:
+        traits_executor.shutdown()

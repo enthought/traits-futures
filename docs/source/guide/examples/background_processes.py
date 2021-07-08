@@ -23,7 +23,16 @@ dependencies.
 import random
 import time
 
-from traits.api import Button, Dict, Instance, List, Property, Range, Str
+from traits.api import (
+    Button,
+    Dict,
+    HasStrictTraits,
+    Instance,
+    List,
+    Property,
+    Range,
+    Str,
+)
 from traits_futures.api import (
     CallFuture,
     CANCELLED,
@@ -37,7 +46,6 @@ from traits_futures.api import (
     WAITING,
 )
 from traitsui.api import (
-    Handler,
     HGroup,
     Item,
     TabularAdapter,
@@ -100,7 +108,7 @@ class JobTabularAdapter(TabularAdapter):
         return state_text
 
 
-class SquaringHelper(Handler):
+class SquaringHelper(HasStrictTraits):
     #: The Traits executor for the background jobs.
     traits_executor = Instance(TraitsExecutor)
 
@@ -168,7 +176,7 @@ def main():
         view = SquaringHelper(traits_executor=traits_executor)
         view.configure_traits()
     finally:
-        traits_executor.stop()
+        traits_executor.shutdown()
         context.close()
 
 
