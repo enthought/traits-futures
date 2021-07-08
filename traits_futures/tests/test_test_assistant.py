@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the GuiTestAssistant.
+Tests for the TestAssistant.
 """
 import time
 import unittest.mock
@@ -22,7 +22,7 @@ from traits_futures.api import (
     submit_call,
     TraitsExecutor,
 )
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 
 #: Maximum timeout for blocking calls, in seconds. A successful test should
 #: never hit this timeout - it's there to prevent a failing test from hanging
@@ -42,12 +42,12 @@ def slow_return():
     return 1729
 
 
-class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
+class TestTestAssistant(TestAssistant, unittest.TestCase):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
 
     def tearDown(self):
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
     def test_run_until_timeout(self):
         # Trait never fired, condition never true.
