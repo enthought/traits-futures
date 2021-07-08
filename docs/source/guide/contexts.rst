@@ -12,6 +12,11 @@
 Contexts and multiprocessing
 ============================
 
+.. note::
+   The multiprocessing support in Traits Futures is provisional. The API
+   is subject to change in future releases. Feedback on the feature is
+   welcome.
+
 By default, the |TraitsExecutor| submits its background tasks to a thread pool.
 In some cases, for example in the case of multiple heavily CPU-bound background
 tasks, it may be desirable to run the background tasks in separate processes
