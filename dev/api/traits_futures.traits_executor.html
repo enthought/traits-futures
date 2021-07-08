@@ -137,15 +137,13 @@ stopped or stopping.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.shutdown">
 <span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shut this executor down, abandoning all currently executing futures.</p>
-<p>All currently executing futures that are cancellable will be cancelled.</p>
-<p>This method is blocking: it waits for associated background tasks
-to complete, and if this executor owns its worker pool, it waits
-for the worker pool to be shut down.</p>
-<p>No further updates to a future’s state will occur after this method
-is called. In particular, any future that’s cancelled by calling this
-method will remain in CANCELLING state, and its state will never be
-updated to CANCELLED.</p>
+<dd><p>Wait for all tasks to complete and then shut this executor down.</p>
+<p>All waiting or executing background tasks that are cancellable will be
+cancelled, and then this executor will wait for all tasks to complete.
+If a timeout is given and that timeout is reached before all tasks
+complete, then <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> will be raised and the executor will
+remain in <a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state. Otherwise, on return from this
+method the executor will be in <a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state</p>
 <p>This method may be called at any time. If called on an executor
 that’s already stopped, this method does nothing.</p>
 <dl class="field-list simple">
@@ -155,8 +153,7 @@ If not given, this method will wait indefinitely.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If a timeout is given, and the background tasks fail to complete
-    within the given timeout. In this case the executor will remain
-    in STOPPING state.</p>
+    within the given timeout.</p>
 </dd>
 </dl>
 </dd></dl>
