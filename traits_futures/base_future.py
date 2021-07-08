@@ -278,6 +278,7 @@ class BaseFuture(HasStrictTraits):
             self._result = result
             self._internal_state = COMPLETED
         elif self._internal_state == _CANCELLING_AFTER_STARTED:
+            self._cancel = None
             self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
@@ -301,6 +302,7 @@ class BaseFuture(HasStrictTraits):
             self._exception = exception_info
             self._internal_state = FAILED
         elif self._internal_state == _CANCELLING_AFTER_STARTED:
+            self._cancel = None
             self._internal_state = CANCELLED
         else:
             raise _StateTransitionError(
