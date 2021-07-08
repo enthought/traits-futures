@@ -113,7 +113,7 @@ class Pinger:
         Disconnect from the ping receiver. No pings should be sent
         after calling this function.
         """
-        pass
+        del self.pingee
 
     def ping(self):
         """

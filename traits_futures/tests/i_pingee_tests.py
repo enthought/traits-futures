@@ -183,6 +183,19 @@ class IPingeeTests:
         self.exercise_event_loop()
         self.assertEqual(listener.ping_count, 0)
 
+    def test_pinger_disconnect_removes_pingee_reference(self):
+
+        with self.connected_pingee(on_ping=lambda: None) as pingee:
+            pinger = pingee.pinger()
+            pinger.connect()
+
+        finalizer = weakref.finalize(pingee, lambda: None)
+        self.assertTrue(finalizer.alive)
+        del pingee
+        # This should remove any remaining reference to the pingee.
+        pinger.disconnect()
+        self.assertFalse(finalizer.alive)
+
     def test_disconnect_removes_callback_reference(self):
         # Implementation detail: after disconnection, the pingee should
         # no longer hold a reference to its callback.
