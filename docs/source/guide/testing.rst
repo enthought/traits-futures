@@ -46,23 +46,22 @@ Some points of interest in the above example:
   communications from the background task have completed. We do that by using
   the |assertEventuallyTrueInGui| method. At that point, we can check that the
   result of the future is the expected one.
-- We also need to shut down the executor itself at the end of the test. Note
-  that the |stop| method is not blocking and does not actually stop the
-  executor - instead, it requests cancellation of all running futures and
-  prevents new jobs from being scheduled. For the executor to eventually reach
-  the |STOPPED| state, the GUI event loop must again be running, so we make a
-  second use of |assertEventuallyTrueInGui| in the ``tearDown`` method in the
-  example.
+- We also need to shut down the executor itself at the end of the test; we
+  use the |shutdown| method for this.
+- In all potentially blocking calls, we provide a timeout. This should help
+  prevent a failing test from blocking the entire test run if something goes
+  wrong. However, note that if the timeout on the |shutdown| method fails then
+  in addition to the test failing you may see segmentation faults or other
+  peculiar side-effects, especially at process termination time, as a result of
+  pieces of cleanup occurring out of order.
 
 If you don't need the result of the future (for example because you're using
 the future for its side-effect rather than to perform a computation) then it's
-safe to remove the wait for ``future.done``, so long as you keep the |stop|
-call and then wait for the executor to stop: the executor won't reach |STOPPED|
-state until all futures have completed.
+safe to remove the wait for ``future.done``, so long as you keep the |shutdown|
+call.
 
 
 .. |assertEventuallyTrueInGui| replace:: :meth:`pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui`
 .. |GuiTestAssistant| replace:: :class:`pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant`
 
-.. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
-.. |STOPPED| replace:: :meth:`~traits_futures.traits_executor.STOPPED`
+.. |shutdown| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.shutdown`

@@ -40,7 +40,7 @@ a multiprocessing context::
             view = SquaringHelper(traits_executor=traits_executor)
             view.configure_traits()
         finally:
-            traits_executor.stop()
+            traits_executor.shutdown()
             context.close()
 
 Here's a :download:`complete TraitsUI example
