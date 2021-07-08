@@ -179,7 +179,7 @@ however, that the GUI will remain responsive and usable during those seconds.</p
 
 <span class="k">class</span> <span class="nc">NonInterruptibleTaskExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
-    <span class="n">executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: The future object returned on task submission.</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
@@ -202,7 +202,7 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="k">def</span> <span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating π&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_count</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_count</span>
         <span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
@@ -242,7 +242,13 @@ however, that the GUI will remain responsive and usable during those seconds.</p
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">NonInterruptibleTaskExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">NonInterruptibleTaskExample</span><span class="p">(</span>
+            <span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>However, with two simple changes, we can allow the <code class="docutils literal notranslate"><span class="pre">approximate_pi</span></code> function
@@ -360,7 +366,7 @@ making use of the above.</p>
 
 <span class="k">class</span> <span class="nc">InterruptibleTaskExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
-    <span class="n">executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: The future object returned on task submission.</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
@@ -383,7 +389,7 @@ making use of the above.</p>
     <span class="k">def</span> <span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating π&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_iteration</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_count</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_count</span>
         <span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
@@ -427,7 +433,13 @@ making use of the above.</p>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">InterruptibleTaskExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">InterruptibleTaskExample</span><span class="p">(</span>
+            <span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

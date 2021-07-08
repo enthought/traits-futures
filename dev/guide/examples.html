@@ -115,7 +115,16 @@ inputs.</p>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Range</span><span class="p">,</span> <span class="n">Str</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Button</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Property</span><span class="p">,</span>
+    <span class="n">Range</span><span class="p">,</span>
+    <span class="n">Str</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CallFuture</span><span class="p">,</span>
     <span class="n">CANCELLED</span><span class="p">,</span>
@@ -128,7 +137,6 @@ inputs.</p>
     <span class="n">WAITING</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Handler</span><span class="p">,</span>
     <span class="n">HGroup</span><span class="p">,</span>
     <span class="n">Item</span><span class="p">,</span>
     <span class="n">TabularAdapter</span><span class="p">,</span>
@@ -191,9 +199,9 @@ inputs.</p>
         <span class="k">return</span> <span class="n">state_text</span>
 
 
-<span class="k">class</span> <span class="nc">SquaringHelper</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SquaringHelper</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The Traits executor for the background jobs.</span>
-    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: List of the submitted jobs, for display purposes.</span>
     <span class="n">current_futures</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">CallFuture</span><span class="p">))</span>
@@ -209,11 +217,6 @@ inputs.</p>
 
     <span class="c1">#: Value that we&#39;ll square.</span>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">is_ok</span><span class="p">):</span>
-        <span class="c1"># Cancel all jobs at shutdown.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closed</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">is_ok</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_square_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
@@ -261,8 +264,12 @@ inputs.</p>
             <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)-8.8s</span><span class="s2"> [</span><span class="si">%(name)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">view</span> <span class="o">=</span> <span class="n">SquaringHelper</span><span class="p">()</span>
-    <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">SquaringHelper</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -306,7 +313,7 @@ GUI as the background computation progresses.</p>
     <span class="n">submit_progress</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Handler</span><span class="p">,</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
 
 
 <span class="k">class</span> <span class="nc">ProgressDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">):</span>
@@ -449,13 +456,13 @@ GUI as the background computation progresses.</p>
     <span class="k">return</span> <span class="n">prime_count</span>
 
 
-<span class="k">class</span> <span class="nc">PrimeCounter</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PrimeCounter</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    UI to compute primes less than a given number.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: The Traits executor for the background jobs.</span>
-    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: Calculation future.</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ProgressFuture</span><span class="p">)</span>
@@ -477,11 +484,6 @@ GUI as the background computation progresses.</p>
 
     <span class="c1">#: Limit used for most recent run.</span>
     <span class="n">_last_limit</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">is_ok</span><span class="p">):</span>
-        <span class="c1"># Stopping the executor cancels any running future.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closed</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">is_ok</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_count_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span>
@@ -530,8 +532,12 @@ GUI as the background computation progresses.</p>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">view</span> <span class="o">=</span> <span class="n">PrimeCounter</span><span class="p">()</span>
-    <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">PrimeCounter</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -568,6 +574,7 @@ updated live with each new value reported by the background task.</p>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">Float</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
     <span class="n">Instance</span><span class="p">,</span>
     <span class="n">Int</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
@@ -580,7 +587,7 @@ updated live with each new value reported by the background task.</p>
     <span class="n">submit_iteration</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Handler</span><span class="p">,</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
 
 
 <span class="k">def</span> <span class="nf">pi_iterations</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">):</span>
@@ -623,13 +630,13 @@ updated live with each new value reported by the background task.</p>
         <span class="k">yield</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">approximation</span><span class="p">,</span> <span class="n">error</span>
 
 
-<span class="k">class</span> <span class="nc">PiIterator</span><span class="p">(</span><span class="n">Handler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PiIterator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    View and plot of pi approximation running in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: The Traits executor for the background jobs.</span>
-    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: Chunk size to use for the approximations.</span>
     <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
@@ -660,11 +667,6 @@ updated live with each new value reported by the background task.</p>
 
     <span class="c1">#: The plot.</span>
     <span class="n">plot</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Plot</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">is_ok</span><span class="p">):</span>
-        <span class="c1"># Stopping the executor cancels any running future.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closed</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">is_ok</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_approximate_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_iteration</span><span class="p">(</span>
@@ -741,8 +743,12 @@ updated live with each new value reported by the background task.</p>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">view</span> <span class="o">=</span> <span class="n">PiIterator</span><span class="p">()</span>
-    <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">PiIterator</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

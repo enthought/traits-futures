@@ -146,7 +146,7 @@ minimal TraitsUI application that fires off a background computation when its
 
 <span class="k">class</span> <span class="nc">QuickStartExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
-    <span class="n">executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: The future object returned on task submission.</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">CallFuture</span><span class="p">)</span>
@@ -172,7 +172,7 @@ minimal TraitsUI application that fires off a background computation when its
         <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating square of </span><span class="si">{}</span><span class="s2"> ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
         <span class="c1"># Keep a record so that we can present messages accurately.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="nb">input</span>
 
@@ -194,7 +194,12 @@ minimal TraitsUI application that fires off a background computation when its
     <span class="p">)</span>
 
 
-<span class="n">QuickStartExample</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">QuickStartExample</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

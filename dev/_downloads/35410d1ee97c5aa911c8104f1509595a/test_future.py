@@ -31,21 +31,15 @@ GuiTestAssistant = toolkit_object("util.gui_test_assistant:GuiTestAssistant")
 class TestMyFuture(GuiTestAssistant, unittest.TestCase):
     def setUp(self):
         GuiTestAssistant.setUp(self)
-        self.executor = TraitsExecutor()
+        self.traits_executor = TraitsExecutor()
 
     def tearDown(self):
         # Request the executor to stop, and wait for that stop to complete.
-        self.executor.stop()
-        self.assertEventuallyTrueInGui(
-            lambda: self.executor.stopped, timeout=SAFETY_TIMEOUT
-        )
-
+        self.traits_executor.shutdown(timeout=SAFETY_TIMEOUT)
         GuiTestAssistant.tearDown(self)
 
     def test_my_future(self):
-        executor = self.executor
-
-        future = submit_call(executor, pow, 3, 5)
+        future = submit_call(self.traits_executor, pow, 3, 5)
 
         # Wait for the future to complete.
         self.assertEventuallyTrueInGui(
@@ -53,3 +47,7 @@ class TestMyFuture(GuiTestAssistant, unittest.TestCase):
         )
 
         self.assertEqual(future.result, 243)
+
+
+if __name__ == "__main__":
+    unittest.main()

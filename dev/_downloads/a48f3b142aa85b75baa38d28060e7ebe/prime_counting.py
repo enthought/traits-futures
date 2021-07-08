@@ -32,7 +32,7 @@ from traits_futures.api import (
     submit_progress,
     TraitsExecutor,
 )
-from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
+from traitsui.api import HGroup, Item, UItem, VGroup, View
 
 
 class ProgressDialog(Dialog, HasStrictTraits):
@@ -175,13 +175,13 @@ def count_primes_less_than(n, chunk_size, progress=None):
     return prime_count
 
 
-class PrimeCounter(Handler):
+class PrimeCounter(HasStrictTraits):
     """
     UI to compute primes less than a given number.
     """
 
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: Calculation future.
     future = Instance(ProgressFuture)
@@ -203,11 +203,6 @@ class PrimeCounter(Handler):
 
     #: Limit used for most recent run.
     _last_limit = Int()
-
-    def closed(self, info, is_ok):
-        # Stopping the executor cancels any running future.
-        self.traits_executor.stop()
-        super().closed(info, is_ok)
 
     def _count_fired(self):
         self._last_limit = self.limit
@@ -256,5 +251,9 @@ class PrimeCounter(Handler):
 
 
 if __name__ == "__main__":
-    view = PrimeCounter()
-    view.configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        view = PrimeCounter(traits_executor=traits_executor)
+        view.configure_traits()
+    finally:
+        traits_executor.shutdown()

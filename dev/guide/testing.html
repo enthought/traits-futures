@@ -126,21 +126,15 @@ future.</p>
 <span class="k">class</span> <span class="nc">TestMyFuture</span><span class="p">(</span><span class="n">GuiTestAssistant</span><span class="p">,</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">GuiTestAssistant</span><span class="o">.</span><span class="n">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Request the executor to stop, and wait for that stop to complete.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEventuallyTrueInGui</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">stopped</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span>
-        <span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span><span class="p">)</span>
         <span class="n">GuiTestAssistant</span><span class="o">.</span><span class="n">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_my_future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span>
-
-        <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
         <span class="c1"># Wait for the future to complete.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEventuallyTrueInGui</span><span class="p">(</span>
@@ -148,6 +142,10 @@ future.</p>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="mi">243</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Some points of interest in the above example:</p>
@@ -161,19 +159,19 @@ to make it easy to run the event loop until a particular condition occurs.</p></
 communications from the background task have completed. We do that by using
 the <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui</span></code> method. At that point, we can check that the
 result of the future is the expected one.</p></li>
-<li><p>We also need to shut down the executor itself at the end of the test. Note
-that the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method is not blocking and does not actually stop the
-executor - instead, it requests cancellation of all running futures and
-prevents new jobs from being scheduled. For the executor to eventually reach
-the <code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code> state, the GUI event loop must again be running, so we make a
-second use of <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui</span></code> in the <code class="docutils literal notranslate"><span class="pre">tearDown</span></code> method in the
-example.</p></li>
+<li><p>We also need to shut down the executor itself at the end of the test; we
+use the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method for this.</p></li>
+<li><p>In all potentially blocking calls, we provide a timeout. This should help
+prevent a failing test from blocking the entire test run if something goes
+wrong. However, note that if the timeout on the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method fails then
+in addition to the test failing you may see segmentation faults or other
+peculiar side-effects, especially at process termination time, as a result of
+pieces of cleanup occurring out of order.</p></li>
 </ul>
 <p>If you don’t need the result of the future (for example because you’re using
 the future for its side-effect rather than to perform a computation) then it’s
-safe to remove the wait for <code class="docutils literal notranslate"><span class="pre">future.done</span></code>, so long as you keep the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a>
-call and then wait for the executor to stop: the executor won’t reach <code class="xref py py-meth docutils literal notranslate"><span class="pre">STOPPED</span></code>
-state until all futures have completed.</p>
+safe to remove the wait for <code class="docutils literal notranslate"><span class="pre">future.done</span></code>, so long as you keep the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a>
+call.</p>
 </section>
 </section>
 

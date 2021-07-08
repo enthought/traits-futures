@@ -56,7 +56,7 @@ def approximate_pi(sample_count=10 ** 8):
 
 class InterruptibleTaskExample(HasStrictTraits):
     #: The executor to submit tasks to.
-    executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
     future = Instance(IFuture)
@@ -79,7 +79,7 @@ class InterruptibleTaskExample(HasStrictTraits):
     def _submit_calculation(self, event):
         self.message = "Calculating π"
         self.future = submit_iteration(
-            self.executor, approximate_pi, self.sample_count
+            self.traits_executor, approximate_pi, self.sample_count
         )
 
     @observe("cancel")
@@ -123,4 +123,10 @@ class InterruptibleTaskExample(HasStrictTraits):
 
 
 if __name__ == "__main__":
-    InterruptibleTaskExample().configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        InterruptibleTaskExample(
+            traits_executor=traits_executor
+        ).configure_traits()
+    finally:
+        traits_executor.shutdown()
