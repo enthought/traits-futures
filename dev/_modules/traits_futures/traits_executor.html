@@ -396,11 +396,10 @@
         <span class="n">background_task_wrapper</span> <span class="o">=</span> <span class="n">BackgroundTaskWrapper</span><span class="p">(</span>
             <span class="n">runner</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancel_event</span><span class="o">.</span><span class="n">is_set</span>
         <span class="p">)</span>
-        <span class="n">cf_future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">background_task_wrapper</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">background_task_wrapper</span><span class="p">)</span>
 
         <span class="n">future_wrapper</span> <span class="o">=</span> <span class="n">FutureWrapper</span><span class="p">(</span>
             <span class="n">future</span><span class="o">=</span><span class="n">future</span><span class="p">,</span>
-            <span class="n">cf_future</span><span class="o">=</span><span class="n">cf_future</span><span class="p">,</span>
             <span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">future_wrapper</span><span class="p">)</span>
@@ -457,41 +456,29 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_initiate_stop</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unlink_tasks</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_tasks</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_terminate</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Shutdown timed out; &quot;</span>
-                <span class="s2">&quot;f{len(self._wrappers)} tasks still running&quot;</span>
-            <span class="p">)</span></div>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_TERMINATING</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span><span class="p">:</span>
+            <span class="c1"># Route messages until either all futures are complete, or</span>
+            <span class="c1"># timeout.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">route_until</span><span class="p">(</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">,</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="c1"># Re-raise with a more targeted error message.</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Shutdown timed out; &quot;</span>
+                    <span class="s2">&quot;f{len(self._wrappers)} tasks still running&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+
+        <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_terminate</span><span class="p">()</span></div>
 
     <span class="c1"># State transitions #######################################################</span>
-
-    <span class="k">def</span> <span class="nf">_wait_for_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Wait for concurrent.futures futures associated to pending tasks.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        success : bool</span>
-<span class="sd">            True if all background tasks completed within the given timeout.</span>
-<span class="sd">            False if some background tasks were still running at timeout.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cf_futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">wrapper</span><span class="o">.</span><span class="n">cf_future</span> <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> waiting for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cf_futures</span><span class="p">)</span><span class="si">}</span><span class="s2"> background tasks&quot;</span><span class="p">)</span>
-        <span class="n">done</span><span class="p">,</span> <span class="n">not_done</span> <span class="o">=</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">cf_futures</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> done waiting: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">done</span><span class="p">)</span><span class="si">}</span><span class="s2"> tasks completed, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">not_done</span><span class="p">)</span><span class="si">}</span><span class="s2"> tasks still running&quot;</span>
-        <span class="p">)</span>
-
-        <span class="c1"># Remove wrappers for completed futures.</span>
-        <span class="n">done_wrappers</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">wrapper</span> <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span> <span class="k">if</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">cf_future</span> <span class="ow">in</span> <span class="n">done</span>
-        <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span> <span class="o">-=</span> <span class="n">done_wrappers</span>
-
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">not_done</span>
 
     <span class="k">def</span> <span class="nf">_stop_router</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -587,8 +574,6 @@
 <span class="sd">        State: STOPPING -&gt; _TERMINATING</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_router</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_close_context</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_TERMINATING</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
@@ -604,6 +589,8 @@
 <span class="sd">        State: _TERMINATING -&gt; STOPPED</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_TERMINATING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_router</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_close_context</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shutdown_worker_pool</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">STOPPED</span>
         <span class="k">else</span><span class="p">:</span>

@@ -336,8 +336,6 @@ method performs the following tasks, in order:</p>
 <ul class="simple">
 <li><p>Moves the executor to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state.</p></li>
 <li><p>Requests cancellation of all waiting or executing background tasks.</p></li>
-<li><p>Unlinks all background tasks from their associated futures: the
-futures will receive no further updates after <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> returns.</p></li>
 <li><p>Waits for all background tasks to complete.</p></li>
 <li><p>Shuts down the worker pool (if that worker pool is owned by the executor).</p></li>
 <li><p>Moves the executor to <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state.</p></li>
@@ -345,10 +343,6 @@ futures will receive no further updates after <a class="reference internal" href
 <p>If called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> simply returns
 without taking any action. If called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state,
 any of the above actions that have not already been taken will be taken.</p>
-<p>Note that because of the unlinking of the background tasks and their
-associated futures, background tasks that have been cancelled will leave their
-associated futures in <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLING" title="traits_futures.future_states.CANCELLING"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLING</span></code></a> state. Those futures will never reach
-<a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED" title="traits_futures.future_states.CANCELLED"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLED</span></code></a> state, even under a running event loop.</p>
 </section>
 <section id="shutdown-with-a-timeout">
 <h3>Shutdown with a timeout<a class="headerlink" href="#shutdown-with-a-timeout" title="Permalink to this headline">¶</a></h3>
