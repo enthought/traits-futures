@@ -316,11 +316,9 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Router is already running&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_message_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link_to_event_loop</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_message_queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span><span class="o">.</span><span class="n">pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
             <span class="n">target</span><span class="o">=</span><span class="n">monitor_queue</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="p">(</span>
@@ -515,21 +513,45 @@
     <span class="c1">#: Receiver for the &quot;message_sent&quot; signal.</span>
     <span class="n">_pingee</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IPingee</span><span class="p">)</span>
 
+    <span class="c1">#: Bool keeping track of whether we&#39;re linked to the event loop</span>
+    <span class="c1">#: or not.</span>
+    <span class="n">_linked</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
     <span class="c1">#: Router status: True if running, False if stopped.</span>
     <span class="n">_running</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Private methods #########################################################</span>
 
+    <span class="k">def</span> <span class="nf">_link_to_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Link this router to the event loop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span><span class="p">:</span>
+            <span class="c1"># Raise, because lifetime management of self._pingee is delicate,</span>
+            <span class="c1"># so if we ever get here then something likely needs fixing.</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Already linked to the event loop&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span><span class="o">.</span><span class="n">pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">True</span>
+
     <span class="k">def</span> <span class="nf">_unlink_from_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Unlink this router from the event loop.</span>
+<span class="sd">        Unlink this router from the event loop, if it&#39;s linked.</span>
 
 <span class="sd">        After this call, the router will no longer react to any pending</span>
 <span class="sd">        tasks on the event loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span><span class="p">:</span>
+            <span class="c1"># Note: it might be tempting to set self._pingee to None at this</span>
+            <span class="c1"># point, and to use the None-ness (or not) of self._pingee to avoid</span>
+            <span class="c1"># needing self._linked. But it&#39;s important not to do so: we need to</span>
+            <span class="c1"># be sure that the main thread reference to the Pingee outlives any</span>
+            <span class="c1"># reference on background threads. Otherwise we end up collection a</span>
+            <span class="c1"># Qt object (the Pingee) on a thread other than the one it was</span>
+            <span class="c1"># created on, and that&#39;s unsafe in general.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>

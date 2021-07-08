@@ -181,13 +181,13 @@ can reach that receiver.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop">
-<span class="sig-name descname"><span class="pre">event_loop</span></span><em class="property"> <span class="pre">=</span> <span class="pre">self._route_message)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">event_loop</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IEventLoop,</span> <span class="pre">required=True)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop" title="Permalink to this definition">¶</a></dt>
 <dd><p>The event loop used to trigger message dispatch.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.manager">
-<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"> <span class="pre">=</span> <span class="pre">self.event_loop.pingee(on_ping=self._route_message)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"> <span class="pre">=</span> <span class="pre">threading.Thread(</span> <span class="pre">…</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manager, used to create message queues.</p>
 </dd></dl>
 
