@@ -203,15 +203,15 @@ class TraitsExecutorTests:
     def test_shutdown_cancels_running_futures(self):
         future = submit_call(self.executor, pow, 3, 5)
         self.executor.shutdown(timeout=SAFETY_TIMEOUT)
-        self.assertEqual(future.state, CANCELLING)
+        self.assertEqual(future.state, CANCELLED)
         self.assertTrue(self.executor.stopped)
 
     def test_no_future_updates_after_shutdown(self):
         future = submit_call(self.executor, pow, 3, 5)
         self.executor.shutdown(timeout=SAFETY_TIMEOUT)
-        self.assertEqual(future.state, CANCELLING)
+        self.assertEqual(future.state, CANCELLED)
         self.exercise_event_loop()
-        self.assertEqual(future.state, CANCELLING)
+        self.assertEqual(future.state, CANCELLED)
 
     def test_shutdown_goes_through_stopping_state(self):
         self.executor.shutdown(timeout=SAFETY_TIMEOUT)

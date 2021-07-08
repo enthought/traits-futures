@@ -292,8 +292,6 @@ method performs the following tasks, in order:
 
 * Moves the executor to |STOPPING| state.
 * Requests cancellation of all waiting or executing background tasks.
-* Unlinks all background tasks from their associated futures: the
-  futures will receive no further updates after |shutdown| returns.
 * Waits for all background tasks to complete.
 * Shuts down the worker pool (if that worker pool is owned by the executor).
 * Moves the executor to |STOPPED| state.
@@ -302,10 +300,6 @@ If called on an executor in |STOPPED| state, |shutdown| simply returns
 without taking any action. If called on an executor in |STOPPING| state,
 any of the above actions that have not already been taken will be taken.
 
-Note that because of the unlinking of the background tasks and their
-associated futures, background tasks that have been cancelled will leave their
-associated futures in |CANCELLING| state. Those futures will never reach
-|CANCELLED| state, even under a running event loop.
 
 Shutdown with a timeout
 ~~~~~~~~~~~~~~~~~~~~~~~

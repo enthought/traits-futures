@@ -314,11 +314,10 @@ class TraitsExecutor(HasStrictTraits):
         background_task_wrapper = BackgroundTaskWrapper(
             runner, sender, cancel_event.is_set
         )
-        cf_future = self._worker_pool.submit(background_task_wrapper)
+        self._worker_pool.submit(background_task_wrapper)
 
         future_wrapper = FutureWrapper(
             future=future,
-            cf_future=cf_future,
             receiver=receiver,
         )
         self._wrappers.add(future_wrapper)
@@ -375,41 +374,29 @@ class TraitsExecutor(HasStrictTraits):
             self._initiate_stop()
         if self._internal_state == STOPPING:
             self._unlink_tasks()
-        if self._wait_for_tasks(timeout):
-            self._terminate()
-        else:
-            raise RuntimeError(
-                "Shutdown timed out; "
-                "f{len(self._wrappers)} tasks still running"
-            )
+
+        assert self._internal_state == _TERMINATING
+
+        if self._have_message_router:
+            # Route messages until either all futures are complete, or
+            # timeout.
+            try:
+                self._message_router.route_until(
+                    lambda: not self._wrappers,
+                    timeout=timeout,
+                )
+            except RuntimeError as exc:
+                # Re-raise with a more targeted error message.
+                raise RuntimeError(
+                    "Shutdown timed out; "
+                    "f{len(self._wrappers)} tasks still running"
+                ) from exc
+
+        assert not self._wrappers
+
+        self._terminate()
 
     # State transitions #######################################################
-
-    def _wait_for_tasks(self, timeout):
-        """
-        Wait for concurrent.futures futures associated to pending tasks.
-
-        Returns
-        -------
-        success : bool
-            True if all background tasks completed within the given timeout.
-            False if some background tasks were still running at timeout.
-        """
-        cf_futures = [wrapper.cf_future for wrapper in self._wrappers]
-        logger.debug(f"{self} waiting for {len(cf_futures)} background tasks")
-        done, not_done = concurrent.futures.wait(cf_futures, timeout=timeout)
-        logger.debug(
-            f"{self} done waiting: {len(done)} tasks completed, "
-            f"{len(not_done)} tasks still running"
-        )
-
-        # Remove wrappers for completed futures.
-        done_wrappers = {
-            wrapper for wrapper in self._wrappers if wrapper.cf_future in done
-        }
-        self._wrappers -= done_wrappers
-
-        return not not_done
 
     def _stop_router(self):
         """
@@ -505,8 +492,6 @@ class TraitsExecutor(HasStrictTraits):
         State: STOPPING -> _TERMINATING
         """
         if self._internal_state == STOPPING:
-            self._stop_router()
-            self._close_context()
             self._internal_state = _TERMINATING
         else:
             raise _StateTransitionError(
@@ -522,6 +507,8 @@ class TraitsExecutor(HasStrictTraits):
         State: _TERMINATING -> STOPPED
         """
         if self._internal_state == _TERMINATING:
+            self._stop_router()
+            self._close_context()
             self._shutdown_worker_pool()
             self._internal_state = STOPPED
         else:
