@@ -81,7 +81,7 @@ class TestExceptionHandling(unittest.TestCase):
 
         self.assertEqual(
             exc_type,
-            "traits_futures.tests.test_exception_handling.CustomException",
+            f"{__name__}.CustomException",
         )
         self.assertIn(message, exc_value)
         self.assertIn("test_marshal_exception", exc_traceback)
