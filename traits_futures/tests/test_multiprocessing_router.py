@@ -15,12 +15,12 @@ Tests for the MultiprocessingRouter class.
 import unittest
 
 from traits_futures.multiprocessing_context import MultiprocessingContext
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.i_message_router_tests import IMessageRouterTests
 
 
 class TestMultiprocessingRouter(
-    GuiTestAssistant, IMessageRouterTests, unittest.TestCase
+    TestAssistant, IMessageRouterTests, unittest.TestCase
 ):
     """
     Test that MultiprocessingRouter implements the IMessageRouter interface.
@@ -31,9 +31,9 @@ class TestMultiprocessingRouter(
         return MultiprocessingContext()
 
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         IMessageRouterTests.setUp(self)
 
     def tearDown(self):
         IMessageRouterTests.tearDown(self)
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)

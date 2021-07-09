@@ -103,7 +103,7 @@ class IMessageRouterTests:
     """
     Test mix-in for testing implementations of the IMessageRouter interface.
 
-    Should be used in conjunction with the GuiTestAssistant.
+    Should be used in conjunction with the TestAssistant.
     """
 
     #: Factory providing the parallelism context.

@@ -15,10 +15,10 @@ Tests for the asyncio implementations of IPingee and IPinger.
 import unittest
 
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
-class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
+class TestPingee(TestAssistant, IPingeeTests, unittest.TestCase):
 
     event_loop_factory = AsyncioEventLoop

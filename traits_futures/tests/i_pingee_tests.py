@@ -105,7 +105,7 @@ class IPingeeTests:
     """
     Mixin class for testing IPingee and IPinger implementations.
 
-    Should be used in combination with the GuiTestAssistant.
+    Should be used in combination with the TestAssistant.
     """
 
     def test_single_background_ping(self):

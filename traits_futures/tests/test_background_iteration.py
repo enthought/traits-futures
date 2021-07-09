@@ -16,7 +16,7 @@ import contextlib
 import unittest
 
 from traits_futures.api import MultithreadingContext, TraitsExecutor
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.background_iteration_tests import (
     BackgroundIterationTests,
 )
@@ -26,10 +26,10 @@ TIMEOUT = 10.0
 
 
 class TestBackgroundIteration(
-    GuiTestAssistant, BackgroundIterationTests, unittest.TestCase
+    TestAssistant, BackgroundIterationTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
         self.executor = TraitsExecutor(
             context=self._context,
@@ -39,7 +39,7 @@ class TestBackgroundIteration(
     def tearDown(self):
         self.halt_executor()
         self._context.close()
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
     @contextlib.contextmanager
     def block_worker_pool(self):

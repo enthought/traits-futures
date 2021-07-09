@@ -20,7 +20,7 @@ from traits_futures.api import (
     MultithreadingContext,
     TraitsExecutor,
 )
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.traits_executor_tests import (
     ExecutorListener,
     TraitsExecutorTests,
@@ -32,14 +32,14 @@ from traits_futures.tests.traits_executor_tests import (
 SAFETY_TIMEOUT = 5.0
 
 
-class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
+class TestTraitsExecutorCreation(TestAssistant, unittest.TestCase):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultiprocessingContext()
 
     def tearDown(self):
         self._context.close()
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
     def test_max_workers(self):
         executor = TraitsExecutor(
@@ -155,10 +155,10 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
 
 
 class TestTraitsExecutor(
-    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+    TestAssistant, TraitsExecutorTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultiprocessingContext()
         self.executor = TraitsExecutor(
             context=self._context,
@@ -172,4 +172,4 @@ class TestTraitsExecutor(
         del self.executor
         self._context.close()
         del self._context
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)

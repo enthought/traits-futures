@@ -21,7 +21,7 @@ from traits_futures.api import (
     MultithreadingContext,
     TraitsExecutor,
 )
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.traits_executor_tests import (
     ExecutorListener,
     TraitsExecutorTests,
@@ -54,14 +54,14 @@ class TrackingTraitsExecutor(TraitsExecutor):
         return TraitsExecutor._TraitsExecutor__context_default(self)
 
 
-class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
+class TestTraitsExecutorCreation(TestAssistant, unittest.TestCase):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
 
     def tearDown(self):
         self._context.close()
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
     def test_max_workers(self):
         executor = TraitsExecutor(
@@ -228,10 +228,10 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
 
 
 class TestTraitsExecutor(
-    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+    TestAssistant, TraitsExecutorTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
         self.executor = TraitsExecutor(
             context=self._context,
@@ -245,14 +245,14 @@ class TestTraitsExecutor(
         del self.executor
         self._context.close()
         del self._context
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
 
 class TestTraitsExecutorWithExternalWorkerPool(
-    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+    TestAssistant, TraitsExecutorTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
         self._worker_pool = self._context.worker_pool()
         self.executor = TraitsExecutor(
@@ -270,4 +270,4 @@ class TestTraitsExecutorWithExternalWorkerPool(
         del self._worker_pool
         self._context.close()
         del self._context
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
