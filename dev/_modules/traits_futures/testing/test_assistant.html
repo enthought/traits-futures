@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.testing.gui_test_assistant &mdash; Traits Futures 0.3.0.dev0 documentation</title>
+    <title>traits_futures.testing.test_assistant &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
@@ -79,7 +79,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <h1>Source code for traits_futures.testing.gui_test_assistant</h1><div class="highlight"><pre>
+  <h1>Source code for traits_futures.testing.test_assistant</h1><div class="highlight"><pre>
 <span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
@@ -116,7 +116,7 @@
     <span class="n">flag</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="GuiTestAssistant"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant">[docs]</a><span class="k">class</span> <span class="nc">GuiTestAssistant</span><span class="p">:</span>
+<div class="viewcode-block" id="TestAssistant"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant">[docs]</a><span class="k">class</span> <span class="nc">TestAssistant</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience mixin class for tests that need the event loop.</span>
 
@@ -131,17 +131,17 @@
     <span class="c1">#: run tests with a particular toolkit.</span>
     <span class="n">event_loop_factory</span> <span class="o">=</span> <span class="n">AsyncioEventLoop</span>
 
-<div class="viewcode-block" id="GuiTestAssistant.setUp"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestAssistant.setUp"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_loop_factory</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="o">.</span><span class="n">helper</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">init</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.tearDown"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestAssistant.tearDown"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.run_until"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span><span class="p">):</span>
+<div class="viewcode-block" id="TestAssistant.run_until"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
@@ -169,7 +169,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GuiTestAssistant.exercise_event_loop"><a class="viewcode-back" href="../../../api/traits_futures.testing.gui_test_assistant.html#traits_futures.testing.gui_test_assistant.GuiTestAssistant.exercise_event_loop">[docs]</a>    <span class="k">def</span> <span class="nf">exercise_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestAssistant.exercise_event_loop"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop">[docs]</a>    <span class="k">def</span> <span class="nf">exercise_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exercise the event loop.</span>
 

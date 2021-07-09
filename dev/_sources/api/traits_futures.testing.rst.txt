@@ -20,5 +20,5 @@ traits\_futures.testing package
 
 .. toctree::
 
-   traits_futures.testing.gui_test_assistant
    traits_futures.testing.optional_dependencies
+   traits_futures.testing.test_assistant
