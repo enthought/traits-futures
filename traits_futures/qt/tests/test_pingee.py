@@ -14,13 +14,13 @@ Tests for the Qt implementations of IPingee and IPinger.
 
 import unittest
 
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
 from traits_futures.testing.optional_dependencies import requires_qt
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
 @requires_qt
-class TestPingee(GuiTestAssistant, IPingeeTests, unittest.TestCase):
+class TestPingee(TestAssistant, IPingeeTests, unittest.TestCase):
     def event_loop_factory(self):
         from traits_futures.qt.event_loop import QtEventLoop
 

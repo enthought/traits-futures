@@ -34,7 +34,7 @@ class _HasBool(HasStrictTraits):
     flag = Bool(False)
 
 
-class GuiTestAssistant:
+class TestAssistant:
     """
     Convenience mixin class for tests that need the event loop.
 
