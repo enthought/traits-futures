@@ -11,6 +11,8 @@
 """
 Test methods run for all future types.
 """
+import weakref
+
 from traits.api import Any, Bool, HasStrictTraits, List, observe, Tuple
 
 from traits_futures.api import IFuture
@@ -23,6 +25,30 @@ def dummy_cancel_callback():
     """
     Dummy callback for cancellation, that does nothing.
     """
+
+
+# Set of all possible complete valid sequences of internal state changes
+# that a future might encounter. Here:
+#
+# * I represents the executor initializing the future
+# * S represents the background task starting
+# * X represents the background task failing with an exception
+# * R represents the background task returning a result
+# * C represents the user cancelling.
+#
+# A future must always be initialized before anything else happens, and then a
+# complete run must always involve "started, raised" or "started, returned" in
+# that order. In addition, a single cancellation is possible at any time before
+# the end of the sequence.
+
+COMPLETE_VALID_SEQUENCES = {
+    "ISR",
+    "ISX",
+    "ICSR",
+    "ICSX",
+    "ISCR",
+    "ISCX",
+}
 
 
 class FutureListener(HasStrictTraits):
@@ -139,23 +165,10 @@ class CommonFutureTests:
     # denote initialization of the future.
 
     def test_invalid_message_sequences(self):
-        # A future must always be initialized before anything else happens, and
-        # then a complete run must always involve "started, raised" or
-        # "started, returned" in that order. In addition, a single cancellation
-        # is possible at any time before the end of the sequence.
-        complete_valid_sequences = {
-            "ISR",
-            "ISX",
-            "ICSR",
-            "ICSX",
-            "ISCR",
-            "ISCX",
-        }
-
         # Systematically generate invalid sequences of messages.
         valid_initial_sequences = {
             seq[:i]
-            for seq in complete_valid_sequences
+            for seq in COMPLETE_VALID_SEQUENCES
             for i in range(len(seq) + 1)
         }
         continuations = {
@@ -173,19 +186,33 @@ class CommonFutureTests:
                     self.send_message_sequence(sequence)
 
         # Check all complete valid sequences.
-        for sequence in complete_valid_sequences:
+        for sequence in COMPLETE_VALID_SEQUENCES:
             with self.subTest(sequence=sequence):
                 future = self.send_message_sequence(sequence)
                 self.assertTrue(future.done)
+
+    def test_cancel_callback_released(self):
+        for sequence in COMPLETE_VALID_SEQUENCES:
+            with self.subTest(sequence=sequence):
+
+                def do_nothing():
+                    return None
+
+                finalizer = weakref.finalize(do_nothing, lambda: None)
+                future = self.send_message_sequence(sequence, do_nothing)
+                self.assertTrue(future.done)
+                self.assertTrue(finalizer.alive)
+                del do_nothing
+                self.assertFalse(finalizer.alive)
 
     def test_interface(self):
         future = self.future_class()
         self.assertIsInstance(future, IFuture)
 
-    def send_message(self, future, message):
+    def send_message(self, future, message, cancel_callback):
         """Send a particular message to a future."""
         if message == "I":
-            future._executor_initialized(dummy_cancel_callback)
+            future._executor_initialized(cancel_callback)
         elif message == "S":
             future._task_started(None)
         elif message == "X":
@@ -196,11 +223,14 @@ class CommonFutureTests:
             assert message == "C"
             future._user_cancelled()
 
-    def send_message_sequence(self, messages):
+    def send_message_sequence(self, messages, cancel_callback=None):
         """Create a new future, and send the given message sequence to it."""
+        if cancel_callback is None:
+            cancel_callback = dummy_cancel_callback
+
         future = self.future_class()
         for message in messages:
-            self.send_message(future, message)
+            self.send_message(future, message, cancel_callback)
         return future
 
     def fake_exception(self):
