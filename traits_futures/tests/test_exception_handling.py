@@ -44,3 +44,21 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertEqual(exc_type, str(ValueError))
         self.assertIn(message, exc_value)
         self.assertIn("test_marshal_exception", exc_traceback)
+
+    def test_marshal_exception_works_outside_except(self):
+        try:
+            raise RuntimeError("something went wrong")
+        except BaseException as exception:
+            stored_exception = exception
+
+        exc_type, exc_value, exc_traceback = marshal_exception(
+            stored_exception
+        )
+
+        self.assertIsInstance(exc_type, str)
+        self.assertIsInstance(exc_value, str)
+        self.assertIsInstance(exc_traceback, str)
+
+        self.assertEqual(exc_type, str(RuntimeError))
+        self.assertIn("something went wrong", exc_value)
+        self.assertIn("test_marshal_exception", exc_traceback)

@@ -14,12 +14,28 @@ Support for transferring exception information from a background task.
 import traceback
 
 
-def marshal_exception(e):
+def marshal_exception(exception):
     """
     Turn exception details into something that can be safely
     transmitted across thread / process boundaries.
+
+    Parameters
+    ----------
+    exception : BaseException
+        The exception instance to be marshalled
+
+    Returns
+    -------
+    exception_type, exception_value, exception_traceback : str
+        Strings representing the exception type, value and
+        formatted traceback.
     """
-    exc_type = str(type(e))
-    exc_value = str(e)
-    formatted_traceback = str(traceback.format_exc())
-    return exc_type, exc_value, formatted_traceback
+    return (
+        str(type(exception)),
+        str(exception),
+        "".join(
+            traceback.format_exception(
+                type(exception), exception, exception.__traceback__
+            )
+        ),
+    )
