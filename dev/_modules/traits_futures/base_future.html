@@ -360,6 +360,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">result</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">COMPLETED</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">CANCELLED</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
@@ -383,6 +384,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception_info</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">FAILED</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">CANCELLED</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
