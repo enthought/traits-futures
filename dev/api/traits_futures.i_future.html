@@ -154,15 +154,6 @@ attempt to access this attribute will raise an <code class="docutils literal not
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.i_future.IFuture.message">
-<span class="sig-name descname"><span class="pre">message</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Event(Tuple(Str(),</span> <span class="pre">Any()))</span></em><a class="headerlink" href="#traits_futures.i_future.IFuture.message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event trait providing custom messages from the background task.
-Subclasses of <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> can listen to this trait and interpret
-the messages in whatever way they like. Each message takes the
-form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_args)</span></code>.</p>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="traits_futures.i_future.IFuture.result">
 <em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">result</span></span><a class="headerlink" href="#traits_futures.i_future.IFuture.result" title="Permalink to this definition">¶</a></dt>
