@@ -161,15 +161,6 @@ background task.</p>
 information. This module does not interpret the contents of the argument.</p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.background_progress.ProgressBackgroundTask">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressBackgroundTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressBackgroundTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressBackgroundTask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Background portion of a progress background task.</p>
-<p>This provides the callable that will be submitted to the worker pool, and
-sends messages to communicate with the ProgressFuture.</p>
-</dd></dl>
-
 <dl class="py exception">
 <dt class="sig sig-object py" id="traits_futures.background_progress.ProgressCancelled">
 <em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressCancelled</span></span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressCancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressCancelled" title="Permalink to this definition">¶</a></dt>
@@ -182,7 +173,7 @@ task cancellation.</p>
 <dt class="sig sig-object py" id="traits_futures.background_progress.ProgressFuture">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressFuture</span></span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressFuture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.base_future.BaseFuture</span></code></a></p>
-<p>Object representing the front-end handle to a ProgressBackgroundTask.</p>
+<p>Object representing the front-end handle to a ProgressTask.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.background_progress.ProgressFuture.progress">
 <span class="sig-name descname"><span class="pre">progress</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Event()</span></em><a class="headerlink" href="#traits_futures.background_progress.ProgressFuture.progress" title="Permalink to this definition">¶</a></dt>
@@ -215,6 +206,15 @@ should be immutable and pickleable.</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="traits_futures.background_progress.ProgressTask">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Background portion of a progress background task.</p>
+<p>This provides the callable that will be submitted to the worker pool, and
+sends messages to communicate with the ProgressFuture.</p>
 </dd></dl>
 
 <dl class="py function">

@@ -99,7 +99,7 @@
 <span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 
-<div class="viewcode-block" id="CallBackgroundTask"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallBackgroundTask">[docs]</a><span class="k">class</span> <span class="nc">CallBackgroundTask</span><span class="p">:</span>
+<div class="viewcode-block" id="CallTask"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallTask">[docs]</a><span class="k">class</span> <span class="nc">CallTask</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper around the actual callable to be run. This wrapper provides the</span>
 <span class="sd">    task that will be submitted to the concurrent.futures executor</span>
@@ -158,7 +158,7 @@
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">CallBackgroundTask</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">CallTask</span><span class="p">(</span>
             <span class="n">callable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
