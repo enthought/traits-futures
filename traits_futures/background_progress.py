@@ -21,7 +21,7 @@ be cancelled.
 
 from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask
 from traits_futures.i_task_specification import ITaskSpecification
 
 # Message types for messages from ProgressBackgroundTask
@@ -73,7 +73,7 @@ class ProgressReporter:
         self.send((PROGRESS, progress_info))
 
 
-class ProgressBackgroundTask:
+class ProgressTask(BaseTask):
     """
     Background portion of a progress background task.
 
@@ -86,7 +86,7 @@ class ProgressBackgroundTask:
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, send, cancelled):
+    def run(self, send, cancelled):
         progress = ProgressReporter(send=send, cancelled=cancelled)
         try:
             return self.callable(
@@ -150,7 +150,7 @@ class BackgroundProgress(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return ProgressBackgroundTask(
+        return ProgressTask(
             callable=self.callable,
             args=self.args,
             kwargs=self.kwargs,

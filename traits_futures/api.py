@@ -61,6 +61,7 @@ Support for user-defined background tasks
 -----------------------------------------
 
 - :class:`~.BaseFuture`
+- :class:`~.BaseTask`
 - :class:`~.ITaskSpecification`
 
 Parallelism contexts
@@ -89,7 +90,7 @@ from traits_futures.background_progress import (
     ProgressFuture,
     submit_progress,
 )
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask
 from traits_futures.ets_event_loop import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
@@ -142,6 +143,7 @@ __all__ = [
     "submit_progress",
     # Support for creating new task types
     "BaseFuture",
+    "BaseTask",
     "ITaskSpecification",
     # Contexts
     "IParallelContext",

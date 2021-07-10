@@ -17,6 +17,7 @@ from traits.api import (
     Bool,
     Callable,
     Enum,
+    Event,
     HasStrictTraits,
     observe,
     Property,
@@ -25,6 +26,7 @@ from traits.api import (
     Tuple,
 )
 
+from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLABLE_STATES,
     CANCELLED,
@@ -37,6 +39,29 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_future import IFuture
+
+# Messages sent by the InnerWrapper, and interpreted by BaseFuture.
+
+#: Custom message from the future. The argument is a pair
+#: (message_type, message_args); the message type and message args
+#: are interpreted by the future.
+SENT = "sent"
+
+#: Control message sent when the callable is abandoned before execution.
+ABANDONED = "abandoned"
+
+#: Control message sent before we start to process the target callable.
+#: The argument is always ``None``.
+STARTED = "started"
+
+#: Control message sent when an exception was raised by the background
+#: callable. The argument is a tuple containing exception information.
+RAISED = "raised"
+
+#: Control message sent to indicate that the background callable succeeded
+#: and returned a result. The argument is that result.
+RETURNED = "returned"
+
 
 # The BaseFuture class maintains an internal state. That internal state maps to
 # the user-facing state, but is more fine-grained, allowing the class to keep
@@ -220,6 +245,15 @@ class BaseFuture(HasStrictTraits):
     # events. They're used by the FutureWrapper, and are potentially useful for
     # unit testing, but are not intended for use by the users of Traits
     # Futures.
+
+    @observe("_message")
+    def _dispatch_message(self, event):
+        """
+        Pass on a message to the future.
+        """
+        message_type, message_arg = event.new
+        method_name = "_task_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
 
     def _task_sent(self, message):
         """
@@ -416,6 +450,9 @@ class BaseFuture(HasStrictTraits):
     #: This is reset to ``None`` once cancellation is impossible.
     _cancel = Callable(allow_none=True)
 
+    #: Event for messages received from the background task
+    _message = Event(Any())
+
     #: The internal state of the future.
     _internal_state = Enum(_NOT_INITIALIZED, list(_INTERNAL_STATE_TO_STATE))
 
@@ -460,3 +497,28 @@ class BaseFuture(HasStrictTraits):
         new_done = new_internal_state in _DONE_INTERNAL_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
+
+
+class BaseTask:
+    """
+    Mixin for background task classes, making those classes callable.
+
+    Subclasses should implement the 'run' method to customize what should
+    happen when the task runs.
+    """
+
+    def __call__(self, send, cancelled):
+        if cancelled():
+            send((ABANDONED, None))
+            return
+
+        send((STARTED, None))
+        try:
+            result = self.run(
+                lambda message: send((SENT, message)),
+                cancelled,
+            )
+        except BaseException as e:
+            send((RAISED, marshal_exception(e)))
+        else:
+            send((RETURNED, result))

@@ -56,9 +56,9 @@ Message types
 
 In general, the message sent from the background task to the future can be any
 Python object, and the future can interpret the sent object in any way that it
-likes. However, the |BaseFuture| base class that we'll use below provides a
-default dispatcher for messages, and that dispatcher expects those messages to
-have the form ``(message_type, message_args)``. Here the message type should be
+likes. However, the |BaseFuture| and |BaseTask| convenience base classes that
+we'll use below provide helper functions to handle and dispatch messages of
+the form ``(message_type, message_args)``. Here the message type should be
 a string that's valid as a Python identifier, while the message argument can be
 any Python object (though it should usually be pickleable and immutable).
 
@@ -76,8 +76,12 @@ Next, we define the callable that will be run in the background. This callable
 must accept two arguments (which will be passed by position): ``send`` and
 ``cancelled``. The ``send`` object is a callable which will be used to send
 messages to the foreground. The ``cancelled`` object is a zero-argument
-callable which can be used to check for cancellation requests. Here's the
-``fizz_buzz`` callable.
+callable which can be used to check for cancellation requests. For convenience,
+we inherit from |BaseTask|, which takes care of sending standard messages
+to the future letting the future know that the background task has started,
+stopped, or raised an exception.
+
+Here's the ``fizz_buzz`` callable.
 
 .. literalinclude:: examples/fizz_buzz_task.py
     :start-after: start fizz_buzz
@@ -172,6 +176,7 @@ of the new background task type:
    substitutions
 
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
+.. |BaseTask| replace:: :class:`~.BaseTask`
 .. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`

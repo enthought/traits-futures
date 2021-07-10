@@ -14,7 +14,7 @@ Background task that sends results from an iteration.
 
 from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask
 from traits_futures.i_task_specification import ITaskSpecification
 
 #: Message sent whenever the iteration yields a result.
@@ -22,7 +22,7 @@ from traits_futures.i_task_specification import ITaskSpecification
 GENERATED = "generated"
 
 
-class IterationBackgroundTask:
+class IterationTask(BaseTask):
     """
     Iteration to be executed in the background.
     """
@@ -32,7 +32,7 @@ class IterationBackgroundTask:
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, send, cancelled):
+    def run(self, send, cancelled):
         iterable = iter(self.callable(*self.args, **self.kwargs))
 
         while True:
@@ -104,7 +104,7 @@ class BackgroundIteration(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return IterationBackgroundTask(
+        return IterationTask(
             callable=self.callable,
             args=self.args,
             kwargs=self.kwargs,
