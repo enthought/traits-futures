@@ -367,7 +367,7 @@ class TraitsExecutor(HasStrictTraits):
                 # Re-raise with a more user-friendly error message.
                 raise RuntimeError(
                     "Shutdown timed out; "
-                    "f{len(self._wrappers)} tasks still running"
+                    f"{len(self._wrappers)} tasks still running"
                 ) from exc
 
         self._complete_stop()
