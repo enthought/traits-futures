@@ -22,7 +22,7 @@ from traits_futures.i_task_specification import ITaskSpecification
 GENERATED = "generated"
 
 
-class IterationBackgroundTask:
+class IterationTask:
     """
     Iteration to be executed in the background.
     """
@@ -104,7 +104,7 @@ class BackgroundIteration(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return IterationBackgroundTask(
+        return IterationTask(
             callable=self.callable,
             args=self.args,
             kwargs=self.kwargs,
