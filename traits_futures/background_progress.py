@@ -24,7 +24,7 @@ from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 from traits_futures.base_future import BaseFuture, BaseTask
 from traits_futures.i_task_specification import ITaskSpecification
 
-# Message types for messages from ProgressBackgroundTask
+# Message types for messages from ProgressTask
 # to ProgressFuture.
 
 #: Task sends progress. Argument is a single object giving progress
@@ -100,7 +100,7 @@ class ProgressTask(BaseTask):
 
 class ProgressFuture(BaseFuture):
     """
-    Object representing the front-end handle to a ProgressBackgroundTask.
+    Object representing the front-end handle to a ProgressTask.
     """
 
     #: Event fired whenever a progress message arrives from the background.
