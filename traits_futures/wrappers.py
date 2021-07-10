@@ -32,6 +32,9 @@ logger = logging.getLogger(__name__)
 #: are interpreted by the future.
 SENT = "sent"
 
+#: Control message sent when the callable is abandoned before execution.
+ABANDONED = "abandoned"
+
 #: Control message sent before we start to process the target callable.
 #: The argument is always ``None``.
 STARTED = "started"
@@ -73,7 +76,7 @@ class FutureWrapper(HasStrictTraits):
         message_type, message_arg = message
         method_name = "_task_{}".format(message_type)
         getattr(self.future, method_name)(message_arg)
-        if message_type in {RAISED, RETURNED}:
+        if message_type in {ABANDONED, RAISED, RETURNED}:
             self.done = True
 
 
@@ -101,14 +104,15 @@ class BackgroundTaskWrapper:
     def __call__(self):
         try:
             with self._sender:
+                if self._cancelled():
+                    self._sender.send((ABANDONED, None))
+                    return
+
                 self._sender.send((STARTED, None))
                 try:
-                    if self._cancelled():
-                        result = None
-                    else:
-                        result = self._background_task(
-                            self._send_custom_message, self._cancelled
-                        )
+                    result = self._background_task(
+                        self._send_custom_message, self._cancelled
+                    )
                 except BaseException as e:
                     self._sender.send((RAISED, marshal_exception(e)))
                 else:

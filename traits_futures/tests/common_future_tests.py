@@ -31,15 +31,19 @@ def dummy_cancel_callback():
 # that a future might encounter. Here:
 #
 # * I represents the executor initializing the future
+# * A represents the background task being abandoned before starting
 # * S represents the background task starting
 # * X represents the background task failing with an exception
 # * R represents the background task returning a result
 # * C represents the user cancelling.
 #
 # A future must always be initialized before anything else happens, and then a
-# complete run must always involve "started, raised" or "started, returned" in
-# that order. In addition, a single cancellation is possible at any time before
-# the end of the sequence.
+# complete run must always involve "abandoned", "started, raised" or "started,
+# returned" in that order. In addition, a single cancellation is possible at
+# any time before the end of the sequence, and abandoned can only ever occur
+# following cancellation.
+
+MESSAGE_TYPES = "IASRXC"
 
 COMPLETE_VALID_SEQUENCES = {
     "ISR",
@@ -48,6 +52,7 @@ COMPLETE_VALID_SEQUENCES = {
     "ICSX",
     "ISCR",
     "ISCX",
+    "ICA",
 }
 
 
@@ -175,7 +180,7 @@ class CommonFutureTests:
             seq[:i] + msg
             for seq in valid_initial_sequences
             for i in range(len(seq) + 1)
-            for msg in "ICRSX"
+            for msg in MESSAGE_TYPES
         }
         invalid_sequences = continuations - valid_initial_sequences
 
@@ -213,15 +218,18 @@ class CommonFutureTests:
         """Send a particular message to a future."""
         if message == "I":
             future._executor_initialized(cancel_callback)
+        elif message == "A":
+            future._task_abandoned(None)
         elif message == "S":
             future._task_started(None)
-        elif message == "X":
-            future._task_raised(self.fake_exception())
         elif message == "R":
             future._task_returned(23)
-        else:
-            assert message == "C"
+        elif message == "X":
+            future._task_raised(self.fake_exception())
+        elif message == "C":
             future._user_cancelled()
+        else:
+            raise ValueError(f"message {message} not understood")
 
     def send_message_sequence(self, messages, cancel_callback=None):
         """Create a new future, and send the given message sequence to it."""
