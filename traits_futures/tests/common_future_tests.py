@@ -161,14 +161,6 @@ class CommonFutureTests:
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
 
-    # Tests for the various possible message sequences.
-
-    # The BaseFuture processes four different messages: started / raised /
-    # returned messages from the task, and a possible cancellation message from
-    # the user. We denote these with the letters S, X (for eXception), R and C,
-    # and add machinery to test various combinations. We also write I to
-    # denote initialization of the future.
-
     def test_invalid_message_sequences(self):
         # Systematically generate invalid sequences of messages.
         valid_initial_sequences = {
