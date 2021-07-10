@@ -40,8 +40,10 @@ def dummy_cancel_callback():
 # A future must always be initialized before anything else happens, and then a
 # complete run must always involve "abandoned", "started, raised" or "started,
 # returned" in that order. In addition, a single cancellation is possible at
-# any time before the end of the sequence (and "abandoned" must always be
-# preceded by cancellation).
+# any time before the end of the sequence, and abandoned can only ever occur
+# following cancellation.
+
+MESSAGE_TYPES = "IASRXC"
 
 COMPLETE_VALID_SEQUENCES = {
     "ISR",
@@ -178,7 +180,7 @@ class CommonFutureTests:
             seq[:i] + msg
             for seq in valid_initial_sequences
             for i in range(len(seq) + 1)
-            for msg in "ICRSX"
+            for msg in MESSAGE_TYPES
         }
         invalid_sequences = continuations - valid_initial_sequences
 
@@ -220,10 +222,10 @@ class CommonFutureTests:
             future._task_abandoned(None)
         elif message == "S":
             future._task_started(None)
-        elif message == "X":
-            future._task_raised(self.fake_exception())
         elif message == "R":
             future._task_returned(23)
+        elif message == "X":
+            future._task_raised(self.fake_exception())
         elif message == "C":
             future._user_cancelled()
         else:
