@@ -50,7 +50,7 @@ class IParallelContext(abc.ABC):
 
         Returns
         -------
-        event : event-like
+        event : object
             An event that can be shared safely with workers.
             The event should have the same API as ``threading.Event``
             and ``multiprocessing.Event``, providing at a minimum
