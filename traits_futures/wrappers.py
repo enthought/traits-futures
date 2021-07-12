@@ -41,20 +41,15 @@ class FutureWrapper(HasStrictTraits):
     #: its own internal state.
     done = Bool(False)
 
-    @observe("future:done")
-    def _update_done_trait(self, event):
-        """
-        Update our own 'done' trait to reflect the future's 'done' trait.
-        """
-        self.done = event.new
-
     @observe("receiver:message")
     def _dispatch_to_future(self, event):
         """
         Pass on a message to the future.
         """
         message = event.new
-        self.future.receive(message)
+        done = self.future.receive(message)
+        if done:
+            self.done = True
 
 
 def run_background_task(background_task, sender, cancelled):

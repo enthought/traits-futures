@@ -12,14 +12,6 @@
 Base class providing common pieces of the Future machinery.
 """
 
-# XXX To do: consider a return value from 'message' instead of having
-# the executor make use of the 'done' trait.
-# XXX Add 'receive' to IFuture interface.
-# XXX Consider not using trait for receiver.
-# XXX Better receiver cleanup.
-# XXX Where should the responsibility for not passing on messages after
-#     cancellation lie?
-
 from traits.api import (
     Any,
     Bool,
@@ -69,6 +61,9 @@ RAISED = "raised"
 #: and returned a result. The argument is that result.
 RETURNED = "returned"
 
+#: Message types that indicate a "final" message. After a message of this
+#: type is received, no more messages will be received.
+FINAL_MESSAGES = {ABANDONED, RAISED, RETURNED}
 
 # The BaseFuture class maintains an internal state. That internal state maps to
 # the user-facing state, but is more fine-grained, allowing the class to keep
@@ -258,6 +253,7 @@ class BaseFuture(HasStrictTraits):
         message_type, message_arg = message
         method_name = "_task_{}".format(message_type)
         getattr(self, method_name)(message_arg)
+        return message_type in FINAL_MESSAGES
 
     # Semi-private methods ####################################################
 
