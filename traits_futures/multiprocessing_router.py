@@ -137,13 +137,13 @@ class MultiprocessingSender:
         """
         Send a message to the router.
 
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
+
         Parameters
         ----------
         message : object
             Typically this will be immutable, small, and pickleable.
-
-        Not thread-safe. The 'start', 'send' and 'stop' methods should
-        all be called from the same thread.
 
         Raises
         ------
