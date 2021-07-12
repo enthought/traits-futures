@@ -243,12 +243,21 @@ class BaseFuture(HasStrictTraits):
 
     def receive(self, message):
         """
-        Receive and dispatch a message from the task.
+        Receive and process a message from the task associated to this future.
+
+        This method is primarily for use by the executors, but may also be of
+        use in testing.
 
         Parameters
         ----------
         message : object
-            Message sent by the background task.
+            The message received from the associated task.
+
+        Returns
+        -------
+        final : bool
+            True if the received message should be the last one ever received
+            from the paired task.
         """
         message_type, message_arg = message
         method_name = "_task_{}".format(message_type)
@@ -507,9 +516,40 @@ class BaseTask:
     """
     Mixin for background task classes, making those classes callable.
 
-    Subclasses should implement the 'run' method to customize what should
-    happen when the task runs.
+    This class provides a callable wrapper allowing subclasses to easily
+    provide a background callable task.
+
+    Subclasses should override the ``run`` method to customize what should
+    happen when the task runs. This class's ``__call__`` implementation will
+    take care of sending standard control messages telling the future that the
+    task has started, completed, or raised, and delegate to the ``run`` method
+    for execution of the background task and sending of any custom messages.
     """
+
+    def run(send, cancelled):
+        """
+        Run the body of the background task.
+
+        Parameters
+        ----------
+        send : callable
+            single-argument callable used to send a message to the
+            associated future. It takes the message to be sent, and returns
+            no useful value.
+        cancelled : callable
+            zero-argument callable that can be used to check whether
+            cancellation has been requested for this task. Returns ``True``
+            if cancellation has been requested, else ``False``.
+
+        Returns
+        -------
+        any : object
+            May return any object. That object will be delivered to the
+            future's ``result`` attribute.
+        """
+        raise NotImplementedError(
+            "This method should be implemented by subclasses."
+        )
 
     def __call__(self, send, cancelled):
         if cancelled():
