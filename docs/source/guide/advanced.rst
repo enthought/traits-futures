@@ -19,15 +19,17 @@ Traits Futures comes with three basic background task types: background calls,
 background iterations and background progress calls, created via the
 |submit_call|, |submit_iteration| and |submit_progress| functions,
 respectively. In each case, communication from the background task to the
-corresponding foreground |IFuture| instance is implemented by sending
-custom task-type-specific messages, with the type of message identified by
-a suitable string. For example, the background progress task sends messages
-of type ``"progress"`` to report progress, while the background iteration task
-sends messages of type ``"generated"``.
+corresponding foreground |IFuture| instance is implemented by sending custom
+task-type-specific messages of the form ``(message_type, message_value)``,
+where ``message_type`` is a suitable string describing the type of the message.
+For example, the progress task sends messages of type ``"progress"`` to report
+progress, while the background iteration task sends messages of type
+``"generated"``.
 
 If none of the standard task types meets your needs, it's possible to write
-your own background task type, that sends whatever messages you like. This
-section describes how to do this in detail.
+your own background task type, that sends whatever messages you like. Two base
+classes, |BaseFuture| and |BaseTask|, are made available to make this easier.
+This section describes how to do this in detail.
 
 To create your own task type, you'll need three ingredients:
 
@@ -37,6 +39,9 @@ To create your own task type, you'll need three ingredients:
   interface. The |submit| method of the TraitsExecutor expects an instance of
   |ITaskSpecification|, and interrogates that instance to get the background
   callable and the corresponding foreground future.
+
+You may optionally also want to create a convenience function analogous to the
+existing |submit_call|, |submit_iteration| and |submit_progress| functions.
 
 Below we give a worked example that demonstrates how to create each of these
 ingredients for a simple case.
@@ -54,7 +59,7 @@ is accompanied by the corresponding number.
 Message types
 ~~~~~~~~~~~~~
 
-In general, the message sent from the background task to the future can be any
+In general, each message sent from the background task to the future can be any
 Python object, and the future can interpret the sent object in any way that it
 likes. However, the |BaseFuture| and |BaseTask| convenience base classes that
 we'll use below provide helper functions to handle and dispatch messages of
