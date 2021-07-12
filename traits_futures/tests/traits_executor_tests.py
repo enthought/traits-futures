@@ -235,7 +235,7 @@ class TraitsExecutorTests:
     def test_shutdown_timeout(self):
         start_time = time.monotonic()
         with self.long_running_task(self.executor):
-            with self.assertRaises(RuntimeError):
+            with self.assertRaisesRegex(RuntimeError, "1 tasks still running"):
                 self.executor.shutdown(timeout=0.1)
 
         actual_timeout = time.monotonic() - start_time
