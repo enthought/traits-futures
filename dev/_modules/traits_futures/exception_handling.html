@@ -96,6 +96,34 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 
+<span class="k">def</span> <span class="nf">_qualified_type_name</span><span class="p">(</span><span class="n">class_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a descriptive string representing a class, including</span>
+<span class="sd">    a module name where relevant.</span>
+
+<span class="sd">    Example outputs are &quot;RuntimeError&quot; for the built-in RuntimeError</span>
+<span class="sd">    exception, or &quot;struct.error&quot; for the struct module exception class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    class_ : type</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    class_name : str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># We&#39;re being extra conservative here and allowing for the possibility that</span>
+    <span class="c1"># the class doesn&#39;t have __module__ and/or __qualname__ attributes. This</span>
+    <span class="c1"># function is called during exception handling, so we want to minimise the</span>
+    <span class="c1"># possibility that it raises a new exception.</span>
+    <span class="n">class_module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unknown&gt;&quot;</span><span class="p">)</span>
+    <span class="n">class_qualname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;__qualname__&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unknown&gt;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">class_module</span> <span class="o">==</span> <span class="s2">&quot;builtins&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_qualname</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_module</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">class_qualname</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
 <div class="viewcode-block" id="marshal_exception"><a class="viewcode-back" href="../../api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception">[docs]</a><span class="k">def</span> <span class="nf">marshal_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Turn exception details into something that can be safely</span>
@@ -113,7 +141,7 @@
 <span class="sd">        formatted traceback.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)),</span>
+        <span class="n">_qualified_type_name</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)),</span>
         <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span>
         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
