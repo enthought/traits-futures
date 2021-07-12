@@ -81,7 +81,7 @@ class IEventLoopHelper(abc.ABC):
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
-        condition : callable
+        condition
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
         timeout : float

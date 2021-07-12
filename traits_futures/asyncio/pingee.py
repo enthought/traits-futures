@@ -32,7 +32,7 @@ class Pingee:
 
     Parameters
     ----------
-    on_ping : callable
+    on_ping
         Zero-argument callable that's called on the main thread
         every time a ping is received.
     event_loop : asyncio.AbstractEventLoop

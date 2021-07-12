@@ -55,7 +55,10 @@ class ITaskSpecification(ABC):
 
         Returns
         -------
-        task : callable
+        task : object
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled`` to
+            check whether cancellation has been requested.
         """
 
     @abstractmethod
