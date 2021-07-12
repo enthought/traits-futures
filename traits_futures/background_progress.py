@@ -24,7 +24,7 @@ from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
 
-# Message types for messages from ProgressBackgroundTask
+# Message types for messages from ProgressTask
 # to ProgressFuture.
 
 #: Task sends progress. Argument is a single object giving progress
@@ -73,7 +73,7 @@ class ProgressReporter:
         self.send((PROGRESS, progress_info))
 
 
-class ProgressBackgroundTask:
+class ProgressTask:
     """
     Background portion of a progress background task.
 
@@ -100,7 +100,7 @@ class ProgressBackgroundTask:
 
 class ProgressFuture(BaseFuture):
     """
-    Object representing the front-end handle to a ProgressBackgroundTask.
+    Object representing the front-end handle to a ProgressTask.
     """
 
     #: Event fired whenever a progress message arrives from the background.
@@ -150,7 +150,7 @@ class BackgroundProgress(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return ProgressBackgroundTask(
+        return ProgressTask(
             callable=self.callable,
             args=self.args,
             kwargs=self.kwargs,

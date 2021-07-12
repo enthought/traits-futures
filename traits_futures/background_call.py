@@ -17,7 +17,7 @@ from traits_futures.base_future import BaseFuture
 from traits_futures.i_task_specification import ITaskSpecification
 
 
-class CallBackgroundTask:
+class CallTask:
     """
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor
@@ -76,7 +76,7 @@ class BackgroundCall(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return CallBackgroundTask(
+        return CallTask(
             callable=self.callable,
             args=self.args,
             kwargs=self.kwargs,
