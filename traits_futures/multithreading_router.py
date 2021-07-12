@@ -320,7 +320,7 @@ class MultithreadingRouter(HasRequiredTraits):
 
         Parameters
         ----------
-        condition : callable
+        condition
             Zero-argument callable returning a boolean. When this condition
             becomes true, this method will stop routing messages. If the
             condition is already true on entry, no messages will be routed.

@@ -174,7 +174,7 @@ class BaseFuture(HasStrictTraits):
 
         Returns
         -------
-        exc_info : tuple(str, str, str)
+        exc_info : tuple
             Tuple containing exception information in string form:
             (exception type, exception value, formatted traceback).
 
@@ -241,7 +241,7 @@ class BaseFuture(HasStrictTraits):
 
         Parameters
         ----------
-        message : tuple(str, object)
+        message : tuple
             Message from the background task, in the form (message_type,
             message_args).
         """
@@ -344,7 +344,7 @@ class BaseFuture(HasStrictTraits):
 
         Parameters
         ----------
-        exception_info : tuple(str, str, str)
+        exception_info : tuple
             Tuple containing exception information in string form:
             (exception type, exception value, formatted traceback).
         """
@@ -393,7 +393,7 @@ class BaseFuture(HasStrictTraits):
 
         Parameters
         ----------
-        cancel : callable
+        cancel
             The callback to be called when the user requests cancellation.
             The callback accepts no arguments, and has no return value.
 

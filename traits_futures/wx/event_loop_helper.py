@@ -38,7 +38,7 @@ class TimeoutTimer(wx.Timer):
     ----------
     timeout : float
         Timeout in seconds.
-    callback : callable
+    callback
         Callable taking no arguments, to be executed when the timer
         times out.
     args : tuple, optional
@@ -195,7 +195,7 @@ class EventLoopHelper:
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
-        condition : callable
+        condition
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
         timeout : float
