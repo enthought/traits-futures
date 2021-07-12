@@ -403,7 +403,7 @@ class BackgroundIterationTests:
 
         try:
             # midpoint won't be set until we next invoke "next(iterable)",
-            # by which time the IterationBackgroundTask's reference should
+            # by which time the IterationTask's reference should
             # have been deleted.
             self.assertTrue(midpoint.wait(timeout=TIMEOUT))
             self.assertIsNone(ref())
@@ -448,7 +448,7 @@ class BackgroundIterationTests:
             future.result
 
     def assertException(self, future, exc_type):
-        self.assertEqual(future.exception[0], str(exc_type))
+        self.assertIn(exc_type.__name__, future.exception[0])
 
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
