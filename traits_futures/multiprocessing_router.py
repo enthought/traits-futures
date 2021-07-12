@@ -212,7 +212,7 @@ class MultiprocessingRouter(HasRequiredTraits):
     ----------
     event_loop : IEventLoop
         The event loop used to trigger message dispatch.
-    manager : multiprocessing.Manager
+    manager : multiprocessing.managers.SyncManager
         Manager to be used for creating the shared-process queue.
     """
 
@@ -370,7 +370,7 @@ class MultiprocessingRouter(HasRequiredTraits):
 
         Parameters
         ----------
-        condition : callable
+        condition
             Zero-argument callable returning a boolean. When this condition
             becomes true, this method will stop routing messages. If the
             condition is already true on entry, no messages will be routed.
