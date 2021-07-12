@@ -393,7 +393,7 @@ class BaseFuture(HasStrictTraits):
 
         Parameters
         ----------
-        cancel : callable
+        cancel
             The callback to be called when the user requests cancellation.
             The callback accepts no arguments, and has no return value.
 

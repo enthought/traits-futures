@@ -86,12 +86,12 @@ class BackgroundTaskWrapper:
 
     Parameters
     ----------
-    background_task : collections.abc.Callable
+    background_task
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled``.
     sender : IMessageSender
         Object used to send messages.
-    cancelled : collections.abc.Callable
+    cancelled
         Zero-argument callable returning bool. This can be called to check
         whether cancellation has been requested.
     """
