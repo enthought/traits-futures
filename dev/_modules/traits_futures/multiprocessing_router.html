@@ -219,13 +219,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a message to the router.</span>
 
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        message : object</span>
 <span class="sd">            Typically this will be immutable, small, and pickleable.</span>
-
-<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
-<span class="sd">        all be called from the same thread.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>

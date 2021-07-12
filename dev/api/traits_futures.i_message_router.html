@@ -253,14 +253,11 @@ background task, which then effectively takes “ownership” of that sender.</p
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageSender.send">
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a message to the router.</p>
+<p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
+all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – Typically this will be immutable, small, and pickleable.</p></li>
-<li><p><strong>'start'</strong> (<em>Not thread-safe. The</em>) – </p></li>
-<li><p><strong>should</strong> (<em>'send' and 'stop' methods</em>) – </p></li>
-<li><p><strong>thread.</strong> (<em>all be called from the same</em>) – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – Typically this will be immutable, small, and pickleable.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
