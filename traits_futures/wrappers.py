@@ -53,7 +53,8 @@ class FutureWrapper(HasStrictTraits):
         """
         Pass on a message to the future.
         """
-        self.future._message = event.new
+        message = event.new
+        self.future.receive(message)
 
 
 def run_background_task(background_task, sender, cancelled):

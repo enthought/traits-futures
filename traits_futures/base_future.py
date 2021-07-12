@@ -17,7 +17,6 @@ from traits.api import (
     Bool,
     Callable,
     Enum,
-    Event,
     HasStrictTraits,
     observe,
     Property,
@@ -239,21 +238,25 @@ class BaseFuture(HasStrictTraits):
             )
         self._user_cancelled()
 
+    def receive(self, message):
+        """
+        Receive and dispatch a message from the task.
+
+        Parameters
+        ----------
+        message : object
+            Message sent by the background task.
+        """
+        message_type, message_arg = message
+        method_name = "_task_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
+
     # Semi-private methods ####################################################
 
     # These methods represent the state transitions in response to external
     # events. They're used by the FutureWrapper, and are potentially useful for
     # unit testing, but are not intended for use by the users of Traits
     # Futures.
-
-    @observe("_message")
-    def _dispatch_message(self, event):
-        """
-        Pass on a message to the future.
-        """
-        message_type, message_arg = event.new
-        method_name = "_task_{}".format(message_type)
-        getattr(self, method_name)(message_arg)
 
     def _task_sent(self, message):
         """
@@ -449,9 +452,6 @@ class BaseFuture(HasStrictTraits):
     #: Callback called (with no arguments) when user requests cancellation.
     #: This is reset to ``None`` once cancellation is impossible.
     _cancel = Callable(allow_none=True)
-
-    #: Event for messages received from the background task
-    _message = Event(Any())
 
     #: The internal state of the future.
     _internal_state = Enum(_NOT_INITIALIZED, list(_INTERNAL_STATE_TO_STATE))
