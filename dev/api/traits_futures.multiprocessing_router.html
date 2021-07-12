@@ -99,18 +99,15 @@ interfaces for tasks executed in a background process.</p>
 <p>When the router is started (via the <code class="docutils literal notranslate"><span class="pre">start</span></code> method), it sets up the
 following machinery:</p>
 <ul class="simple">
-<li><p>A process-safe process message queue that’s shared between processes
-(<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._process_message_queue</span></code>). This queue runs in
-its own manager server process (the manager is
+<li><p>A process-safe process message queue that’s shared between processes. This
+queue runs in its own manager server process (the manager is
 <a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="traits_futures.multiprocessing_router.MultiprocessingRouter.manager"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter.manager</span></code></a>), and the main process and worker
 processes use proxy objects to communicate with the queue.</p></li>
-<li><p>A thread-safe local message queue
-(<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._local_message_queue</span></code>) in the main process.</p></li>
-<li><p>A long-running thread (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MultiprocessingRouter._monitor_thread</span></code>),
-running in the main process, that continually monitors the process message
-queue and immediately transfers any messages that arrive to the local message
-queue.</p></li>
-<li><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code> instance that’s pinged by the monitor thread whenever a
+<li><p>A thread-safe local message queue in the main process.</p></li>
+<li><p>A long-running thread running in the main process, that continually monitors
+the process message queue and immediately transfers any messages that arrive
+to the local message queue.</p></li>
+<li><p>A <a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code></a> instance that’s pinged by the monitor thread whenever a
 message is transferred from the process message queue to the local message
 queue, alerting the GUI that there’s a message to process and route.</p></li>
 </ul>
@@ -123,7 +120,7 @@ local proxy for that message queue)</p></li>
 process message queue) and places the message onto the local message queue.
 It also pings the pingee.</p></li>
 <li><p>assuming a running event loop, the pingee receives the ping and executes
-the <code class="xref py py-meth docutils literal notranslate"><span class="pre">MultiprocessingRouter._route_message</span></code> callback</p></li>
+the <code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter._route_message</span></code> callback</p></li>
 <li><p>the <code class="docutils literal notranslate"><span class="pre">_route_message</span></code> callback pulls the next message from the local message
 queue, inspects it to determine which receiver it should be sent to, and
 sends it to that receiver</p></li>

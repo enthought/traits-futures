@@ -100,18 +100,15 @@
 <span class="sd">When the router is started (via the ``start`` method), it sets up the</span>
 <span class="sd">following machinery:</span>
 
-<span class="sd">- A process-safe process message queue that&#39;s shared between processes</span>
-<span class="sd">  (:attr:`MultiprocessingRouter._process_message_queue`). This queue runs in</span>
-<span class="sd">  its own manager server process (the manager is</span>
+<span class="sd">- A process-safe process message queue that&#39;s shared between processes. This</span>
+<span class="sd">  queue runs in its own manager server process (the manager is</span>
 <span class="sd">  :attr:`MultiprocessingRouter.manager`), and the main process and worker</span>
 <span class="sd">  processes use proxy objects to communicate with the queue.</span>
-<span class="sd">- A thread-safe local message queue</span>
-<span class="sd">  (:attr:`MultiprocessingRouter._local_message_queue`) in the main process.</span>
-<span class="sd">- A long-running thread (:attr:`MultiprocessingRouter._monitor_thread`),</span>
-<span class="sd">  running in the main process, that continually monitors the process message</span>
-<span class="sd">  queue and immediately transfers any messages that arrive to the local message</span>
-<span class="sd">  queue.</span>
-<span class="sd">- A :class:`IPingee` instance that&#39;s pinged by the monitor thread whenever a</span>
+<span class="sd">- A thread-safe local message queue in the main process.</span>
+<span class="sd">- A long-running thread running in the main process, that continually monitors</span>
+<span class="sd">  the process message queue and immediately transfers any messages that arrive</span>
+<span class="sd">  to the local message queue.</span>
+<span class="sd">- A :class:`~.IPingee` instance that&#39;s pinged by the monitor thread whenever a</span>
 <span class="sd">  message is transferred from the process message queue to the local message</span>
 <span class="sd">  queue, alerting the GUI that there&#39;s a message to process and route.</span>
 
@@ -124,7 +121,7 @@
 <span class="sd">  process message queue) and places the message onto the local message queue.</span>
 <span class="sd">  It also pings the pingee.</span>
 <span class="sd">- assuming a running event loop, the pingee receives the ping and executes</span>
-<span class="sd">  the :meth:`MultiprocessingRouter._route_message` callback</span>
+<span class="sd">  the ``MultiprocessingRouter._route_message`` callback</span>
 <span class="sd">- the ``_route_message`` callback pulls the next message from the local message</span>
 <span class="sd">  queue, inspects it to determine which receiver it should be sent to, and</span>
 <span class="sd">  sends it to that receiver</span>
