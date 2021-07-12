@@ -12,6 +12,14 @@
 Base class providing common pieces of the Future machinery.
 """
 
+# XXX To do: consider a return value from 'message' instead of having
+# the executor make use of the 'done' trait.
+# XXX Add 'receive' to IFuture interface.
+# XXX Consider not using trait for receiver.
+# XXX Better receiver cleanup.
+# XXX Where should the responsibility for not passing on messages after
+#     cancellation lie?
+
 from traits.api import (
     Any,
     Bool,
