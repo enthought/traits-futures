@@ -449,7 +449,7 @@
                 <span class="c1"># Re-raise with a more user-friendly error message.</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;Shutdown timed out; &quot;</span>
-                    <span class="s2">&quot;f{len(self._wrappers)} tasks still running&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">)</span><span class="si">}</span><span class="s2"> tasks still running&quot;</span>
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span></div>
