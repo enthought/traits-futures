@@ -98,6 +98,30 @@ todo_include_todos = False
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
 
+# -- Options for Napoleon extension ---------------------------------------
+
+# Do pre-process NumPyDoc - style type strings. This prevents warnings
+# resembling "py:class reference target not found: optional".
+napoleon_preprocess_types = True
+
+# Other terms that might appear in type strings.
+napoleon_type_aliases = {
+    "CallFuture": ":class:`~.CallFuture`",
+    "IEventLoop": ":class:`~.IEventLoop`",
+    "IEventLoopHelper": ":class:`~.IEventLoopHelper`",
+    "IFuture": ":class:`~.IFuture`",
+    "IMessageRouter": ":class:`~.IMessageRouter`",
+    "IMessageSender": ":class:`~.IMessageSender`",
+    "IParallelContext": ":class:`~.IParallelContext`",
+    "IPingee": ":class:`~.IPingee`",
+    "ITaskSpecification": ":class:`~.ITaskSpecification`",
+    "IterationFuture": ":class:`~.IterationFuture`",
+    "MultiprocessingRouter": ":class:`~.MultiprocessingRouter`",
+    "MultithreadingRouter": ":class:`~.MultithreadingRouter`",
+    "ProgressFuture": ":class:`~.ProgressFuture`",
+    "TraitsExecutor": ":class:`~.TraitsExecutor`",
+}
+
 # -- Options for Graphviz extension ---------------------------------------
 
 # Output format when building HTML files
