@@ -448,7 +448,7 @@ class BackgroundIterationTests:
             future.result
 
     def assertException(self, future, exc_type):
-        self.assertEqual(future.exception[0], str(exc_type))
+        self.assertIn(exc_type.__name__, future.exception[0])
 
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):
