@@ -52,8 +52,8 @@ class MultiprocessingContext(IParallelContext):
         -------
         event : object
             An event that can be shared safely with workers.
-            The event should have the same API as ``threading.Event``
-            and ``multiprocessing.Event``, providing at a minimum
+            The event should have the same API as :class:`threading.Event`
+            and :class:`multiprocessing.Event`, providing at a minimum
             the ``set`` and ``is_set`` methods from that API.
         """
         return self._manager.Event()
