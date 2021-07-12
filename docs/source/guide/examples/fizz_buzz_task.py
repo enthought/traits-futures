@@ -127,7 +127,7 @@ class BackgroundFizzBuzz:
 
         Returns
         -------
-        collections.abc.Callable
+        callable
             Callable accepting arguments ``send`` and ``cancelled``. The
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.

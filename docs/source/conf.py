@@ -98,6 +98,17 @@ todo_include_todos = False
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
 
+# -- Options for Napoleon extension ---------------------------------------
+
+# Do pre-process NumPyDoc - style type strings. This prevents warnings
+# resembling "py:class reference target not found: optional".
+napoleon_preprocess_types = True
+
+# Other terms that might appear in type strings.
+napoleon_type_aliases = {
+    "callable": ":class:`collections.abc.Callable`",
+}
+
 # -- Options for Graphviz extension ---------------------------------------
 
 # Output format when building HTML files

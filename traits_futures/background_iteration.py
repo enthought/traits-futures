@@ -99,7 +99,7 @@ class BackgroundIteration(HasStrictTraits):
 
         Returns
         -------
-        collections.abc.Callable
+        callable
             Callable accepting arguments ``send`` and ``cancelled``. The
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
@@ -119,7 +119,7 @@ def submit_iteration(executor, callable, *args, **kwargs):
     ----------
     executor : TraitsExecutor
         Executor to submit the task to.
-    callable : collections.abc.Callable
+    callable : callable
         Callable returning an iterator when called with the given arguments.
     *args
         Positional arguments to pass to the callable.
