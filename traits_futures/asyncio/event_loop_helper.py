@@ -22,7 +22,7 @@ class EventLoopHelper:
 
     Parameters
     ----------
-    event_loop : asyncio.events.AbstractEventLoop
+    event_loop : asyncio.AbstractEventLoop
         The asyncio event loop that this object wraps.
     """
 
