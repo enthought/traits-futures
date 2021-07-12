@@ -18,18 +18,15 @@ Overview of the implementation
 When the router is started (via the ``start`` method), it sets up the
 following machinery:
 
-- A process-safe process message queue that's shared between processes
-  (:attr:`MultiprocessingRouter._process_message_queue`). This queue runs in
-  its own manager server process (the manager is
+- A process-safe process message queue that's shared between processes. This
+  queue runs in its own manager server process (the manager is
   :attr:`MultiprocessingRouter.manager`), and the main process and worker
   processes use proxy objects to communicate with the queue.
-- A thread-safe local message queue
-  (:attr:`MultiprocessingRouter._local_message_queue`) in the main process.
-- A long-running thread (:attr:`MultiprocessingRouter._monitor_thread`),
-  running in the main process, that continually monitors the process message
-  queue and immediately transfers any messages that arrive to the local message
-  queue.
-- A :class:`IPingee` instance that's pinged by the monitor thread whenever a
+- A thread-safe local message queue in the main process.
+- A long-running thread running in the main process, that continually monitors
+  the process message queue and immediately transfers any messages that arrive
+  to the local message queue.
+- A :class:`~.IPingee` instance that's pinged by the monitor thread whenever a
   message is transferred from the process message queue to the local message
   queue, alerting the GUI that there's a message to process and route.
 
@@ -42,7 +39,7 @@ occur:
   process message queue) and places the message onto the local message queue.
   It also pings the pingee.
 - assuming a running event loop, the pingee receives the ping and executes
-  the :meth:`MultiprocessingRouter._route_message` callback
+  the ``MultiprocessingRouter._route_message`` callback
 - the ``_route_message`` callback pulls the next message from the local message
   queue, inspects it to determine which receiver it should be sent to, and
   sends it to that receiver
