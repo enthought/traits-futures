@@ -96,15 +96,31 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 
-<div class="viewcode-block" id="marshal_exception"><a class="viewcode-back" href="../../api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception">[docs]</a><span class="k">def</span> <span class="nf">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+<div class="viewcode-block" id="marshal_exception"><a class="viewcode-back" href="../../api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception">[docs]</a><span class="k">def</span> <span class="nf">marshal_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Turn exception details into something that can be safely</span>
 <span class="sd">    transmitted across thread / process boundaries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    exception : BaseException</span>
+<span class="sd">        The exception instance to be marshalled</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    exception_type, exception_value, exception_traceback : str</span>
+<span class="sd">        Strings representing the exception type, value and</span>
+<span class="sd">        formatted traceback.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exc_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-    <span class="n">exc_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-    <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">formatted_traceback</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)),</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span>
+        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span> <span class="n">exception</span><span class="p">,</span> <span class="n">exception</span><span class="o">.</span><span class="n">__traceback__</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -119,7 +135,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -144,7 +160,7 @@
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.0.
       </li>
     </ul>
     </div>

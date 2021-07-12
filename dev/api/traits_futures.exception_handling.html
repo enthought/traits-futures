@@ -95,9 +95,21 @@
 <p>Support for transferring exception information from a background task.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="traits_futures.exception_handling.marshal_exception">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.exception_handling.</span></span><span class="sig-name descname"><span class="pre">marshal_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/exception_handling.html#marshal_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.exception_handling.marshal_exception" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.exception_handling.</span></span><span class="sig-name descname"><span class="pre">marshal_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/exception_handling.html#marshal_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.exception_handling.marshal_exception" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn exception details into something that can be safely
 transmitted across thread / process boundaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exception</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.9)"><em>BaseException</em></a>) – The exception instance to be marshalled</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>exception_type, exception_value, exception_traceback</strong> – Strings representing the exception type, value and
+formatted traceback.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -126,7 +138,7 @@ transmitted across thread / process boundaries.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -151,7 +163,7 @@ transmitted across thread / process boundaries.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.0.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.0.
       </li>
     </ul>
     </div>
