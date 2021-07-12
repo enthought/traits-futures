@@ -137,7 +137,10 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        task : callable</span>
+<span class="sd">        task : object</span>
+<span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
+<span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
+<span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="ITaskSpecification.future"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future">[docs]</a>    <span class="nd">@abstractmethod</span>

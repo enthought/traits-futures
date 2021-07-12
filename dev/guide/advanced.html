@@ -158,11 +158,11 @@ callable which can be used to check for cancellation requests. Here’s the
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    send : callable(object) -&gt; None</span>
+<span class="sd">    send</span>
 <span class="sd">        Callable accepting the message to be sent, and returning nothing. The</span>
 <span class="sd">        message argument should be pickleable, and preferably immutable (or at</span>
 <span class="sd">        least, not intended to be mutated).</span>
-<span class="sd">    cancelled : callable</span>
+<span class="sd">    cancelled</span>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
@@ -352,11 +352,11 @@ from putting together the above snippets:</p>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    send : callable(object) -&gt; None</span>
+<span class="sd">    send</span>
 <span class="sd">        Callable accepting the message to be sent, and returning nothing. The</span>
 <span class="sd">        message argument should be pickleable, and preferably immutable (or at</span>
 <span class="sd">        least, not intended to be mutated).</span>
-<span class="sd">    cancelled : callable</span>
+<span class="sd">    cancelled</span>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>

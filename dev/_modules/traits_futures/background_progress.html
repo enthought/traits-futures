@@ -227,7 +227,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        collections.abc.Callable</span>
+<span class="sd">        task : ProgressTask</span>
 <span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
@@ -247,7 +247,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    executor : TraitsExecutor</span>
 <span class="sd">        Executor to submit the task to.</span>
-<span class="sd">    callable : collections.abc.Callable</span>
+<span class="sd">    callable</span>
 <span class="sd">        Callable that executes the progress-providing function. This callable</span>
 <span class="sd">        must accept a &quot;progress&quot; named argument, in addition to the provided</span>
 <span class="sd">        arguments. The callable may then call the &quot;progress&quot; argument to</span>

@@ -181,7 +181,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        collections.abc.Callable</span>
+<span class="sd">        task : IterationTask</span>
 <span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
@@ -201,7 +201,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    executor : TraitsExecutor</span>
 <span class="sd">        Executor to submit the task to.</span>
-<span class="sd">    callable : collections.abc.Callable</span>
+<span class="sd">    callable</span>
 <span class="sd">        Callable returning an iterator when called with the given arguments.</span>
 <span class="sd">    *args</span>
 <span class="sd">        Positional arguments to pass to the callable.</span>

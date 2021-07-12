@@ -115,12 +115,12 @@ be cancelled.</p>
 <dd><p>Return a background callable for this task specification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Callable accepting arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The
+<dd class="field-odd"><p><strong>task</strong> – Callable accepting arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The
 callable can use <code class="docutils literal notranslate"><span class="pre">send</span></code> to send messages and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> to
 check whether cancellation has been requested.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.9)">collections.abc.Callable</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressTask" title="traits_futures.background_progress.ProgressTask">ProgressTask</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -225,7 +225,7 @@ sends messages to communicate with the ProgressFuture.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>executor</strong> (<a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><em>TraitsExecutor</em></a>) – Executor to submit the task to.</p></li>
-<li><p><strong>callable</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.9)"><em>collections.abc.Callable</em></a>) – Callable that executes the progress-providing function. This callable
+<li><p><strong>callable</strong> – Callable that executes the progress-providing function. This callable
 must accept a “progress” named argument, in addition to the provided
 arguments. The callable may then call the “progress” argument to
 report progress.</p></li>
