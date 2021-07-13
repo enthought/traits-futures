@@ -13,11 +13,11 @@ Background task consisting of a simple callable.
 """
 from traits.api import Callable, Dict, HasStrictTraits, Str, Tuple
 
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask
 from traits_futures.i_task_specification import ITaskSpecification
 
 
-class CallTask:
+class CallTask(BaseTask):
     """
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor
@@ -28,7 +28,7 @@ class CallTask:
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, send, cancelled):
+    def run(self, send, cancelled):
         return self.callable(*self.args, **self.kwargs)
 
 

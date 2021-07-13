@@ -25,6 +25,7 @@ from traits.api import (
     Tuple,
 )
 
+from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLABLE_STATES,
     CANCELLED,
@@ -37,6 +38,32 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_future import IFuture
+
+# Messages sent by the BaseTask, and interpreted by BaseFuture.
+
+#: Custom message from the future. The argument is a pair
+#: (message_type, message_args); the message type and message args
+#: are interpreted by the future.
+SENT = "sent"
+
+#: Control message sent when the callable is abandoned before execution.
+ABANDONED = "abandoned"
+
+#: Control message sent before we start to process the target callable.
+#: The argument is always ``None``.
+STARTED = "started"
+
+#: Control message sent when an exception was raised by the background
+#: callable. The argument is a tuple containing exception information.
+RAISED = "raised"
+
+#: Control message sent to indicate that the background callable succeeded
+#: and returned a result. The argument is that result.
+RETURNED = "returned"
+
+#: Message types that indicate a "final" message. After a message of this
+#: type is received, no more messages will be received.
+FINAL_MESSAGES = {ABANDONED, RAISED, RETURNED}
 
 # The BaseFuture class maintains an internal state. That internal state maps to
 # the user-facing state, but is more fine-grained, allowing the class to keep
@@ -213,6 +240,29 @@ class BaseFuture(HasStrictTraits):
                 "Task state is {}".format(self.state)
             )
         self._user_cancelled()
+
+    def receive(self, message):
+        """
+        Receive and process a message from the task associated to this future.
+
+        This method is primarily for use by the executors, but may also be of
+        use in testing.
+
+        Parameters
+        ----------
+        message : object
+            The message received from the associated task.
+
+        Returns
+        -------
+        final : bool
+            True if the received message should be the last one ever received
+            from the paired task.
+        """
+        message_type, message_arg = message
+        method_name = "_task_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
+        return message_type in FINAL_MESSAGES
 
     # Semi-private methods ####################################################
 
@@ -460,3 +510,59 @@ class BaseFuture(HasStrictTraits):
         new_done = new_internal_state in _DONE_INTERNAL_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
+
+
+class BaseTask:
+    """
+    Mixin for background task classes, making those classes callable.
+
+    This class provides a callable wrapper allowing subclasses to easily
+    provide a background callable task.
+
+    Subclasses should override the ``run`` method to customize what should
+    happen when the task runs. This class's ``__call__`` implementation will
+    take care of sending standard control messages telling the future that the
+    task has started, completed, or raised, and delegate to the ``run`` method
+    for execution of the background task and sending of any custom messages.
+    """
+
+    def run(send, cancelled):
+        """
+        Run the body of the background task.
+
+        Parameters
+        ----------
+        send : callable
+            single-argument callable used to send a message to the
+            associated future. It takes the message to be sent, and returns
+            no useful value.
+        cancelled : callable
+            zero-argument callable that can be used to check whether
+            cancellation has been requested for this task. Returns ``True``
+            if cancellation has been requested, else ``False``.
+
+        Returns
+        -------
+        any : object
+            May return any object. That object will be delivered to the
+            future's ``result`` attribute.
+        """
+        raise NotImplementedError(
+            "This method should be implemented by subclasses."
+        )
+
+    def __call__(self, send, cancelled):
+        if cancelled():
+            send((ABANDONED, None))
+            return
+
+        send((STARTED, None))
+        try:
+            result = self.run(
+                lambda message: send((SENT, message)),
+                cancelled,
+            )
+        except BaseException as e:
+            send((RAISED, marshal_exception(e)))
+        else:
+            send((RETURNED, result))

@@ -30,10 +30,14 @@ FIZZ_BUZZ = "fizz_buzz"
 # -- start fizz_buzz --
 import time
 
+from traits_futures.api import BaseTask
 
-def fizz_buzz(send, cancelled):
+
+class FizzBuzzTask(BaseTask):
     """
-    Count slowly from 1, sending FIZZ / BUZZ messages to the foreground.
+    Background task for Fizz Buzz
+
+    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.
 
     Parameters
     ----------
@@ -46,21 +50,22 @@ def fizz_buzz(send, cancelled):
         returns ``True`` if cancellation has been requested, and ``False``
         otherwise.
     """
-    n = 1
-    while not cancelled():
+    def run(self, send, cancelled):
+        n = 1
+        while not cancelled():
 
-        n_is_multiple_of_3 = n % 3 == 0
-        n_is_multiple_of_5 = n % 5 == 0
+            n_is_multiple_of_3 = n % 3 == 0
+            n_is_multiple_of_5 = n % 5 == 0
 
-        if n_is_multiple_of_3 and n_is_multiple_of_5:
-            send((FIZZ_BUZZ, n))
-        elif n_is_multiple_of_3:
-            send((FIZZ, n))
-        elif n_is_multiple_of_5:
-            send((BUZZ, n))
+            if n_is_multiple_of_3 and n_is_multiple_of_5:
+                send((FIZZ_BUZZ, n))
+            elif n_is_multiple_of_3:
+                send((FIZZ, n))
+            elif n_is_multiple_of_5:
+                send((BUZZ, n))
 
-        time.sleep(1.0)
-        n += 1
+            time.sleep(1.0)
+            n += 1
 # -- end fizz_buzz --
 
 
@@ -132,7 +137,7 @@ class BackgroundFizzBuzz:
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return fizz_buzz
+        return FizzBuzzTask()
 # -- end BackgroundFizzBuzz
 
 

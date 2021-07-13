@@ -16,6 +16,7 @@ class TestApi(unittest.TestCase):
         from traits_futures.api import (  # noqa: F401
             AsyncioEventLoop,
             BaseFuture,
+            BaseTask,
             CallFuture,
             CANCELLED,
             CANCELLING,

@@ -41,7 +41,7 @@ from traits_futures.executor_states import (
 from traits_futures.i_event_loop import IEventLoop
 from traits_futures.i_parallel_context import IParallelContext
 from traits_futures.multithreading_context import MultithreadingContext
-from traits_futures.wrappers import BackgroundTaskWrapper, FutureWrapper
+from traits_futures.wrappers import FutureWrapper, run_background_task
 
 logger = logging.getLogger(__name__)
 
@@ -306,10 +306,9 @@ class TraitsExecutor(HasStrictTraits):
         runner = task.background_task()
         future = task.future()
 
-        background_task_wrapper = BackgroundTaskWrapper(
-            runner, sender, cancel_event.is_set
+        self._worker_pool.submit(
+            run_background_task, runner, sender, cancel_event.is_set
         )
-        self._worker_pool.submit(background_task_wrapper)
 
         future._executor_initialized(cancel_event.set)
         future_wrapper = FutureWrapper(

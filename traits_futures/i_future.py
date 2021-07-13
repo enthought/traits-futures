@@ -102,3 +102,23 @@ class IFuture(Interface):
             If the task has already completed or cancellation has already
             been requested.
         """
+
+    @abc.abstractmethod
+    def receive(self, message):
+        """
+        Receive and process a message from the task associated to this future.
+
+        This method is primarily for use by the executors, but may also be of
+        use in testing.
+
+        Parameters
+        ----------
+        message : object
+            The message received from the associated task.
+
+        Returns
+        -------
+        final : bool
+            True if the received message should be the last one ever received
+            from the paired task.
+        """

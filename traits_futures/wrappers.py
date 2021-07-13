@@ -18,42 +18,16 @@ import logging
 
 from traits.api import Bool, HasStrictTraits, HasTraits, Instance, observe
 
-from traits_futures.exception_handling import marshal_exception
 from traits_futures.i_future import IFuture
 
 logger = logging.getLogger(__name__)
-
-
-# Messages sent by the BackgroundTaskWrapper, and interpreted by the
-# FutureWrapper.
-
-#: Custom message from the future. The argument is a pair
-#: (message_type, message_args); the message type and message args
-#: are interpreted by the future.
-SENT = "sent"
-
-#: Control message sent when the callable is abandoned before execution.
-ABANDONED = "abandoned"
-
-#: Control message sent before we start to process the target callable.
-#: The argument is always ``None``.
-STARTED = "started"
-
-#: Control message sent when an exception was raised by the background
-#: callable. The argument is a tuple containing exception information.
-RAISED = "raised"
-
-#: Control message sent to indicate that the background callable succeeded
-#: and returned a result. The argument is that result.
-RETURNED = "returned"
 
 
 class FutureWrapper(HasStrictTraits):
     """
     Wrapper for the IFuture.
 
-    This wrapper handles control messages from the background task, and
-    delegates custom messages to the future.
+    Passes on messages received for this future.
     """
 
     #: The Traits Futures future being wrapped
@@ -73,14 +47,12 @@ class FutureWrapper(HasStrictTraits):
         Pass on a message to the future.
         """
         message = event.new
-        message_type, message_arg = message
-        method_name = "_task_{}".format(message_type)
-        getattr(self.future, method_name)(message_arg)
-        if message_type in {ABANDONED, RAISED, RETURNED}:
+        done = self.future.receive(message)
+        if done:
             self.done = True
 
 
-class BackgroundTaskWrapper:
+def run_background_task(background_task, sender, cancelled):
     """
     Wrapper for callables submitted to the underlying executor.
 
@@ -95,42 +67,12 @@ class BackgroundTaskWrapper:
         Zero-argument callable returning bool. This can be called to check
         whether cancellation has been requested.
     """
-
-    def __init__(self, background_task, sender, cancelled):
-        self._background_task = background_task
-        self._sender = sender
-        self._cancelled = cancelled
-
-    def __call__(self):
-        try:
-            with self._sender:
-                if self._cancelled():
-                    self._sender.send((ABANDONED, None))
-                    return
-
-                self._sender.send((STARTED, None))
-                try:
-                    result = self._background_task(
-                        self._send_custom_message, self._cancelled
-                    )
-                except BaseException as e:
-                    self._sender.send((RAISED, marshal_exception(e)))
-                else:
-                    self._sender.send((RETURNED, result))
-        except BaseException:
-            # We'll only ever get here in the case of a coding error. But in
-            # case that happens, it's useful to have the exception logged to
-            # help the developer.
-            logger.exception("Unexpected exception in background task.")
-            raise
-
-    def _send_custom_message(self, message):
-        """
-        Send a custom message from the background task to the future.
-
-        Parameters
-        ----------
-        message : object
-            The message to be sent.
-        """
-        self._sender.send((SENT, message))
+    try:
+        with sender:
+            background_task(sender.send, cancelled)
+    except BaseException:
+        # We'll only ever get here in the case of a coding error. But in
+        # case that happens, it's useful to have the exception logged to
+        # help the developer.
+        logger.exception("Unexpected exception in background task.")
+        raise
