@@ -39,7 +39,7 @@ from traits_futures.future_states import (
 )
 from traits_futures.i_future import IFuture
 
-# Messages sent by the InnerWrapper, and interpreted by BaseFuture.
+# Messages sent by the BaseTask, and interpreted by BaseFuture.
 
 #: Custom message from the future. The argument is a pair
 #: (message_type, message_args); the message type and message args
