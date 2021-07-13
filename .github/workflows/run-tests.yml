@@ -10,8 +10,8 @@ jobs:
   tests-pyside2:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [3.6, 3.9]
+        os: [ubuntu-latest, windows-latest]
+        python-version: [3.6, 3.8]
 
     env:
       ETS_TOOLKIT: qt
