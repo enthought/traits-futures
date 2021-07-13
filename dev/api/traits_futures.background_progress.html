@@ -120,7 +120,7 @@ callable can use <code class="docutils literal notranslate"><span class="pre">se
 check whether cancellation has been requested.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressTask" title="traits_futures.background_progress.ProgressTask">ProgressTask</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressTask" title="traits_futures.background_progress.ProgressTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressTask</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -141,7 +141,7 @@ check whether cancellation has been requested.</p>
 background task.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture">ProgressFuture</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -195,7 +195,7 @@ task cancellation.</p>
 corresponding future’s <code class="docutils literal notranslate"><span class="pre">progress</span></code> event trait.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>progress_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – An arbitrary object representing progress. Ideally, this
+<dd class="field-odd"><p><strong>progress_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – An arbitrary object representing progress. Ideally, this
 should be immutable and pickleable.</p>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -224,7 +224,7 @@ sends messages to communicate with the ProgressFuture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>executor</strong> (<a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><em>TraitsExecutor</em></a>) – Executor to submit the task to. This argument should always be passed
+<li><p><strong>executor</strong> (<a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>) – Executor to submit the task to. This argument should always be passed
 by position rather than by name. Future versions of the library may
 enforce this restriction.</p></li>
 <li><p><strong>callable</strong> – Callable that executes the progress-providing function. This callable
@@ -241,7 +241,7 @@ must not include “progress”.</p></li>
 <dd class="field-even"><p><strong>future</strong> – Object representing the state of the background task.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture">ProgressFuture</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

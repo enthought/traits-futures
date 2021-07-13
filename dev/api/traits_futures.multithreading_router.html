@@ -122,7 +122,7 @@ sender will be in a background thread.</p>
 sender will be in a background thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>event_loop</strong> (<a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><em>IEventLoop</em></a>) – The event loop used to trigger message dispatch.</p>
+<dd class="field-odd"><p><strong>event_loop</strong> (<a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoop</span></code></a>) – The event loop used to trigger message dispatch.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -134,7 +134,7 @@ can reach that receiver.</p>
 <p>Not thread safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="traits_futures.multithreading_router.MultithreadingReceiver"><em>MultithreadingReceiver</em></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
+<dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="traits_futures.multithreading_router.MultithreadingReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingReceiver</span></code></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
@@ -158,8 +158,8 @@ messages, while the receiver remains in the foreground.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><strong>sender</strong> (<em>MultithreadingSender</em>) – Object to be passed to the background task.</p></li>
-<li><p><strong>receiver</strong> (<em>MultithreadingReceiver</em>) – Object kept in the foreground, which reacts to messages.</p></li>
+<li><p><strong>sender</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingSender" title="traits_futures.multithreading_router.MultithreadingSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingSender</span></code></a>) – Object to be passed to the background task.</p></li>
+<li><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="traits_futures.multithreading_router.MultithreadingReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingReceiver</span></code></a>) – Object kept in the foreground, which reacts to messages.</p></li>
 </ul>
 </p>
 </dd>
@@ -184,7 +184,7 @@ messages will need to be processed through this function.</p>
 <li><p><strong>condition</strong> – Zero-argument callable returning a boolean. When this condition
 becomes true, this method will stop routing messages. If the
 condition is already true on entry, no messages will be routed.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -236,10 +236,10 @@ thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Id of the matching receiver; used for message routing.</p></li>
-<li><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><em>IPingee</em></a>) – Recipient for pings, used to notify the event loop that there’s
+<li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Id of the matching receiver; used for message routing.</p></li>
+<li><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code></a>) – Recipient for pings, used to notify the event loop that there’s
 a message pending.</p></li>
-<li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.9)"><em>queue.Queue</em></a>) – Thread-safe queue for passing messages to the foreground.</p></li>
+<li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a>) – Thread-safe queue for passing messages to the foreground.</p></li>
 </ul>
 </dd>
 </dl>
@@ -251,7 +251,7 @@ a message pending.</p></li>
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – Typically this will be immutable, small, and pickleable.</p>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
