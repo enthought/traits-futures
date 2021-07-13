@@ -1,7 +1,6 @@
 name: Integration tests
 
 on:
-  pull_request:
   workflow_dispatch:
   schedule:
     # Run at 04:35 UTC every Sunday
