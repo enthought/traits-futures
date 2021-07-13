@@ -98,6 +98,13 @@ todo_include_todos = False
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
 
+# Ignore complaints about references to classes in wx and pyface.qt.QtCore
+nitpick_ignore_regex = [
+    (r'py:class', r'PySide2\.QtCore\..*'),
+    (r'py:class', r'pyface\.qt\.QtCore\..*'),
+    (r'py:class', r'wx\..*'),
+]
+
 # -- Options for Napoleon extension ---------------------------------------
 
 # Do pre-process NumPyDoc - style type strings. This prevents warnings
