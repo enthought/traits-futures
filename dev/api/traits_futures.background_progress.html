@@ -211,10 +211,35 @@ should be immutable and pickleable.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.background_progress.ProgressTask">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressTask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.base_future.BaseTask</span></code></a></p>
 <p>Background portion of a progress background task.</p>
 <p>This provides the callable that will be submitted to the worker pool, and
 sends messages to communicate with the ProgressFuture.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.background_progress.ProgressTask.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">send</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressTask.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the body of the background task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>send</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – single-argument callable used to send a message to the
+associated future. It takes the message to be sent, and returns
+no useful value.</p></li>
+<li><p><strong>cancelled</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – zero-argument callable that can be used to check whether
+cancellation has been requested for this task. Returns <code class="docutils literal notranslate"><span class="pre">True</span></code>
+if cancellation has been requested, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>any</strong> – May return any object. That object will be delivered to the
+future’s <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">

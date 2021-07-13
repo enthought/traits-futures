@@ -103,7 +103,7 @@
 
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
+<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span><span class="p">,</span> <span class="n">BaseTask</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 <span class="c1"># Message types for messages from ProgressTask</span>
@@ -155,7 +155,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">PROGRESS</span><span class="p">,</span> <span class="n">progress_info</span><span class="p">))</span></div></div>
 
 
-<div class="viewcode-block" id="ProgressTask"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask">[docs]</a><span class="k">class</span> <span class="nc">ProgressTask</span><span class="p">:</span>
+<div class="viewcode-block" id="ProgressTask"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask">[docs]</a><span class="k">class</span> <span class="nc">ProgressTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Background portion of a progress background task.</span>
 
@@ -168,7 +168,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+<div class="viewcode-block" id="ProgressTask.run"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
         <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressReporter</span><span class="p">(</span><span class="n">send</span><span class="o">=</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="o">=</span><span class="n">cancelled</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span>
@@ -177,7 +177,7 @@
                 <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="o">.</span><span class="n">report</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">ProgressCancelled</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+            <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
 <div class="viewcode-block" id="ProgressFuture"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture">[docs]</a><span class="k">class</span> <span class="nc">ProgressFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>

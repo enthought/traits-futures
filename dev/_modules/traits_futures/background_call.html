@@ -95,11 +95,11 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
+<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span><span class="p">,</span> <span class="n">BaseTask</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 
-<div class="viewcode-block" id="CallTask"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallTask">[docs]</a><span class="k">class</span> <span class="nc">CallTask</span><span class="p">:</span>
+<div class="viewcode-block" id="CallTask"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallTask">[docs]</a><span class="k">class</span> <span class="nc">CallTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper around the actual callable to be run. This wrapper provides the</span>
 <span class="sd">    task that will be submitted to the concurrent.futures executor</span>
@@ -110,8 +110,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
+<div class="viewcode-block" id="CallTask.run"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CallFuture"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture">[docs]</a><span class="k">class</span> <span class="nc">CallFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>

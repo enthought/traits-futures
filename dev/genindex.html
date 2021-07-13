@@ -106,7 +106,7 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.ABANDONED">ABANDONED (in module traits_futures.wrappers)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.ABANDONED">ABANDONED (in module traits_futures.base_future)</a>
 </li>
       <li><a href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting">AppForTesting (class in traits_futures.wx.event_loop_helper)</a>
 </li>
@@ -152,9 +152,9 @@
 </li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress">BackgroundProgress (class in traits_futures.background_progress)</a>
 </li>
-      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.BackgroundTaskWrapper">BackgroundTaskWrapper (class in traits_futures.wrappers)</a>
-</li>
       <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture">BaseFuture (class in traits_futures.base_future)</a>
+</li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask">BaseTask (class in traits_futures.base_future)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -347,6 +347,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.future_states.html#traits_futures.future_states.FAILED">FAILED (in module traits_futures.future_states)</a>
+</li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.FINAL_MESSAGES">FINAL_MESSAGES (in module traits_futures.base_future)</a>
 </li>
       <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.future">future (traits_futures.wrappers.FutureWrapper attribute)</a>
 </li>
@@ -683,8 +685,14 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.RAISED">RAISED (in module traits_futures.wrappers)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.RAISED">RAISED (in module traits_futures.base_future)</a>
 </li>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.receive">receive() (traits_futures.base_future.BaseFuture method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.i_future.html#traits_futures.i_future.IFuture.receive">(traits_futures.i_future.IFuture method)</a>
+</li>
+      </ul></li>
       <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.receiver">receiver (traits_futures.wrappers.FutureWrapper attribute)</a>
 </li>
       <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter.report">report() (traits_futures.background_progress.ProgressReporter method)</a>
@@ -701,10 +709,8 @@
       </ul></li>
       <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event">result_event (traits_futures.background_iteration.IterationFuture attribute)</a>
 </li>
-      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.RETURNED">RETURNED (in module traits_futures.wrappers)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.RETURNED">RETURNED (in module traits_futures.base_future)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.route_until">route_until() (traits_futures.i_message_router.IMessageRouter method)</a>
 
       <ul>
@@ -713,6 +719,20 @@
         <li><a href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.route_until">(traits_futures.multithreading_router.MultithreadingRouter method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/traits_futures.background_call.html#traits_futures.background_call.CallTask.run">run() (traits_futures.background_call.CallTask method)</a>
+
+      <ul>
+        <li><a href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationTask.run">(traits_futures.background_iteration.IterationTask method)</a>
+</li>
+        <li><a href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask.run">(traits_futures.background_progress.ProgressTask method)</a>
+</li>
+        <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run">(traits_futures.base_future.BaseTask method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.run_background_task">run_background_task() (in module traits_futures.wrappers)</a>
+</li>
       <li><a href="api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper.run_until">run_until() (traits_futures.asyncio.event_loop_helper.EventLoopHelper method)</a>
 
       <ul>
@@ -745,7 +765,7 @@
         <li><a href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.send">(traits_futures.multithreading_router.MultithreadingSender method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.SENT">SENT (in module traits_futures.wrappers)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.SENT">SENT (in module traits_futures.base_future)</a>
 </li>
       <li><a href="api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.AttributeSetter.setattr">setattr (traits_futures.qt.event_loop_helper.AttributeSetter attribute)</a>
 </li>
@@ -779,7 +799,7 @@
         <li><a href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.start">(traits_futures.wx.event_loop_helper.TimeoutTimer method)</a>
 </li>
       </ul></li>
-      <li><a href="api/traits_futures.wrappers.html#traits_futures.wrappers.STARTED">STARTED (in module traits_futures.wrappers)</a>
+      <li><a href="api/traits_futures.base_future.html#traits_futures.base_future.STARTED">STARTED (in module traits_futures.base_future)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

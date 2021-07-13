@@ -96,14 +96,16 @@
 background iterations and background progress calls, created via the
 <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions,
 respectively. In each case, communication from the background task to the
-corresponding foreground <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> instance is implemented by sending
-custom task-type-specific messages, with the type of message identified by
-a suitable string. For example, the background progress task sends messages
-of type <code class="docutils literal notranslate"><span class="pre">&quot;progress&quot;</span></code> to report progress, while the background iteration task
-sends messages of type <code class="docutils literal notranslate"><span class="pre">&quot;generated&quot;</span></code>.</p>
+corresponding foreground <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> instance is implemented by sending custom
+task-type-specific messages of the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_value)</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">message_type</span></code> is a suitable string describing the type of the message.
+For example, the progress task sends messages of type <code class="docutils literal notranslate"><span class="pre">&quot;progress&quot;</span></code> to report
+progress, while the background iteration task sends messages of type
+<code class="docutils literal notranslate"><span class="pre">&quot;generated&quot;</span></code>.</p>
 <p>If none of the standard task types meets your needs, it’s possible to write
-your own background task type, that sends whatever messages you like. This
-section describes how to do this in detail.</p>
+your own background task type, that sends whatever messages you like. Two base
+classes, <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a>, are made available to make this easier.
+This section describes how to do this in detail.</p>
 <p>To create your own task type, you’ll need three ingredients:</p>
 <ul class="simple">
 <li><p>A factory for the background callable.</p></li>
@@ -113,6 +115,8 @@ interface. The <a class="reference internal" href="../api/traits_futures.traits_
 <a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a>, and interrogates that instance to get the background
 callable and the corresponding foreground future.</p></li>
 </ul>
+<p>You may optionally also want to create a convenience function analogous to the
+existing <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions.</p>
 <p>Below we give a worked example that demonstrates how to create each of these
 ingredients for a simple case.</p>
 </section>
@@ -126,11 +130,11 @@ multiples of 5, and “Fizz Buzz” messages on multiples of 15. Each message
 is accompanied by the corresponding number.</p>
 <section id="message-types">
 <h3>Message types<a class="headerlink" href="#message-types" title="Permalink to this headline">¶</a></h3>
-<p>In general, the message sent from the background task to the future can be any
+<p>In general, each message sent from the background task to the future can be any
 Python object, and the future can interpret the sent object in any way that it
-likes. However, the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> base class that we’ll use below provides a
-default dispatcher for messages, and that dispatcher expects those messages to
-have the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_args)</span></code>. Here the message type should be
+likes. However, the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a> convenience base classes that
+we’ll use below provide helper functions to handle and dispatch messages of
+the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_args)</span></code>. Here the message type should be
 a string that’s valid as a Python identifier, while the message argument can be
 any Python object (though it should usually be pickleable and immutable).</p>
 <p>We first define named constants representing our three message types. This
@@ -147,14 +151,21 @@ isn’t strictly necessary, but it makes the code cleaner.</p>
 must accept two arguments (which will be passed by position): <code class="docutils literal notranslate"><span class="pre">send</span></code> and
 <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The <code class="docutils literal notranslate"><span class="pre">send</span></code> object is a callable which will be used to send
 messages to the foreground. The <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> object is a zero-argument
-callable which can be used to check for cancellation requests. Here’s the
-<code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> callable.</p>
+callable which can be used to check for cancellation requests. For convenience,
+we inherit from <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a>, which takes care of sending standard messages
+to the future letting the future know that the background task has started,
+stopped, or raised an exception.</p>
+<p>Here’s the <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> callable.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseTask</span>
 
-<span class="k">def</span> <span class="nf">fizz_buzz</span><span class="p">(</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Count slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
+<span class="sd">    Background task for Fizz Buzz</span>
+
+<span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -167,21 +178,22 @@ callable which can be used to check for cancellation requests. Here’s the
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
 
-        <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
-        <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
 <p>In this example, we don’t return anything from the <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> function, but
@@ -288,7 +300,7 @@ looks like this:</p>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">fizz_buzz</span>
+        <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -345,10 +357,14 @@ from putting together the above snippets:</p>
 <span class="c1"># -- start fizz_buzz --</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseTask</span>
 
-<span class="k">def</span> <span class="nf">fizz_buzz</span><span class="p">(</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Count slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
+<span class="sd">    Background task for Fizz Buzz</span>
+
+<span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -361,21 +377,22 @@ from putting together the above snippets:</p>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
 
-        <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
-        <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
 <span class="c1"># -- end fizz_buzz --</span>
 
 
@@ -447,7 +464,7 @@ from putting together the above snippets:</p>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">fizz_buzz</span>
+        <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
 <span class="c1"># -- end BackgroundFizzBuzz</span>
 
 

@@ -94,37 +94,12 @@
 <span id="traits-futures-wrappers-module"></span><h1>traits_futures.wrappers module<a class="headerlink" href="#module-traits_futures.wrappers" title="Permalink to this headline">¶</a></h1>
 <p>Wrappers for the background task callable and the foreground future.</p>
 <p>These are used by the TraitsExecutor machinery.</p>
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.ABANDONED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">ABANDONED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'abandoned'</span></em><a class="headerlink" href="#traits_futures.wrappers.ABANDONED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent when the callable is abandoned before execution.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.wrappers.BackgroundTaskWrapper">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">BackgroundTaskWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Wrapper for callables submitted to the underlying executor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>background_task</strong> – Callable representing the background task. This will be called
-with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
-<li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageSender</span></code></a>) – Object used to send messages.</p></li>
-<li><p><strong>cancelled</strong> – Zero-argument callable returning bool. This can be called to check
-whether cancellation has been requested.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">FutureWrapper</span></span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Wrapper for the IFuture.</p>
-<p>This wrapper handles control messages from the background task, and
-delegates custom messages to the future.</p>
+<p>Passes on messages received for this future.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.done">
 <span class="sig-name descname"><span class="pre">done</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
@@ -147,33 +122,21 @@ its own internal state.</p>
 
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.RAISED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">RAISED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'raised'</span></em><a class="headerlink" href="#traits_futures.wrappers.RAISED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent when an exception was raised by the background
-callable. The argument is a tuple containing exception information.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.RETURNED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">RETURNED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'returned'</span></em><a class="headerlink" href="#traits_futures.wrappers.RETURNED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent to indicate that the background callable succeeded
-and returned a result. The argument is that result.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.SENT">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">SENT</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'sent'</span></em><a class="headerlink" href="#traits_futures.wrappers.SENT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom message from the future. The argument is a pair
-(message_type, message_args); the message type and message args
-are interpreted by the future.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.wrappers.STARTED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">STARTED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'started'</span></em><a class="headerlink" href="#traits_futures.wrappers.STARTED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent before we start to process the target callable.
-The argument is always <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="traits_futures.wrappers.run_background_task">
+<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">run_background_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for callables submitted to the underlying executor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>background_task</strong> – Callable representing the background task. This will be called
+with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
+<li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageSender</span></code></a>) – Object used to send messages.</p></li>
+<li><p><strong>cancelled</strong> – Zero-argument callable returning bool. This can be called to check
+whether cancellation has been requested.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
