@@ -85,14 +85,18 @@ class BackgroundCall(HasStrictTraits):
 
 def submit_call(executor, callable, *args, **kwargs):
     """
-    Convenience function to submit a background call to an executor.
+    Submit a simple call to an executor.
 
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the task to.
+        Executor to submit the task to. This argument should always be passed
+        by position rather than by name. Future versions of the library may
+        enforce this restriction.
     callable
-        Callable to execute in the background.
+        Callable to execute in the background. This argument should always be
+        passed by position rather than by name. Future versions of the library
+        may enforce this restriction.
     *args
         Positional arguments to pass to the callable.
     **kwargs
