@@ -159,17 +159,20 @@ class BackgroundProgress(HasStrictTraits):
 
 def submit_progress(executor, callable, *args, **kwargs):
     """
-    Convenience function to submit a background progress call.
+    Submit a progress-reporting task to an executor.
 
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the task to.
+        Executor to submit the task to. This argument should always be passed
+        by position rather than by name. Future versions of the library may
+        enforce this restriction.
     callable
         Callable that executes the progress-providing function. This callable
         must accept a "progress" named argument, in addition to the provided
-        arguments. The callable may then call the "progress" argument to
-        report progress.
+        arguments. The callable may then call the "progress" argument to report
+        progress. This argument should always be passed by position rather than
+        by name. Future versions of the library may enforce this restriction.
     *args
         Positional arguments to pass to the callable.
     **kwargs

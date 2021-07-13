@@ -113,14 +113,18 @@ class BackgroundIteration(HasStrictTraits):
 
 def submit_iteration(executor, callable, *args, **kwargs):
     """
-    Convenience function to submit a background iteration to an executor.
+    Submit an iteration to an executor.
 
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the task to.
+        Executor to submit the task to. This argument should always be
+        passed by position rather than by name. Future versions of the library
+        may enforce this restriction.
     callable
         Callable returning an iterator when called with the given arguments.
+        This argument should always be passed by position rather than by name.
+        Future versions of the library may enforce this restriction.
     *args
         Positional arguments to pass to the callable.
     **kwargs
