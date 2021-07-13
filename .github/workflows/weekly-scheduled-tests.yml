@@ -33,7 +33,7 @@ jobs:
       run: |
         mkdir testdir
         cd testdir
-        python -X faulthandler -m unittest discover -v trait-futures
+        python -X faulthandler -m unittest discover -v traits_futures
 
 
   test-bleeding-edge:
