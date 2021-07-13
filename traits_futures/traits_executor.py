@@ -193,7 +193,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        callable : an arbitrary callable
+        callable
             Function to execute in the background.
         *args
             Positional arguments to pass to that function.
@@ -222,7 +222,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        callable : an arbitrary callable
+        callable
             Function executed in the background to provide the iterable.
         *args
             Positional arguments to pass to that function.
@@ -251,7 +251,7 @@ class TraitsExecutor(HasStrictTraits):
 
         Parameters
         ----------
-        callable : callable accepting a "progress" named argument
+        callable
             Function executed in the background to provide the iterable. This
             should accept a "progress" named argument. The callable can then
             call the "progress" object to report progress.

@@ -58,14 +58,14 @@ def run_background_task(background_task, sender, cancelled):
 
     Parameters
     ----------
-    background_task : collections.abc.Callable
+    background_task
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled``.
     sender : IMessageSender
         Object used to send messages.
-    cancelled : collections.abc.Callable
-        Zero-argument callable returning bool, used to check whether
-        cancellation has been requested.
+    cancelled
+        Zero-argument callable returning bool. This can be called to check
+        whether cancellation has been requested.
     """
     try:
         with sender:

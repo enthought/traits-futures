@@ -41,11 +41,11 @@ class FizzBuzzTask(BaseTask):
 
     Parameters
     ----------
-    send : callable(object) -> None
+    send
         Callable accepting the message to be sent, and returning nothing. The
         message argument should be pickleable, and preferably immutable (or at
         least, not intended to be mutated).
-    cancelled : callable
+    cancelled
         Callable accepting no arguments and returning a boolean result. It
         returns ``True`` if cancellation has been requested, and ``False``
         otherwise.

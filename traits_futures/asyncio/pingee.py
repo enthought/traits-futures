@@ -32,10 +32,10 @@ class Pingee:
 
     Parameters
     ----------
-    on_ping : callable
+    on_ping
         Zero-argument callable that's called on the main thread
         every time a ping is received.
-    event_loop : asyncio.events.AbstractEventLoop
+    event_loop : asyncio.AbstractEventLoop
         The asyncio event loop that pings will be sent to.
 
     """
@@ -93,7 +93,7 @@ class Pinger:
     pingee : Pingee
         The target receiver for the pings. The receiver must already be
         connected.
-    event_loop : asyncio.events.AbstractEventLoop
+    event_loop : asyncio.AbstractEventLoop
         The asyncio event loop that will execute the ping callback.
     """
 

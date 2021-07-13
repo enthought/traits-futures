@@ -22,7 +22,7 @@ class EventLoopHelper:
 
     Parameters
     ----------
-    event_loop : asyncio.events.AbstractEventLoop
+    event_loop : asyncio.AbstractEventLoop
         The asyncio event loop that this object wraps.
     """
 
@@ -76,7 +76,7 @@ class EventLoopHelper:
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
-        condition : callable
+        condition
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
         timeout : float

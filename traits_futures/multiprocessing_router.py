@@ -18,18 +18,15 @@ Overview of the implementation
 When the router is started (via the ``start`` method), it sets up the
 following machinery:
 
-- A process-safe process message queue that's shared between processes
-  (:attr:`MultiprocessingRouter._process_message_queue`). This queue runs in
-  its own manager server process (the manager is
+- A process-safe process message queue that's shared between processes. This
+  queue runs in its own manager server process (the manager is
   :attr:`MultiprocessingRouter.manager`), and the main process and worker
   processes use proxy objects to communicate with the queue.
-- A thread-safe local message queue
-  (:attr:`MultiprocessingRouter._local_message_queue`) in the main process.
-- A long-running thread (:attr:`MultiprocessingRouter._monitor_thread`),
-  running in the main process, that continually monitors the process message
-  queue and immediately transfers any messages that arrive to the local message
-  queue.
-- A :class:`IPingee` instance that's pinged by the monitor thread whenever a
+- A thread-safe local message queue in the main process.
+- A long-running thread running in the main process, that continually monitors
+  the process message queue and immediately transfers any messages that arrive
+  to the local message queue.
+- A :class:`~.IPingee` instance that's pinged by the monitor thread whenever a
   message is transferred from the process message queue to the local message
   queue, alerting the GUI that there's a message to process and route.
 
@@ -42,7 +39,7 @@ occur:
   process message queue) and places the message onto the local message queue.
   It also pings the pingee.
 - assuming a running event loop, the pingee receives the ping and executes
-  the :meth:`MultiprocessingRouter._route_message` callback
+  the ``MultiprocessingRouter._route_message`` callback
 - the ``_route_message`` callback pulls the next message from the local message
   queue, inspects it to determine which receiver it should be sent to, and
   sends it to that receiver
@@ -137,13 +134,13 @@ class MultiprocessingSender:
         """
         Send a message to the router.
 
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
+
         Parameters
         ----------
         message : object
             Typically this will be immutable, small, and pickleable.
-
-        Not thread-safe. The 'start', 'send' and 'stop' methods should
-        all be called from the same thread.
 
         Raises
         ------
@@ -212,7 +209,7 @@ class MultiprocessingRouter(HasRequiredTraits):
     ----------
     event_loop : IEventLoop
         The event loop used to trigger message dispatch.
-    manager : multiprocessing.Manager
+    manager : multiprocessing.managers.SyncManager
         Manager to be used for creating the shared-process queue.
     """
 
@@ -370,7 +367,7 @@ class MultiprocessingRouter(HasRequiredTraits):
 
         Parameters
         ----------
-        condition : callable
+        condition
             Zero-argument callable returning a boolean. When this condition
             becomes true, this method will stop routing messages. If the
             condition is already true on entry, no messages will be routed.

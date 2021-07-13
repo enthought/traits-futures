@@ -101,13 +101,13 @@ class IMessageSender(contextlib.AbstractContextManager):
         """
         Send a message to the router.
 
+        Not thread-safe. The 'start', 'send' and 'stop' methods should
+        all be called from the same thread.
+
         Parameters
         ----------
         message : object
             Typically this will be immutable, small, and pickleable.
-
-        Not thread-safe. The 'start', 'send' and 'stop' methods should
-        all be called from the same thread.
 
         Raises
         ------
@@ -239,7 +239,7 @@ class IMessageRouter(Interface):
 
         Parameters
         ----------
-        condition : callable
+        condition
             Zero-argument callable returning a boolean. When this condition
             becomes true, this method will stop routing messages. If the
             condition is already true on entry, no messages will be routed.

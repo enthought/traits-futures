@@ -244,7 +244,7 @@ class IPingeeTests:
 
         Parameters
         ----------
-        on_ping : callable
+        on_ping
             Callback to execute whenever a ping is received.
         """
         pingee = self._event_loop.pingee(on_ping=on_ping)

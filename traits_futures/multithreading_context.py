@@ -49,8 +49,11 @@ class MultithreadingContext(IParallelContext):
 
         Returns
         -------
-        event : event-like
+        event : object
             An event that can be shared safely with workers.
+            The event should have the same API as :class:`threading.Event`
+            and :class:`multiprocessing.Event`, providing at a minimum
+            the ``set`` and ``is_set`` methods from that API.
         """
         return threading.Event()
 

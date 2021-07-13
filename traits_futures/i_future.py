@@ -76,7 +76,7 @@ class IFuture(Interface):
 
         Returns
         -------
-        exc_info : tuple(str, str, str)
+        exc_info : tuple
             Tuple containing exception information in string form:
             (exception type, exception value, formatted traceback).
 

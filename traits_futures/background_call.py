@@ -71,7 +71,7 @@ class BackgroundCall(HasStrictTraits):
 
         Returns
         -------
-        collections.abc.Callable
+        CallTask
             Callable accepting arguments ``send`` and ``cancelled``. The
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
@@ -91,7 +91,7 @@ def submit_call(executor, callable, *args, **kwargs):
     ----------
     executor : TraitsExecutor
         Executor to submit the task to.
-    callable : collections.abc.Callable
+    callable
         Callable to execute in the background.
     *args
         Positional arguments to pass to the callable.
