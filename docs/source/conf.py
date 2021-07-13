@@ -99,10 +99,17 @@ todo_include_todos = False
 add_function_parentheses = False
 
 # Ignore complaints about references to classes in wx and pyface.qt.QtCore
-nitpick_ignore_regex = [
-    (r'py:class', r'PySide2\.QtCore\..*'),
-    (r'py:class', r'pyface\.qt\.QtCore\..*'),
-    (r'py:class', r'wx\..*'),
+nitpick_ignore = [
+    ('py:class', 'PySide2.QtCore.QObject'),
+    ('py:class', 'wx.core.App'),
+    ('py:class', 'wx._core.EvtHandler'),
+    ('py:class', 'wx._core.Timer'),
+
+    # These two slightly strange class descriptions (note the trailing dot)
+    # appear in warnings as a result of the later `autodoc_mock_imports`
+    # setting.
+    ('py:class', 'pyface.qt.QtCore.'),
+    ('py:class', 'wx.'),
 ]
 
 # -- Options for Napoleon extension ---------------------------------------
