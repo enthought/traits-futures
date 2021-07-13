@@ -180,12 +180,16 @@ iteration.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="traits_futures.background_iteration.submit_iteration">
 <span class="sig-prename descclassname"><span class="pre">traits_futures.background_iteration.</span></span><span class="sig-name descname"><span class="pre">submit_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_iteration.html#submit_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_iteration.submit_iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function to submit a background iteration to an executor.</p>
+<dd><p>Submit an iteration to an executor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>executor</strong> (<a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><em>TraitsExecutor</em></a>) – Executor to submit the task to.</p></li>
-<li><p><strong>callable</strong> – Callable returning an iterator when called with the given arguments.</p></li>
+<li><p><strong>executor</strong> (<a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><em>TraitsExecutor</em></a>) – Executor to submit the task to. This argument should always be
+passed by position rather than by name. Future versions of the library
+may enforce this restriction.</p></li>
+<li><p><strong>callable</strong> – Callable returning an iterator when called with the given arguments.
+This argument should always be passed by position rather than by name.
+Future versions of the library may enforce this restriction.</p></li>
 <li><p><strong>*args</strong> – Positional arguments to pass to the callable.</p></li>
 <li><p><strong>**kwargs</strong> – Named arguments to pass to the callable.</p></li>
 </ul>

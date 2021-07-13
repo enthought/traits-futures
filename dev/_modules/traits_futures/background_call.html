@@ -167,14 +167,18 @@
 
 <div class="viewcode-block" id="submit_call"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.submit_call">[docs]</a><span class="k">def</span> <span class="nf">submit_call</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convenience function to submit a background call to an executor.</span>
+<span class="sd">    Submit a simple call to an executor.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    executor : TraitsExecutor</span>
-<span class="sd">        Executor to submit the task to.</span>
+<span class="sd">        Executor to submit the task to. This argument should always be passed</span>
+<span class="sd">        by position rather than by name. Future versions of the library may</span>
+<span class="sd">        enforce this restriction.</span>
 <span class="sd">    callable</span>
-<span class="sd">        Callable to execute in the background.</span>
+<span class="sd">        Callable to execute in the background. This argument should always be</span>
+<span class="sd">        passed by position rather than by name. Future versions of the library</span>
+<span class="sd">        may enforce this restriction.</span>
 <span class="sd">    *args</span>
 <span class="sd">        Positional arguments to pass to the callable.</span>
 <span class="sd">    **kwargs</span>

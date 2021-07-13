@@ -241,17 +241,20 @@
 
 <div class="viewcode-block" id="submit_progress"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress">[docs]</a><span class="k">def</span> <span class="nf">submit_progress</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convenience function to submit a background progress call.</span>
+<span class="sd">    Submit a progress-reporting task to an executor.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    executor : TraitsExecutor</span>
-<span class="sd">        Executor to submit the task to.</span>
+<span class="sd">        Executor to submit the task to. This argument should always be passed</span>
+<span class="sd">        by position rather than by name. Future versions of the library may</span>
+<span class="sd">        enforce this restriction.</span>
 <span class="sd">    callable</span>
 <span class="sd">        Callable that executes the progress-providing function. This callable</span>
 <span class="sd">        must accept a &quot;progress&quot; named argument, in addition to the provided</span>
-<span class="sd">        arguments. The callable may then call the &quot;progress&quot; argument to</span>
-<span class="sd">        report progress.</span>
+<span class="sd">        arguments. The callable may then call the &quot;progress&quot; argument to report</span>
+<span class="sd">        progress. This argument should always be passed by position rather than</span>
+<span class="sd">        by name. Future versions of the library may enforce this restriction.</span>
 <span class="sd">    *args</span>
 <span class="sd">        Positional arguments to pass to the callable.</span>
 <span class="sd">    **kwargs</span>
