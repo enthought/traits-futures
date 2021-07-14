@@ -50,6 +50,7 @@ setup(
         "null": [],
         "pyqt5": ["pyqt5"],
         "pyside2": ["pyside2"],
+        "docs": ["enthought-sphinx-theme", "sphinx>=3.5"],
     },
     packages=find_packages(exclude=["ci"]),
     classifiers=[
