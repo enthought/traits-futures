@@ -30,29 +30,27 @@ def dummy_cancel_callback():
 # Set of all possible complete valid sequences of internal state changes
 # that a future might encounter. Here:
 #
-# * I represents the executor initializing the future
 # * A represents the background task being abandoned before starting
 # * S represents the background task starting
 # * X represents the background task failing with an exception
 # * R represents the background task returning a result
 # * C represents the user cancelling.
 #
-# A future must always be initialized before anything else happens, and then a
-# complete run must always involve "abandoned", "started, raised" or "started,
-# returned" in that order. In addition, a single cancellation is possible at
-# any time before the end of the sequence, and abandoned can only ever occur
-# following cancellation.
+# A complete run must always involve "abandoned", "started, raised" or
+# "started, returned" in that order. In addition, a single cancellation is
+# possible at any time before the end of the sequence, and abandoned can only
+# ever occur following cancellation.
 
-MESSAGE_TYPES = "IASRXC"
+MESSAGE_TYPES = "ASRXC"
 
 COMPLETE_VALID_SEQUENCES = {
-    "ISR",
-    "ISX",
-    "ICSR",
-    "ICSX",
-    "ISCR",
-    "ISCX",
-    "ICA",
+    "SR",
+    "SX",
+    "CSR",
+    "CSX",
+    "SCR",
+    "SCX",
+    "CA",
 }
 
 
@@ -93,8 +91,7 @@ class CommonFutureTests:
             states.append((future.state, future.cancellable, future.done))
 
         # Record state when any of the three traits changes.
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         future.observe(record_states, "cancellable")
         future.observe(record_states, "done")
@@ -112,8 +109,7 @@ class CommonFutureTests:
             self.assertEqual(done, state in DONE_STATES)
 
     def test_cancellable_and_done_success(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -124,8 +120,7 @@ class CommonFutureTests:
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_failure(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -136,8 +131,7 @@ class CommonFutureTests:
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_cancellation(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -149,8 +143,7 @@ class CommonFutureTests:
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_early_cancellation(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -203,14 +196,12 @@ class CommonFutureTests:
                 self.assertFalse(finalizer.alive)
 
     def test_interface(self):
-        future = self.future_class()
+        future = self.future_class(_cancel=dummy_cancel_callback)
         self.assertIsInstance(future, IFuture)
 
     def send_message(self, future, message, cancel_callback):
         """Send a particular message to a future."""
-        if message == "I":
-            future._executor_initialized(cancel_callback)
-        elif message == "A":
+        if message == "A":
             future._task_abandoned(None)
         elif message == "S":
             future._task_started(None)
@@ -228,7 +219,7 @@ class CommonFutureTests:
         if cancel_callback is None:
             cancel_callback = dummy_cancel_callback
 
-        future = self.future_class()
+        future = self.future_class(_cancel=dummy_cancel_callback)
         for message in messages:
             self.send_message(future, message, cancel_callback)
         return future
