@@ -388,9 +388,8 @@ class MultiprocessingRouter(HasRequiredTraits):
             end_time = time.monotonic() + timeout
             try:
                 while not condition():
-                    self._route_message(
-                        block=True, timeout=end_time - time.monotonic()
-                    )
+                    time_remaining = end_time - time.monotonic()
+                    self._route_message(block=True, timeout=time_remaining)
             except queue.Empty:
                 raise RuntimeError("Timed out waiting for messages")
 
