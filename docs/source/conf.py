@@ -105,7 +105,6 @@ nitpick_ignore = [
     ("py:class", "wx.App"),
     ("py:class", "wx.EvtHandler"),
     ("py:class", "wx.Timer"),
-
     # These two slightly strange class descriptions (note the trailing dot)
     # appear with Sphinx >= 4. This may be a bug in Sphinx.
     ("py:class", "pyface.qt.QtCore."),
