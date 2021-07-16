@@ -52,13 +52,13 @@ class FutureWrapper(HasStrictTraits):
             self.done = True
 
 
-def run_background_task(background_task, sender, cancelled):
+def run_background_task(task, sender, cancelled):
     """
     Wrapper for callables submitted to the underlying executor.
 
     Parameters
     ----------
-    background_task
+    task
         Callable representing the background task. This will be called
         with arguments ``send`` and ``cancelled``.
     sender : IMessageSender
@@ -69,7 +69,7 @@ def run_background_task(background_task, sender, cancelled):
     """
     try:
         with sender:
-            background_task(sender.send, cancelled)
+            task(sender.send, cancelled)
     except BaseException:
         # We'll only ever get here in the case of a coding error. But in
         # case that happens, it's useful to have the exception logged to
