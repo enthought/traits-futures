@@ -137,6 +137,8 @@ class BaseFuture(HasRequiredTraits):
     Convenience base class for the various flavours of Future.
     """
 
+    # IFuture interface #######################################################
+
     #: The state of the background task, to the best of the knowledge of
     #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
     #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.
@@ -257,16 +259,11 @@ class BaseFuture(HasRequiredTraits):
         getattr(self, method_name)(message_arg)
         return message_type in FINAL_MESSAGES
 
-    # Semi-private methods ####################################################
+    # Base Future interface ###################################################
 
-    # These methods represent the state transitions in response to external
-    # events. They're used by the FutureWrapper, and are potentially useful for
-    # unit testing, but are not intended for use by the users of Traits
-    # Futures.
-
-    def _task_sent(self, message):
+    def dispatch(self, message):
         """
-        Automate dispatch of different types of message.
+        Dispatch a message arriving from the associated BaseTask.
 
         This is a convenience function, and may be safely overridden by
         subclasses that want to use a different dispatch mechanism. For
@@ -275,27 +272,40 @@ class BaseFuture(HasRequiredTraits):
         that method. Subclasses then only need to provide the appropriate
         ``_process_<msgtype>`` methods.
 
-        If the future is already in ``CANCELLING`` state, no message is
-        dispatched.
+        Parameters
+        ----------
+        message : object
+            Message sent by the background task. The default implementation of
+            this method expects the message to be in the form ``(message_type,
+            message_args)`` with ``message_type`` a string.
+        """
+        message_type, message_arg = message
+        method_name = "_process_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
 
-        Internal state:
-        * _CANCELLING_AFTER_STARTED -> _CANCELLING_AFTER_STARTED
-        * EXECUTING -> EXECUTING
+    # State transitions #######################################################
+
+    # These methods represent state transitions in response to external events.
+
+    def _task_sent(self, message):
+        """
+        Automate dispatch of different types of message.
+
+        Delegates the actual work to the :meth:`dispatch` method,
+        which can be overridden by subclasses. Messages received after
+        cancellation are ignored.
 
         Parameters
         ----------
-        message : tuple
-            Message from the background task, in the form (message_type,
-            message_args).
+        message : object
+            Message from the background task.
         """
 
         if self._internal_state == _CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
             return
         elif self._internal_state == EXECUTING:
-            message_type, message_arg = message
-            method_name = "_process_{}".format(message_type)
-            getattr(self, method_name)(message_arg)
+            self.dispatch(message)
         else:
             raise _StateTransitionError(
                 "Unexpected custom message in internal state {!r}".format(
