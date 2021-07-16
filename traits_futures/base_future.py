@@ -496,7 +496,7 @@ class BaseTask:
     for execution of the background task and sending of any custom messages.
     """
 
-    def run(send, cancelled):
+    def run(self, send, cancelled):
         """
         Run the body of the background task.
 
