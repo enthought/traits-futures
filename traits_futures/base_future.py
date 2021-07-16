@@ -17,7 +17,7 @@ from traits.api import (
     Bool,
     Callable,
     Enum,
-    HasStrictTraits,
+    HasRequiredTraits,
     observe,
     Property,
     provides,
@@ -75,12 +75,6 @@ FINAL_MESSAGES = {ABANDONED, RAISED, RETURNED}
 # to allow us to detect an invalid _task_started call.
 
 
-#: Internal state: initial state, not yet initialized by the executor.
-_NOT_INITIALIZED = "not_initialized"
-
-#: Internal state: initialized by the executor, waiting for the task to start.
-_INITIALIZED = "initialized"
-
 #: Internal state attained when cancellation is requested before the task
 #: starts.
 _CANCELLING_BEFORE_STARTED = "cancelling_before_started"
@@ -101,8 +95,7 @@ _CANCELLED_COMPLETED = "cancelled_completed"
 
 #: Mapping from each internal state to the corresponding user-visible state.
 _INTERNAL_STATE_TO_STATE = {
-    _NOT_INITIALIZED: WAITING,
-    _INITIALIZED: WAITING,
+    WAITING: WAITING,
     EXECUTING: EXECUTING,
     COMPLETED: COMPLETED,
     FAILED: FAILED,
@@ -139,7 +132,7 @@ class _StateTransitionError(Exception):
 
 
 @provides(IFuture)
-class BaseFuture(HasStrictTraits):
+class BaseFuture(HasRequiredTraits):
     """
     Convenience base class for the various flavours of Future.
     """
@@ -337,7 +330,7 @@ class BaseFuture(HasStrictTraits):
         Update state when the background task has started processing.
 
         Internal state:
-        * _INITIALIZED -> EXECUTING
+        * WAITING -> EXECUTING
         * _CANCELLING_BEFORE_STARTED -> _CANCELLED_AFTER_STARTED
 
         Parameters
@@ -345,7 +338,7 @@ class BaseFuture(HasStrictTraits):
         none : NoneType
             This parameter is unused.
         """
-        if self._internal_state == _INITIALIZED:
+        if self._internal_state == WAITING:
             self._internal_state = EXECUTING
         elif self._internal_state == _CANCELLING_BEFORE_STARTED:
             self._internal_state = _CANCELLING_AFTER_STARTED
@@ -421,10 +414,10 @@ class BaseFuture(HasStrictTraits):
         state.
 
         Internal state:
-        * _INITIALIZED -> _CANCELLING_BEFORE_STARTED
+        * WAITING -> _CANCELLING_BEFORE_STARTED
         * EXECUTING -> _CANCELLING_AFTER_STARTED
         """
-        if self._internal_state == _INITIALIZED:
+        if self._internal_state == WAITING:
             self._cancel()
             self._internal_state = _CANCELLING_BEFORE_STARTED
         elif self._internal_state == EXECUTING:
@@ -437,37 +430,14 @@ class BaseFuture(HasStrictTraits):
                 )
             )
 
-    def _executor_initialized(self, cancel):
-        """
-        Update state when the executor initializes the future.
-
-        Parameters
-        ----------
-        cancel
-            The callback to be called when the user requests cancellation.
-            The callback accepts no arguments, and has no return value.
-
-        Internal state:
-        * _NOT_INITIALIZED -> _INITIALIZED
-        """
-        if self._internal_state == _NOT_INITIALIZED:
-            self._cancel = cancel
-            self._internal_state = _INITIALIZED
-        else:
-            raise _StateTransitionError(
-                "Unexpected initialization in internal state {!r}".format(
-                    self._internal_state
-                )
-            )
-
     # Private traits ##########################################################
 
     #: Callback called (with no arguments) when user requests cancellation.
     #: This is reset to ``None`` once cancellation is impossible.
-    _cancel = Callable(allow_none=True)
+    _cancel = Callable(allow_none=True, required=True)
 
     #: The internal state of the future.
-    _internal_state = Enum(_NOT_INITIALIZED, list(_INTERNAL_STATE_TO_STATE))
+    _internal_state = Enum(WAITING, list(_INTERNAL_STATE_TO_STATE))
 
     #: Result from the background task.
     _result = Any()

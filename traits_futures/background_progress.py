@@ -127,9 +127,16 @@ class BackgroundProgress(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str())
 
-    def future(self):
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------
@@ -137,7 +144,7 @@ class BackgroundProgress(HasStrictTraits):
             Future object that can be used to monitor the status of the
             background task.
         """
-        return ProgressFuture()
+        return ProgressFuture(_cancel=cancel)
 
     def background_task(self):
         """

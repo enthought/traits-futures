@@ -114,9 +114,16 @@ class BackgroundFizzBuzz:
     Task specification for Fizz Buzz background tasks.
     """
 
-    def future(self):
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------
@@ -124,7 +131,7 @@ class BackgroundFizzBuzz:
             Future object that can be used to monitor the status of the
             background task.
         """
-        return FizzBuzzFuture()
+        return FizzBuzzFuture(_cancel=cancel)
 
     def background_task(self):
         """

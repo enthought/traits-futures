@@ -304,13 +304,12 @@ class TraitsExecutor(HasStrictTraits):
 
         sender, receiver = self._message_router.pipe()
         runner = task.background_task()
-        future = task.future()
+        future = task.future(cancel_event.set)
 
         self._worker_pool.submit(
             run_background_task, runner, sender, cancel_event.is_set
         )
 
-        future._executor_initialized(cancel_event.set)
         future_wrapper = FutureWrapper(
             future=future,
             receiver=receiver,
