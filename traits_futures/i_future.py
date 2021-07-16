@@ -14,7 +14,7 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import Bool, Interface, Property
+from traits.api import Bool, Interface
 
 from traits_futures.future_states import FutureState
 
@@ -26,21 +26,24 @@ class IFuture(Interface):
 
     #: The state of the background task, to the best of the knowledge of
     #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
-    #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.
+    #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``. Users
+    #: should treat this trait as read-only.
     state = FutureState
 
     #: True if cancellation of the background task can be requested,
     #: else False. Cancellation of the background task can be requested
-    #: only if the ``state`` is one of ``WAITING`` or ``EXECUTING``.
-    cancellable = Property(Bool())
+    #: only if the ``state`` is one of ``WAITING`` or ``EXECUTING``. Users
+    #: should treat this trait as read-only.
+    cancellable = Bool()
 
     #: True when communications from the background task are complete.
     #: At that point, no further state changes can occur for this future.
     #: This trait has value True if the ``state`` is one of ``COMPLETED``,
     #: ``FAILED``, or ``CANCELLED``. It's safe to listen to this trait
     #: for changes: it will always fire exactly once, and when it fires
-    #: it will be consistent with the ``state``.
-    done = Property(Bool())
+    #: it will be consistent with the ``state``. Users should treat this
+    #: trait as read-only.
+    done = Bool()
 
     @property
     @abc.abstractmethod
