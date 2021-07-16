@@ -125,11 +125,6 @@ class ProgressDialog(Dialog, HasStrictTraits):
             current_step, max_steps, count_so_far
         )
 
-    @observe("closing")
-    def _cancel_future_if_necessary(self, event):
-        if self.future is not None and self.future.cancellable:
-            self.future.cancel()
-
     @observe("future:done")
     def _respond_to_completion(self, event):
         self.future = None
