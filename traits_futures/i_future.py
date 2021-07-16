@@ -27,7 +27,7 @@ class IFuture(Interface):
     #: The state of the background task, to the best of the knowledge of
     #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
     #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.
-    state = FutureState
+    state = Property(FutureState)
 
     #: True if cancellation of the background task can be requested,
     #: else False. Cancellation of the background task can be requested
