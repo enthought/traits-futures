@@ -29,7 +29,7 @@ We'll examine the future objects in the next section. This section deals with
 the executor's main top-level methods and the task submission functions.
 
 To submit a task, use one of the convenience submission functions available
-from :mod:`traits_futures.api`:
+from |traits_futures.api|.
 
 - The |submit_call| function allows submission of a simple Python callable,
   with given positional and named arguments. For example::
@@ -369,17 +369,17 @@ needed.
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
 .. |executor_state| replace:: :attr:`~traits_futures.traits_executor.TraitsExecutor.state`
-.. |ExecutorState| replace:: :meth:`~traits_futures.executor_states.ExecutorState`
+.. |ExecutorState| replace:: :data:`~traits_futures.executor_states.ExecutorState`
 .. |RUNNING| replace:: :data:`~traits_futures.executor_states.RUNNING`
 .. |STOPPING| replace:: :data:`~traits_futures.executor_states.STOPPING`
 .. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
 
 .. |cancel| replace:: :meth:`~traits_futures.i_future.IFuture.cancel`
 .. |cancellable| replace:: :attr:`~traits_futures.i_future.IFuture.cancellable`
-.. |done| replace:: :meth:`~traits_futures.i_future.IFuture.done`
-.. |future_state| replace:: :meth:`~traits_futures.i_future.IFuture.state`
-.. |result| replace:: :meth:`~traits_futures.i_future.IFuture.result`
-.. |exception| replace:: :meth:`~traits_futures.i_future.IFuture.exception`
+.. |done| replace:: :attr:`~traits_futures.i_future.IFuture.done`
+.. |future_state| replace:: :attr:`~traits_futures.i_future.IFuture.state`
+.. |result| replace:: :attr:`~traits_futures.i_future.IFuture.result`
+.. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
