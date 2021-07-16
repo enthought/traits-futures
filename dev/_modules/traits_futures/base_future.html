@@ -99,7 +99,7 @@
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Callable</span><span class="p">,</span>
     <span class="n">Enum</span><span class="p">,</span>
-    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">HasRequiredTraits</span><span class="p">,</span>
     <span class="n">observe</span><span class="p">,</span>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">provides</span><span class="p">,</span>
@@ -157,12 +157,6 @@
 <span class="c1"># to allow us to detect an invalid _task_started call.</span>
 
 
-<span class="c1">#: Internal state: initial state, not yet initialized by the executor.</span>
-<span class="n">_NOT_INITIALIZED</span> <span class="o">=</span> <span class="s2">&quot;not_initialized&quot;</span>
-
-<span class="c1">#: Internal state: initialized by the executor, waiting for the task to start.</span>
-<span class="n">_INITIALIZED</span> <span class="o">=</span> <span class="s2">&quot;initialized&quot;</span>
-
 <span class="c1">#: Internal state attained when cancellation is requested before the task</span>
 <span class="c1">#: starts.</span>
 <span class="n">_CANCELLING_BEFORE_STARTED</span> <span class="o">=</span> <span class="s2">&quot;cancelling_before_started&quot;</span>
@@ -183,8 +177,7 @@
 
 <span class="c1">#: Mapping from each internal state to the corresponding user-visible state.</span>
 <span class="n">_INTERNAL_STATE_TO_STATE</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">_NOT_INITIALIZED</span><span class="p">:</span> <span class="n">WAITING</span><span class="p">,</span>
-    <span class="n">_INITIALIZED</span><span class="p">:</span> <span class="n">WAITING</span><span class="p">,</span>
+    <span class="n">WAITING</span><span class="p">:</span> <span class="n">WAITING</span><span class="p">,</span>
     <span class="n">EXECUTING</span><span class="p">:</span> <span class="n">EXECUTING</span><span class="p">,</span>
     <span class="n">COMPLETED</span><span class="p">:</span> <span class="n">COMPLETED</span><span class="p">,</span>
     <span class="n">FAILED</span><span class="p">:</span> <span class="n">FAILED</span><span class="p">,</span>
@@ -221,7 +214,7 @@
 
 
 <div class="viewcode-block" id="BaseFuture"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BaseFuture</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BaseFuture</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience base class for the various flavours of Future.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -419,7 +412,7 @@
 <span class="sd">        Update state when the background task has started processing.</span>
 
 <span class="sd">        Internal state:</span>
-<span class="sd">        * _INITIALIZED -&gt; EXECUTING</span>
+<span class="sd">        * WAITING -&gt; EXECUTING</span>
 <span class="sd">        * _CANCELLING_BEFORE_STARTED -&gt; _CANCELLED_AFTER_STARTED</span>
 
 <span class="sd">        Parameters</span>
@@ -427,7 +420,7 @@
 <span class="sd">        none : NoneType</span>
 <span class="sd">            This parameter is unused.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_INITIALIZED</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">WAITING</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">EXECUTING</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_BEFORE_STARTED</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLING_AFTER_STARTED</span>
@@ -503,10 +496,10 @@
 <span class="sd">        state.</span>
 
 <span class="sd">        Internal state:</span>
-<span class="sd">        * _INITIALIZED -&gt; _CANCELLING_BEFORE_STARTED</span>
+<span class="sd">        * WAITING -&gt; _CANCELLING_BEFORE_STARTED</span>
 <span class="sd">        * EXECUTING -&gt; _CANCELLING_AFTER_STARTED</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_INITIALIZED</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">WAITING</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLING_BEFORE_STARTED</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
@@ -519,37 +512,14 @@
                 <span class="p">)</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_executor_initialized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update state when the executor initializes the future.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        cancel</span>
-<span class="sd">            The callback to be called when the user requests cancellation.</span>
-<span class="sd">            The callback accepts no arguments, and has no return value.</span>
-
-<span class="sd">        Internal state:</span>
-<span class="sd">        * _NOT_INITIALIZED -&gt; _INITIALIZED</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_NOT_INITIALIZED</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="n">cancel</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_INITIALIZED</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
-                <span class="s2">&quot;Unexpected initialization in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
     <span class="c1"># Private traits ##########################################################</span>
 
     <span class="c1">#: Callback called (with no arguments) when user requests cancellation.</span>
     <span class="c1">#: This is reset to ``None`` once cancellation is impossible.</span>
-    <span class="n">_cancel</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">(</span><span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_cancel</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">(</span><span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1">#: The internal state of the future.</span>
-    <span class="n">_internal_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="n">_NOT_INITIALIZED</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">))</span>
+    <span class="n">_internal_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="n">WAITING</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">))</span>
 
     <span class="c1">#: Result from the background task.</span>
     <span class="n">_result</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>

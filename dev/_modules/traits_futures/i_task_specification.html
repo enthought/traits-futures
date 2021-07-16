@@ -144,9 +144,16 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="ITaskSpecification.future"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

@@ -386,13 +386,12 @@
 
         <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">pipe</span><span class="p">()</span>
         <span class="n">runner</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">background_task</span><span class="p">()</span>
-        <span class="n">future</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">future</span><span class="p">()</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">cancel_event</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
             <span class="n">run_background_task</span><span class="p">,</span> <span class="n">runner</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancel_event</span><span class="o">.</span><span class="n">is_set</span>
         <span class="p">)</span>
 
-        <span class="n">future</span><span class="o">.</span><span class="n">_executor_initialized</span><span class="p">(</span><span class="n">cancel_event</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
         <span class="n">future_wrapper</span> <span class="o">=</span> <span class="n">FutureWrapper</span><span class="p">(</span>
             <span class="n">future</span><span class="o">=</span><span class="n">future</span><span class="p">,</span>
             <span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">,</span>

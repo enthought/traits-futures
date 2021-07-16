@@ -209,9 +209,16 @@
     <span class="c1">#: Named arguments to be passed to the callable.</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Str</span><span class="p">())</span>
 
-<div class="viewcode-block" id="BackgroundProgress.future"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.future">[docs]</a>    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BackgroundProgress.future"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.future">[docs]</a>    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -219,7 +226,7 @@
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ProgressFuture</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">ProgressFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BackgroundProgress.background_task"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.background_task">[docs]</a>    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

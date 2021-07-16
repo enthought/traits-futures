@@ -139,15 +139,20 @@ check whether cancellation has been requested.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_task_specification.ITaskSpecification.future">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">future</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">future</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cancel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Future for the background task.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>future</strong> – Future object that can be used to monitor the status of the
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cancel</strong> – Zero-argument callable, returning no useful result. The returned
+future’s <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method should call this to request cancellation
+of the associated background task.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Future object that can be used to monitor the status of the
 background task.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -262,7 +262,7 @@ to process each message by firing a corresponding event on the future.</p>
 <p>The last piece we need is a task specification, which is the object that can be
 submitted to the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>. This object needs to have two attributes:
 <code class="docutils literal notranslate"><span class="pre">future</span></code> and <code class="docutils literal notranslate"><span class="pre">background_task</span></code>. Given an instance <code class="docutils literal notranslate"><span class="pre">task</span></code> of a task
-specification, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> calls <code class="docutils literal notranslate"><span class="pre">task.future()</span></code>
+specification, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> calls <code class="docutils literal notranslate"><span class="pre">task.future(cancel)</span></code>
 to create the future, and <code class="docutils literal notranslate"><span class="pre">task.background_task()</span></code> to create the background
 callable. For the background task, we want to return (but not call!) the
 <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> function that we defined above. For the future, we create and
@@ -277,9 +277,16 @@ looks like this:</p>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -287,7 +294,7 @@ looks like this:</p>
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -441,9 +448,16 @@ from putting together the above snippets:</p>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -451,7 +465,7 @@ from putting together the above snippets:</p>
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
