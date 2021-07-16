@@ -336,22 +336,15 @@ class MultithreadingRouter(HasRequiredTraits):
 
         if timeout is None:
             while not condition():
-                self._route_message()
+                self._route_message(block=True)
         else:
             end_time = time.monotonic() + timeout
             while not condition():
-                time_remaining = end_time - time.monotonic()
-                if time_remaining < 0.0:
-                    break
                 try:
-                    self._route_message(timeout=time_remaining)
+                    time_remaining = end_time - time.monotonic()
+                    self._route_message(block=True, timeout=time_remaining)
                 except queue.Empty:
-                    break
-            else:
-                # Success: condition became true.
-                return
-
-            raise RuntimeError("Timed out waiting for messages")
+                    raise RuntimeError("Timed out waiting for messages")
 
     # Public traits ###########################################################
 
@@ -412,8 +405,31 @@ class MultithreadingRouter(HasRequiredTraits):
             self._pingee.disconnect()
             self._linked = False
 
-    def _route_message(self, timeout=None):
-        connection_id, message = self._message_queue.get(timeout=timeout)
+    def _route_message(self, *, block=False, timeout=None):
+        """
+        Get and dispatch a message from the local message queue.
+
+        Parameters
+        ----------
+        block : bool, optional
+            If True, block until either a message arrives or until timeout. If
+            False (the default), we expect a message to already be present in
+            the queue.
+        timeout : float, optional
+            Maximum time to wait for a message to arrive. If no timeout
+            is given and ``block`` is True, wait indefinitely. If ``block``
+            is False, this parameter is ignored.
+
+        Raises
+        ------
+        queue.Empty
+            If no message arrives within the given timeout.
+        """
+        if block and timeout is not None and timeout <= 0.0:
+            raise queue.Empty
+        connection_id, message = self._message_queue.get(
+            block=block, timeout=timeout
+        )
         try:
             receiver = self._receivers[connection_id]
         except KeyError:
