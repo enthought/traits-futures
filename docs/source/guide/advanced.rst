@@ -105,15 +105,13 @@ Now we define a dedicated future class ``FizzBuzzFuture`` for this background
 task type. The most convenient way to do this is to inherit from the
 |BaseFuture| class, which is a |HasStrictTraits| subclass that provides the
 |IFuture| interface. Messages coming into the |BaseFuture| instance from the
-background task are processed by the |task_sent| method. The default
-implementation of this method expects incoming messages to have the
-form ``(message_type, message_arg)``, and does a couple of things:
+background task are processed by the |dispatch| method. The default
+implementation of this method expects incoming messages to have the form
+``(message_type, message_arg)``, and it converts each such message to a call to
+a method named ``_process_<message_type>``, passing ``message_arg`` as an
+argument.
 
-- it dispatches the argument of each message to a method named
-  ``_process_<message_type>``.
-- it suppresses any messages that arrive after cancellation has been requested
-
-The |task_sent| method can be safely overridden by subclasses if messages
+The |dispatch| method can be safely overridden by subclasses if messages
 do not have the form ``(message_type, message_arg)``, or if some
 other dispatch mechanism is wanted. For this example, we use the default
 dispatch mechanism, so all we need to do is to define methods
@@ -182,6 +180,7 @@ of the new background task type:
 
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
 .. |BaseTask| replace:: :class:`~.BaseTask`
+.. |dispatch| replace:: :meth:`~.BaseFuture.dispatch`
 .. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`
@@ -191,5 +190,4 @@ of the new background task type:
 .. |submit_call| replace:: :func:`~.submit_call`
 .. |submit_iteration| replace:: :func:`~.submit_iteration`
 .. |submit_progress| replace:: :func:`~.submit_progress`
-.. |task_sent| replace:: :meth:`~.BaseFuture._task_sent`
 .. |TraitsExecutor| replace:: :class:`~.TraitsExecutor`
