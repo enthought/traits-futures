@@ -230,10 +230,10 @@ for execution of the background task and sending of any custom messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>send</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – single-argument callable used to send a message to the
+<li><p><strong>send</strong> – single-argument callable used to send a message to the
 associated future. It takes the message to be sent, and returns
 no useful value.</p></li>
-<li><p><strong>cancelled</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – zero-argument callable that can be used to check whether
+<li><p><strong>cancelled</strong> – zero-argument callable that can be used to check whether
 cancellation has been requested for this task. Returns <code class="docutils literal notranslate"><span class="pre">True</span></code>
 if cancellation has been requested, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 </ul>
