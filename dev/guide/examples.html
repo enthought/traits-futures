@@ -406,11 +406,6 @@ GUI as the background computation progresses.</p>
             <span class="n">current_step</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">,</span> <span class="n">count_so_far</span>
         <span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;closing&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_cancel_future_if_necessary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancellable</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_respond_to_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
