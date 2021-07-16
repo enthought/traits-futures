@@ -39,9 +39,9 @@ of Traits Futures.
   background task types.
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
   previously, it was writable.
-* The ``cancel`` method a future no longer raises :exc:`RuntimeError` when a
+* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
   future is not cancellable; instead it does nothing. The return value from
-  ``cancel`` can be used to detect when cancellation occurred.
+  ``cancel`` can be used to detect whether cancellation occurred.
 
 Other Changes
 ~~~~~~~~~~~~~
