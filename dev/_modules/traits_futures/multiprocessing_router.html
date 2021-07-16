@@ -465,22 +465,15 @@
 
         <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
-            <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
-                <span class="n">time_remaining</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">time_remaining</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">time_remaining</span><span class="p">)</span>
-                <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
-                    <span class="k">break</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Success: condition became true.</span>
-                <span class="k">return</span>
-
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Timed out waiting for messages&quot;</span><span class="p">)</span></div>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
+                    <span class="n">time_remaining</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">time_remaining</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Timed out waiting for messages&quot;</span><span class="p">)</span></div>
 
     <span class="c1"># Public traits ###########################################################</span>
 
@@ -550,8 +543,31 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get and dispatch a message from the local message queue.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block : bool, optional</span>
+<span class="sd">            If True, block until either a message arrives or until timeout. If</span>
+<span class="sd">            False (the default), we expect a message to already be present in</span>
+<span class="sd">            the queue.</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum time to wait for a message to arrive. If no timeout</span>
+<span class="sd">            is given and ``block`` is True, wait indefinitely. If ``block``</span>
+<span class="sd">            is False, this parameter is ignored.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        queue.Empty</span>
+<span class="sd">            If no message arrives within the given timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">block</span> <span class="ow">and</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeout</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span>
+        <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_local_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
+        <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
