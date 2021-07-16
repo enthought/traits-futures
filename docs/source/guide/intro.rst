@@ -183,7 +183,7 @@ you might use this as follows::
         self.my_results.append(future.result)
 
 Any attempt to access the future's |result| before the future completes
-successfully will raise an :exc:`AttributeError`. This includes the cases where
+successfully will raise an |AttributeError|. This includes the cases where
 the background task was cancelled, or failed with an exception, as well
 as the cases where the task is still executing or has yet to start running.
 
