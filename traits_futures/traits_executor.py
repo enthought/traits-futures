@@ -469,10 +469,7 @@ class TraitsExecutor(HasStrictTraits):
         logger.debug(f"{self} cancelling incomplete tasks")
         cancel_count = 0
         for wrapper in self._wrappers:
-            future = wrapper.future
-            if future.cancellable:
-                future.cancel()
-                cancel_count += 1
+            cancel_count += wrapper.future.cancel()
         logger.debug(f"{self} cancelled {cancel_count} tasks")
 
     def _stop_router(self):

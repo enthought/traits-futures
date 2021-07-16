@@ -133,8 +133,7 @@ class SquaringHelper(HasStrictTraits):
 
     def _cancel_all_fired(self):
         for future in self.current_futures:
-            if future.cancellable:
-                future.cancel()
+            future.cancel()
 
     def _clear_finished_fired(self):
         for future in list(self.current_futures):

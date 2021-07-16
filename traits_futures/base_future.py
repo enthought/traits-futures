@@ -12,6 +12,8 @@
 Base class providing common pieces of the Future machinery.
 """
 
+import logging
+
 from traits.api import (
     Any,
     Bool,
@@ -38,6 +40,8 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_future import IFuture
+
+logger = logging.getLogger(__name__)
 
 # Messages sent by the BaseTask, and interpreted by BaseFuture.
 
@@ -219,20 +223,26 @@ class BaseFuture(HasRequiredTraits):
 
         A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
         to ``CANCELLING`` state. If the task is not in ``WAITING`` or
-        ``EXECUTING`` state, this function will raise ``RuntimeError``.
+        ``EXECUTING`` state, this function does nothing.
 
-        Raises
-        ------
-        RuntimeError
-            If the task has already completed or cancellation has already
-            been requested.
+        .. versionchanged:: 0.3.0
+
+           This method no longer raises for a task that isn't cancellable.
+           In previous versions, :exc:`RuntimeError` was raised.
+
+        Returns
+        -------
+        cancelled : bool
+            True if the task was cancelled, False if the task was not
+            cancellable.
         """
-        if not self.cancellable:
-            raise RuntimeError(
-                "Can only cancel a waiting or executing task. "
-                "Task state is {}".format(self.state)
-            )
-        self._user_cancelled()
+        if self.cancellable:
+            self._user_cancelled()
+            logger.debug(f"{self} cancelled")
+            return True
+        else:
+            logger.debug(f"{self} not cancellable; state is {self.state}")
+            return False
 
     def receive(self, message):
         """
