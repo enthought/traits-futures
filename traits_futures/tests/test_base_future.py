@@ -78,9 +78,6 @@ class TestBaseFuture(CommonFutureTests, unittest.TestCase):
         with self.assertRaises(_StateTransitionError):
             future._task_sent(message)
 
-        with self.assertRaises(_StateTransitionError):
-            future._task_sent(message)
-
         future._task_started(None)
         future._task_returned(1729)
 
