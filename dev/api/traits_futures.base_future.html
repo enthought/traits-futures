@@ -127,6 +127,25 @@ False. Cancellation of the background task can be requested only if
 the future’s <code class="docutils literal notranslate"><span class="pre">state</span></code> is either <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code>.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.dispatch">
+<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch a message arriving from the associated BaseTask.</p>
+<p>This is a convenience function, and may be safely overridden by
+subclasses that want to use a different dispatch mechanism. For
+a message type <code class="docutils literal notranslate"><span class="pre">msgtype</span></code>, it looks for a method called
+<code class="docutils literal notranslate"><span class="pre">_process_&lt;msgtype&gt;</span></code> and dispatches the message arguments to
+that method. Subclasses then only need to provide the appropriate
+<code class="docutils literal notranslate"><span class="pre">_process_&lt;msgtype&gt;</span></code> methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Message sent by the background task. The default implementation of
+this method expects the message to be in the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span>
+<span class="pre">message_args)</span></code> with <code class="docutils literal notranslate"><span class="pre">message_type</span></code> a string.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.done">
 <span class="sig-name descname"><span class="pre">done</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.done" title="Permalink to this definition">¶</a></dt>

@@ -219,6 +219,8 @@
 <span class="sd">    Convenience base class for the various flavours of Future.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># IFuture interface #######################################################</span>
+
     <span class="c1">#: The state of the background task, to the best of the knowledge of</span>
     <span class="c1">#: this future. One of the six constants ``WAITING``, ``EXECUTING``,</span>
     <span class="c1">#: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.</span>
@@ -339,16 +341,11 @@
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">message_type</span> <span class="ow">in</span> <span class="n">FINAL_MESSAGES</span></div>
 
-    <span class="c1"># Semi-private methods ####################################################</span>
+    <span class="c1"># BaseFuture interface ####################################################</span>
 
-    <span class="c1"># These methods represent the state transitions in response to external</span>
-    <span class="c1"># events. They&#39;re used by the FutureWrapper, and are potentially useful for</span>
-    <span class="c1"># unit testing, but are not intended for use by the users of Traits</span>
-    <span class="c1"># Futures.</span>
-
-    <span class="k">def</span> <span class="nf">_task_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseFuture.dispatch"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Automate dispatch of different types of message.</span>
+<span class="sd">        Dispatch a message arriving from the associated BaseTask.</span>
 
 <span class="sd">        This is a convenience function, and may be safely overridden by</span>
 <span class="sd">        subclasses that want to use a different dispatch mechanism. For</span>
@@ -357,27 +354,40 @@
 <span class="sd">        that method. Subclasses then only need to provide the appropriate</span>
 <span class="sd">        ``_process_&lt;msgtype&gt;`` methods.</span>
 
-<span class="sd">        If the future is already in ``CANCELLING`` state, no message is</span>
-<span class="sd">        dispatched.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            Message sent by the background task. The default implementation of</span>
+<span class="sd">            this method expects the message to be in the form ``(message_type,</span>
+<span class="sd">            message_args)`` with ``message_type`` a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_process_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span></div>
 
-<span class="sd">        Internal state:</span>
-<span class="sd">        * _CANCELLING_AFTER_STARTED -&gt; _CANCELLING_AFTER_STARTED</span>
-<span class="sd">        * EXECUTING -&gt; EXECUTING</span>
+    <span class="c1"># State transitions #######################################################</span>
+
+    <span class="c1"># These methods represent state transitions in response to external events.</span>
+
+    <span class="k">def</span> <span class="nf">_task_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Automate dispatch of different types of message.</span>
+
+<span class="sd">        Delegates the actual work to the :meth:`dispatch` method,</span>
+<span class="sd">        which can be overridden by subclasses. Messages received after</span>
+<span class="sd">        cancellation are ignored.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        message : tuple</span>
-<span class="sd">            Message from the background task, in the form (message_type,</span>
-<span class="sd">            message_args).</span>
+<span class="sd">        message : object</span>
+<span class="sd">            Message from the background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span>
             <span class="c1"># Ignore messages that arrive after a cancellation request.</span>
             <span class="k">return</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
-            <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_process_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
                 <span class="s2">&quot;Unexpected custom message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>

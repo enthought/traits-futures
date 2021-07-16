@@ -208,15 +208,12 @@ any exception raised during execution will be made available under the
 task type. The most convenient way to do this is to inherit from the
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> class, which is a <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a> subclass that provides the
 <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface. Messages coming into the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance from the
-background task are processed by the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_task_sent</span></code> method. The default
-implementation of this method expects incoming messages to have the
-form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, and does a couple of things:</p>
-<ul class="simple">
-<li><p>it dispatches the argument of each message to a method named
-<code class="docutils literal notranslate"><span class="pre">_process_&lt;message_type&gt;</span></code>.</p></li>
-<li><p>it suppresses any messages that arrive after cancellation has been requested</p></li>
-</ul>
-<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">_task_sent</span></code> method can be safely overridden by subclasses if messages
+background task are processed by the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch" title="traits_futures.base_future.BaseFuture.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch</span></code></a> method. The default
+implementation of this method expects incoming messages to have the form
+<code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, and it converts each such message to a call to
+a method named <code class="docutils literal notranslate"><span class="pre">_process_&lt;message_type&gt;</span></code>, passing <code class="docutils literal notranslate"><span class="pre">message_arg</span></code> as an
+argument.</p>
+<p>The <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch" title="traits_futures.base_future.BaseFuture.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch</span></code></a> method can be safely overridden by subclasses if messages
 do not have the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, or if some
 other dispatch mechanism is wanted. For this example, we use the default
 dispatch mechanism, so all we need to do is to define methods
