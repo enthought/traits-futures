@@ -502,11 +502,11 @@ class BaseTask:
 
         Parameters
         ----------
-        send : callable
+        send
             single-argument callable used to send a message to the
             associated future. It takes the message to be sent, and returns
             no useful value.
-        cancelled : callable
+        cancelled
             zero-argument callable that can be used to check whether
             cancellation has been requested for this task. Returns ``True``
             if cancellation has been requested, else ``False``.
