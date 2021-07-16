@@ -29,7 +29,7 @@ We'll examine the future objects in the next section. This section deals with
 the executor's main top-level methods and the task submission functions.
 
 To submit a task, use one of the convenience submission functions available
-from |traits_futures.api|.
+from |traits_futures.api|:
 
 - The |submit_call| function allows submission of a simple Python callable,
   with given positional and named arguments. For example::
