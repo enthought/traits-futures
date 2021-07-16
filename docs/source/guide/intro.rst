@@ -377,6 +377,7 @@ needed.
 .. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
 
 .. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
+.. |cancellable| replace:: :meth:`~trait_futures.i_future.IFuture.cancellable`
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
