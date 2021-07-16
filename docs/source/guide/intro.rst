@@ -29,7 +29,7 @@ We'll examine the future objects in the next section. This section deals with
 the executor's main top-level methods and the task submission functions.
 
 To submit a task, use one of the convenience submission functions available
-from :mod:`traits_futures.api`:
+from |traits_futures.api|:
 
 - The |submit_call| function allows submission of a simple Python callable,
   with given positional and named arguments. For example::
@@ -183,7 +183,7 @@ you might use this as follows::
         self.my_results.append(future.result)
 
 Any attempt to access the future's |result| before the future completes
-successfully will raise an :exc:`AttributeError`. This includes the cases where
+successfully will raise an |AttributeError|. This includes the cases where
 the background task was cancelled, or failed with an exception, as well
 as the cases where the task is still executing or has yet to start running.
 
@@ -374,7 +374,7 @@ needed.
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
 .. |executor_state| replace:: :attr:`~traits_futures.traits_executor.TraitsExecutor.state`
-.. |ExecutorState| replace:: :meth:`~traits_futures.executor_states.ExecutorState`
+.. |ExecutorState| replace:: :data:`~traits_futures.executor_states.ExecutorState`
 .. |RUNNING| replace:: :data:`~traits_futures.executor_states.RUNNING`
 .. |STOPPING| replace:: :data:`~traits_futures.executor_states.STOPPING`
 .. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
