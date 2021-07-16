@@ -259,7 +259,7 @@ class BaseFuture(HasRequiredTraits):
         getattr(self, method_name)(message_arg)
         return message_type in FINAL_MESSAGES
 
-    # Base Future interface ###################################################
+    # BaseFuture interface ####################################################
 
     def dispatch(self, message):
         """
