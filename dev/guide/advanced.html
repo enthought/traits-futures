@@ -258,9 +258,9 @@ to process each message by firing a corresponding event on the future.</p>
 <h3>Putting it all together: the task specification<a class="headerlink" href="#putting-it-all-together-the-task-specification" title="Permalink to this headline">¶</a></h3>
 <p>The last piece we need is a task specification, which is the object that can be
 submitted to the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>. This object needs to have two attributes:
-<code class="docutils literal notranslate"><span class="pre">future</span></code> and <code class="docutils literal notranslate"><span class="pre">background_task</span></code>. Given an instance <code class="docutils literal notranslate"><span class="pre">task</span></code> of a task
+<code class="docutils literal notranslate"><span class="pre">future</span></code> and <code class="docutils literal notranslate"><span class="pre">task</span></code>. Given an instance <code class="docutils literal notranslate"><span class="pre">task</span></code> of a task
 specification, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> calls <code class="docutils literal notranslate"><span class="pre">task.future(cancel)</span></code>
-to create the future, and <code class="docutils literal notranslate"><span class="pre">task.background_task()</span></code> to create the background
+to create the future, and <code class="docutils literal notranslate"><span class="pre">task.task()</span></code> to create the background
 callable. For the background task, we want to return (but not call!) the
 <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> function that we defined above. For the future, we create and
 return a new <code class="docutils literal notranslate"><span class="pre">FizzBuzzFuture</span></code> instance. So our task specification
@@ -293,7 +293,7 @@ looks like this:</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
@@ -464,7 +464,7 @@ from putting together the above snippets:</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 

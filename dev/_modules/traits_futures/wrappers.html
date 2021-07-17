@@ -134,13 +134,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="run_background_task"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.run_background_task">[docs]</a><span class="k">def</span> <span class="nf">run_background_task</span><span class="p">(</span><span class="n">background_task</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+<div class="viewcode-block" id="run_background_task"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.run_background_task">[docs]</a><span class="k">def</span> <span class="nf">run_background_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for callables submitted to the underlying executor.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    background_task</span>
+<span class="sd">    task</span>
 <span class="sd">        Callable representing the background task. This will be called</span>
 <span class="sd">        with arguments ``send`` and ``cancelled``.</span>
 <span class="sd">    sender : IMessageSender</span>
@@ -151,7 +151,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">sender</span><span class="p">:</span>
-            <span class="n">background_task</span><span class="p">(</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">)</span>
+            <span class="n">task</span><span class="p">(</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
         <span class="c1"># We&#39;ll only ever get here in the case of a coding error. But in</span>
         <span class="c1"># case that happens, it&#39;s useful to have the exception logged to</span>

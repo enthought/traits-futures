@@ -110,6 +110,10 @@ own background task types, but does not affect users of the existing
 background task types.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of the <code class="docutils literal notranslate"><span class="pre">~.TraitsExecutor</span></code> is now read-only;
 previously, it was writable.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ITaskSpecification.background_task</span></code> method has been renamed to
+<code class="docutils literal notranslate"><span class="pre">task</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ITaskSpecification.future</span></code> method now requires a cancellation callback
+to be passed.</p></li>
 </ul>
 </section>
 <section id="other-changes">

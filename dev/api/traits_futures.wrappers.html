@@ -124,12 +124,12 @@ its own internal state.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="traits_futures.wrappers.run_background_task">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">run_background_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background_task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">run_background_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for callables submitted to the underlying executor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>background_task</strong> – Callable representing the background task. This will be called
+<li><p><strong>task</strong> – Callable representing the background task. This will be called
 with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
 <li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageSender</span></code></a>) – Object used to send messages.</p></li>
 <li><p><strong>cancelled</strong> – Zero-argument callable returning bool. This can be called to check
