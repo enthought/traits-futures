@@ -303,7 +303,7 @@ class TraitsExecutor(HasStrictTraits):
         cancel_event = self._context.event()
 
         sender, receiver = self._message_router.pipe()
-        runner = task.background_task()
+        runner = task.task()
         future = task.future(cancel_event.set)
 
         self._worker_pool.submit(

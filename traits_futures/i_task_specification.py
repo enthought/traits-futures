@@ -28,7 +28,7 @@ class ITaskSpecification(ABC):
     """
 
     @abstractmethod
-    def background_task(self):
+    def task(self):
         """
         Return the callable that will be invoked as the background task.
 
