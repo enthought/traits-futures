@@ -39,6 +39,10 @@ of Traits Futures.
   background task types.
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
   previously, it was writable.
+* The ``ITaskSpecification.background_task`` method has been renamed to
+  ``task``.
+* The ``ITaskSpecification.future`` method now requires a cancellation callback
+  to be passed.
 
 Other Changes
 ~~~~~~~~~~~~~

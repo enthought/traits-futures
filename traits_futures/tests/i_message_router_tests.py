@@ -374,6 +374,32 @@ class IMessageRouterTests:
             # an unusable state.
             router.route_until(lambda: True, timeout=SAFETY_TIMEOUT)
 
+    def test_route_until_timeout_with_queued_messages(self):
+        # Even with a timeout of 0.0, route_until shouldn't fail if
+        # there are sufficient messages already queued to satisfy
+        # the condition.
+        messages = list(range(10))
+
+        with self.started_router() as router:
+            sender, receiver = router.pipe()
+            listener = ReceiverListener(receiver=receiver)
+            try:
+                with self.context.worker_pool() as worker_pool:
+                    worker_pool.submit(send_messages, sender, messages)
+
+                # At this point we've closed the worker pool, so all
+                # background jobs have completed and all messages are
+                # already queued. route_until should be able to
+                # process all of them, regardless of timeout.
+                router.route_until(
+                    lambda: len(listener.messages) >= len(messages),
+                    timeout=0.0,
+                )
+            finally:
+                router.close_pipe(receiver)
+
+        self.assertEqual(listener.messages, messages)
+
     def test_event_loop_after_route_until(self):
         # This tests a potentially problematic situation:
         # - route_until processes at least one message manually

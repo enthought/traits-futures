@@ -146,7 +146,7 @@ class BackgroundProgress(HasStrictTraits):
         """
         return ProgressFuture(_cancel=cancel)
 
-    def background_task(self):
+    def task(self):
         """
         Return a background callable for this task specification.
 
