@@ -61,7 +61,7 @@ safe to remove the wait for ``future.done``, so long as you keep the |shutdown|
 call.
 
 
-.. |assertEventuallyTrueInGui| replace:: :meth:`pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui`
-.. |GuiTestAssistant| replace:: :class:`pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant`
+.. |assertEventuallyTrueInGui| replace:: ``assertEventuallyTrueInGui``
+.. |GuiTestAssistant| replace:: ``GuiTestAssistant``
 
 .. |shutdown| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.shutdown`
