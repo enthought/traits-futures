@@ -152,12 +152,12 @@ future.</p>
 <ul class="simple">
 <li><p>In order for the result of our future execution to be delivered to the main
 thread (a.k.a. the GUI thread), the event loop for the main thread needs to
-be running. We make use of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant</span></code> class from Pyface
+be running. We make use of the <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> class from Pyface
 to make it easy to run the event loop until a particular condition occurs.</p></li>
 <li><p>In the main test method, after submitting the call and receiving the
 <code class="docutils literal notranslate"><span class="pre">future</span></code> future, we want to wait until the future has completed and all
 communications from the background task have completed. We do that by using
-the <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyface.ui.qt4.util.gui_test_assistant.GuiTestAssistant.assertEventuallyTrueInGui</span></code> method. At that point, we can check that the
+the <code class="docutils literal notranslate"><span class="pre">assertEventuallyTrueInGui</span></code> method. At that point, we can check that the
 result of the future is the expected one.</p></li>
 <li><p>We also need to shut down the executor itself at the end of the test; we
 use the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method for this.</p></li>
