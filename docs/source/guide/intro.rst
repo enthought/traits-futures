@@ -242,11 +242,11 @@ task to abort the next time that task calls ``progress``. No further
 progress results are received after calling |cancel|.
 
 In all cases, a task may only be cancelled if the state of the associated
-future is either |WAITING| or |EXECUTING|. Calling |cancel| on a future in
-another state will have no effect. You can determine whether a future is
-cancellable by inspecting its |cancellable| property. Alternatively, you can
-examine the return value of the |cancel| method to determine whether
-cancellation occurred.
+future is either |WAITING| or |EXECUTING|. When |cancel| is called on a future
+in one of these two states, the future's state is changed to |CANCELLING|,
+a cancellation request is sent to the associated task, and the call returns
+``True``. When |cancel| is called on a future in another state, the call has
+no effect, and returns ``False``.
 
 A successful |cancel| immediately puts the future into |CANCELLING| state, and
 the state is updated to |CANCELLED| once the future has finished executing. No
