@@ -226,12 +226,7 @@ def doc(edm, python_version, toolkit):
     """
     pyenv = _get_devenv(edm, python_version, toolkit)
 
-    # Be nitpicky. This detects missing class references.
-    sphinx_options = ["-n"]
-
-    build_cmd = ["-m", "sphinx"]
-    build_cmd.extend(sphinx_options)
-    build_cmd.extend([cfg.DOCS_SOURCE_DIR, cfg.DOCS_BUILD_DIR])
+    build_cmd = ["-m", "sphinx", cfg.DOCS_SOURCE_DIR, cfg.DOCS_BUILD_DIR]
     pyenv.python(build_cmd)
 
 

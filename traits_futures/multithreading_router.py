@@ -425,10 +425,9 @@ class MultithreadingRouter(HasRequiredTraits):
         queue.Empty
             If no message arrives within the given timeout.
         """
-        if block and timeout is not None and timeout <= 0.0:
-            raise queue.Empty
         connection_id, message = self._message_queue.get(
-            block=block, timeout=timeout
+            block=block,
+            timeout=None if timeout is None else max(timeout, 0.0),
         )
         try:
             receiver = self._receivers[connection_id]

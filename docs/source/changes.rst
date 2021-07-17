@@ -46,6 +46,10 @@ of Traits Futures.
   and returns ``False``. Otherwise it changes the future's state to
   ``CANCELLING`` state, requests cancellation of the associated task, and
   returns ``True``.
+* The ``ITaskSpecification.background_task`` method has been renamed to
+  ``task``.
+* The ``ITaskSpecification.future`` method now requires a cancellation callback
+  to be passed.
 
 Other Changes
 ~~~~~~~~~~~~~

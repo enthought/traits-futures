@@ -72,7 +72,7 @@ class BackgroundCall(HasStrictTraits):
         """
         return CallFuture(_cancel=cancel)
 
-    def background_task(self):
+    def task(self):
         """
         Return a background callable for this task specification.
 

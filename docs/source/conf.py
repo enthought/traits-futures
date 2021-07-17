@@ -98,6 +98,9 @@ todo_include_todos = False
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
 
+# Do use nitpicky mode: we want to know about broken references.
+nitpicky = True
+
 # Ignore complaints about references to classes in wx and pyface.qt.QtCore
 nitpick_ignore = [
     # Exclusions needed for Sphinx < 4.
