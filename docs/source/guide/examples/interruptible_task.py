@@ -34,7 +34,7 @@ from traits_futures.api import (
     CANCELLED,
     COMPLETED,
     FAILED,
-    IFuture,
+    IterationFuture,
     submit_iteration,
     TraitsExecutor,
 )
@@ -59,7 +59,7 @@ class InterruptibleTaskExample(HasStrictTraits):
     traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
-    future = Instance(IFuture)
+    future = Instance(IterationFuture)
 
     #: Number of points to use.
     sample_count = Int(10 ** 8)

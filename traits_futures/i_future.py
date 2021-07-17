@@ -14,96 +14,32 @@ Interface for futures returned by the executor.
 
 import abc
 
-from traits.api import Bool, Interface
 
-from traits_futures.future_states import FutureState
-
-
-class IFuture(Interface):
+class IFuture(abc.ABC):
     """
     Interface for futures returned by the executor.
+
+    This interface is provided for use by those who want to implement new
+    background task types. It represents the knowledge that the executor needs
+    to interact with futures.
     """
-
-    #: The state of the background task, to the best of the knowledge of
-    #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
-    #: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``. Users
-    #: should treat this trait as read-only.
-    state = FutureState
-
-    #: True if cancellation of the background task can be requested,
-    #: else False. Cancellation of the background task can be requested
-    #: only if the ``state`` is one of ``WAITING`` or ``EXECUTING``. Users
-    #: should treat this trait as read-only.
-    cancellable = Bool()
-
-    #: True when communications from the background task are complete.
-    #: At that point, no further state changes can occur for this future.
-    #: This trait has value True if the ``state`` is one of ``COMPLETED``,
-    #: ``FAILED``, or ``CANCELLED``. It's safe to listen to this trait
-    #: for changes: it will always fire exactly once, and when it fires
-    #: it will be consistent with the ``state``. Users should treat this
-    #: trait as read-only.
-    done = Bool()
-
-    @property
-    @abc.abstractmethod
-    def result(self):
-        """
-        Result of the background task.
-
-        This attribute is only available if the state of the future is
-        ``COMPLETED``. If the future has not reached the ``COMPLETED`` state,
-        any attempt to access this attribute will raise an ``AttributeError``.
-
-        Returns
-        -------
-        result : object
-            The result obtained from the background task.
-
-        Raises
-        ------
-        AttributeError
-            If the task is still executing, or was cancelled, or raised an
-            exception instead of returning a result.
-        """
-
-    @property
-    @abc.abstractmethod
-    def exception(self):
-        """
-        Information about any exception raised by the background task.
-
-        This attribute is only available if the state of this future is
-        ``FAILED``. If the future has not reached the ``FAILED`` state, any
-        attempt to access this attribute will raise an ``AttributeError.``
-
-        Returns
-        -------
-        exc_info : tuple
-            Tuple containing exception information in string form:
-            (exception type, exception value, formatted traceback).
-
-        Raises
-        ------
-        AttributeError
-            If the task is still executing, or was cancelled, or completed
-            without raising an exception.
-        """
 
     @abc.abstractmethod
     def cancel(self):
         """
         Request cancellation of the background task.
 
-        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
-        to ``CANCELLING`` state. If the task is not in ``WAITING`` or
-        ``EXECUTING`` state, this function will raise ``RuntimeError``.
+        For a future that has not yet completed and has not previously been
+        cancelled, this method requests cancellation of the associated
+        background task and returns ``True``. For a future that has already
+        completed, or that has previously been cancelled, this method
+        does nothing, and returns ``False``.
 
-        Raises
-        ------
-        RuntimeError
-            If the task has already completed or cancellation has already
-            been requested.
+        Returns
+        -------
+        cancelled : bool
+            True if the task was cancelled, False if the task was not
+            cancellable.
         """
 
     @abc.abstractmethod

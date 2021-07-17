@@ -181,11 +181,11 @@ of the new background task type:
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
 .. |BaseTask| replace:: :class:`~.BaseTask`
 .. |dispatch| replace:: :meth:`~.BaseFuture.dispatch`
-.. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
+.. |exception| replace:: :attr:`~traits_futures.base_future.BaseFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`
 .. |ITaskSpecification| replace:: :class:`~.ITaskSpecification`
-.. |result| replace:: :attr:`~traits_futures.i_future.IFuture.result`
+.. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
 .. |submit| replace:: :meth:`~.submit`
 .. |submit_call| replace:: :func:`~.submit_call`
 .. |submit_iteration| replace:: :func:`~.submit_iteration`
