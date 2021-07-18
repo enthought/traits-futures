@@ -28,7 +28,7 @@ class CallTask(BaseTask):
         self.args = args
         self.kwargs = kwargs
 
-    def run(self, send, cancelled):
+    def run(self):
         return self.callable(*self.args, **self.kwargs)
 
 

@@ -50,19 +50,19 @@ class FizzBuzzTask(BaseTask):
         returns ``True`` if cancellation has been requested, and ``False``
         otherwise.
     """
-    def run(self, send, cancelled):
+    def run(self):
         n = 1
-        while not cancelled():
+        while not self.cancelled():
 
             n_is_multiple_of_3 = n % 3 == 0
             n_is_multiple_of_5 = n % 5 == 0
 
             if n_is_multiple_of_3 and n_is_multiple_of_5:
-                send((FIZZ_BUZZ, n))
+                self.send(FIZZ_BUZZ, n)
             elif n_is_multiple_of_3:
-                send((FIZZ, n))
+                self.send(FIZZ, n)
             elif n_is_multiple_of_5:
-                send((BUZZ, n))
+                self.send(BUZZ, n)
 
             time.sleep(1.0)
             n += 1

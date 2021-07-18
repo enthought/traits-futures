@@ -32,11 +32,11 @@ class IterationTask(BaseTask):
         self.args = args
         self.kwargs = kwargs
 
-    def run(self, send, cancelled):
+    def run(self):
         iterable = iter(self.callable(*self.args, **self.kwargs))
 
         while True:
-            if cancelled():
+            if self.cancelled():
                 return None
 
             try:
@@ -46,7 +46,7 @@ class IterationTask(BaseTask):
                 # exception carries that value. Return it.
                 return e.value
 
-            send((GENERATED, result))
+            self.send(GENERATED, result)
             # Don't keep a reference around until the next iteration.
             del result
 

@@ -70,7 +70,7 @@ class ProgressReporter:
         """
         if self.cancelled():
             raise ProgressCancelled("Task was cancelled")
-        self.send((PROGRESS, progress_info))
+        self.send(PROGRESS, progress_info)
 
 
 class ProgressTask(BaseTask):
@@ -86,8 +86,8 @@ class ProgressTask(BaseTask):
         self.args = args
         self.kwargs = kwargs
 
-    def run(self, send, cancelled):
-        progress = ProgressReporter(send=send, cancelled=cancelled)
+    def run(self):
+        progress = ProgressReporter(send=self.send, cancelled=self.cancelled)
         try:
             return self.callable(
                 *self.args,
