@@ -97,13 +97,18 @@ class IFuture(Interface):
 
         A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
         to ``CANCELLING`` state. If the task is not in ``WAITING`` or
-        ``EXECUTING`` state, this function will raise ``RuntimeError``.
+        ``EXECUTING`` state, this function does nothing.
 
-        Raises
-        ------
-        RuntimeError
-            If the task has already completed or cancellation has already
-            been requested.
+        .. versionchanged:: 0.3.0
+
+           This method no longer raises for a task that isn't cancellable.
+           In previous versions, :exc:`RuntimeError` was raised.
+
+        Returns
+        -------
+        cancelled : bool
+            True if the task was cancelled, False if the task was not
+            cancellable.
         """
 
     @abc.abstractmethod

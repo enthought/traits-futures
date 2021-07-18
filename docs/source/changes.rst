@@ -39,6 +39,13 @@ of Traits Futures.
   background task types.
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
   previously, it was writable.
+* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
+  future is not cancellable. Instead, it communicates the information via its
+  return value. If a future is already done, or has previously been cancelled,
+  calling ``cancel`` on that future does not change the state of the future,
+  and returns ``False``. Otherwise it changes the future's state to
+  ``CANCELLING`` state, requests cancellation of the associated task, and
+  returns ``True``.
 * The ``ITaskSpecification.background_task`` method has been renamed to
   ``task``.
 * The ``ITaskSpecification.future`` method now requires a cancellation callback

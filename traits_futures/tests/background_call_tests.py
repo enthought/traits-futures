@@ -191,8 +191,8 @@ class BackgroundCallTests:
         self.wait_until_done(future)
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
         self.assertResult(future, 8)
         self.assertNoException(future)
@@ -208,8 +208,8 @@ class BackgroundCallTests:
         self.wait_until_done(future)
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
@@ -223,10 +223,12 @@ class BackgroundCallTests:
         listener = CallFutureListener(future=future)
 
         self.assertTrue(future.cancellable)
-        future.cancel()
+        cancelled = future.cancel()
+        self.assertTrue(cancelled)
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
+        self.assertFalse(future.cancellable)
 
         self.wait_until_done(future)
 
@@ -254,8 +256,8 @@ class BackgroundCallTests:
         test_ready.set()
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
         self.wait_until_done(future)
 
