@@ -528,9 +528,6 @@ class BaseTask(abc.ABC):
             May return any object. That object will be delivered to the
             future's ``result`` attribute.
         """
-        raise NotImplementedError(
-            "This method should be implemented by subclasses."
-        )
 
     def send(self, message_type, message_arg=None):
         """
