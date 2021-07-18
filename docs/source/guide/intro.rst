@@ -241,14 +241,19 @@ For |ProgressFuture|, the |cancel| method causes a running
 task to abort the next time that task calls ``progress``. No further
 progress results are received after calling |cancel|.
 
-In all cases, a future may only be cancelled if its state is one of |WAITING|
-or |EXECUTING|. Attempting to cancel a future in another state will raise a
-|RuntimeError|. Calling |cancel| immediately puts the future into
-|CANCELLING| state, and the state is updated to |CANCELLED| once the future has
-finished executing. No results or exception information are received from a
-future in |CANCELLING| state. A cancelled future will never reach |FAILED|
-state, and will never record information from a background task exception that
-occurs after the |cancel| call.
+In all cases, a task may only be cancelled if the state of the associated
+future is either |WAITING| or |EXECUTING|. When |cancel| is called on a future
+in one of these two states, the future's state is changed to |CANCELLING|,
+a cancellation request is sent to the associated task, and the call returns
+``True``. When |cancel| is called on a future in another state, the call has
+no effect, and returns ``False``.
+
+A successful |cancel| immediately puts the future into |CANCELLING| state, and
+the state is updated to |CANCELLED| once the future has finished executing. No
+results or exception information are received from a future in |CANCELLING|
+state. A cancelled future will never reach |FAILED| state, and will never
+record information from a background task exception that occurs after the
+|cancel| call.
 
 
 Stopping the executor

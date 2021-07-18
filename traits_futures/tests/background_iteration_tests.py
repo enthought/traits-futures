@@ -337,8 +337,8 @@ class BackgroundIterationTests:
         future.cancel()
         self.assertFalse(future.cancellable)
 
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
     def test_completed_cancel(self):
         future = submit_iteration(self.executor, squares, 0, 10)
@@ -346,8 +346,8 @@ class BackgroundIterationTests:
         self.wait_until_done(future)
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
     def test_generator_closed_on_cancellation(self):
         resource_acquired = self._context.event()

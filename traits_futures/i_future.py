@@ -38,8 +38,9 @@ class IFuture(abc.ABC):
         Returns
         -------
         cancelled : bool
-            True if the task was cancelled, False if the task was not
-            cancellable.
+            True if the task was cancellable and this call requested
+            cancellation, False if the task was not cancellable (in which case
+            this call did nothing).
         """
 
     @abc.abstractmethod

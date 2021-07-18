@@ -247,8 +247,8 @@ class BackgroundProgressTests:
         future.cancel()
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
     def test_cancel_raising_task(self):
         signal = self._context.event()
