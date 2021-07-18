@@ -179,13 +179,18 @@
 
 <span class="sd">        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved</span>
 <span class="sd">        to ``CANCELLING`` state. If the task is not in ``WAITING`` or</span>
-<span class="sd">        ``EXECUTING`` state, this function will raise ``RuntimeError``.</span>
+<span class="sd">        ``EXECUTING`` state, this function does nothing.</span>
 
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        RuntimeError</span>
-<span class="sd">            If the task has already completed or cancellation has already</span>
-<span class="sd">            been requested.</span>
+<span class="sd">        .. versionchanged:: 0.3.0</span>
+
+<span class="sd">           This method no longer raises for a task that isn&#39;t cancellable.</span>
+<span class="sd">           In previous versions, :exc:`RuntimeError` was raised.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cancelled : bool</span>
+<span class="sd">            True if the task was cancelled, False if the task was not</span>
+<span class="sd">            cancellable.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="IFuture.receive"><a class="viewcode-back" href="../../api/traits_futures.i_future.html#traits_futures.i_future.IFuture.receive">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>

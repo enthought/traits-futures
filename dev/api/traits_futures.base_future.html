@@ -110,11 +110,18 @@
 <dd><p>Request cancellation of the background task.</p>
 <p>A task in <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state will immediately be moved
 to <code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code> state. If the task is not in <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or
-<code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state, this function will raise <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state, this function does nothing.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.3.0: </span>This method no longer raises for a task that isn’t cancellable.
+In previous versions, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> was raised.</p>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the task has already completed or cancellation has already
-    been requested.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>cancelled</strong> – True if the task was cancelled, False if the task was not
+cancellable.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
