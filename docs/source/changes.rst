@@ -10,253 +10,165 @@
    Thanks for using Enthought open source!
 
 
-
-Continuous integration and build machinery
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-* Add workflow for uploading releases to PyPI (#439)
-* Turn on nitpicky mode for documentation builds (#429)
-* Add black check to the style checks (#416)
-* DEV : RtD docs config (#411)
-* Setup slack notifications for cron jobs (#410)
-* Update CI workflows (#408)
-* Set PYTHONUNBUFFERED in all workflows (#368)
-* Enable faulthandler when running tests (#337)
-* Rename 'master' to 'main' in the documentation build workflow (#277)
-* Automate documentation build for the master branch (#257)
-* Add Python 3.8 testing for cron job (#303)
-* Add cron job that runs the test suite against the latest ETS source (#297)
-* Replace flake8-import-order with isort (#285)
-* Fix import grouping and ordering throughout the codebase (#286)
-* Extend 'ci format' and 'ci style' checks to example directories (#287)
-* Remove Travis and Appveyor configs and associated machinery (#270)
-* Add GitHub Actions (#237)
-* Add GitHub Actions workflow for style checking (#266)
-* Add a per-PR workflow to test the documentation build (#265)
-* Adjust runtime dependencies (#240)
-  - added extras_require section
-* Support -h for getting help (#235)
-* DEV : Use flake8-ets package (#234)
-
-
-
-Features
-~~~~~~~~
-
-* Finalise multiprocessing support (#173)
-* Mark multiprocessing support as provisional (#387)
-* Feature: executor.shutdown (#334)
-* Add basic logging to the TraitsExecutor (#296)
-* Adding logging for message routers (#293)
-* Add wx toolkit support (#246)
-
-
-
-Changes
-~~~~~~~
-
-* Make BaseTask easier to use (#435)
-* Repurpose IFuture (#431)
-* Change cancel method to never raise (#420)
-* Rename ITaskSpecification.background_task to ITaskSpecification.task (#425)
-* Extract public 'dispatch' method from task_sent (#427)
-* Remove the blocking wait during message routing (#413)
-* Document 'positional-only' arguments (#409)
-* Change string representation of marshalled exception type (#391)
-* ITaskSpecification change: 'send' expects a single argument (#364)
-* Prevent task submission off the main thread (#305)
-* Make the ProgressCancelled exception public (#317)
-* Require Python 3.6 or later (#239)
-* Adjust runtime dependencies (#240)
-  - setuptools is no longer a runtime dependency
-
-Fixes
-~~~~~
-
-* Fix marshal_exception not to use global state (#390)
-* Remove bogus "message" trait from IFuture (#394)
-* Make sure that the cancellation callback is always cleared (#389)
-
-Test suite
-~~~~~~~~~~
-
-* Use the asyncio context by default for testing (#321)
-
-
-Documentation
-~~~~~~~~~~~~~
-
-* Only exclude one troublesome example, not all of them (#374)
-* Replace dynamic use of "on_trait_change" handlers with "observe" (#373)
-* DEV : Replace static change handlers with observe decorated methods (#372)
-* Replace "on_trait_change" decorator with "observe" decorator (#371)
-* Automatically run sphinx-apidoc during documentation build (#348)
-* Set 3.5 as the minimum Sphinx version (#357)
-* Move examples into documentation (#355)
-* Remove developer guide from README (#352)
-* Make all example scripts downloadable (#353)
-* Move changelog to documentation (#350)
-* Flesh out last section of the overview (#327)
-* Docs: add overview documentation (#325)
-* Add brief documentation on testing (#278)
-
-
-
-Documentation fixes
-~~~~~~~~~~~~~~~~~~~
-
-* Fix last of the Sphinx warnings (#430)
-* Doc: Fix some bad Sphinx roles (#424)
-* Clean up various references in the introduction section of the user guide (#421)
-* Fix Sphinx warnings about 'callable' (#422)
-* Doc: provide type aliases for common classes (#400)
-* Remove unresolvable references (#406)
-* Remove 'event-like' as a type (#405)
-* Fix 'callable' type descriptions (#404)
-* Fix ad-hoc type descriptions (#403)
-* Doc: fix bad std. lib. references (#402)
-* Fix descriptions coming after Parameters (#401)
-* Remove copyright headers from literalincludes (#326)
-* Fix appearance of copyright in documentation (#292)
-* Fix autodoc templates to avoid missing newline at EOF (#260)
-* Make sure we use Python ints in pi_iterations example (#249)
-
-
-Internal refactoring
-~~~~~~~~~~~~~~~~~~~~
-
-Also includes outdated changes and fixes for things introduced since
-0.2.0
-
-* FIX : Migrate static _fired methods with observe decorated methods (#441)
-* Move IFuture definition to i_task_specification module (#436)
-* Fix 'state' trait type in IFuture (#428)
-* Fix behaviour of route_until with timeout and queued messages (#419)
-* Fix missing 'self' in method definition (#426)
-* Remove an unused method (#423)
-* More TraitsExecutor / IFuture decoupling (#414)
-* Style: keep black happy (#415)
-* Decouple TraitsExecutor from future implementation (#396)
-* Fix bad string interpolation in shutdown log message (#395)
-* Rename task classes (#397)
-* Remove comment that was both redundant and out of date (#393)
-* Refactor to add ABANDONED message (#392)
-* Rename GuiTestAssistant to TestAssistant (#388)
-* Update examples to use 'shutdown' (#385)
-* Update tests to use 'shutdown', where it makes sense (#386)
-* Ensure that Pingees are always collected on the main thread (#384)
-* Refactor traits_executor (#381)
-* Refactor to move 'progress' argument check in submit_progress (#382)
-* Route messages during executor shutdown (#380)
-* Feature: IMessageRouter.route_until (#378)
-* Add GuiTestAssistant.exercise_event_loop (#377)
-* Style fix from black (#376)
-* DEV : Replace depends_on with observe for Property traits (#370)
-* Rename gui_context to event_loop (#365)
-* Simplify messages, ensure cleanup ordering (#362)
-* Refactor: fix wrapper asymmetry (and inaccurate docstring) (#360)
-* Add section for backwards-incompatible changes to the changelog (#363)
-* Fix black complaint (#361)
-* Fix missing 'f' prefix on what was supposed to be an f-string. (#347)
-* Join a thread in a test (#349)
-* Fix logging inconsistency (#346)
-* Refactor executor states and shutdown (#344)
-* Run the executor tests with an external worker pool (#343)
-* Fix temporal coupling between Pingee and Pinger (#332)
-* Fix potential race condition in long_running_task (#342)
-* Make sure that long_running_task doesn't run forever (#338)
-* Don't call stop on a STOPPING executor (#335)
-* Fix executor tests that weren't correctly specifying the GUI context (#336)
-* Move event loop to AsyncioContext (#331)
-* Don't try to use a new event loop for every test (#330)
-* Bump version for continued developer towards 0.3.0 (#212)
-* Decouple parallelism context and GUIContext (#322)
-* Re-blacken the source (#323)
-* Add tests for each of the IEventLoopHelper implementations (#319)
-* Add toolkit-specific Pingee tests (#315)
-* Refactor: pull up ETSContext (#314)
-* Rework toolkit support (#312)
-* Always instantiate Pinger on the thread it'll be used on (#309)
-* Rename pinger modules (#308)
-* Extract toolkit-specific EventLoopHelper from the GuiTestAssistant (#307)
-* Add Pingee.pinger method (#306)
-* Rename traits_futures.null to traits_futures.asyncio (#300)
-* Add IPingee and IPinger interfaces (#298)
-* Add MultiprocessingContext, and adapt existing classes to use it. (#284)
-* Add multiprocessing implementation of the message router interfaces (#283)
-* Add message routing interfaces (#282)
-* Fix an inaccurate comment (#279)
-* Update copyright headers for 2021 (#276)
-* Add testing for wxPython (#269)
-* Turn off macOS builds on Travis CI (#267)
-* Use gh-pages instead of gh-pages-staging (#264)
-* Fix documentation build (#262)
-* Add explicit Pingee connect and disconnect methods (#255)
-* Simplify the wx event code (#256)
-* Tweak Sphinx configuration (#259)
-* Use the EDM executable instead of the batch file on Windows (#247)
-* Refactor MessageRouter and toolkit support (#231)
-* Support PySide2 Qt backend in Travis CI and Appveyor (#233)
-* Fix trivial typo in comment: reources -> resources. (#232)
-* CLN: Clean up of the base_future module (#226)
-* Update changelog to mention read-only state (#223)
-* Fix message_router module docstring (#221)
-* CLN : Update super usage (#213)
-* Rename _dispatch_message to _task_sent (#227)
-
-
-
-
-
-
-
 Release 0.3.0
 -------------
 
-Release date: XXXX-XX-XX
+Release date: 2021-07-XX
 
 Features
 ~~~~~~~~
 
 * Multiprocessing support: the :class:`~.TraitsExecutor` can now submit
-  background tasks to a process pool instead of a thread pool. Note: since this
-  support has not yet been tested in the wild, this support is provisional -
-  the API and the capabilities may change in a future release. Feedback is
-  welcome!
+  background tasks to a process pool instead of a thread pool. Since this
+  support has not yet been tested in the wild, this support should be
+  considered provisional for now - the API and the capabilities may change in a
+  future release. Feedback is welcome!
+* wxPython support: Traits Futures now supports the wxPython event loop as well
+  as Qt-based toolkits
+* asyncio support: the executor can make use of an asyncio event loop in place
+  of a GUI toolkit event loop. This is potentially useful in unit tests, and
+  when running headless.
+* Improved shutdown: there's a new :meth:`~.TraitsExecutor.shutdown` method,
+  suitable for use at process exit time, or in unit tests. This method is
+  blocking: it waits for tasks created by the executor to completed, and then
+  shuts down all resources associated with the executor.
+* Improved logging: there's now debug-level logging of key state changes
+  and interactions, to aid in post-morten debugging.
 
-Backwards-incompatible changes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Changes
+~~~~~~~
 
-The following backwards-incompatible changes may affect advanced users
-of Traits Futures.
-
-* The ``send`` callable passed to the background task now expects a single
-  Python object as an argument, rather than accepting a message type and
-  a message argument as separate arguments. Existing uses of the form
-  ``send(message_type, message_args)`` will need to be changed to
-  ``send((message_type, message_args))``. This affects those writing their
-  own background task types, but does not affect users of the existing
-  background task types.
+* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
+  future is not cancellable. If a task has already completed, or has previously
+  been cancelled, calling ``cancel`` on the associated future does not change
+  the state of the future, and the call returns ``False``. Otherwise it changes
+  the future's state to ``CANCELLING``, requests cancellation of the associated
+  task, and returns ``True``.
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
   previously, it was writable.
-* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
-  future is not cancellable. Instead, it communicates the information via its
-  return value. If a future is already done, or has previously been cancelled,
-  calling ``cancel`` on that future does not change the state of the future,
-  and returns ``False``. Otherwise it changes the future's state to
-  ``CANCELLING`` state, requests cancellation of the associated task, and
-  returns ``True``.
-* The ``ITaskSpecification.background_task`` method has been renamed to
-  ``task``.
-* The ``ITaskSpecification.future`` method now requires a cancellation callback
-  to be passed.
+* The ``executor`` and ``callable`` arguments to the ``submit_call``,
+  ``submit_iteration`` and ``submit_progress`` convenience functions should
+  be considered positional-only, and should not be passed by name. This
+  restriction may be enforced in a future version of the library.
+* The string representation of the exception type created by
+  ``marshal_exception`` has been simplified: instead of appearing in the form
+  ``"<class 'traits.trait_errors.TraitError'>"``, it has the form
+  ``"traits.trait_errors.TraitError"``.
+* Tasks may now only be submitted to a ``~.TraitsExecutor`` on the main thread.
+* The ``traits_futures.toolkits`` setuptools entry point group used for
+  supplying custom toolkit support has been renamed to
+  ``traits_futures.event_loops``.
+* There are a number of backwards-incompatible changes to the machinery used
+  for creating custom task types and futures. The API for creating custom
+  task types should be considered provisional: it may change in future
+  releases. Notable changes include:
 
-Other Changes
+  * A new ``BaseTask`` abstract base class, which can be subclassed to create
+    custom background tasks. Those background tasks should override the
+    ``run`` method, which takes no arguments. The ``BaseTask`` provides
+    ``send`` and ``cancelled`` methods to send messages to the associated
+    future, and to check for cancellation requests.
+  * The ``ITaskSpecification.background_task`` method has been renamed to
+    ``task``.
+  * The ``ITaskSpecification.future`` method now requires a cancellation callback
+    to be passed.
+  * The ``IFuture`` interface has a new ``receive`` method which receives
+    messages from the background task.
+  * The ``IFuture`` interface is much smaller, containing only the ``receive``
+    and ``cancel`` methods.
+  * The ``BaseFuture`` has a new ``dispatch`` public method, which can be
+    overridden in subclasses in order to customize the dispatch of messages
+    received from the associated task. The default implementation dispatches to
+    methods named ``_process_<msgtype>``, as before.
+
+  See the documentation for more details on how to create custom task types.
+
+Fixes
+~~~~~
+
+* The message routing machinery will no longer block indefinitely in the
+  (hypothetical) event that no message exists to be retrieved on the message
+  queue. Instead, it will fail fast with a ``QueueError`` exception. This
+  situation should never happen in normal use; please report it if you ever
+  witness it.
+* The ``ProgressCancelled`` exception used by the background task submitted
+  via ``submit_progress`` is now public, in case that task needs to catch
+  the exception.
+* The marshal_exception function has been fixed not to rely on the global
+  ``sys.exception_info`` state.
+* A bogus "message" trait that never did anything has been removed from
+  ``IFuture``.
+* The cancellation callback supplied to a ``BaseFuture`` instance is now always
+  cleared when the future completes. Previously the ``BaseFuture`` object
+  would sometimes hold onto the reference to the cancellation callback.
+
+Continuous integration and build
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The default GitHub branch has been renamed from "master" to "main".
+* Continuous integration has been migrated from Travis CI and Appveyor
+  to GitHub Actions. The per-commit tests are run on Linux and Windows, on
+  Python 3.6 and Python 3.8. There are several GitHub Actions workflows in
+  addition to the normal CI testing workflow (``run-tests.yml``):
+
+  * The ``build-docs.yml`` workflow provides automated documentation builds
+    deployed to https://docs.enthought.com/traits-futures/dev/index.html on
+    each PR merge to the main branch.
+  * The ``publish-on-pypi.yml`` workflow automatically uploads a wheel and
+    sdist to PyPI when a GitHub release is created.
+  * The ``test-docs.yml`` workflow performs a nitpicky documentation build
+    check on each commit to an open PR.
+  * The ``check-style.yml`` workflow performs style checks are using ``black``,
+    ``isort``, ``flake8`` and ``flake8-ets`` on each commit to an open PR.
+  * The ``weekly-scheduled-tests.yml`` workflow runs comprehensive tests on
+    a weekly basis, and reports success or failure back to a relevant Enthought
+    Slack channel.
+
+* The ``ci`` tool now supports ``-h`` for getting help.
+* Tests are always run under ``faulthandler``.
+* Example files are now included in the various style checks.
+
+Packaging changes
+~~~~~~~~~~~~~~~~~
+
+* Python 3.6 or later is now required.
+* Traits 6.2 or later is now required.
+* ``setuptools`` is no longer a runtime dependency.
+* The ``setup`` file now declares ``extras_require`` for additional
+  dependencies such as ``docs``, ``pyqt5`` and ``pyside2``.
+
+Test suite
+~~~~~~~~~~
+
+* The test suite now uses the ``asyncio`` event loop for the majority of
+  its tests. It uses the Qt or Wx event loop only for tests specific to
+  those toolkits.
+
+Documentation
 ~~~~~~~~~~~~~
 
-* Traits Futures now requires Traits 6.2.0 or later.
-* Python 3.5 is no longer supported. Traits Futures requires Python 3.6
-  or later.
+* New "overview" documentation section explaining why Traits Futures exists
+  and what problems it solves.
+* New documentation section on testing code that uses Traits Futures.
+* A "Read the Docs" configuration file has been added.
+* The changelog is now maintained as part of the documentation.
+* All examples are now part of the documentation.
+* All example scripts are downloadable from the documentation.
+* All examples now use the new ``observe`` machinery instead of
+  ``on_trait_change``.
+* The ``sphinx-apidoc`` autogeneration step is now run automatically as
+  part of the normal Sphinx build.
+* Sphinx 3.5 or later is now required to build the documentation.
+* Development information has been removed from ``README.rst``, and moved into
+  a separate ``DEVELOP.rst`` file.
+* Various Sphinx warnings from a combination of napoleon and autodoc have been
+  fixed, and the documentation now builds cleanly in "nitpicky" mode.
+* The example scripts displayed directly in the documentation no longer
+  include the copyright headers.
+* The autodoc templates are no longer missing a newline at EOF.
+* The ``pi_iterations`` example has been fixed to give correct counts.
+  Previously it was giving incorrect results as a result of NumPy integer
+  overflow.
 
 
 Release 0.2.0
