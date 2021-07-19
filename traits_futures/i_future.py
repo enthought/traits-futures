@@ -19,9 +19,8 @@ class IFuture(abc.ABC):
     """
     Interface for futures returned by the executor.
 
-    This interface can be used to implement new
-    background task types. It represents the knowledge that the executor needs
-    to interact with futures.
+    This interface can be used to implement new background task types. It
+    represents the knowledge that the executor needs to interact with futures.
     """
 
     @abc.abstractmethod
