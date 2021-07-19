@@ -12,6 +12,11 @@
 Advanced topics
 ===============
 
+.. note::
+   Support for writing custom tasks is provisional. The API is subject to
+   change in future releases. Feedback on the feature is welcome.
+
+
 Creating your own background task type
 --------------------------------------
 
@@ -77,14 +82,17 @@ isn't strictly necessary, but it makes the code cleaner.
 The background callable
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, we define the callable that will be run in the background. This callable
-must accept two arguments (which will be passed by position): ``send`` and
+Next, we define the callable that will be run in the background. The callable
+itself expects two arguments (which will be passed by position): ``send`` and
 ``cancelled``. The ``send`` object is a callable which will be used to send
 messages to the foreground. The ``cancelled`` object is a zero-argument
-callable which can be used to check for cancellation requests. For convenience,
-we inherit from |BaseTask|, which takes care of sending standard messages
-to the future letting the future know that the background task has started,
-stopped, or raised an exception.
+callable which can be used to check for cancellation requests.
+
+However, instead of implementing this callable directly, we inherit from the
+|BaseTask| abstract base class. This requires us to implement a (parameterless)
+|run| method for the body of the task. The |run| method has access to methods
+|send| and |cancelled| to send messages to the associated |BaseFuture| instance
+and to check whether the user has requested cancellation.
 
 Here's the ``fizz_buzz`` callable.
 
@@ -180,12 +188,15 @@ of the new background task type:
 
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
 .. |BaseTask| replace:: :class:`~.BaseTask`
+.. |cancelled| replace:: :meth:`~.BaseTask.cancelled`
 .. |dispatch| replace:: :meth:`~.BaseFuture.dispatch`
 .. |exception| replace:: :attr:`~traits_futures.base_future.BaseFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`
 .. |ITaskSpecification| replace:: :class:`~.ITaskSpecification`
 .. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
+.. |run| replace:: :meth:`~.BaseTask.run`
+.. |send| replace:: :meth:`~.BaseTask.send`
 .. |submit| replace:: :meth:`~.submit`
 .. |submit_call| replace:: :func:`~.submit_call`
 .. |submit_iteration| replace:: :func:`~.submit_iteration`

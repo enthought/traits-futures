@@ -12,6 +12,7 @@
 Base class providing common pieces of the Future machinery.
 """
 
+import abc
 import logging
 
 from traits.api import (
@@ -501,7 +502,7 @@ class BaseFuture(HasRequiredTraits):
             self.trait_property_changed("done", old_done, new_done)
 
 
-class BaseTask:
+class BaseTask(abc.ABC):
     """
     Mixin for background task classes, making those classes callable.
 
@@ -515,20 +516,10 @@ class BaseTask:
     for execution of the background task and sending of any custom messages.
     """
 
-    def run(self, send, cancelled):
+    @abc.abstractmethod
+    def run(self):
         """
         Run the body of the background task.
-
-        Parameters
-        ----------
-        send
-            single-argument callable used to send a message to the
-            associated future. It takes the message to be sent, and returns
-            no useful value.
-        cancelled
-            zero-argument callable that can be used to check whether
-            cancellation has been requested for this task. Returns ``True``
-            if cancellation has been requested, else ``False``.
 
         Returns
         -------
@@ -536,22 +527,49 @@ class BaseTask:
             May return any object. That object will be delivered to the
             future's ``result`` attribute.
         """
-        raise NotImplementedError(
-            "This method should be implemented by subclasses."
-        )
+
+    def send(self, message_type, message_arg=None):
+        """
+        Send a message to the associated future.
+
+        Parameters
+        ----------
+        message_type : str
+            The type of the message. This is used by ``BaseFuture`` when
+            dispatching messages to appropriate handlers.
+        message_arg : object, optional
+            Message argument, if any. If not given, ``None`` is used.
+        """
+        self.__send((SENT, (message_type, message_arg)))
+
+    def cancelled(self):
+        """
+        Determine whether the user has requested cancellation.
+
+        Returns True if the user has requested cancellation via the associated
+        future's ``cancel`` method, and False otherwise.
+
+        Returns
+        -------
+        bool
+        """
+        return self.__cancelled()
 
     def __call__(self, send, cancelled):
-        if cancelled():
-            send((ABANDONED, None))
-            return
-
-        send((STARTED, None))
+        self.__send = send
+        self.__cancelled = cancelled
         try:
-            result = self.run(
-                lambda message: send((SENT, message)),
-                cancelled,
-            )
-        except BaseException as e:
-            send((RAISED, marshal_exception(e)))
-        else:
-            send((RETURNED, result))
+            if cancelled():
+                send((ABANDONED, None))
+                return
+
+            send((STARTED, None))
+            try:
+                result = self.run()
+            except BaseException as e:
+                send((RAISED, marshal_exception(e)))
+            else:
+                send((RETURNED, result))
+        finally:
+            del self.__cancelled
+            del self.__send
