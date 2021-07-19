@@ -118,12 +118,14 @@ class PiIterator(HasStrictTraits):
     #: The plot.
     plot = Instance(Plot)
 
-    def _approximate_fired(self):
+    @observe("approximate")
+    def _calculate_pi_approximately(self, event):
         self.future = submit_iteration(
             self.traits_executor, pi_iterations, chunk_size=self.chunk_size
         )
 
-    def _cancel_fired(self):
+    @observe("cancel")
+    def _cancel_future(self, event):
         self.future.cancel()
 
     @observe("future")
