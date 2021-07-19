@@ -94,6 +94,7 @@
 <span class="sd">Base class providing common pieces of the Future machinery.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
@@ -583,7 +584,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">old_done</span><span class="p">,</span> <span class="n">new_done</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BaseTask"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask">[docs]</a><span class="k">class</span> <span class="nc">BaseTask</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseTask"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask">[docs]</a><span class="k">class</span> <span class="nc">BaseTask</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mixin for background task classes, making those classes callable.</span>
 
@@ -597,46 +598,63 @@
 <span class="sd">    for execution of the background task and sending of any custom messages.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseTask.run"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseTask.run"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the body of the background task.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        send</span>
-<span class="sd">            single-argument callable used to send a message to the</span>
-<span class="sd">            associated future. It takes the message to be sent, and returns</span>
-<span class="sd">            no useful value.</span>
-<span class="sd">        cancelled</span>
-<span class="sd">            zero-argument callable that can be used to check whether</span>
-<span class="sd">            cancellation has been requested for this task. Returns ``True``</span>
-<span class="sd">            if cancellation has been requested, else ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        any : object</span>
 <span class="sd">            May return any object. That object will be delivered to the</span>
 <span class="sd">            future&#39;s ``result`` attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="BaseTask.send"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a message to the associated future.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message_type : str</span>
+<span class="sd">            The type of the message. This is used by ``BaseFuture`` when</span>
+<span class="sd">            dispatching messages to appropriate handlers.</span>
+<span class="sd">        message_arg : object, optional</span>
+<span class="sd">            Message argument, if any. If not given, ``None`` is used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;This method should be implemented by subclasses.&quot;</span>
-        <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send</span><span class="p">((</span><span class="n">SENT</span><span class="p">,</span> <span class="p">(</span><span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="BaseTask.cancelled"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled">[docs]</a>    <span class="k">def</span> <span class="nf">cancelled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether the user has requested cancellation.</span>
+
+<span class="sd">        Returns True if the user has requested cancellation via the associated</span>
+<span class="sd">        future&#39;s ``cancel`` method, and False otherwise.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cancelled</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">cancelled</span><span class="p">():</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">ABANDONED</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-            <span class="k">return</span>
-
-        <span class="n">send</span><span class="p">((</span><span class="n">STARTED</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send</span> <span class="o">=</span> <span class="n">send</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cancelled</span> <span class="o">=</span> <span class="n">cancelled</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">message</span><span class="p">:</span> <span class="n">send</span><span class="p">((</span><span class="n">SENT</span><span class="p">,</span> <span class="n">message</span><span class="p">)),</span>
-                <span class="n">cancelled</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">RAISED</span><span class="p">,</span> <span class="n">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">((</span><span class="n">RETURNED</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span></div>
+            <span class="k">if</span> <span class="n">cancelled</span><span class="p">():</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">ABANDONED</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                <span class="k">return</span>
+
+            <span class="n">send</span><span class="p">((</span><span class="n">STARTED</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">RAISED</span><span class="p">,</span> <span class="n">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">RETURNED</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cancelled</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send</span></div>
 </pre></div>
 
           </div>

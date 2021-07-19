@@ -169,25 +169,15 @@ check whether cancellation has been requested.</p>
 task that will be submitted to the concurrent.futures executor</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.background_call.CallTask.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">send</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.CallTask.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_call.html#CallTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_call.CallTask.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the body of the background task.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>send</strong> – single-argument callable used to send a message to the
-associated future. It takes the message to be sent, and returns
-no useful value.</p></li>
-<li><p><strong>cancelled</strong> – zero-argument callable that can be used to check whether
-cancellation has been requested for this task. Returns <code class="docutils literal notranslate"><span class="pre">True</span></code>
-if cancellation has been requested, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>any</strong> – May return any object. That object will be delivered to the
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>any</strong> – May return any object. That object will be delivered to the
 future’s <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>

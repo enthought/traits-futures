@@ -90,6 +90,11 @@
             
   <section id="advanced-topics">
 <h1>Advanced topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Support for writing custom tasks is provisional. The API is subject to
+change in future releases. Feedback on the feature is welcome.</p>
+</div>
 <section id="creating-your-own-background-task-type">
 <h2>Creating your own background task type<a class="headerlink" href="#creating-your-own-background-task-type" title="Permalink to this headline">¶</a></h2>
 <p>Traits Futures comes with three basic background task types: background calls,
@@ -147,14 +152,16 @@ isn’t strictly necessary, but it makes the code cleaner.</p>
 </section>
 <section id="the-background-callable">
 <h3>The background callable<a class="headerlink" href="#the-background-callable" title="Permalink to this headline">¶</a></h3>
-<p>Next, we define the callable that will be run in the background. This callable
-must accept two arguments (which will be passed by position): <code class="docutils literal notranslate"><span class="pre">send</span></code> and
+<p>Next, we define the callable that will be run in the background. The callable
+itself expects two arguments (which will be passed by position): <code class="docutils literal notranslate"><span class="pre">send</span></code> and
 <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The <code class="docutils literal notranslate"><span class="pre">send</span></code> object is a callable which will be used to send
 messages to the foreground. The <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> object is a zero-argument
-callable which can be used to check for cancellation requests. For convenience,
-we inherit from <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a>, which takes care of sending standard messages
-to the future letting the future know that the background task has started,
-stopped, or raised an exception.</p>
+callable which can be used to check for cancellation requests.</p>
+<p>However, instead of implementing this callable directly, we inherit from the
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a> abstract base class. This requires us to implement a (parameterless)
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run" title="traits_futures.base_future.BaseTask.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run</span></code></a> method for the body of the task. The <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run" title="traits_futures.base_future.BaseTask.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run</span></code></a> method has access to methods
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send" title="traits_futures.base_future.BaseTask.send"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled" title="traits_futures.base_future.BaseTask.cancelled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancelled</span></code></a> to send messages to the associated <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance
+and to check whether the user has requested cancellation.</p>
 <p>Here’s the <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> callable.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
@@ -178,19 +185,19 @@ stopped, or raised an exception.</p>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
 
             <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
             <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
             <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-                <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -381,19 +388,19 @@ from putting together the above snippets:</p>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
 
             <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
             <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
             <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-                <span class="n">send</span><span class="p">((</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-                <span class="n">send</span><span class="p">((</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>

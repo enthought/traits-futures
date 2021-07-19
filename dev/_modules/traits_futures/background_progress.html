@@ -152,7 +152,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
             <span class="k">raise</span> <span class="n">ProgressCancelled</span><span class="p">(</span><span class="s2">&quot;Task was cancelled&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">((</span><span class="n">PROGRESS</span><span class="p">,</span> <span class="n">progress_info</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PROGRESS</span><span class="p">,</span> <span class="n">progress_info</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ProgressTask"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask">[docs]</a><span class="k">class</span> <span class="nc">ProgressTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
@@ -168,8 +168,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-<div class="viewcode-block" id="ProgressTask.run"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
-        <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressReporter</span><span class="p">(</span><span class="n">send</span><span class="o">=</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="o">=</span><span class="n">cancelled</span><span class="p">)</span>
+<div class="viewcode-block" id="ProgressTask.run"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressReporter</span><span class="p">(</span><span class="n">send</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span>
                 <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>

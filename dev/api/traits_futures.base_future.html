@@ -240,7 +240,7 @@ this future. One of the six constants <code class="docutils literal notranslate"
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseTask</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Mixin for background task classes, making those classes callable.</p>
 <p>This class provides a callable wrapper allowing subclasses to easily
 provide a background callable task.</p>
@@ -250,26 +250,47 @@ take care of sending standard control messages telling the future that the
 task has started, completed, or raised, and delegate to the <code class="docutils literal notranslate"><span class="pre">run</span></code> method
 for execution of the background task and sending of any custom messages.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.base_future.BaseTask.cancelled">
+<span class="sig-name descname"><span class="pre">cancelled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.cancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.cancelled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the user has requested cancellation.</p>
+<p>Returns True if the user has requested cancellation via the associated
+future’s <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method, and False otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">send</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.run" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the body of the background task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>any</strong> – May return any object. That object will be delivered to the
+future’s <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.base_future.BaseTask.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to the associated future.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>send</strong> – single-argument callable used to send a message to the
-associated future. It takes the message to be sent, and returns
-no useful value.</p></li>
-<li><p><strong>cancelled</strong> – zero-argument callable that can be used to check whether
-cancellation has been requested for this task. Returns <code class="docutils literal notranslate"><span class="pre">True</span></code>
-if cancellation has been requested, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The type of the message. This is used by <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> when
+dispatching messages to appropriate handlers.</p></li>
+<li><p><strong>message_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>, <em>optional</em>) – Message argument, if any. If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is used.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>any</strong> – May return any object. That object will be delivered to the
-future’s <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
