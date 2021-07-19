@@ -38,7 +38,7 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
-from traits_futures.i_future import IFuture
+from traits_futures.i_task_specification import IFuture
 
 logger = logging.getLogger(__name__)
 
