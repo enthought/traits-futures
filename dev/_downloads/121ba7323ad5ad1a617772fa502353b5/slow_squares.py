@@ -18,6 +18,7 @@ from traits.api import (
     HasStrictTraits,
     Instance,
     List,
+    observe,
     Property,
     Range,
     Str,
@@ -115,15 +116,18 @@ class SquaringHelper(HasStrictTraits):
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
-    def _square_fired(self):
+    @observe("square")
+    def _do_slow_square(self, event):
         future = submit_call(self.traits_executor, slow_square, self.input)
         self.current_futures.append(future)
 
-    def _cancel_all_fired(self):
+    @observe("cancel_all")
+    def _cancel_all_futures(self, event):
         for future in self.current_futures:
             future.cancel()
 
-    def _clear_finished_fired(self):
+    @observe("clear_finished")
+    def _clear_finished_futures(self, event):
         for future in list(self.current_futures):
             if future.done:
                 self.current_futures.remove(future)

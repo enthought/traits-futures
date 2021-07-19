@@ -146,6 +146,7 @@ a multiprocessing context:</p>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
     <span class="n">Instance</span><span class="p">,</span>
     <span class="n">List</span><span class="p">,</span>
+    <span class="n">observe</span><span class="p">,</span>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Range</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
@@ -244,15 +245,18 @@ a multiprocessing context:</p>
     <span class="c1">#: Value that we&#39;ll square.</span>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_square_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_do_slow_square</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_cancel_all_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel_all&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_cancel_all_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="p">:</span>
             <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_clear_finished_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;clear_finished&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_clear_finished_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>

@@ -199,7 +199,8 @@ class PrimeCounter(HasStrictTraits):
     #: Limit used for most recent run.
     _last_limit = Int()
 
-    def _count_fired(self):
+    @observe("count")
+    def _count_primes(self, event):
         self._last_limit = self.limit
         self.future = submit_progress(
             self.traits_executor,
