@@ -95,70 +95,28 @@
 <p>Interface for futures returned by the executor.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_future.IFuture">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_future.</span></span><span class="sig-name descname"><span class="pre">IFuture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">adaptee</span></em>, <em class="sig-param"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_future.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_future.IFuture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.Interface</span></code></a></p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_future.</span></span><span class="sig-name descname"><span class="pre">IFuture</span></span><a class="reference internal" href="../_modules/traits_futures/i_future.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_future.IFuture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Interface for futures returned by the executor.</p>
+<p>This interface can be used to implement new background task types. It
+represents the knowledge that the executor needs to interact with futures.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_future.IFuture.cancel">
 <em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_future.html#IFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_future.IFuture.cancel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request cancellation of the background task.</p>
-<p>A task in <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state will immediately be moved
-to <code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code> state. If the task is not in <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or
-<code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state, this function does nothing.</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.3.0: </span>This method no longer raises for a task that isn’t cancellable.
-In previous versions, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> was raised.</p>
-</div>
+<p>For a future that has not yet completed and has not previously been
+cancelled, this method requests cancellation of the associated
+background task and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>. For a future that has already
+completed, or that has previously been cancelled, this method
+does nothing, and returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>cancelled</strong> – True if the task was cancelled, False if the task was not
-cancellable.</p>
+<dd class="field-odd"><p><strong>cancelled</strong> – True if the task was cancellable and this call requested
+cancellation, False if the task was not cancellable (in which case
+this call did nothing).</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.i_future.IFuture.cancellable">
-<span class="sig-name descname"><span class="pre">cancellable</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Bool()</span></em><a class="headerlink" href="#traits_futures.i_future.IFuture.cancellable" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if cancellation of the background task can be requested,
-else False. Cancellation of the background task can be requested
-only if the <code class="docutils literal notranslate"><span class="pre">state</span></code> is one of <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code>. Users
-should treat this trait as read-only.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.i_future.IFuture.done">
-<span class="sig-name descname"><span class="pre">done</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Bool()</span></em><a class="headerlink" href="#traits_futures.i_future.IFuture.done" title="Permalink to this definition">¶</a></dt>
-<dd><p>True when communications from the background task are complete.
-At that point, no further state changes can occur for this future.
-This trait has value True if the <code class="docutils literal notranslate"><span class="pre">state</span></code> is one of <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>,
-<code class="docutils literal notranslate"><span class="pre">FAILED</span></code>, or <code class="docutils literal notranslate"><span class="pre">CANCELLED</span></code>. It’s safe to listen to this trait
-for changes: it will always fire exactly once, and when it fires
-it will be consistent with the <code class="docutils literal notranslate"><span class="pre">state</span></code>. Users should treat this
-trait as read-only.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="traits_futures.i_future.IFuture.exception">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">exception</span></span><a class="headerlink" href="#traits_futures.i_future.IFuture.exception" title="Permalink to this definition">¶</a></dt>
-<dd><p>Information about any exception raised by the background task.</p>
-<p>This attribute is only available if the state of this future is
-<code class="docutils literal notranslate"><span class="pre">FAILED</span></code>. If the future has not reached the <code class="docutils literal notranslate"><span class="pre">FAILED</span></code> state, any
-attempt to access this attribute will raise an <code class="docutils literal notranslate"><span class="pre">AttributeError.</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>exc_info</strong> – Tuple containing exception information in string form:
-(exception type, exception value, formatted traceback).</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.9)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or completed
-    without raising an exception.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -181,36 +139,6 @@ from the paired task.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="traits_futures.i_future.IFuture.result">
-<em class="property"><span class="pre">abstract</span> <span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">result</span></span><a class="headerlink" href="#traits_futures.i_future.IFuture.result" title="Permalink to this definition">¶</a></dt>
-<dd><p>Result of the background task.</p>
-<p>This attribute is only available if the state of the future is
-<code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>. If the future has not reached the <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code> state,
-any attempt to access this attribute will raise an <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>result</strong> – The result obtained from the background task.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.9)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or raised an
-    exception instead of returning a result.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.i_future.IFuture.state">
-<span class="sig-name descname"><span class="pre">state</span></span><em class="property"> <span class="pre">=</span> <span class="pre">FutureState</span></em><a class="headerlink" href="#traits_futures.i_future.IFuture.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>The state of the background task, to the best of the knowledge of
-this future. One of the six constants <code class="docutils literal notranslate"><span class="pre">WAITING</span></code>, <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code>,
-<code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>, <code class="docutils literal notranslate"><span class="pre">FAILED</span></code>, <code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code> or <code class="docutils literal notranslate"><span class="pre">CANCELLED</span></code>. Users
-should treat this trait as read-only.</p>
 </dd></dl>
 
 </dd></dl>

@@ -156,10 +156,10 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CallFuture</span><span class="p">,</span>
     <span class="n">CANCELLED</span><span class="p">,</span>
     <span class="n">COMPLETED</span><span class="p">,</span>
     <span class="n">FAILED</span><span class="p">,</span>
-    <span class="n">IFuture</span><span class="p">,</span>
     <span class="n">submit_call</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
@@ -182,7 +182,7 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: The future object returned on task submission.</span>
-    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">CallFuture</span><span class="p">)</span>
 
     <span class="c1">#: Number of points to use.</span>
     <span class="n">sample_count</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">)</span>
@@ -344,7 +344,7 @@ making use of the above.</p>
     <span class="n">CANCELLED</span><span class="p">,</span>
     <span class="n">COMPLETED</span><span class="p">,</span>
     <span class="n">FAILED</span><span class="p">,</span>
-    <span class="n">IFuture</span><span class="p">,</span>
+    <span class="n">IterationFuture</span><span class="p">,</span>
     <span class="n">submit_iteration</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
@@ -369,7 +369,7 @@ making use of the above.</p>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: The future object returned on task submission.</span>
-    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IterationFuture</span><span class="p">)</span>
 
     <span class="c1">#: Number of points to use.</span>
     <span class="n">sample_count</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">)</span>

@@ -104,7 +104,6 @@
     <span class="n">HasRequiredTraits</span><span class="p">,</span>
     <span class="n">observe</span><span class="p">,</span>
     <span class="n">Property</span><span class="p">,</span>
-    <span class="n">provides</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
 <span class="p">)</span>
@@ -217,13 +216,65 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="BaseFuture"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
+<div class="viewcode-block" id="BaseFuture"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture">[docs]</a><span class="nd">@IFuture</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">BaseFuture</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience base class for the various flavours of Future.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># IFuture interface #######################################################</span>
+
+<div class="viewcode-block" id="BaseFuture.cancel"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request cancellation of the background task.</span>
+
+<span class="sd">        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved</span>
+<span class="sd">        to ``CANCELLING`` state. If the task is not in ``WAITING`` or</span>
+<span class="sd">        ``EXECUTING`` state, this function does nothing.</span>
+
+<span class="sd">        .. versionchanged:: 0.3.0</span>
+
+<span class="sd">           This method no longer raises for a task that isn&#39;t cancellable.</span>
+<span class="sd">           In previous versions, :exc:`RuntimeError` was raised.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cancelled : bool</span>
+<span class="sd">            True if the task was cancelled, False if the task was not</span>
+<span class="sd">            cancellable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">{</span><span class="n">WAITING</span><span class="p">,</span> <span class="n">EXECUTING</span><span class="p">}:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_user_cancelled</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelled&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> not cancellable; state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BaseFuture.receive"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.receive">[docs]</a>    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receive and process a message from the task associated to this future.</span>
+
+<span class="sd">        This method is primarily for use by the executors, but may also be of</span>
+<span class="sd">        use in testing.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            The message received from the associated task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        final : bool</span>
+<span class="sd">            True if the received message should be the last one ever received</span>
+<span class="sd">            from the paired task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_task_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">message_type</span> <span class="ow">in</span> <span class="n">FINAL_MESSAGES</span></div>
+
+    <span class="c1"># BaseFuture interface ####################################################</span>
 
     <span class="c1">#: The state of the background task, to the best of the knowledge of</span>
     <span class="c1">#: this future. One of the six constants ``WAITING``, ``EXECUTING``,</span>
@@ -300,58 +351,6 @@
                 <span class="s2">&quot;Task state is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span>
-
-<div class="viewcode-block" id="BaseFuture.cancel"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request cancellation of the background task.</span>
-
-<span class="sd">        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved</span>
-<span class="sd">        to ``CANCELLING`` state. If the task is not in ``WAITING`` or</span>
-<span class="sd">        ``EXECUTING`` state, this function does nothing.</span>
-
-<span class="sd">        .. versionchanged:: 0.3.0</span>
-
-<span class="sd">           This method no longer raises for a task that isn&#39;t cancellable.</span>
-<span class="sd">           In previous versions, :exc:`RuntimeError` was raised.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        cancelled : bool</span>
-<span class="sd">            True if the task was cancelled, False if the task was not</span>
-<span class="sd">            cancellable.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancellable</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_user_cancelled</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelled&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> not cancellable; state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span></div>
-
-<div class="viewcode-block" id="BaseFuture.receive"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.receive">[docs]</a>    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Receive and process a message from the task associated to this future.</span>
-
-<span class="sd">        This method is primarily for use by the executors, but may also be of</span>
-<span class="sd">        use in testing.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        message : object</span>
-<span class="sd">            The message received from the associated task.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        final : bool</span>
-<span class="sd">            True if the received message should be the last one ever received</span>
-<span class="sd">            from the paired task.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_task_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">message_type</span> <span class="ow">in</span> <span class="n">FINAL_MESSAGES</span></div>
-
-    <span class="c1"># BaseFuture interface ####################################################</span>
 
 <div class="viewcode-block" id="BaseFuture.dispatch"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

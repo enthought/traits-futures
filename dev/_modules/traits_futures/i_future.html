@@ -96,101 +96,32 @@
 
 <span class="kn">import</span> <span class="nn">abc</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Interface</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.future_states</span> <span class="kn">import</span> <span class="n">FutureState</span>
-
-
-<div class="viewcode-block" id="IFuture"><a class="viewcode-back" href="../../api/traits_futures.i_future.html#traits_futures.i_future.IFuture">[docs]</a><span class="k">class</span> <span class="nc">IFuture</span><span class="p">(</span><span class="n">Interface</span><span class="p">):</span>
+<div class="viewcode-block" id="IFuture"><a class="viewcode-back" href="../../api/traits_futures.i_future.html#traits_futures.i_future.IFuture">[docs]</a><span class="k">class</span> <span class="nc">IFuture</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface for futures returned by the executor.</span>
+
+<span class="sd">    This interface can be used to implement new background task types. It</span>
+<span class="sd">    represents the knowledge that the executor needs to interact with futures.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1">#: The state of the background task, to the best of the knowledge of</span>
-    <span class="c1">#: this future. One of the six constants ``WAITING``, ``EXECUTING``,</span>
-    <span class="c1">#: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``. Users</span>
-    <span class="c1">#: should treat this trait as read-only.</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="n">FutureState</span>
-
-    <span class="c1">#: True if cancellation of the background task can be requested,</span>
-    <span class="c1">#: else False. Cancellation of the background task can be requested</span>
-    <span class="c1">#: only if the ``state`` is one of ``WAITING`` or ``EXECUTING``. Users</span>
-    <span class="c1">#: should treat this trait as read-only.</span>
-    <span class="n">cancellable</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">()</span>
-
-    <span class="c1">#: True when communications from the background task are complete.</span>
-    <span class="c1">#: At that point, no further state changes can occur for this future.</span>
-    <span class="c1">#: This trait has value True if the ``state`` is one of ``COMPLETED``,</span>
-    <span class="c1">#: ``FAILED``, or ``CANCELLED``. It&#39;s safe to listen to this trait</span>
-    <span class="c1">#: for changes: it will always fire exactly once, and when it fires</span>
-    <span class="c1">#: it will be consistent with the ``state``. Users should treat this</span>
-    <span class="c1">#: trait as read-only.</span>
-    <span class="n">done</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Result of the background task.</span>
-
-<span class="sd">        This attribute is only available if the state of the future is</span>
-<span class="sd">        ``COMPLETED``. If the future has not reached the ``COMPLETED`` state,</span>
-<span class="sd">        any attempt to access this attribute will raise an ``AttributeError``.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        result : object</span>
-<span class="sd">            The result obtained from the background task.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        AttributeError</span>
-<span class="sd">            If the task is still executing, or was cancelled, or raised an</span>
-<span class="sd">            exception instead of returning a result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Information about any exception raised by the background task.</span>
-
-<span class="sd">        This attribute is only available if the state of this future is</span>
-<span class="sd">        ``FAILED``. If the future has not reached the ``FAILED`` state, any</span>
-<span class="sd">        attempt to access this attribute will raise an ``AttributeError.``</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        exc_info : tuple</span>
-<span class="sd">            Tuple containing exception information in string form:</span>
-<span class="sd">            (exception type, exception value, formatted traceback).</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        AttributeError</span>
-<span class="sd">            If the task is still executing, or was cancelled, or completed</span>
-<span class="sd">            without raising an exception.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="IFuture.cancel"><a class="viewcode-back" href="../../api/traits_futures.i_future.html#traits_futures.i_future.IFuture.cancel">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request cancellation of the background task.</span>
 
-<span class="sd">        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved</span>
-<span class="sd">        to ``CANCELLING`` state. If the task is not in ``WAITING`` or</span>
-<span class="sd">        ``EXECUTING`` state, this function does nothing.</span>
-
-<span class="sd">        .. versionchanged:: 0.3.0</span>
-
-<span class="sd">           This method no longer raises for a task that isn&#39;t cancellable.</span>
-<span class="sd">           In previous versions, :exc:`RuntimeError` was raised.</span>
+<span class="sd">        For a future that has not yet completed and has not previously been</span>
+<span class="sd">        cancelled, this method requests cancellation of the associated</span>
+<span class="sd">        background task and returns ``True``. For a future that has already</span>
+<span class="sd">        completed, or that has previously been cancelled, this method</span>
+<span class="sd">        does nothing, and returns ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        cancelled : bool</span>
-<span class="sd">            True if the task was cancelled, False if the task was not</span>
-<span class="sd">            cancellable.</span>
+<span class="sd">            True if the task was cancellable and this call requested</span>
+<span class="sd">            cancellation, False if the task was not cancellable (in which case</span>
+<span class="sd">            this call did nothing).</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="IFuture.receive"><a class="viewcode-back" href="../../api/traits_futures.i_future.html#traits_futures.i_future.IFuture.receive">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>

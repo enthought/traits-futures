@@ -379,12 +379,12 @@ needed.
 .. |STOPPING| replace:: :data:`~traits_futures.executor_states.STOPPING`
 .. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
 
-.. |cancel| replace:: :meth:`~traits_futures.i_future.IFuture.cancel`
-.. |cancellable| replace:: :attr:`~traits_futures.i_future.IFuture.cancellable`
-.. |done| replace:: :attr:`~traits_futures.i_future.IFuture.done`
-.. |future_state| replace:: :attr:`~traits_futures.i_future.IFuture.state`
-.. |result| replace:: :attr:`~traits_futures.i_future.IFuture.result`
-.. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
+.. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
+.. |cancellable| replace:: :attr:`~traits_futures.base_future.BaseFuture.cancellable`
+.. |done| replace:: :attr:`~traits_futures.base_future.BaseFuture.done`
+.. |future_state| replace:: :attr:`~traits_futures.base_future.BaseFuture.state`
+.. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
+.. |exception| replace:: :attr:`~traits_futures.base_future.BaseFuture.exception`
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
