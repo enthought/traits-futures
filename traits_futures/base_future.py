@@ -22,7 +22,6 @@ from traits.api import (
     HasRequiredTraits,
     observe,
     Property,
-    provides,
     Str,
     Tuple,
 )
@@ -135,13 +134,65 @@ class _StateTransitionError(Exception):
     """
 
 
-@provides(IFuture)
+@IFuture.register
 class BaseFuture(HasRequiredTraits):
     """
     Convenience base class for the various flavours of Future.
     """
 
     # IFuture interface #######################################################
+
+    def cancel(self):
+        """
+        Request cancellation of the background task.
+
+        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
+        to ``CANCELLING`` state. If the task is not in ``WAITING`` or
+        ``EXECUTING`` state, this function does nothing.
+
+        .. versionchanged:: 0.3.0
+
+           This method no longer raises for a task that isn't cancellable.
+           In previous versions, :exc:`RuntimeError` was raised.
+
+        Returns
+        -------
+        cancelled : bool
+            True if the task was cancelled, False if the task was not
+            cancellable.
+        """
+        if self.state in {WAITING, EXECUTING}:
+            self._user_cancelled()
+            logger.debug(f"{self} cancelled")
+            return True
+        else:
+            logger.debug(f"{self} not cancellable; state is {self.state}")
+            return False
+
+    def receive(self, message):
+        """
+        Receive and process a message from the task associated to this future.
+
+        This method is primarily for use by the executors, but may also be of
+        use in testing.
+
+        Parameters
+        ----------
+        message : object
+            The message received from the associated task.
+
+        Returns
+        -------
+        final : bool
+            True if the received message should be the last one ever received
+            from the paired task.
+        """
+        message_type, message_arg = message
+        method_name = "_task_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
+        return message_type in FINAL_MESSAGES
+
+    # BaseFuture interface ####################################################
 
     #: The state of the background task, to the best of the knowledge of
     #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
@@ -218,58 +269,6 @@ class BaseFuture(HasRequiredTraits):
                 "Task state is {}".format(self.state)
             )
         return self._exception
-
-    def cancel(self):
-        """
-        Request cancellation of the background task.
-
-        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
-        to ``CANCELLING`` state. If the task is not in ``WAITING`` or
-        ``EXECUTING`` state, this function does nothing.
-
-        .. versionchanged:: 0.3.0
-
-           This method no longer raises for a task that isn't cancellable.
-           In previous versions, :exc:`RuntimeError` was raised.
-
-        Returns
-        -------
-        cancelled : bool
-            True if the task was cancelled, False if the task was not
-            cancellable.
-        """
-        if self.cancellable:
-            self._user_cancelled()
-            logger.debug(f"{self} cancelled")
-            return True
-        else:
-            logger.debug(f"{self} not cancellable; state is {self.state}")
-            return False
-
-    def receive(self, message):
-        """
-        Receive and process a message from the task associated to this future.
-
-        This method is primarily for use by the executors, but may also be of
-        use in testing.
-
-        Parameters
-        ----------
-        message : object
-            The message received from the associated task.
-
-        Returns
-        -------
-        final : bool
-            True if the received message should be the last one ever received
-            from the paired task.
-        """
-        message_type, message_arg = message
-        method_name = "_task_{}".format(message_type)
-        getattr(self, method_name)(message_arg)
-        return message_type in FINAL_MESSAGES
-
-    # BaseFuture interface ####################################################
 
     def dispatch(self, message):
         """
