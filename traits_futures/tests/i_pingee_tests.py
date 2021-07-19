@@ -17,7 +17,7 @@ import queue
 import threading
 import weakref
 
-from traits.api import Event, HasStrictTraits, Int
+from traits.api import Event, HasStrictTraits, Int, observe
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -90,7 +90,8 @@ class PingListener(HasStrictTraits):
     #: Total number of pings received.
     ping_count = Int(0)
 
-    def _ping_fired(self):
+    @observe("ping")
+    def _handle_incoming_ping(self, event):
         self.ping_count += 1
 
     def fire_ping(self):
