@@ -31,10 +31,10 @@ from traits.api import (
     Str,
 )
 from traits_futures.api import (
+    CallFuture,
     CANCELLED,
     COMPLETED,
     FAILED,
-    IterationFuture,
     submit_call,
     TraitsExecutor,
 )
@@ -57,7 +57,7 @@ class NonInterruptibleTaskExample(HasStrictTraits):
     traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
-    future = Instance(IterationFuture)
+    future = Instance(CallFuture)
 
     #: Number of points to use.
     sample_count = Int(10 ** 8)
