@@ -95,10 +95,58 @@
 <span class="sd">that the TraitsExecutor knows how to deal with.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">abc</span>
 
 
-<div class="viewcode-block" id="ITaskSpecification"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification">[docs]</a><span class="k">class</span> <span class="nc">ITaskSpecification</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="IFuture"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture">[docs]</a><span class="k">class</span> <span class="nc">IFuture</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for futures returned by the executor.</span>
+
+<span class="sd">    This interface can be used to implement new background task types. It</span>
+<span class="sd">    represents the knowledge that the executor needs to interact with futures.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IFuture.cancel"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture.cancel">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request cancellation of the background task.</span>
+
+<span class="sd">        For a future that has not yet completed and has not previously been</span>
+<span class="sd">        cancelled, this method requests cancellation of the associated</span>
+<span class="sd">        background task and returns ``True``. For a future that has already</span>
+<span class="sd">        completed, or that has previously been cancelled, this method</span>
+<span class="sd">        does nothing, and returns ``False``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cancelled : bool</span>
+<span class="sd">            True if the task was cancellable and this call requested</span>
+<span class="sd">            cancellation, False if the task was not cancellable (in which case</span>
+<span class="sd">            this call did nothing).</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IFuture.receive"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture.receive">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receive and process a message from the task associated to this future.</span>
+
+<span class="sd">        This method is primarily for use by the executors, but may also be of</span>
+<span class="sd">        use in testing.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            The message received from the associated task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        final : bool</span>
+<span class="sd">            True if the received message should be the last one ever received</span>
+<span class="sd">            from the paired task.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+
+
+<div class="viewcode-block" id="ITaskSpecification"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification">[docs]</a><span class="k">class</span> <span class="nc">ITaskSpecification</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Specify background task callable and foreground future for a task.</span>
 
@@ -109,7 +157,7 @@
 <span class="sd">    BackgroundIteration and others.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ITaskSpecification.task"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.task">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="ITaskSpecification.task"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.task">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the callable that will be invoked as the background task.</span>
@@ -143,7 +191,7 @@
 <span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="ITaskSpecification.future"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="ITaskSpecification.future"><a class="viewcode-back" href="../../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>

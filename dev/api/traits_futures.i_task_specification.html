@@ -95,6 +95,56 @@
 <p>Interface for a job specification. The job specification is the object
 that the TraitsExecutor knows how to deal with.</p>
 <dl class="py class">
+<dt class="sig sig-object py" id="traits_futures.i_task_specification.IFuture">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></span><span class="sig-name descname"><span class="pre">IFuture</span></span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Interface for futures returned by the executor.</p>
+<p>This interface can be used to implement new background task types. It
+represents the knowledge that the executor needs to interact with futures.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.i_task_specification.IFuture.cancel">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request cancellation of the background task.</p>
+<p>For a future that has not yet completed and has not previously been
+cancelled, this method requests cancellation of the associated
+background task and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>. For a future that has already
+completed, or that has previously been cancelled, this method
+does nothing, and returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>cancelled</strong> – True if the task was cancellable and this call requested
+cancellation, False if the task was not cancellable (in which case
+this call did nothing).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="traits_futures.i_task_specification.IFuture.receive">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive and process a message from the task associated to this future.</p>
+<p>This method is primarily for use by the executors, but may also be of
+use in testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>final</strong> – True if the received message should be the last one ever received
+from the paired task.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_task_specification.ITaskSpecification">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></span><span class="sig-name descname"><span class="pre">ITaskSpecification</span></span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
@@ -119,7 +169,7 @@ of the associated background task.</p>
 background task.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
