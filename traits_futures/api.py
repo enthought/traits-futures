@@ -33,7 +33,6 @@ Task submission functions
 Types of futures
 ----------------
 
-- :class:`~.IFuture`
 - :class:`~.CallFuture`
 - :class:`~.IterationFuture`
 - :class:`~.ProgressFuture`
@@ -62,6 +61,7 @@ Support for user-defined background tasks
 
 - :class:`~.BaseFuture`
 - :class:`~.BaseTask`
+- :class:`~.IFuture`
 - :class:`~.ITaskSpecification`
 
 Parallelism contexts
@@ -108,16 +108,14 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_event_loop import IEventLoop
-from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
-from traits_futures.i_task_specification import ITaskSpecification
+from traits_futures.i_task_specification import IFuture, ITaskSpecification
 from traits_futures.multiprocessing_context import MultiprocessingContext
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.traits_executor import TraitsExecutor
 
 __all__ = [
     # Different types of Future
-    "IFuture",
     "CallFuture",
     "IterationFuture",
     "ProgressFuture",
@@ -144,6 +142,7 @@ __all__ = [
     # Support for creating new task types
     "BaseFuture",
     "BaseTask",
+    "IFuture",
     "ITaskSpecification",
     # Contexts
     "IParallelContext",

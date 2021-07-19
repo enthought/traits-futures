@@ -18,7 +18,7 @@ import logging
 
 from traits.api import Bool, HasStrictTraits, HasTraits, Instance, observe
 
-from traits_futures.i_future import IFuture
+from traits_futures.i_task_specification import IFuture
 
 logger = logging.getLogger(__name__)
 

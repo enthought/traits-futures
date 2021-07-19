@@ -190,11 +190,11 @@ of the new background task type:
 .. |BaseTask| replace:: :class:`~.BaseTask`
 .. |cancelled| replace:: :meth:`~.BaseTask.cancelled`
 .. |dispatch| replace:: :meth:`~.BaseFuture.dispatch`
-.. |exception| replace:: :attr:`~traits_futures.i_future.IFuture.exception`
+.. |exception| replace:: :attr:`~traits_futures.base_future.BaseFuture.exception`
 .. |HasStrictTraits| replace:: :class:`~traits.has_traits.HasStrictTraits`
 .. |IFuture| replace:: :class:`~.IFuture`
 .. |ITaskSpecification| replace:: :class:`~.ITaskSpecification`
-.. |result| replace:: :attr:`~traits_futures.i_future.IFuture.result`
+.. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
 .. |run| replace:: :meth:`~.BaseTask.run`
 .. |send| replace:: :meth:`~.BaseTask.send`
 .. |submit| replace:: :meth:`~.submit`
