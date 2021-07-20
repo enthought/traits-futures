@@ -91,7 +91,7 @@ Fixes
   queue. Instead, it will fail fast with a ``QueueError`` exception. This
   situation should never happen in normal use; please report it if you ever
   witness it.
-* The ``ProgressCancelled`` exception used by the background task submitted
+* The ``TaskCancelled`` exception used by the background task submitted
   via ``submit_progress`` is now public, in case that task needs to catch
   the exception.
 * The marshal_exception function has been fixed not to rely on the global

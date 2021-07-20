@@ -48,8 +48,10 @@ COMPLETE_VALID_SEQUENCES = {
     "SX",
     "CSR",
     "CSX",
+    "CSA",
     "SCR",
     "SCX",
+    "SCA",
     "CA",
 }
 

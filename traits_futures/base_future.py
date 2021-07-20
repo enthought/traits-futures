@@ -135,6 +135,13 @@ class _StateTransitionError(Exception):
     """
 
 
+class TaskCancelled(Exception):
+    """
+    Exception raised when progress reporting is interrupted by
+    task cancellation.
+    """
+
+
 @IFuture.register
 class BaseFuture(HasRequiredTraits):
     """
@@ -335,7 +342,10 @@ class BaseFuture(HasRequiredTraits):
         none : NoneType
             This parameter is unused.
         """
-        if self._internal_state == _CANCELLING_BEFORE_STARTED:
+        if self._internal_state in {
+            _CANCELLING_BEFORE_STARTED,
+            _CANCELLING_AFTER_STARTED,
+        }:
             self._cancel = None
             self._internal_state = _CANCELLED_ABANDONED
         else:
@@ -560,16 +570,15 @@ class BaseTask(abc.ABC):
         self.__cancelled = cancelled
         try:
             if cancelled():
-                send((ABANDONED, None))
-                return
-
+                raise TaskCancelled
             send((STARTED, None))
-            try:
-                result = self.run()
-            except BaseException as e:
-                send((RAISED, marshal_exception(e)))
-            else:
-                send((RETURNED, result))
+            result = self.run()
+        except TaskCancelled:
+            send((ABANDONED, None))
+        except BaseException as e:
+            send((RAISED, marshal_exception(e)))
+        else:
+            send((RETURNED, result))
         finally:
             del self.__cancelled
             del self.__send
