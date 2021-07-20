@@ -13,50 +13,162 @@
 Release 0.3.0
 -------------
 
-Release date: XXXX-XX-XX
+Release date: 2021-07-XX
 
 Features
 ~~~~~~~~
 
 * Multiprocessing support: the :class:`~.TraitsExecutor` can now submit
-  background tasks to a process pool instead of a thread pool. Note: since this
-  support has not yet been tested in the wild, this support is provisional -
-  the API and the capabilities may change in a future release. Feedback is
-  welcome!
+  background tasks to a process pool instead of a thread pool. Since this
+  support has not yet been tested in the wild, this support should be
+  considered provisional for now - the API and the capabilities may change in a
+  future release. Feedback is welcome!
+* wxPython support: Traits Futures now supports the wxPython event loop as well
+  as Qt-based toolkits.
+* asyncio support: the executor can make use of an asyncio event loop in place
+  of a GUI toolkit event loop. This is potentially useful in unit tests, and
+  when running headless.
+* Improved shutdown: there's a new :meth:`~.TraitsExecutor.shutdown` method,
+  suitable for use at process exit time, or in unit tests. This method is
+  blocking: it waits for tasks created by the executor to completed, and then
+  shuts down all resources associated with the executor.
+* Improved logging: there's now debug-level logging of key state changes
+  and interactions, to aid in post-mortem debugging.
 
-Backwards-incompatible changes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Changes
+~~~~~~~
 
-The following backwards-incompatible changes may affect advanced users
-of Traits Futures.
-
-* The ``send`` callable passed to the background task now expects a single
-  Python object as an argument, rather than accepting a message type and
-  a message argument as separate arguments. Existing uses of the form
-  ``send(message_type, message_args)`` will need to be changed to
-  ``send((message_type, message_args))``. This affects those writing their
-  own background task types, but does not affect users of the existing
-  background task types.
+* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
+  future is not cancellable. If a task has already completed, or has previously
+  been cancelled, calling ``cancel`` on the associated future does not change
+  the state of the future, and the call returns ``False``. Otherwise it changes
+  the future's state to ``CANCELLING``, requests cancellation of the associated
+  task, and returns ``True``.
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
   previously, it was writable.
-* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
-  future is not cancellable. Instead, it communicates the information via its
-  return value. If a future is already done, or has previously been cancelled,
-  calling ``cancel`` on that future does not change the state of the future,
-  and returns ``False``. Otherwise it changes the future's state to
-  ``CANCELLING`` state, requests cancellation of the associated task, and
-  returns ``True``.
-* The ``ITaskSpecification.background_task`` method has been renamed to
-  ``task``.
-* The ``ITaskSpecification.future`` method now requires a cancellation callback
-  to be passed.
+* The ``executor`` and ``callable`` arguments to the ``submit_call``,
+  ``submit_iteration`` and ``submit_progress`` convenience functions should
+  be considered positional-only, and should not be passed by name. This
+  restriction may be enforced in a future version of the library.
+* The string representation of the exception type created by
+  ``marshal_exception`` has been simplified: instead of appearing in the form
+  ``"<class 'traits.trait_errors.TraitError'>"``, it has the form
+  ``"traits.trait_errors.TraitError"``.
+* Tasks may now only be submitted to a ``~.TraitsExecutor`` on the main thread.
+* The ``traits_futures.toolkits`` setuptools entry point group used for
+  supplying custom toolkit support has been renamed to
+  ``traits_futures.event_loops``.
+* There are a number of backwards-incompatible changes to the machinery used
+  for creating custom task types and futures. The API for creating custom
+  task types should be considered provisional: it may change in future
+  releases. Notable changes include:
 
-Other Changes
+  * A new ``BaseTask`` abstract base class, which can be subclassed to create
+    custom background tasks. Those background tasks should override the
+    ``run`` method, which takes no arguments. The ``BaseTask`` provides
+    ``send`` and ``cancelled`` methods to send messages to the associated
+    future, and to check for cancellation requests.
+  * The ``ITaskSpecification.background_task`` method has been renamed to
+    ``task``.
+  * The ``ITaskSpecification.future`` method now requires a cancellation callback
+    to be passed.
+  * The ``IFuture`` interface has a new ``receive`` method which receives
+    messages from the background task.
+  * The ``IFuture`` interface is much smaller, containing only the ``receive``
+    and ``cancel`` methods.
+  * The ``BaseFuture`` has a new ``dispatch`` public method, which can be
+    overridden in subclasses in order to customize the dispatch of messages
+    received from the associated task. The default implementation dispatches to
+    methods named ``_process_<msgtype>``, as before.
+
+  See the documentation for more details on how to create custom task types.
+
+Fixes
+~~~~~
+
+* The message routing machinery will no longer block indefinitely in the
+  (hypothetical) event that no message exists to be retrieved on the message
+  queue. Instead, it will fail fast with a ``QueueError`` exception. This
+  situation should never happen in normal use; please report it if you ever
+  witness it.
+* The ``ProgressCancelled`` exception used by the background task submitted
+  via ``submit_progress`` is now public, in case that task needs to catch
+  the exception.
+* The marshal_exception function has been fixed not to rely on the global
+  ``sys.exception_info`` state.
+* A bogus "message" trait that never did anything has been removed from
+  ``IFuture``.
+* The cancellation callback supplied to a ``BaseFuture`` instance is now always
+  cleared when the future completes. Previously the ``BaseFuture`` object
+  would sometimes hold onto the reference to the cancellation callback.
+
+Continuous integration and build
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* The default GitHub branch has been renamed from "master" to "main".
+* Continuous integration has been migrated from Travis CI and Appveyor
+  to GitHub Actions. The per-commit tests are run on Linux and Windows, on
+  Python 3.6 and Python 3.8. There are several GitHub Actions workflows in
+  addition to the normal CI testing workflow (``run-tests.yml``):
+
+  * The ``build-docs.yml`` workflow provides automated documentation builds
+    deployed to https://docs.enthought.com/traits-futures/dev/index.html on
+    each PR merge to the main branch.
+  * The ``publish-on-pypi.yml`` workflow automatically uploads a wheel and
+    sdist to PyPI when a GitHub release is created.
+  * The ``test-docs.yml`` workflow performs a nitpicky documentation build
+    check on each commit to an open PR.
+  * The ``check-style.yml`` workflow performs style checks are using ``black``,
+    ``isort``, ``flake8`` and ``flake8-ets`` on each commit to an open PR.
+  * The ``weekly-scheduled-tests.yml`` workflow runs comprehensive tests on
+    a weekly basis, and reports success or failure back to a relevant Enthought
+    Slack channel.
+
+* The ``ci`` tool now supports ``-h`` for getting help.
+* Tests are always run under ``faulthandler``.
+* Example files are now included in the various style checks.
+
+Packaging changes
+~~~~~~~~~~~~~~~~~
+
+* Python 3.6 or later is now required.
+* Traits 6.2 or later is now required.
+* ``setuptools`` is no longer a runtime dependency.
+* The ``setup`` file now declares ``extras_require`` for additional
+  dependencies such as ``docs``, ``pyqt5`` and ``pyside2``.
+
+Test suite
+~~~~~~~~~~
+
+* The test suite now uses the ``asyncio`` event loop for the majority of
+  its tests. It uses the Qt or Wx event loop only for tests specific to
+  those toolkits.
+
+Documentation
 ~~~~~~~~~~~~~
 
-* Traits Futures now requires Traits 6.2.0 or later.
-* Python 3.5 is no longer supported. Traits Futures requires Python 3.6
-  or later.
+* New "overview" documentation section explaining why Traits Futures exists
+  and what problems it solves.
+* New documentation section on testing code that uses Traits Futures.
+* A "Read the Docs" configuration file has been added.
+* The changelog is now maintained as part of the documentation.
+* All examples are now part of the documentation.
+* All example scripts are downloadable from the documentation.
+* All examples now use the new ``observe`` machinery instead of
+  ``on_trait_change``.
+* The ``sphinx-apidoc`` autogeneration step is now run automatically as
+  part of the normal Sphinx build.
+* Sphinx 3.5 or later is now required to build the documentation.
+* Development information has been removed from ``README.rst``, and moved into
+  a separate ``DEVELOP.rst`` file.
+* Various Sphinx warnings from a combination of napoleon and autodoc have been
+  fixed, and the documentation now builds cleanly in "nitpicky" mode.
+* The example scripts displayed directly in the documentation no longer
+  include the copyright headers.
+* The autodoc templates are no longer missing a newline at EOF.
+* The ``pi_iterations`` example has been fixed to give correct counts.
+  Previously it was giving incorrect results as a result of NumPy integer
+  overflow.
 
 
 Release 0.2.0
