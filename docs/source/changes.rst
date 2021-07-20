@@ -33,7 +33,7 @@ Features
   blocking: it waits for tasks created by the executor to completed, and then
   shuts down all resources associated with the executor.
 * Improved logging: there's now debug-level logging of key state changes
-  and interactions, to aid in post-morten debugging.
+  and interactions, to aid in post-mortem debugging.
 
 Changes
 ~~~~~~~
