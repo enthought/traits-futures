@@ -24,7 +24,7 @@ Features
   considered provisional for now - the API and the capabilities may change in a
   future release. Feedback is welcome!
 * wxPython support: Traits Futures now supports the wxPython event loop as well
-  as Qt-based toolkits
+  as Qt-based toolkits.
 * asyncio support: the executor can make use of an asyncio event loop in place
   of a GUI toolkit event loop. This is potentially useful in unit tests, and
   when running headless.
