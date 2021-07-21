@@ -21,7 +21,7 @@ be cancelled.
 
 from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 
-from traits_futures.base_future import BaseFuture, BaseTask
+from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
 
 # Message types for messages from ProgressTask
@@ -30,13 +30,6 @@ from traits_futures.i_task_specification import ITaskSpecification
 #: Task sends progress. Argument is a single object giving progress
 #: information. This module does not interpret the contents of the argument.
 PROGRESS = "progress"
-
-
-class ProgressCancelled(Exception):
-    """
-    Exception raised when progress reporting is interrupted by
-    task cancellation.
-    """
 
 
 class ProgressReporter:
@@ -63,13 +56,13 @@ class ProgressReporter:
 
         Raises
         ------
-        ProgressCancelled
+        TaskCancelled
             If a cancellation request for this task has already been made.
             In this case, the exception will be raised before any progress
             information is sent.
         """
         if self.cancelled():
-            raise ProgressCancelled("Task was cancelled")
+            raise TaskCancelled("Task was cancelled")
         self.send(PROGRESS, progress_info)
 
 
@@ -94,7 +87,7 @@ class ProgressTask(BaseTask):
                 **self.kwargs,
                 progress=progress.report,
             )
-        except ProgressCancelled:
+        except TaskCancelled:
             return None
 
 

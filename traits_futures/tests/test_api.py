@@ -33,7 +33,6 @@ class TestApi(unittest.TestCase):
             IterationFuture,
             MultiprocessingContext,
             MultithreadingContext,
-            ProgressCancelled,
             ProgressFuture,
             RUNNING,
             STOPPED,
@@ -41,6 +40,7 @@ class TestApi(unittest.TestCase):
             submit_call,
             submit_iteration,
             submit_progress,
+            TaskCancelled,
             TraitsExecutor,
             WAITING,
         )

@@ -56,7 +56,7 @@ from |traits_futures.api|:
   "progress" parameter can then be called to send progress reports to the
   associated |ProgressFuture| object. If the future has been cancelled, the
   next call to ``progress`` in the background task will raise a
-  |ProgressCancelled| exception.
+  |TaskCancelled| exception.
 
   For example, your callable might look like this::
 
@@ -393,7 +393,7 @@ needed.
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
 .. |result_event| replace:: :attr:`~traits_futures.background_iteration.IterationFuture.result_event`
 
-.. |ProgressCancelled| replace:: :exc:`~traits_futures.background_progress.ProgressCancelled`
+.. |TaskCancelled| replace:: :exc:`~traits_futures.base_future.TaskCancelled`
 .. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
 .. |submit_progress| replace:: :func:`~traits_futures.background_progress.submit_progress`
 .. |progress| replace:: :attr:`~traits_futures.background_progress.ProgressFuture.progress`
