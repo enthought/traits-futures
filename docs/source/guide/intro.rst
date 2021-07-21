@@ -393,7 +393,7 @@ needed.
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
 .. |result_event| replace:: :attr:`~traits_futures.background_iteration.IterationFuture.result_event`
 
-.. |TaskCancelled| replace:: :exc:`~traits_futures.background_progress.TaskCancelled`
+.. |TaskCancelled| replace:: :exc:`~traits_futures.base_future.TaskCancelled`
 .. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
 .. |submit_progress| replace:: :func:`~traits_futures.background_progress.submit_progress`
 .. |progress| replace:: :attr:`~traits_futures.background_progress.ProgressFuture.progress`
