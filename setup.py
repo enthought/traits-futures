@@ -47,7 +47,6 @@ setup(
     keywords="background concurrency futures gui traits traitsui",
     install_requires=install_requires,
     extras_require={
-        "null": [],
         "pyqt5": ["pyqt5"],
         "pyside2": ["pyside2"],
         "docs": ["enthought-sphinx-theme", "sphinx>=3.5"],
