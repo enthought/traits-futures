@@ -83,7 +83,7 @@ class ProgressDialog(Dialog, HasStrictTraits):
             "Cancel", QtGui.QDialogButtonBox.RejectRole
         )
         self._cancel_button.setDefault(True)
-        buttons.rejected.connect(self.cancel, type=QtCore.Qt.QueuedConnection)
+        buttons.rejected.connect(self.cancel)
         return buttons
 
     def _create_message(self, dialog, layout):
