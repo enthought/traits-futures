@@ -103,7 +103,7 @@
 
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span><span class="p">,</span> <span class="n">BaseTask</span>
+<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span><span class="p">,</span> <span class="n">BaseTask</span><span class="p">,</span> <span class="n">TaskCancelled</span>
 <span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 <span class="c1"># Message types for messages from ProgressTask</span>
@@ -112,13 +112,6 @@
 <span class="c1">#: Task sends progress. Argument is a single object giving progress</span>
 <span class="c1">#: information. This module does not interpret the contents of the argument.</span>
 <span class="n">PROGRESS</span> <span class="o">=</span> <span class="s2">&quot;progress&quot;</span>
-
-
-<div class="viewcode-block" id="ProgressCancelled"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressCancelled">[docs]</a><span class="k">class</span> <span class="nc">ProgressCancelled</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exception raised when progress reporting is interrupted by</span>
-<span class="sd">    task cancellation.</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="ProgressReporter"><a class="viewcode-back" href="../../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter">[docs]</a><span class="k">class</span> <span class="nc">ProgressReporter</span><span class="p">:</span>
@@ -145,13 +138,13 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        ProgressCancelled</span>
+<span class="sd">        TaskCancelled</span>
 <span class="sd">            If a cancellation request for this task has already been made.</span>
 <span class="sd">            In this case, the exception will be raised before any progress</span>
 <span class="sd">            information is sent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">ProgressCancelled</span><span class="p">(</span><span class="s2">&quot;Task was cancelled&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TaskCancelled</span><span class="p">(</span><span class="s2">&quot;Task was cancelled&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">PROGRESS</span><span class="p">,</span> <span class="n">progress_info</span><span class="p">)</span></div></div>
 
 
@@ -176,7 +169,7 @@
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="o">.</span><span class="n">report</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">ProgressCancelled</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">TaskCancelled</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div></div>
 
 

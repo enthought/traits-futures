@@ -166,14 +166,6 @@ check whether cancellation has been requested.</p>
 information. This module does not interpret the contents of the argument.</p>
 </dd></dl>
 
-<dl class="py exception">
-<dt class="sig sig-object py" id="traits_futures.background_progress.ProgressCancelled">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressCancelled</span></span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressCancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressCancelled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
-<p>Exception raised when progress reporting is interrupted by
-task cancellation.</p>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.background_progress.ProgressFuture">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.background_progress.</span></span><span class="sig-name descname"><span class="pre">ProgressFuture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/background_progress.html#ProgressFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.background_progress.ProgressFuture" title="Permalink to this definition">¶</a></dt>
@@ -204,7 +196,7 @@ corresponding future’s <code class="docutils literal notranslate"><span class=
 should be immutable and pickleable.</p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference internal" href="#traits_futures.background_progress.ProgressCancelled" title="traits_futures.background_progress.ProgressCancelled"><strong>ProgressCancelled</strong></a> – If a cancellation request for this task has already been made.
+<dd class="field-even"><p><a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.TaskCancelled" title="traits_futures.base_future.TaskCancelled"><strong>TaskCancelled</strong></a> – If a cancellation request for this task has already been made.
     In this case, the exception will be raised before any progress
     information is sent.</p>
 </dd>

@@ -165,7 +165,7 @@ methods named <code class="docutils literal notranslate"><span class="pre">_proc
 queue. Instead, it will fail fast with a <code class="docutils literal notranslate"><span class="pre">QueueError</span></code> exception. This
 situation should never happen in normal use; please report it if you ever
 witness it.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">ProgressCancelled</span></code> exception used by the background task submitted
+<li><p>The <code class="docutils literal notranslate"><span class="pre">TaskCancelled</span></code> exception used by the background task submitted
 via <code class="docutils literal notranslate"><span class="pre">submit_progress</span></code> is now public, in case that task needs to catch
 the exception.</p></li>
 <li><p>The marshal_exception function has been fixed not to rely on the global
