@@ -125,6 +125,12 @@ _CANCELLABLE_INTERNAL_STATES = {
 }
 
 
+class TaskCancelled(Exception):
+    """
+    Exception raised within the background task on cancellation.
+    """
+
+
 class _StateTransitionError(Exception):
     """
     Exception used to indicate a bad state transition.
