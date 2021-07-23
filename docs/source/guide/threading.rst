@@ -17,7 +17,7 @@ Traits Futures eliminates some potential threading-related pitfalls, but by no
 means all of them. When using Traits Futures it's still important to have a
 good understanding of general concurrency and threading-related issues
 (deadlocks, race conditions, and so on). This section gives some
-recommendations to consider. Most of these recommendations are not specific to
+things to consider. Most of these recommendations are not specific to
 Traits Futures, but apply more generally any time that you're writing
 concurrent (and especially multithreaded) code.
 
@@ -33,9 +33,9 @@ concurrent (and especially multithreaded) code.
 -   **Avoid making blocking waits on the main thread.**
     To keep a running GUI responsive, avoid doing anything on the main thread
     that will block for more than a small amount of time (say 0.1 seconds).
-    When possible, set up your code to make asynchronous calls and react to the
-    results of those calls, rather than making synchronous blocking calls on
-    the main thread. In brief: reacting is preferable to polling; polling is
+    Where possible, set up your code to make asynchronous calls and react to
+    the results of those calls, rather than making synchronous blocking calls
+    on the main thread. In brief: reacting is preferable to polling; polling is
     preferable to blocking. (This is one of the key design principles behind
     Traits Futures.)
 
@@ -115,8 +115,9 @@ concurrent (and especially multithreaded) code.
     copy to pass to the background task. That way the background task doesn't
     have to worry about those data changing while it's running.
 
--   **Beware Traits defaults!** When writing Traits-based code, it's common to
-    make use of lazy instantiation and defaults. For example::
+-   **Beware Traits defaults!** Idiomatic Traits-based code makes
+    frequent use of lazy instantiation and defaults. For example, if your
+    Traits class needed lock, you might consider writing code like this::
 
         class MyModel(HasStrictTraits):
             #: Some lock used to protect shared state.
@@ -132,16 +133,16 @@ concurrent (and especially multithreaded) code.
                 with self.results_lock:
                     results[id] = result
 
-    This is dangerous: the ``_results_lock_default`` method will be invoked
+    But this is dangerous! The ``_results_lock_default`` method will be invoked
     lazily on first use, and can be invoked simultaneously (or
     near-simultaneously) on two different threads. We then temporarily have two
-    different locks, allowing ``results`` to be simultaneously accessed by
-    multiple threads.
+    different locks, allowing ``results`` to be simultaneously accessed from
+    multiple threads and defeating the point of the lock.
 
-    In this case, it's better to create the ``results_lock`` explicitly when
-    ``MyModel`` is instantiated (e.g., by adding an ``__init__`` method).
-    Better still, rework the design to avoid needing to share ``results``
-    between multiple threads in the first place.
+    In this case, it's better to create the ``results_lock`` explicitly in the
+    main thread when ``MyModel`` is instantiated (e.g., by adding an
+    ``__init__`` method). Better still, rework the design to avoid needing to
+    share ``results`` between multiple threads in the first place.
 
 -   **Have a clear, documented thread-ownership model.** The organization and
     documentation of your code should make it clear which pieces of code are
@@ -150,8 +151,8 @@ concurrent (and especially multithreaded) code.
     code are required to be thread-safe. Ideally, the portion of the codebase
     that needs to be thread-safe should be small, isolated, and clearly
     identifiable. (Writing, reasoning about, maintaining and testing
-    thread-safe code is *hard*. We want to do as little of it as we possibly
-    can.)
+    thread-safe code is difficult and error-prone. We want to do as little of
+    it as we possibly can.)
 
 -   **Keep task-coordination logic in the main thread.** Sometimes you want to
     execute additional tasks depending on the results of an earlier task. In
