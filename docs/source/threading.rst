@@ -151,5 +151,5 @@ concurrent (and especially multithreaded) code.
     executors.
 
 - **Use thread pools.** Use thread pools in preference to creating your own
-    worker threads. This makes it easy to shut down, and to avoid an explosion
-    of Python threads (see the last two items).
+    worker threads. This makes it easy to shut down worker threads, and to
+    avoid an explosion of Python threads (see the last two items).
