@@ -120,32 +120,33 @@ concurrent (and especially multithreaded) code.
 
 -   **Beware Traits defaults!** Idiomatic Traits-based code makes
     frequent use of lazy instantiation and defaults. For example, if your
-    Traits class needed lock, you might consider writing code like this::
+    ``HasTraits`` class needs a lock to protect some piece of shared state, you
+    might consider writing code like this::
 
         class MyModel(HasStrictTraits):
-            #: Some lock used to protect shared state.
-            results_lock = Any()
-
             #: State shared by multiple threads
-            results = Dict(Str, AnalysisResult)
+            _results = Dict(Str, AnalysisResult)
 
-            def _results_lock_default(self):
+            #: Lock used to protect access to results
+            _results_lock = Any()
+
+            def __results_lock_default(self):
                 return threading.Lock()
 
-            def add_result(self, id, result):
+            def add_result(self, experiment_id, analysis_result):
                 with self.results_lock:
-                    results[id] = result
+                    self._results[experiment_id] = analysis_result
 
-    But this is dangerous! The ``_results_lock_default`` method will be invoked
-    lazily on first use, and can be invoked simultaneously (or
+    But this is dangerous! The ``__results_lock_default`` method will be
+    invoked lazily on first use, and can be invoked simultaneously (or
     near-simultaneously) on two different threads. We then temporarily have two
-    different locks, allowing ``results`` to be simultaneously accessed from
+    different locks, allowing ``_results`` to be simultaneously accessed from
     multiple threads and defeating the point of the lock.
 
-    In this case, it's better to create the ``results_lock`` explicitly in the
+    In this case, it's better to create the ``_results_lock`` explicitly in the
     main thread when ``MyModel`` is instantiated (e.g., by adding an
     ``__init__`` method). Better still, rework the design to avoid needing to
-    share ``results`` between multiple threads in the first place.
+    access ``_results`` from multiple threads in the first place.
 
 -   **Have a clear, documented thread-ownership model.** The organization and
     documentation of your code should make it clear which pieces of code are
