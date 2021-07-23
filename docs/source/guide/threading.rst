@@ -30,6 +30,9 @@ concurrent (and especially multithreaded) code.
     TraitsUI editors work make it easy to *accidentally* make a change that
     triggers a GUI update from a worker thread.
 
+    See |threads_and_qobjects| for some information about the constraints
+    and expectations of multithreaded Qt-using code.
+
 -   **Avoid making blocking waits on the main thread.**
     To keep a running GUI responsive, avoid doing anything on the main thread
     that will block for more than a small amount of time (say 0.1 seconds).
@@ -182,3 +185,10 @@ concurrent (and especially multithreaded) code.
 -   **Use thread pools.** Use thread pools in preference to creating your own
     worker threads. This makes it easy to shut down worker threads, and to
     avoid an explosion of Python threads (see the last two items).
+
+
+..
+    substitutions
+
+
+.. |threads_and_qobjects| replace:: `Threads and QObjects <https://doc.qt.io/qt-5/threads-qobject.html>`__
