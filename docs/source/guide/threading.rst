@@ -71,7 +71,10 @@ concurrent (and especially multithreaded) code.
                 ...
 
             def do_square(self):
-                return self.input**2
+                # BAD: the return value might not even be a square, if the
+                # value of self.input changes between the first attribute
+                # access and the second.
+                return self.input * self.input
 
     Better::
 
@@ -80,11 +83,29 @@ concurrent (and especially multithreaded) code.
             input = Int()
 
             def submit_background_task(self):
+                future = submit_call(self.traits_executor, self.do_square)
+                ...
+
+            def do_square(self):
+                # Only access self.input once, and cache and re-use the result
+                # of that access.
+                input = self.input
+                return input * input
+
+    Best::
+
+        class SomeView(HasStrictTraits):
+
+            input = Int()
+
+            def submit_background_task(self):
+                # Do the attribute access in the main thread; pass the result
+                # of that access to the worker.
                 future = submit_call(self.traits_executor, self.do_square, self.input)
                 ...
 
             def do_square(self, input):
-                return input**2
+                return input*input
 
 -   **Make copies of mutable data.** This is a generalization of the previous
     recommendation. If a background task depends on mutable data (for example,
