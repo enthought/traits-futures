@@ -92,6 +92,35 @@ concurrent (and especially multithreaded) code.
     copy to pass to the background task. That way the background task doesn't
     have to worry about those data changing while it's running.
 
+- **Beware Traits defaults!** When writing Traits-based code, it's common to
+    make use of lazy instantiation and defaults. For example::
+
+        class MyModel(HasStrictTraits):
+            #: Some lock used to protect shared state.
+            results_lock = Any()
+
+            #: State shared by multiple threads
+            results = Dict(Str, AnalysisResult)
+
+            def _results_lock_default(self):
+                return threading.Lock()
+
+            def add_result(self, id, result):
+                with self.results_lock:
+                    results[id] = result
+
+    This is dangerous: the ``_results_lock_default`` method will be invoked
+    lazily on first use, and can be invoked simultaneously (or
+    near-simultaneously) on two different threads. We then temporarily have two
+    different locks, allowing ``results`` to be simultaneously accessed by
+    multiple threads.
+
+    In this case, it's better to create the ``results_lock`` explicitly when
+    ``MyModel`` is instantiated (e.g., by adding an ``__init__`` method).
+    Better still, rework the design to avoid needing to share ``results``
+    between multiple threads in the first place. Traits Futures can help with
+    that!
+
 - **Have a clear, documented thread-ownership model.** The organization and
     documentation of your code should make it clear which pieces of code are
     intended for possible execution by a worker thread, which pieces of code
