@@ -134,7 +134,7 @@ concurrent (and especially multithreaded) code.
                 return threading.Lock()
 
             def add_result(self, experiment_id, analysis_result):
-                with self.results_lock:
+                with self._results_lock:
                     self._results[experiment_id] = analysis_result
 
     But this is dangerous! The ``__results_lock_default`` method will be
