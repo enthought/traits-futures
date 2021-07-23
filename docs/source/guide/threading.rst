@@ -22,22 +22,24 @@ Traits Futures, but apply more generally any time that you're writing
 concurrent (and especially multithreaded) code.
 
 -   **Never execute GUI code off the main thread.** With a few documented
-    exceptions, most GUI objects should not be manipulated off the main thread.
-    For example, a call to ``QLabel.setText`` that occurs on a worker thread
-    may cause a crash or traceback, or may be completely fine until your
-    application is deployed on a customer's machine. The main thing to be aware
-    of here is that with Traits and TraitsUI, it's very easy to *accidentally*
-    make a change that triggers a GUI update off the main thread.
+    exceptions, most GUI objects should only ever be manipulated on the main
+    thread. For example, a call to ``QLabel.setText`` that occurs on a worker
+    thread may cause a crash or traceback, or may be completely fine until your
+    application is deployed on a customer's machine. It's important to be aware
+    that the Traits observation mechanisms together with the way that most
+    TraitsUI editors work make it easy to *accidentally* make a change that
+    triggers a GUI update from a worker thread.
 
--   **Whenever possible, avoid making blocking waits on the main thread.**
-    Within a running GUI, to keep the GUI responsive you want to avoid doing
-    anything on the main thread that will block for more than a small amount of
-    time (say 0.1 seconds). When possible, set up your code to react rather
-    than blocking (this is a large part of the principle behind the design of
-    Traits Futures). Reacting is preferable to polling; polling is preferable
-    to blocking.
+-   **Avoid making blocking waits on the main thread.**
+    To keep a running GUI responsive, avoid doing anything on the main thread
+    that will block for more than a small amount of time (say 0.1 seconds).
+    When possible, set up your code to make asynchronous calls and react to the
+    results of those calls, rather than making synchronous blocking calls on
+    the main thread. In brief: reacting is preferable to polling; polling is
+    preferable to blocking. (This is one of the key design principles behind
+    Traits Futures.)
 
--   **Where possible, include a timeout in blocking calls.** If you're making
+-   **Include a timeout in blocking calls.** If you're making
     a blocking wait call, consider including a timeout to avoid the possibility
     of that blocking wait blocking forever. If you're exposing potentially
     blocking calls to others in your own API, provide a timeout parameter that
@@ -50,7 +52,7 @@ concurrent (and especially multithreaded) code.
     worker thread will trigger those listeners on the same thread, meaning that
     those listeners will have to be thread-safe. In general, people writing
     listeners for a public trait don't expect to have to make their listener
-    thread-safe. Writing to a public trait from a worker thread is a very
+    thread-safe. Writing to a public trait from a worker thread is a
     common cause of making accidental GUI updates from a worker thread.
 
 -   **Avoid reads from public traits on worker threads.** If there's any chance
@@ -139,8 +141,7 @@ concurrent (and especially multithreaded) code.
     In this case, it's better to create the ``results_lock`` explicitly when
     ``MyModel`` is instantiated (e.g., by adding an ``__init__`` method).
     Better still, rework the design to avoid needing to share ``results``
-    between multiple threads in the first place. Traits Futures can help with
-    that!
+    between multiple threads in the first place.
 
 -   **Have a clear, documented thread-ownership model.** The organization and
     documentation of your code should make it clear which pieces of code are
@@ -148,8 +149,9 @@ concurrent (and especially multithreaded) code.
     might be executed simultaneously by multiple threads, and which pieces of
     code are required to be thread-safe. Ideally, the portion of the codebase
     that needs to be thread-safe should be small, isolated, and clearly
-    identifiable. (Writing, reasoning about, and testing thread-safe code is
-    *hard*).
+    identifiable. (Writing, reasoning about, maintaining and testing
+    thread-safe code is *hard*. We want to do as little of it as we possibly
+    can.)
 
 -   **Keep task-coordination logic in the main thread.** Sometimes you want to
     execute additional tasks depending on the results of an earlier task. In
@@ -163,13 +165,18 @@ concurrent (and especially multithreaded) code.
 
 -   **Avoid having too many Python threads.** Python 3's GIL logic can have
     limiting effects when there are too many Python threads, in some cases
-    causing non-CPU-bound threads not to have a chance to run at all. Where
-    possible, avoid
+    causing non-CPU-bound threads not to have a chance to run at all. Avoid
+    creating too many Python threads in your process. The reasonable upper
+    bound will be context dependent, but as a rule of thumb, if you have more
+    than 20 Python threads, consider whether there's a way of reducing the
+    total number.
 
--   **Always join your threads.** At application shutdown time, or on exit from a
-    script, or in a test's ``tearDown`` method, explicitly join any threads
-    that you create directly. Similarly, explicitly shut down worker pools and
-    executors.
+-   **Always join your threads.** At application shutdown time, or on exit from
+    a script, or in a test's ``tearDown`` method, explicitly join any threads
+    that you created directly. Similarly, explicitly shut down worker pools and
+    executors. Clean shutdown helps to avoid odd side-effects at Python process
+    exit time, and to avoid hard-to-debug interactions between tests in a test
+    suite.
 
 -   **Use thread pools.** Use thread pools in preference to creating your own
     worker threads. This makes it easy to shut down worker threads, and to
