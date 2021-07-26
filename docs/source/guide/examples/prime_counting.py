@@ -56,9 +56,10 @@ class ProgressDialog(Dialog, HasStrictTraits):
         """
         Cancel the running future when the cancel button is pressed.
         """
-        self.future.cancel()
         self._cancel_button.setEnabled(False)
-        self.message = "Cancelling\N{HORIZONTAL ELLIPSIS}"
+        cancelled = self.future.cancel()
+        if cancelled:
+            self.message = "Cancelling\N{HORIZONTAL ELLIPSIS}"
 
     # Private traits ##########################################################
 
@@ -83,7 +84,7 @@ class ProgressDialog(Dialog, HasStrictTraits):
             "Cancel", QtGui.QDialogButtonBox.RejectRole
         )
         self._cancel_button.setDefault(True)
-        buttons.rejected.connect(self.cancel)
+        buttons.rejected.connect(self.cancel, type=QtCore.Qt.QueuedConnection)
         return buttons
 
     def _create_message(self, dialog, layout):
@@ -127,7 +128,6 @@ class ProgressDialog(Dialog, HasStrictTraits):
 
     @observe("future:done")
     def _respond_to_completion(self, event):
-        self.future = None
         self.close()
 
 
