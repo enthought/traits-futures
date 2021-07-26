@@ -169,6 +169,8 @@ Documentation
 * The ``pi_iterations`` example has been fixed to give correct counts.
   Previously it was giving incorrect results as a result of NumPy integer
   overflow.
+* The ``prime_counting`` example has been fixed to avoid an occasional
+  ``AttributeError`` under unusual timing conditions.
 
 
 Release 0.2.0
