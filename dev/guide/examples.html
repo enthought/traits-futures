@@ -340,9 +340,10 @@ GUI as the background computation progresses.</p>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the running future when the cancel button is pressed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelling</span><span class="se">\N{HORIZONTAL ELLIPSIS}</span><span class="s2">&quot;</span>
+        <span class="n">cancelled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cancelled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelling</span><span class="se">\N{HORIZONTAL ELLIPSIS}</span><span class="s2">&quot;</span>
 
     <span class="c1"># Private traits ##########################################################</span>
 
@@ -367,7 +368,7 @@ GUI as the background computation progresses.</p>
             <span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">RejectRole</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_button</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">buttons</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">)</span>
+        <span class="n">buttons</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">QueuedConnection</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">buttons</span>
 
     <span class="k">def</span> <span class="nf">_create_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
@@ -411,7 +412,6 @@ GUI as the background computation progresses.</p>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_respond_to_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
