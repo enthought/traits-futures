@@ -15,6 +15,35 @@ Release 0.3.0
 
 Release date: 2021-07-XX
 
+This is a feature release of Traits Futures, with a some minor backwards
+incompatible changes that users should be aware of. New features include
+multiprocessing support, wxPython support, support for delivering events using
+an |asyncio| event loop in place of a GUI toolkit event loop, and better
+support for synchronous executor shutdown.
+
+Migrating to Traits Futures 0.3.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The majority of existing code using Traits Futures 0.2.0 should continue to
+work with Traits Futures 0.3.0 with no changes. However, there are some minor
+changes that could affect current code:
+
+* The |cancel| method on a future no longer raise a |RuntimeError| exception
+  when a future is not cancellable; instead, it silently does nothing. Code
+  that needs to distinguish can use the new return value of the ``cancel``
+  method to determine whether the ``cancel`` call actually caused cancellation
+  to occur.
+* The |state| trait of a |TraitsExecutor| is no longer writable.
+* The ``executor`` and ``callable`` parameters to the ``submit_call``,
+  ``submit_iteration`` and ``submit_progress`` functions may become
+  positional-only in a future version of Traits Futures. If you're passing
+  arguments by name instead of by position (for example using
+  ``submit_call(executor=my_executor, callable=do_calculation, ...)``), you
+  should fix your code to pass by position: ``submit_call(my_executor,
+  do_calculation, ...)``.
+
+A detailed list of changes follows.
+
 Features
 ~~~~~~~~
 
@@ -22,7 +51,7 @@ Features
   background tasks to a process pool instead of a thread pool. Since this
   support has not yet been tested in the wild, this support should be
   considered provisional for now - the API and the capabilities may change in a
-  future release. Feedback is welcome!
+  future release. Feedback is welcome! (#387)
 * wxPython support: Traits Futures now supports the wxPython event loop as well
   as Qt-based toolkits.
 * asyncio support: the executor can make use of an asyncio event loop in place
@@ -31,9 +60,9 @@ Features
 * Improved shutdown: there's a new :meth:`~.TraitsExecutor.shutdown` method,
   suitable for use at process exit time, or in unit tests. This method is
   blocking: it waits for tasks created by the executor to completed, and then
-  shuts down all resources associated with the executor.
+  shuts down all resources associated with the executor. (#419, #395, #380, #378, #334)
 * Improved logging: there's now debug-level logging of key state changes
-  and interactions, to aid in post-mortem debugging.
+  and interactions, to aid in post-mortem debugging. (#296, #293)
 
 Changes
 ~~~~~~~
@@ -43,18 +72,20 @@ Changes
   been cancelled, calling ``cancel`` on the associated future does not change
   the state of the future, and the call returns ``False``. Otherwise it changes
   the future's state to ``CANCELLING``, requests cancellation of the associated
-  task, and returns ``True``.
+  task, and returns ``True``. (#420)
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
   previously, it was writable.
 * The ``executor`` and ``callable`` arguments to the ``submit_call``,
   ``submit_iteration`` and ``submit_progress`` convenience functions should
   be considered positional-only, and should not be passed by name. This
-  restriction may be enforced in a future version of the library.
+  restriction may be enforced in a future version of the library. (#409)
 * The string representation of the exception type created by
   ``marshal_exception`` has been simplified: instead of appearing in the form
   ``"<class 'traits.trait_errors.TraitError'>"``, it has the form
-  ``"traits.trait_errors.TraitError"``.
+  ``"traits.trait_errors.TraitError"``. (#391)
 * Tasks may now only be submitted to a ``~.TraitsExecutor`` on the main thread.
+  An attempt to submit a task from a thread other than the main thread will
+  raise |RuntimeError|. (#305)
 * The ``traits_futures.toolkits`` setuptools entry point group used for
   supplying custom toolkit support has been renamed to
   ``traits_futures.event_loops``.
@@ -63,25 +94,32 @@ Changes
   task types should be considered provisional: it may change in future
   releases. Notable changes include:
 
-  * A new ``BaseTask`` abstract base class, which can be subclassed to create
+  * A new |BaseTask| abstract base class, which can be subclassed to create
     custom background tasks. Those background tasks should override the
-    ``run`` method, which takes no arguments. The ``BaseTask`` provides
+    ``run`` method, which takes no arguments. The |BaseTask| provides
     ``send`` and ``cancelled`` methods to send messages to the associated
-    future, and to check for cancellation requests.
+    future, and to check for cancellation requests. (#435, #426)
   * The ``ITaskSpecification.background_task`` method has been renamed to
-    ``task``.
+    ``task``. (#425)
   * The ``ITaskSpecification.future`` method now requires a cancellation callback
     to be passed.
   * The ``IFuture`` interface has a new ``receive`` method which receives
     messages from the background task.
   * The ``IFuture`` interface is much smaller, containing only the ``receive``
-    and ``cancel`` methods.
+    and ``cancel`` methods. (#431, #436, #428)
   * The ``BaseFuture`` has a new ``dispatch`` public method, which can be
     overridden in subclasses in order to customize the dispatch of messages
     received from the associated task. The default implementation dispatches to
-    methods named ``_process_<msgtype>``, as before.
+    methods named ``_process_<msgtype>``, as before. (#427)
 
   See the documentation for more details on how to create custom task types.
+* The toolkit / event-loop contribution machinery has been significantly
+  reworked. New event loop types can be contributed to the
+  "traits_futures.event_loops" setuptools entry point. The old
+  "traits_futures.toolkits" entry point has been removed. The interface for
+  contributing new event loops is currently undocumented and should be
+  considered experimental: the API may change in future releases. (#298, #300)
+
 
 Fixes
 ~~~~~
@@ -90,14 +128,14 @@ Fixes
   (hypothetical) event that no message exists to be retrieved on the message
   queue. Instead, it will fail fast with a ``QueueError`` exception. This
   situation should never happen in normal use; please report it if you ever
-  witness it.
-* The ``TaskCancelled`` exception used by the background task submitted
-  via ``submit_progress`` is now public, in case that task needs to catch
-  the exception.
-* The marshal_exception function has been fixed not to rely on the global
+  witness it. (#413)
+* The |TaskCancelled| exception used by the background task submitted
+  via |submit_progress| is now public and exposed in |traits_futures.api|, in
+  case that task needs to catch the exception. (#449, #319)
+* The |marshal_exception| function has been fixed not to rely on the global
   ``sys.exception_info`` state.
-* A bogus "message" trait that never did anything has been removed from
-  ``IFuture``.
+* A spurious "message" trait that never did anything has been removed from
+  |IFuture|. (#394)
 * The cancellation callback supplied to a ``BaseFuture`` instance is now always
   cleared when the future completes. Previously the ``BaseFuture`` object
   would sometimes hold onto the reference to the cancellation callback.
@@ -115,62 +153,90 @@ Continuous integration and build
     deployed to https://docs.enthought.com/traits-futures/dev/index.html on
     each PR merge to the main branch.
   * The ``publish-on-pypi.yml`` workflow automatically uploads a wheel and
-    sdist to PyPI when a GitHub release is created.
+    sdist to PyPI when a GitHub release is created. (#439)
   * The ``test-docs.yml`` workflow performs a nitpicky documentation build
     check on each commit to an open PR.
   * The ``check-style.yml`` workflow performs style checks are using ``black``,
-    ``isort``, ``flake8`` and ``flake8-ets`` on each commit to an open PR.
+    ``isort``, ``flake8`` and ``flake8-ets`` on each commit to an open PR. (#416)
   * The ``weekly-scheduled-tests.yml`` workflow runs comprehensive tests on
     a weekly basis, and reports success or failure back to a relevant Enthought
-    Slack channel.
+    Slack channel. (#410, #303, #297)
 
 * The ``ci`` tool now supports ``-h`` for getting help.
-* Tests are always run under ``faulthandler``.
-* Example files are now included in the various style checks.
+* Tests are always run under ``faulthandler``. (#337)
+* All example scripts except one are now subject to style checking. (#374)
+* Miscellanous minor build changes and fixes. (#408, #368)
+
 
 Packaging changes
 ~~~~~~~~~~~~~~~~~
 
 * Python 3.6 or later is now required.
 * Traits 6.2 or later is now required.
-* ``setuptools`` is no longer a runtime dependency.
+* The ``setuptools`` package is no longer a runtime dependency.
 * The ``setup`` file now declares ``extras_require`` for additional
-  dependencies such as ``docs``, ``pyqt5`` and ``pyside2``.
+  dependencies such as ``docs``, ``pyqt5`` and ``pyside2``. (#451)
 
-Test suite
-~~~~~~~~~~
+Tests
+~~~~~
 
-* The test suite now uses the ``asyncio`` event loop for the majority of
+* The test suite now uses the |asyncio| event loop for the majority of
   its tests. It uses the Qt or Wx event loop only for tests specific to
-  those toolkits.
+  those toolkits. (#321, #319, #315)
+* Most tests now use the new |shutdown| method for executor shutdown. (#386)
+* The ``GuiTestAssistant`` has been renamed to ``TestAssistant``, to avoid
+  confusion with Pyface's ``GuiTestAssistant``. This class is not yet part
+  of the Traits Futures API, and users should avoid depending on it. (#388)
+* The ``TestAssistant`` is no longer toolkit-specific; the toolkit-specific
+  component has been pulled into a new ``EventLoopHelper`` class. (#307)
+* New ``TestAssistant.exercise_event_loop`` method. (#377)
+* Improve testing for the case of an externally-supplied worker pool. (#343)
 
 Documentation
 ~~~~~~~~~~~~~
 
 * New "overview" documentation section explaining why Traits Futures exists
-  and what problems it solves.
+  and what problems it solves. (#325, #327)
 * New documentation section on testing code that uses Traits Futures.
-* A "Read the Docs" configuration file has been added.
-* The changelog is now maintained as part of the documentation.
-* All examples are now part of the documentation.
-* All example scripts are downloadable from the documentation.
+* A "Read the Docs" configuration file has been added. (#411)
+* The changelog is now maintained as part of the documentation. (#447, #363, #350)
+* All examples are now part of the documentation. (#355)
+* All example scripts are downloadable from the documentation. (#353)
 * All examples now use the new ``observe`` machinery instead of
-  ``on_trait_change``.
+  ``on_trait_change``. (#441, #371, #370)
+* All examples have been updated to use the new |shutdown| method. (#385, #423)
 * The ``sphinx-apidoc`` autogeneration step is now run automatically as
-  part of the normal Sphinx build.
-* Sphinx 3.5 or later is now required to build the documentation.
+  part of the normal Sphinx build. (#348)
+* Sphinx 3.5 or later is now required to build the documentation. (#357)
 * Development information has been removed from ``README.rst``, and moved into
-  a separate ``DEVELOP.rst`` file.
+  a separate ``DEVELOP.rst`` file. (#352)
 * Various Sphinx warnings from a combination of napoleon and autodoc have been
-  fixed, and the documentation now builds cleanly in "nitpicky" mode.
+  fixed, and the documentation now builds cleanly in "nitpicky" mode. (#429,
+  #430, #424, #422, #400, #406, #405, #404, #403, #402, #401)
 * The example scripts displayed directly in the documentation no longer
-  include the copyright headers.
+  include the copyright headers. (#326)
 * The autodoc templates are no longer missing a newline at EOF.
 * The ``pi_iterations`` example has been fixed to give correct counts.
   Previously it was giving incorrect results as a result of NumPy integer
   overflow.
 * The ``prime_counting`` example has been fixed to avoid an occasional
-  ``AttributeError`` under unusual timing conditions.
+  |AttributeError| under unusual timing conditions. (#450)
+* Miscellaneous cleanups and minor fixes. (#421)
+
+Internal refactoring
+~~~~~~~~~~~~~~~~~~~~
+
+* Significant internal refactoring to better decouple the toolkit
+  implementation from the message routing, to decouple the future
+  implementation from the executor, and to make toolkit selection easier.
+  (#414, #396, #392, #381, #382, #364, #362, #360, #344, #332, #331, #322,
+  #314, #312, #306)
+* The "GUI context" notion and naming has been replaced with "event loop"
+  throughout. (#365)
+* Other minor fixes and non-user-facing changes. (#415, #390, #397, #393,
+  #389, #384, #376, #372, #373, #361, #347, #349, #346, #342, #338, #336, #335,
+  #330, #323, #309, #308)
+
 
 
 Release 0.2.0
