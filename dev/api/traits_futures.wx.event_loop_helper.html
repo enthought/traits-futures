@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>traits_futures.wx.event_loop_helper module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -91,29 +87,29 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.wx.event_loop_helper">
+  <div class="section" id="module-traits_futures.wx.event_loop_helper">
 <span id="traits-futures-wx-event-loop-helper-module"></span><h1>traits_futures.wx.event_loop_helper module<a class="headerlink" href="#module-traits_futures.wx.event_loop_helper" title="Permalink to this headline">¶</a></h1>
 <p>Test support, providing the ability to run the event loop from tests.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.AppForTesting">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">AppForTesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">wx.wx.App._name</span></code></p>
+<dt id="traits_futures.wx.event_loop_helper.AppForTesting">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">AppForTesting</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
 <p>Subclass of wx.App used for testing.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.AppForTesting.OnInit">
-<span class="sig-name descname"><span class="pre">OnInit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting.OnInit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting.OnInit" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.AppForTesting.OnInit">
+<code class="sig-name descname"><span class="pre">OnInit</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting.OnInit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting.OnInit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override base class to ensure we have at least one window.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.AppForTesting.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting.close" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.AppForTesting.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up when the object is no longer needed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.AppForTesting.exit">
-<span class="sig-name descname"><span class="pre">exit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exit_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting.exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting.exit" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.AppForTesting.exit">
+<code class="sig-name descname"><span class="pre">exit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exit_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AppForTesting.exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AppForTesting.exit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exit the application main event loop with a given exit code.</p>
 <p>The event loop can be started and stopped several times for
 a single AppForTesting object.</p>
@@ -122,33 +118,33 @@ a single AppForTesting object.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.AttributeSetter">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">AttributeSetter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AttributeSetter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AttributeSetter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">wx.wx.EvtHandler._name</span></code></p>
+<dt id="traits_futures.wx.event_loop_helper.AttributeSetter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">AttributeSetter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#AttributeSetter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.AttributeSetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
 <p>Event handler that allows us to set object attributes from with
 a running event loop.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.EventLoopHelper">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">EventLoopHelper</span></span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.EventLoopHelper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">EventLoopHelper</span></code><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Support for running the wx event loop in unit tests.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">
-<span class="sig-name descname"><span class="pre">dispose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">
+<code class="sig-name descname"><span class="pre">dispose</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dispose of any resources used by this object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.EventLoopHelper.init">
-<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.init" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.EventLoopHelper.init">
+<code class="sig-name descname"><span class="pre">init</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare the event loop for use.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.EventLoopHelper.run_until">
-<span class="sig-name descname"><span class="pre">run_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.run_until" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.EventLoopHelper.run_until">
+<code class="sig-name descname"><span class="pre">run_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.run_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run event loop until the given condition holds true, or until timeout.</p>
 <p>The condition is re-evaluated, with the object as argument, every time
 the trait changes.</p>
@@ -170,8 +166,8 @@ called with <em>object</em> as the only input.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon">
-<span class="sig-name descname"><span class="pre">setattr_soon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.setattr_soon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon">
+<code class="sig-name descname"><span class="pre">setattr_soon</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper.setattr_soon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arrange for an attribute to be set once the event loop is running.</p>
 <p>In typical usage, <em>obj</em> will be a <code class="docutils literal notranslate"><span class="pre">HasTraits</span></code> instance and
 <em>name</em> will be the name of a trait on <em>obj</em>.</p>
@@ -192,9 +188,9 @@ a traited attribute.</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.TimeoutTimer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">TimeoutTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">wx.wx.Timer._name</span></code></p>
+<dt id="traits_futures.wx.event_loop_helper.TimeoutTimer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">TimeoutTimer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
 <p>Single-shot timer that executes a given callback on completion.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -210,27 +206,27 @@ provided, no keyword arguments are passed.</p></li>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.TimeoutTimer.Notify">
-<span class="sig-name descname"><span class="pre">Notify</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer.Notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer.Notify" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.TimeoutTimer.Notify">
+<code class="sig-name descname"><span class="pre">Notify</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer.Notify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer.Notify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the callback when the timer completes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.TimeoutTimer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer.start" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.TimeoutTimer.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start the timer.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.wx.event_loop_helper.TimeoutTimer.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wx.event_loop_helper.TimeoutTimer.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#TimeoutTimer.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.TimeoutTimer.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop the timer if it hasn’t already expired. The callback
 will not be executed.</p>
 </dd></dl>
 
 </dd></dl>
 
-</section>
+</div>
 
 
           </div>
@@ -256,7 +252,7 @@ will not be executed.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -281,7 +277,7 @@ will not be executed.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

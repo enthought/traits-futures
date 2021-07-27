@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>traits_futures.executor_states module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -90,35 +86,35 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.executor_states">
+  <div class="section" id="module-traits_futures.executor_states">
 <span id="traits-futures-executor-states-module"></span><h1>traits_futures.executor_states module<a class="headerlink" href="#module-traits_futures.executor_states" title="Permalink to this headline">¶</a></h1>
 <p>User-facing states for the TraitsExecutor.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.executor_states.ExecutorState">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></span><span class="sig-name descname"><span class="pre">ExecutorState</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Enum(RUNNING,</span> <span class="pre">STOPPING,</span> <span class="pre">STOPPED)</span></em><a class="headerlink" href="#traits_futures.executor_states.ExecutorState" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.executor_states.ExecutorState">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></code><code class="sig-name descname"><span class="pre">ExecutorState</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Enum(RUNNING,</span> <span class="pre">STOPPING,</span> <span class="pre">STOPPED)</span></em><a class="headerlink" href="#traits_futures.executor_states.ExecutorState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trait type representing the executor state.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.executor_states.RUNNING">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></span><span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'running'</span></em><a class="headerlink" href="#traits_futures.executor_states.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.executor_states.RUNNING">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></code><code class="sig-name descname"><span class="pre">RUNNING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'running'</span></em><a class="headerlink" href="#traits_futures.executor_states.RUNNING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executor is currently running (this is the initial state).</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.executor_states.STOPPED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></span><span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'stopped'</span></em><a class="headerlink" href="#traits_futures.executor_states.STOPPED" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.executor_states.STOPPED">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></code><code class="sig-name descname"><span class="pre">STOPPED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'stopped'</span></em><a class="headerlink" href="#traits_futures.executor_states.STOPPED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executor is stopped.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="traits_futures.executor_states.STOPPING">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></span><span class="sig-name descname"><span class="pre">STOPPING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'stopping'</span></em><a class="headerlink" href="#traits_futures.executor_states.STOPPING" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.executor_states.STOPPING">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.executor_states.</span></code><code class="sig-name descname"><span class="pre">STOPPING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'stopping'</span></em><a class="headerlink" href="#traits_futures.executor_states.STOPPING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executor has been requested to stop. In this state, no new
 jobs can be submitted, and we’re waiting for old ones to complete.</p>
 </dd></dl>
 
-</section>
+</div>
 
 
           </div>
@@ -144,7 +140,7 @@ jobs can be submitted, and we’re waiting for old ones to complete.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -169,7 +165,7 @@ jobs can be submitted, and we’re waiting for old ones to complete.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

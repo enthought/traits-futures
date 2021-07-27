@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>traits_futures.multiprocessing_router module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -90,11 +86,11 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.multiprocessing_router">
+  <div class="section" id="module-traits_futures.multiprocessing_router">
 <span id="traits-futures-multiprocessing-router-module"></span><h1>traits_futures.multiprocessing_router module<a class="headerlink" href="#module-traits_futures.multiprocessing_router" title="Permalink to this headline">¶</a></h1>
 <p>Implementations of the IMessageSender, IMessageReceiver and IMessageRouter
 interfaces for tasks executed in a background process.</p>
-<section id="overview-of-the-implementation">
+<div class="section" id="overview-of-the-implementation">
 <h2>Overview of the implementation<a class="headerlink" href="#overview-of-the-implementation" title="Permalink to this headline">¶</a></h2>
 <p>When the router is started (via the <code class="docutils literal notranslate"><span class="pre">start</span></code> method), it sets up the
 following machinery:</p>
@@ -126,28 +122,28 @@ queue, inspects it to determine which receiver it should be sent to, and
 sends it to that receiver</p></li>
 </ul>
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingReceiver">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingReceiver</span></span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingReceiver">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingReceiver</span></code><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Implementation of the IMessageReceiver interface for the case where the
 sender will be in a background process.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id">
-<span class="sig-name descname"><span class="pre">connection_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Int()</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id">
+<code class="sig-name descname"><span class="pre">connection_id</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Int()</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connection id, matching that of the paired sender.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingReceiver.message">
-<span class="sig-name descname"><span class="pre">message</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Event(Any())</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.message" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingReceiver.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Event(Any())</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event fired when a message is received from the paired sender.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingRouter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingRouter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasRequiredTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasRequiredTraits</span></code></a></p>
 <p>Implementation of the IMessageRouter interface for the case where the
 sender will be in a background process.</p>
@@ -160,8 +156,8 @@ sender will be in a background process.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe">
-<span class="sig-name descname"><span class="pre">close_pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe">
+<code class="sig-name descname"><span class="pre">close_pipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the receiver end of a pipe produced by <code class="docutils literal notranslate"><span class="pre">pipe</span></code>.</p>
 <p>Removes the receiver from the routing table, so that no new messages
 can reach that receiver.</p>
@@ -177,20 +173,20 @@ can reach that receiver.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop">
-<span class="sig-name descname"><span class="pre">event_loop</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IEventLoop,</span> <span class="pre">required=True)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop">
+<code class="sig-name descname"><span class="pre">event_loop</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IEventLoop,</span> <span class="pre">required=True)</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop" title="Permalink to this definition">¶</a></dt>
 <dd><p>The event loop used to trigger message dispatch.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.manager">
-<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"> <span class="pre">=</span> <span class="pre">threading.Thread(</span> <span class="pre">…</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.manager">
+<code class="sig-name descname"><span class="pre">manager</span></code><em class="property"> <span class="pre">=</span> <span class="pre">threading.Thread(</span> <span class="pre">…</span></em><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manager, used to create message queues.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.pipe">
-<span class="sig-name descname"><span class="pre">pipe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.pipe" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.pipe">
+<code class="sig-name descname"><span class="pre">pipe</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.pipe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a (sender, receiver) pair for sending and receiving messages.</p>
 <p>The sender will be passed to the background task and used to send
 messages, while the receiver remains in the foreground.</p>
@@ -210,8 +206,8 @@ messages, while the receiver remains in the foreground.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.route_until">
-<span class="sig-name descname"><span class="pre">route_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.route_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.route_until" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.route_until">
+<code class="sig-name descname"><span class="pre">route_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.route_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.route_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manually drive the router until a given condition occurs, or timeout.</p>
 <p>This is primarily used as part of a clean shutdown.</p>
 <p>Note: this has the side-effect of moving the router from “event loop”
@@ -234,8 +230,8 @@ condition is already true on entry, no messages will be routed.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.start" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start routing messages.</p>
 <p>This method must be called before any call to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or
 <code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> can be made.</p>
@@ -248,8 +244,8 @@ condition is already true on entry, no messages will be routed.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingRouter.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingRouter.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingRouter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop routing messages.</p>
 <p>This method should be called in the main thread after all pipes
 are finished with. Calls to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or <code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> are
@@ -266,8 +262,8 @@ not permitted after this method has been called.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingSender">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingSender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingSender</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Object allowing the worker to send messages.</p>
 <p>This class will be instantiated in the main thread, and the instance passed
@@ -282,8 +278,8 @@ thread.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingSender.send">
-<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.send" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender.send">
+<code class="sig-name descname"><span class="pre">send</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a message to the router.</p>
 <p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
 all be called from the same thread.</p>
@@ -298,8 +294,8 @@ all be called from the same thread.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingSender.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.start" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do any setup necessary to prepare for sending messages.</p>
 <p>This method must be called before any messages can be sent
 using the <code class="docutils literal notranslate"><span class="pre">send</span></code> method.</p>
@@ -313,8 +309,8 @@ all be called from the same thread.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingSender.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.MultiprocessingSender.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingSender.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingSender.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do any teardown.</p>
 <p>After this method has been called, no more messages can be sent.</p>
 <p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
@@ -329,8 +325,8 @@ all be called from the same thread.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="traits_futures.multiprocessing_router.monitor_queue">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></span><span class="sig-name descname"><span class="pre">monitor_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#monitor_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.monitor_queue" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multiprocessing_router.monitor_queue">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></code><code class="sig-name descname"><span class="pre">monitor_queue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#monitor_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.monitor_queue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move incoming child process messages to the local queue.</p>
 <p>Monitors the process queue for incoming messages, and transfers
 those messages to the local queue. For each message transferred,
@@ -349,8 +345,8 @@ a message pending.</p></li>
 </dl>
 </dd></dl>
 
-</section>
-</section>
+</div>
+</div>
 
 
           </div>
@@ -384,7 +380,7 @@ a message pending.</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -409,7 +405,7 @@ a message pending.</p></li>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

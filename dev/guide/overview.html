@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>Overview &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -88,9 +84,9 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="overview">
+  <div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<section id="why-traits-futures">
+<div class="section" id="why-traits-futures">
 <h2>Why Traits Futures?<a class="headerlink" href="#why-traits-futures" title="Permalink to this headline">¶</a></h2>
 <p>In a nutshell, Traits Futures allows GUI applications to execute one or more
 background tasks without blocking the main GUI, and then <em>safely</em> update the
@@ -107,7 +103,7 @@ the form of callbacks into Python code.</p>
 <p>Traits-based GUIs that perform significant work in response to user
 interactions (for example, running a complex computation, or submitting a
 complex search query to a remote database) face two main problems.</p>
-<section id="problem-1-unresponsive-guis">
+<div class="section" id="problem-1-unresponsive-guis">
 <h3>Problem 1: unresponsive GUIs<a class="headerlink" href="#problem-1-unresponsive-guis" title="Permalink to this headline">¶</a></h3>
 <p>Thanks to the single-threaded nature of the GUI frameworks, the various
 callbacks into Python land are executed in serial rather than in parallel: only
@@ -191,8 +187,8 @@ see a message update for that first <code class="docutils literal notranslate"><
 because the graphical update occurs as the result of another task sitting in
 the event loop’s task queue, and our current callback is blocking that task
 from executing.</p>
-</section>
-<section id="problem-2-safely-updating-the-gui">
+</div>
+<div class="section" id="problem-2-safely-updating-the-gui">
 <h3>Problem 2: Safely updating the GUI<a class="headerlink" href="#problem-2-safely-updating-the-gui" title="Permalink to this headline">¶</a></h3>
 <p>The solution to the responsiveness issue described in the previous section is
 straightforward: we move the calculation to a separate thread or process,
@@ -298,8 +294,8 @@ it’s still somewhat risky to have a trait (the <code class="docutils literal n
 from something other than the main thread: <em>any</em> listener attached to that
 event needs to be written to be thread safe, and it would be all too easy
 to accidentally introduce non-thread-safe listeners.</p>
-</section>
-<section id="solution-traits-futures">
+</div>
+<div class="section" id="solution-traits-futures">
 <h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Permalink to this headline">¶</a></h3>
 <p>Traits Futures provides a pattern for solving the above problems. As with
 <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
@@ -336,9 +332,9 @@ conceptual model remains a useful one for the purposes of understanding and
 reasoning about the GUI behavior.</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
           </div>
@@ -377,7 +373,7 @@ reasoning about the GUI behavior.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -402,7 +398,7 @@ reasoning about the GUI behavior.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

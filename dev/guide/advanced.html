@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>Advanced topics &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -88,14 +84,14 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="advanced-topics">
+  <div class="section" id="advanced-topics">
 <h1>Advanced topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Support for writing custom tasks is provisional. The API is subject to
 change in future releases. Feedback on the feature is welcome.</p>
 </div>
-<section id="creating-your-own-background-task-type">
+<div class="section" id="creating-your-own-background-task-type">
 <h2>Creating your own background task type<a class="headerlink" href="#creating-your-own-background-task-type" title="Permalink to this headline">¶</a></h2>
 <p>Traits Futures comes with three basic background task types: background calls,
 background iterations and background progress calls, created via the
@@ -124,8 +120,8 @@ callable and the corresponding foreground future.</p></li>
 existing <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions.</p>
 <p>Below we give a worked example that demonstrates how to create each of these
 ingredients for a simple case.</p>
-</section>
-<section id="worked-example-fizz-buzz">
+</div>
+<div class="section" id="worked-example-fizz-buzz">
 <h2>Worked example: Fizz buzz!<a class="headerlink" href="#worked-example-fizz-buzz" title="Permalink to this headline">¶</a></h2>
 <p>In this section we’ll create an example new background task type, based on the
 well-known <a class="reference external" href="https://en.wikipedia.org/wiki/Fizz_buzz">Fizz buzz</a> game. We’ll create a background task that
@@ -133,7 +129,7 @@ counts slowly from 1, sending three different types of messages to the
 foreground: it sends “Fizz” messages on multiples of 3, “Buzz” messages on
 multiples of 5, and “Fizz Buzz” messages on multiples of 15. Each message
 is accompanied by the corresponding number.</p>
-<section id="message-types">
+<div class="section" id="message-types">
 <h3>Message types<a class="headerlink" href="#message-types" title="Permalink to this headline">¶</a></h3>
 <p>In general, each message sent from the background task to the future can be any
 Python object, and the future can interpret the sent object in any way that it
@@ -149,8 +145,8 @@ isn’t strictly necessary, but it makes the code cleaner.</p>
 <span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
 </pre></div>
 </div>
-</section>
-<section id="the-background-callable">
+</div>
+<div class="section" id="the-background-callable">
 <h3>The background callable<a class="headerlink" href="#the-background-callable" title="Permalink to this headline">¶</a></h3>
 <p>Next, we define the callable that will be run in the background. The callable
 itself expects two arguments (which will be passed by position): <code class="docutils literal notranslate"><span class="pre">send</span></code> and
@@ -208,8 +204,8 @@ in general any object returned by the background callable will be made
 available under the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a> property of the corresponding future. Similarly,
 any exception raised during execution will be made available under the
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception" title="traits_futures.base_future.BaseFuture.exception"><code class="xref py py-attr docutils literal notranslate"><span class="pre">exception</span></code></a> property of the corresponding future.</p>
-</section>
-<section id="the-foreground-future">
+</div>
+<div class="section" id="the-foreground-future">
 <h3>The foreground Future<a class="headerlink" href="#the-foreground-future" title="Permalink to this headline">¶</a></h3>
 <p>Now we define a dedicated future class <code class="docutils literal notranslate"><span class="pre">FizzBuzzFuture</span></code> for this background
 task type. The most convenient way to do this is to inherit from the
@@ -260,8 +256,8 @@ to process each message by firing a corresponding event on the future.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">n</span>
 </pre></div>
 </div>
-</section>
-<section id="putting-it-all-together-the-task-specification">
+</div>
+<div class="section" id="putting-it-all-together-the-task-specification">
 <h3>Putting it all together: the task specification<a class="headerlink" href="#putting-it-all-together-the-task-specification" title="Permalink to this headline">¶</a></h3>
 <p>The last piece we need is a task specification, which is the object that can be
 submitted to the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>. This object needs to have two attributes:
@@ -314,8 +310,8 @@ looks like this:</p>
         <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-<section id="submitting-the-new-task">
+</div>
+<div class="section" id="submitting-the-new-task">
 <h3>Submitting the new task<a class="headerlink" href="#submitting-the-new-task" title="Permalink to this headline">¶</a></h3>
 <p>With all of the above in place, a Fizz buzz background task can be submitted to
 a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> <code class="docutils literal notranslate"><span class="pre">executor</span></code> by passing an instance of
@@ -341,8 +337,8 @@ encapsulate that operation in a function:</p>
     <span class="k">return</span> <span class="n">future</span>
 </pre></div>
 </div>
-</section>
-<section id="an-example-gui">
+</div>
+<div class="section" id="an-example-gui">
 <h3>An example GUI<a class="headerlink" href="#an-example-gui" title="Permalink to this headline">¶</a></h3>
 <p>Here’s the <a class="reference download internal" download="" href="../_downloads/c3ba6c80aacc0c4457e8c865f82049cf/fizz_buzz_task.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">script</span></code></a> obtained
 from putting together the above snippets:</p>
@@ -598,9 +594,9 @@ of the new background task type:</p>
         <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
           </div>
@@ -643,7 +639,7 @@ of the new background task type:</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -668,7 +664,7 @@ of the new background task type:</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

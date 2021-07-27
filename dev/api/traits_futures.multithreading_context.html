@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>traits_futures.multithreading_context module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -90,29 +86,29 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.multithreading_context">
+  <div class="section" id="module-traits_futures.multithreading_context">
 <span id="traits-futures-multithreading-context-module"></span><h1>traits_futures.multithreading_context module<a class="headerlink" href="#module-traits_futures.multithreading_context" title="Permalink to this headline">¶</a></h1>
 <p>Context providing multithreading-friendly worker pools, events, and routers.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.multithreading_context.MultithreadingContext">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_context.</span></span><span class="sig-name descname"><span class="pre">MultithreadingContext</span></span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multithreading_context.MultithreadingContext">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_context.</span></code><code class="sig-name descname"><span class="pre">MultithreadingContext</span></code><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.i_parallel_context.IParallelContext</span></code></a></p>
 <p>Context for multithreading, suitable for use with the TraitsExecutor.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multithreading_context.MultithreadingContext.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.close" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multithreading_context.MultithreadingContext.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do any cleanup necessary before disposal of the context.</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="traits_futures.multithreading_context.MultithreadingContext.closed">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.closed" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="traits_futures.multithreading_context.MultithreadingContext.closed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">closed</span></code><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.closed" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if this context is closed, else False.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multithreading_context.MultithreadingContext.event">
-<span class="sig-name descname"><span class="pre">event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.event" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multithreading_context.MultithreadingContext.event">
+<code class="sig-name descname"><span class="pre">event</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a shareable event suitable for this context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -128,8 +124,8 @@ the <code class="docutils literal notranslate"><span class="pre">set</span></cod
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multithreading_context.MultithreadingContext.message_router">
-<span class="sig-name descname"><span class="pre">message_router</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.message_router" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multithreading_context.MultithreadingContext.message_router">
+<code class="sig-name descname"><span class="pre">message_router</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.message_router" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a message router suitable for use in this context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -145,8 +141,8 @@ the <code class="docutils literal notranslate"><span class="pre">set</span></cod
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.multithreading_context.MultithreadingContext.worker_pool">
-<span class="sig-name descname"><span class="pre">worker_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.worker_pool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.worker_pool" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.multithreading_context.MultithreadingContext.worker_pool">
+<code class="sig-name descname"><span class="pre">worker_pool</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_context.html#MultithreadingContext.worker_pool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_context.MultithreadingContext.worker_pool" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a new worker pool suitable for this context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -164,7 +160,7 @@ delegated to the ThreadPoolExecutor.</p>
 
 </dd></dl>
 
-</section>
+</div>
 
 
           </div>
@@ -190,7 +186,7 @@ delegated to the ThreadPoolExecutor.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -215,7 +211,7 @@ delegated to the ThreadPoolExecutor.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

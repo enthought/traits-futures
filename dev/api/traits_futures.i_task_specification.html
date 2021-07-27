@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>traits_futures.i_task_specification module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -90,20 +86,20 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.i_task_specification">
+  <div class="section" id="module-traits_futures.i_task_specification">
 <span id="traits-futures-i-task-specification-module"></span><h1>traits_futures.i_task_specification module<a class="headerlink" href="#module-traits_futures.i_task_specification" title="Permalink to this headline">¶</a></h1>
 <p>Interface for a job specification. The job specification is the object
 that the TraitsExecutor knows how to deal with.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.i_task_specification.IFuture">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></span><span class="sig-name descname"><span class="pre">IFuture</span></span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.i_task_specification.IFuture">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">IFuture</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Interface for futures returned by the executor.</p>
 <p>This interface can be used to implement new background task types. It
 represents the knowledge that the executor needs to interact with futures.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.i_task_specification.IFuture.cancel">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.cancel" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.i_task_specification.IFuture.cancel">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">cancel</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.cancel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request cancellation of the background task.</p>
 <p>For a future that has not yet completed and has not previously been
 cancelled, this method requests cancellation of the associated
@@ -123,8 +119,8 @@ this call did nothing).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.i_task_specification.IFuture.receive">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.receive" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.i_task_specification.IFuture.receive">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">receive</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.receive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive and process a message from the task associated to this future.</p>
 <p>This method is primarily for use by the executors, but may also be of
 use in testing.</p>
@@ -145,8 +141,8 @@ from the paired task.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.i_task_specification.ITaskSpecification">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></span><span class="sig-name descname"><span class="pre">ITaskSpecification</span></span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.i_task_specification.ITaskSpecification">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">ITaskSpecification</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Specify background task callable and foreground future for a task.</p>
 <p>An object implementing the ITaskSpecification interface describes how to
@@ -155,8 +151,8 @@ particular type of background task. It’s consumed by the TraitsExecutor
 when submitting background tasks, and implemented by BackgroundCall,
 BackgroundIteration and others.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.i_task_specification.ITaskSpecification.future">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">future</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cancel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.i_task_specification.ITaskSpecification.future">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">future</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cancel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Future for the background task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -175,8 +171,8 @@ background task.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="traits_futures.i_task_specification.ITaskSpecification.task">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">task</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.task" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.i_task_specification.ITaskSpecification.task">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">task</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the callable that will be invoked as the background task.</p>
 <p>This callable should be pickleable and should have the signature</p>
 <blockquote>
@@ -209,7 +205,7 @@ check whether cancellation has been requested.</p>
 
 </dd></dl>
 
-</section>
+</div>
 
 
           </div>
@@ -235,7 +231,7 @@ check whether cancellation has been requested.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -260,7 +256,7 @@ check whether cancellation has been requested.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

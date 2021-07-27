@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>traits_futures.wrappers module &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -90,41 +86,41 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="module-traits_futures.wrappers">
+  <div class="section" id="module-traits_futures.wrappers">
 <span id="traits-futures-wrappers-module"></span><h1>traits_futures.wrappers module<a class="headerlink" href="#module-traits_futures.wrappers" title="Permalink to this headline">¶</a></h1>
 <p>Wrappers for the background task callable and the foreground future.</p>
 <p>These are used by the TraitsExecutor machinery.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">FutureWrapper</span></span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wrappers.FutureWrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">FutureWrapper</span></code><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Wrapper for the IFuture.</p>
 <p>Passes on messages received for this future.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.done">
-<span class="sig-name descname"><span class="pre">done</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wrappers.FutureWrapper.done">
+<code class="sig-name descname"><span class="pre">done</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bool recording whether the future has completed or not. The
 executor listens to this trait to decide when it can clean up
 its own internal state.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.future">
-<span class="sig-name descname"><span class="pre">future</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wrappers.FutureWrapper.future">
+<code class="sig-name descname"><span class="pre">future</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Traits Futures future being wrapped</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="traits_futures.wrappers.FutureWrapper.receiver">
-<span class="sig-name descname"><span class="pre">receiver</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Instance(HasTraits)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wrappers.FutureWrapper.receiver">
+<code class="sig-name descname"><span class="pre">receiver</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(HasTraits)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object that receives messages from the background task.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="traits_futures.wrappers.run_background_task">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></span><span class="sig-name descname"><span class="pre">run_background_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
+<dt id="traits_futures.wrappers.run_background_task">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">run_background_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper for callables submitted to the underlying executor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -139,7 +135,7 @@ whether cancellation has been requested.</p></li>
 </dl>
 </dd></dl>
 
-</section>
+</div>
 
 
           </div>
@@ -165,7 +161,7 @@ whether cancellation has been requested.</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -190,7 +186,7 @@ whether cancellation has been requested.</p></li>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

@@ -3,16 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    
     <title>Release 0.3.0 &mdash; Traits Futures 0.3.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
     <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/graphviz.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -25,7 +22,6 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -83,10 +79,10 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <section id="release-0-3-0">
+  <div class="section" id="release-0-3-0">
 <h1>Release 0.3.0<a class="headerlink" href="#release-0-3-0" title="Permalink to this headline">¶</a></h1>
 <p>Release date: 2021-07-XX</p>
-<section id="features">
+<div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Multiprocessing support: the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> can now submit
@@ -106,8 +102,8 @@ shuts down all resources associated with the executor.</p></li>
 <li><p>Improved logging: there’s now debug-level logging of key state changes
 and interactions, to aid in post-mortem debugging.</p></li>
 </ul>
-</section>
-<section id="changes">
+</div>
+<div class="section" id="changes">
 <h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
@@ -156,8 +152,8 @@ methods named <code class="docutils literal notranslate"><span class="pre">_proc
 <p>See the documentation for more details on how to create custom task types.</p>
 </li>
 </ul>
-</section>
-<section id="fixes">
+</div>
+<div class="section" id="fixes">
 <h2>Fixes<a class="headerlink" href="#fixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The message routing machinery will no longer block indefinitely in the
@@ -176,8 +172,8 @@ the exception.</p></li>
 cleared when the future completes. Previously the <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> object
 would sometimes hold onto the reference to the cancellation callback.</p></li>
 </ul>
-</section>
-<section id="continuous-integration-and-build">
+</div>
+<div class="section" id="continuous-integration-and-build">
 <h2>Continuous integration and build<a class="headerlink" href="#continuous-integration-and-build" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The default GitHub branch has been renamed from “master” to “main”.</p></li>
@@ -204,8 +200,8 @@ Slack channel.</p></li>
 <li><p>Tests are always run under <code class="docutils literal notranslate"><span class="pre">faulthandler</span></code>.</p></li>
 <li><p>Example files are now included in the various style checks.</p></li>
 </ul>
-</section>
-<section id="packaging-changes">
+</div>
+<div class="section" id="packaging-changes">
 <h2>Packaging changes<a class="headerlink" href="#packaging-changes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Python 3.6 or later is now required.</p></li>
@@ -214,16 +210,16 @@ Slack channel.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">setup</span></code> file now declares <code class="docutils literal notranslate"><span class="pre">extras_require</span></code> for additional
 dependencies such as <code class="docutils literal notranslate"><span class="pre">docs</span></code>, <code class="docutils literal notranslate"><span class="pre">pyqt5</span></code> and <code class="docutils literal notranslate"><span class="pre">pyside2</span></code>.</p></li>
 </ul>
-</section>
-<section id="test-suite">
+</div>
+<div class="section" id="test-suite">
 <h2>Test suite<a class="headerlink" href="#test-suite" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The test suite now uses the <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> event loop for the majority of
 its tests. It uses the Qt or Wx event loop only for tests specific to
 those toolkits.</p></li>
 </ul>
-</section>
-<section id="documentation">
+</div>
+<div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New “overview” documentation section explaining why Traits Futures exists
@@ -251,9 +247,9 @@ overflow.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">prime_counting</span></code> example has been fixed to avoid an occasional
 <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> under unusual timing conditions.</p></li>
 </ul>
-</section>
-</section>
-<section id="release-0-2-0">
+</div>
+</div>
+<div class="section" id="release-0-2-0">
 <h1>Release 0.2.0<a class="headerlink" href="#release-0-2-0" title="Permalink to this headline">¶</a></h1>
 <p>Release date: 2020-09-24</p>
 <p>This is a feature release of Traits Futures. The main features of this
@@ -274,7 +270,7 @@ will be removed in a future release. See the Changes section below for more
 details.</p>
 <p>Detailed changes follow. Note that the list below is not exhaustive: many
 more minor PRs have been omitted.</p>
-<section id="id1">
+<div class="section" id="id1">
 <h2>Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Users can now easily create their own background task types to supplement
@@ -300,8 +296,8 @@ of alternative back ends. The new <a class="reference internal" href="api/traits
 implements this interface and provides the default threading back-end.
 (#149)</p></li>
 </ul>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>Changes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and
@@ -323,14 +319,14 @@ compatibility, but its use is deprecated. (#144, #148)</p></li>
 and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
 #132, #133, #138, #145)</p></li>
 </ul>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>Fixes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Don’t create a new message router at executor shutdown time. (#187)</p></li>
 </ul>
-</section>
-<section id="tests">
+</div>
+<div class="section" id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fix some intermittent test failures due to test interactions. (#176)</p></li>
@@ -344,8 +340,8 @@ significantly speeds up the test run. (#153)</p></li>
 support. (#135, #141)</p></li>
 <li><p>Test the <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> class. (#109)</p></li>
 </ul>
-</section>
-<section id="developer-tooling">
+</div>
+<div class="section" id="developer-tooling">
 <h2>Developer tooling<a class="headerlink" href="#developer-tooling" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add a new <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ci</span> <span class="pre">shell</span></code> click cmd. (#204)</p></li>
@@ -357,8 +353,8 @@ fix existing copyright headers). (#193)</p></li>
 environment. (#104)</p></li>
 <li><p>Don’t pin dependent packages in the build environment. (#99)</p></li>
 </ul>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h2>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Update docs to use the Enthought Sphinx Theme. (#128)</p></li>
@@ -369,41 +365,41 @@ under ‘User Documentation’. (#191)</p></li>
 <li><p>Document creation of new background task types. (#198)</p></li>
 <li><p>Document use of <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> for interruptible tasks. (#188)</p></li>
 </ul>
-</section>
-</section>
-<section id="release-0-1-1">
+</div>
+</div>
+<div class="section" id="release-0-1-1">
 <h1>Release 0.1.1<a class="headerlink" href="#release-0-1-1" title="Permalink to this headline">¶</a></h1>
 <p>Release date: 2019-02-05</p>
 <p>This is a bugfix release, in preparation for the first public release to PyPI.
 There are no functional or API changes to the core library since 0.1.0 in this
 release.</p>
-<section id="id5">
+<div class="section" id="id5">
 <h2>Fixes<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
 in #118)</p></li>
 </ul>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h2>Changes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add copyright headers to all Python and reST files. (#114, backported in
 #118)</p></li>
 </ul>
-</section>
-<section id="build">
+</div>
+<div class="section" id="build">
 <h2>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Remove unnecessary bundle generation machinery. (#99, backported in #118)</p></li>
 </ul>
-</section>
-</section>
-<section id="release-0-1-0">
+</div>
+</div>
+<div class="section" id="release-0-1-0">
 <h1>Release 0.1.0<a class="headerlink" href="#release-0-1-0" title="Permalink to this headline">¶</a></h1>
 <p>Release date: 2018-08-08</p>
 <p>Initial release. Provides support for submitting background calls, iterations,
 and progress-reporting tasks for Traits UI applications based on Qt.</p>
-</section>
+</div>
 
 
           </div>
@@ -456,7 +452,7 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -481,7 +477,7 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
         &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>
