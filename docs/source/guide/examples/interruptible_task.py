@@ -98,7 +98,7 @@ class InterruptibleTaskExample(HasStrictTraits):
         else:
             # Shouldn't ever get here: CANCELLED, FAILED and COMPLETED
             # are the only possible final states of a future.
-            raise RuntimeError(f"Unexpected state: {self.future.state}")
+            assert False, f"Impossible state: {self.future.state}"
         self.future = None
 
     @observe("future:result_event")
