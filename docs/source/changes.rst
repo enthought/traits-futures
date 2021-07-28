@@ -24,8 +24,8 @@ multiprocessing support, wxPython support, support for delivering events using
 an |asyncio| event loop in place of a GUI toolkit event loop, and better
 support for synchronous executor shutdown.
 
-Migrating to Traits Futures 0.3.0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Migration guide
+~~~~~~~~~~~~~~~
 
 The majority of existing code using Traits Futures 0.2.0 should continue to
 work with Traits Futures 0.3.0 with no changes. However, there are some minor
@@ -44,12 +44,10 @@ the detailed PR-by-PR change list below.
 * The ``executor`` and ``callable`` parameters to the |submit_call|,
   |submit_iteration| and |submit_progress| functions may become
   positional-only in a future version of Traits Futures. If you're passing
-  arguments by name instead of by position (for example using
-  ``submit_call(executor=my_executor, callable=do_calculation, ...)``), you
-  should fix your code to pass by position: ``submit_call(my_executor,
+  arguments by name instead of by position, for example using
+  ``submit_call(executor=my_executor, callable=do_calculation, ...)``, you
+  should fix your code to pass by position instead: ``submit_call(my_executor,
   do_calculation, ...)``.
-
-A detailed list of changes follows.
 
 Features
 ~~~~~~~~
@@ -94,10 +92,6 @@ Changes
 * Tasks may now only be submitted to a |TraitsExecutor| on the main thread.
   An attempt to submit a task from a thread other than the main thread will
   raise |RuntimeError|. (#305)
-* The ``traits_futures.toolkits`` setuptools entry point group used for
-  supplying custom toolkit support has been renamed to
-  ``traits_futures.event_loops``. The old "toolkit"-based names have been
-  converted to "event-loop"-based names throughout. (#312, #365)
 * There are a number of backwards-incompatible changes to the machinery used
   for creating custom task types and futures. The API for creating custom
   task types should be considered provisional: it may change in future
@@ -122,12 +116,14 @@ Changes
     methods named ``_process_<msgtype>``, as before. (#427)
 
   See the documentation for more details on how to create custom task types.
+* The ``traits_futures.toolkits`` setuptools entry point group used for
+  supplying custom toolkit support has been renamed to
+  ``traits_futures.event_loops``. The old "toolkit"-based names have been
+  converted to "event-loop"-based names throughout. (#312, #365)
 * The toolkit / event-loop contribution machinery has been significantly
-  reworked. New event loop types can be contributed to the
-  "traits_futures.event_loops" setuptools entry point. The old
-  "traits_futures.toolkits" entry point has been removed. The interface for
-  contributing new event loops is currently undocumented and should be
-  considered experimental: the API may change in future releases. (#298, #300)
+  reworked. The interface for contributing new event loops is currently
+  undocumented and should be considered experimental: the API may change in
+  future releases. (#298, #300)
 
 
 Fixes
