@@ -13,7 +13,7 @@
 Release 0.3.0
 -------------
 
-Release date: 2021-07-XX
+Release date: 2021-07-29
 
 Summary
 ~~~~~~~
