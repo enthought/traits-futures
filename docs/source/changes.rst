@@ -88,7 +88,8 @@ Changes
   raise |RuntimeError|. (#305)
 * The ``traits_futures.toolkits`` setuptools entry point group used for
   supplying custom toolkit support has been renamed to
-  ``traits_futures.event_loops``. (#312, #365)
+  ``traits_futures.event_loops``. The old "toolkit"-based names have been
+  converted to "event-loop"-based names throughout. (#312, #365)
 * There are a number of backwards-incompatible changes to the machinery used
   for creating custom task types and futures. The API for creating custom
   task types should be considered provisional: it may change in future
@@ -131,7 +132,7 @@ Fixes
   witness it. (#413)
 * The |TaskCancelled| exception used by the background task submitted
   via |submit_progress| is now public and exposed in |traits_futures.api|, in
-  case that task needs to catch the exception. (#449, #319)
+  case that task needs to catch the exception. (#449, #317)
 * The |marshal_exception| function has been fixed not to rely on the global
   ``sys.exception_info`` state. (#390)
 * A spurious "message" trait that never did anything has been removed from
@@ -242,11 +243,9 @@ Internal refactoring
   implementation from the message routing, to decouple the future
   implementation from the executor, and to make toolkit selection easier.
   (#392, #381, #382, #364, #362, #360, #332, #331,
-  #312, #306, #282, #255, #231, #226, #227)
-* The "GUI context" notion and naming has been replaced with "event loop"
-  throughout. (#365)
+  #306, #282, #255, #231, #226, #227)
 * Other minor fixes and non-user-facing changes. (#415, #397, #393,
-  #384, #376, #372, #373, #361, #347, #349, #346, #342, #338, #336, #335,
+  #384, #376, #372, #361, #347, #349, #346, #342, #338, #336, #335,
   #330, #323, #309, #308, #286, #276, #232, #213, #212)
 
 
