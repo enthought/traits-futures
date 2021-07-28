@@ -56,7 +56,7 @@ Features
   as Qt-based toolkits. (#269, #256, #246)
 * asyncio support: the executor can make use of an asyncio event loop in place
   of a GUI toolkit event loop. This is potentially useful in unit tests, and
-  when running headless.
+  when running headless. (#314, #322)
 * Improved shutdown: there's a new :meth:`~.TraitsExecutor.shutdown` method,
   suitable for use at process exit time, or in unit tests. This method is
   blocking: it waits for tasks created by the executor to completed, and then
@@ -74,7 +74,7 @@ Changes
   the future's state to ``CANCELLING``, requests cancellation of the associated
   task, and returns ``True``. (#420)
 * The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
-  previously, it was writable.
+  previously, it was writable. (#344)
 * The ``executor`` and ``callable`` arguments to the ``submit_call``,
   ``submit_iteration`` and ``submit_progress`` convenience functions should
   be considered positional-only, and should not be passed by name. This
@@ -88,7 +88,7 @@ Changes
   raise |RuntimeError|. (#305)
 * The ``traits_futures.toolkits`` setuptools entry point group used for
   supplying custom toolkit support has been renamed to
-  ``traits_futures.event_loops``.
+  ``traits_futures.event_loops``. (#312, #365)
 * There are a number of backwards-incompatible changes to the machinery used
   for creating custom task types and futures. The API for creating custom
   task types should be considered provisional: it may change in future
@@ -101,10 +101,10 @@ Changes
     future, and to check for cancellation requests. (#435, #426)
   * The ``ITaskSpecification.background_task`` method has been renamed to
     ``task``. (#425)
-  * The ``ITaskSpecification.future`` method now requires a cancellation callback
-    to be passed.
+  * The ``ITaskSpecification.future`` method now requires a cancellation
+    callback to be passed. (#414)
   * The ``IFuture`` interface has a new ``receive`` method which receives
-    messages from the background task.
+    messages from the background task. (#396)
   * The ``IFuture`` interface is much smaller, containing only the ``receive``
     and ``cancel`` methods. (#431, #436, #428)
   * The ``BaseFuture`` has a new ``dispatch`` public method, which can be
@@ -133,12 +133,12 @@ Fixes
   via |submit_progress| is now public and exposed in |traits_futures.api|, in
   case that task needs to catch the exception. (#449, #319)
 * The |marshal_exception| function has been fixed not to rely on the global
-  ``sys.exception_info`` state.
+  ``sys.exception_info`` state. (#390)
 * A spurious "message" trait that never did anything has been removed from
   |IFuture|. (#394)
 * The cancellation callback supplied to a ``BaseFuture`` instance is now always
   cleared when the future completes. Previously the ``BaseFuture`` object
-  would sometimes hold onto the reference to the cancellation callback.
+  would sometimes hold onto the reference to the cancellation callback. (#389)
 
 Continuous integration and build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -183,7 +183,7 @@ Packaging changes
 
 * Python 3.6 or later is now required. (#239)
 * Python 3.10 is now supported. (#454)
-* Traits 6.2 or later is now required.
+* Traits 6.2 or later is now required. (#373)
 * The ``setuptools`` package is no longer a runtime dependency. (#240)
 * The ``setup`` file now declares ``extras_require`` for additional
   dependencies such as ``docs``, ``pyqt5`` and ``pyside2``. (#451)
@@ -241,12 +241,12 @@ Internal refactoring
 * Significant internal refactoring to better decouple the toolkit
   implementation from the message routing, to decouple the future
   implementation from the executor, and to make toolkit selection easier.
-  (#414, #396, #392, #381, #382, #364, #362, #360, #344, #332, #331, #322,
-  #314, #312, #306, #282, #255, #231, #226, #227)
+  (#392, #381, #382, #364, #362, #360, #332, #331,
+  #312, #306, #282, #255, #231, #226, #227)
 * The "GUI context" notion and naming has been replaced with "event loop"
   throughout. (#365)
-* Other minor fixes and non-user-facing changes. (#415, #390, #397, #393,
-  #389, #384, #376, #372, #373, #361, #347, #349, #346, #342, #338, #336, #335,
+* Other minor fixes and non-user-facing changes. (#415, #397, #393,
+  #384, #376, #372, #373, #361, #347, #349, #346, #342, #338, #336, #335,
   #330, #323, #309, #308, #286, #276, #232, #213, #212)
 
 
