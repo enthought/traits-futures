@@ -96,7 +96,7 @@ class NonInterruptibleTaskExample(HasStrictTraits):
         else:
             # Shouldn't ever get here: CANCELLED, FAILED and COMPLETED
             # are the only possible final states of a future.
-            raise RuntimeError(f"Unexpected state: {self.future.state}")
+            assert False, f"Impossible state: {self.future.state}"
         self.future = None
 
     def _get_can_calculate(self):
