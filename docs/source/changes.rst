@@ -218,7 +218,7 @@ Documentation
 * New documentation section on testing code that uses Traits Futures. (#278)
 * A "Read the Docs" configuration file has been added. (#411)
 * The changelog is now maintained as part of the documentation. (#447, #363,
-  #350)
+  #350, #458)
 * All examples are now part of the documentation. (#355)
 * All example scripts are downloadable from the documentation. (#353)
 * All examples now use the new Traits ``observe`` machinery instead of
