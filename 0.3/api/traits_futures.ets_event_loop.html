@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.ets_event_loop module &mdash; Traits Futures 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.exception_handling module" href="traits_futures.exception_handling.html" >
+    <link rel="prev" title="traits_futures.base_future module" href="traits_futures.base_future.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.exception_handling.html" title="traits_futures.exception_handling module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.base_future.html" title="traits_futures.base_future module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.ets_event_loop">
+<span id="traits-futures-ets-event-loop-module"></span><h1>traits_futures.ets_event_loop module<a class="headerlink" href="#module-traits_futures.ets_event_loop" title="Permalink to this headline">¶</a></h1>
+<p>Event loop with toolkit selection matching that of ETS.</p>
+<p>This module provides an IEventLoop implementation that’s determined in the
+same way that the toolkit is determined for TraitsUI and Pyface, using the
+ETS_TOOLKIT environment variable if set, and examining the available toolkits
+if not.</p>
+<dl class="py class">
+<dt id="traits_futures.ets_event_loop.ETSEventLoop">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.ets_event_loop.</span></code><code class="sig-name descname"><span class="pre">ETSEventLoop</span></code><a class="reference internal" href="../_modules/traits_futures/ets_event_loop.html#ETSEventLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_event_loop.ETSEventLoop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>IEventLoop implementation with lazily-determined toolkit.</p>
+<p>The first time this event loop is used, an appropriate toolkit will
+be selected.</p>
+<p>The toolkit selection mechanism used matches that used by Pyface, and
+is based on the value of the ETS_TOOLKIT environment variable, followed
+an examination of the available setuptools entry points under the
+entry point group “traits_futures.event_loops”.</p>
+<dl class="py method">
+<dt id="traits_futures.ets_event_loop.ETSEventLoop.helper">
+<code class="sig-name descname"><span class="pre">helper</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/ets_event_loop.html#ETSEventLoop.helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_event_loop.ETSEventLoop.helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new event loop helper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>event_loop_helper</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper" title="traits_futures.i_event_loop_helper.IEventLoopHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoopHelper</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.ets_event_loop.ETSEventLoop.pingee">
+<code class="sig-name descname"><span class="pre">pingee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/ets_event_loop.html#ETSEventLoop.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.ets_event_loop.ETSEventLoop.pingee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new pingee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>on_ping</strong> – Zero-argument callable, called on the main thread (under a running
+event loop) as a result of each ping sent. The return value of the
+callable is ignored.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pingee</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.ets_event_loop.ETSEventLoop.toolkit_event_loop">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">toolkit_event_loop</span></code><a class="headerlink" href="#traits_futures.ets_event_loop.ETSEventLoop.toolkit_event_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and fix the toolkit, using the same mechanism that Pyface uses to
+find its toolkits.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.base_future.html"
+                        title="previous chapter">traits_futures.base_future module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.exception_handling.html"
+                        title="next chapter">traits_futures.exception_handling module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.ets_event_loop.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

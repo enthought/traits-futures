@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.multithreading_router module &mdash; Traits Futures 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.traits_executor module" href="traits_futures.traits_executor.html" >
+    <link rel="prev" title="traits_futures.multithreading_context module" href="traits_futures.multithreading_context.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.traits_executor.html" title="traits_futures.traits_executor module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.multithreading_context.html" title="traits_futures.multithreading_context module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.multithreading_router">
+<span id="traits-futures-multithreading-router-module"></span><h1>traits_futures.multithreading_router module<a class="headerlink" href="#module-traits_futures.multithreading_router" title="Permalink to this headline">¶</a></h1>
+<p>Implementations of the IMessageSender, IMessageReceiver and IMessageRouter
+interfaces for tasks executed on a background thread.</p>
+<dl class="py class">
+<dt id="traits_futures.multithreading_router.MultithreadingReceiver">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_router.</span></code><code class="sig-name descname"><span class="pre">MultithreadingReceiver</span></code><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Implementation of the IMessageReceiver interface for the case where the
+sender will be in a background thread.</p>
+<dl class="py attribute">
+<dt id="traits_futures.multithreading_router.MultithreadingReceiver.connection_id">
+<code class="sig-name descname"><span class="pre">connection_id</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Int()</span></em><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingReceiver.connection_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection id, matching that of the paired sender.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.multithreading_router.MultithreadingReceiver.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Event(Any())</span></em><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingReceiver.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event fired when a message is received from the paired sender.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_router.</span></code><code class="sig-name descname"><span class="pre">MultithreadingRouter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasRequiredTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasRequiredTraits</span></code></a></p>
+<p>Implementation of the IMessageRouter interface for the case where the
+sender will be in a background thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_loop</strong> (<a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoop</span></code></a>) – The event loop used to trigger message dispatch.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter.close_pipe">
+<code class="sig-name descname"><span class="pre">close_pipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the receiver end of a pipe produced by <code class="docutils literal notranslate"><span class="pre">pipe</span></code>.</p>
+<p>Removes the receiver from the routing table, so that no new messages
+can reach that receiver.</p>
+<p>Not thread safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="traits_futures.multithreading_router.MultithreadingReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingReceiver</span></code></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter.event_loop">
+<code class="sig-name descname"><span class="pre">event_loop</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IEventLoop,</span> <span class="pre">required=True)</span></em><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.event_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>The event loop used to trigger message dispatch.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter.pipe">
+<code class="sig-name descname"><span class="pre">pipe</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a (sender, receiver) pair for sending and receiving messages.</p>
+<p>The sender will be passed to the background task and used to send
+messages, while the receiver remains in the foreground.</p>
+<p>Not thread safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>sender</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingSender" title="traits_futures.multithreading_router.MultithreadingSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingSender</span></code></a>) – Object to be passed to the background task.</p></li>
+<li><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="traits_futures.multithreading_router.MultithreadingReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingReceiver</span></code></a>) – Object kept in the foreground, which reacts to messages.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter.route_until">
+<code class="sig-name descname"><span class="pre">route_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingRouter.route_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.route_until" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually drive the router until a given condition occurs, or timeout.</p>
+<p>This is primarily used as part of a clean shutdown.</p>
+<p>Note: this has the side-effect of moving the router from “event loop”
+mode to “manual” mode. This mode switch is permanent, in the sense that
+after this point, the router will no longer respond to pings: any
+messages will need to be processed through this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condition</strong> – Zero-argument callable returning a boolean. When this condition
+becomes true, this method will stop routing messages. If the
+condition is already true on entry, no messages will be routed.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start routing messages.</p>
+<p>This method must be called before any call to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or
+<code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> can be made.</p>
+<p>Not thread-safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingRouter.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingRouter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingRouter.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop routing messages.</p>
+<p>This method should be called in the main thread after all pipes
+are finished with. Calls to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or <code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> are
+not permitted after this method has been called.</p>
+<p>Logs a warning if there are unclosed pipes.</p>
+<p>Not thread safe. Must always be called in the main thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.multithreading_router.MultithreadingSender">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_router.</span></code><code class="sig-name descname"><span class="pre">MultithreadingSender</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingSender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Object allowing the worker to send messages.</p>
+<p>This class will be instantiated in the main thread, and the instance passed
+to the worker thread to allow the worker to communicate back to the main
+thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Id of the matching receiver; used for message routing.</p></li>
+<li><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code></a>) – Recipient for pings, used to notify the event loop that there’s
+a message pending.</p></li>
+<li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a>) – Thread-safe queue for passing messages to the foreground.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingSender.send">
+<code class="sig-name descname"><span class="pre">send</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingSender.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to the router.</p>
+<p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
+all be called from the same thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingSender.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingSender.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingSender.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do any setup necessary to prepare for sending messages.</p>
+<p>This method must be called before any messages can be sent
+using the <code class="docutils literal notranslate"><span class="pre">send</span></code> method.</p>
+<p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
+all be called from the same thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.multithreading_router.MultithreadingSender.stop">
+<code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingSender.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingSender.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do any teardown.</p>
+<p>After this method has been called, no more messages can be sent.</p>
+<p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
+all be called from the same thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.multithreading_context.html"
+                        title="previous chapter">traits_futures.multithreading_context module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.traits_executor.html"
+                        title="next chapter">traits_futures.traits_executor module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.multithreading_router.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
