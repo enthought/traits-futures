@@ -51,9 +51,9 @@ Features
   background tasks to a process pool instead of a thread pool. Since this
   support has not yet been tested in the wild, this support should be
   considered provisional for now - the API and the capabilities may change in a
-  future release. Feedback is welcome! (#387)
+  future release. Feedback is welcome! (#387, #173, #284, #283)
 * wxPython support: Traits Futures now supports the wxPython event loop as well
-  as Qt-based toolkits.
+  as Qt-based toolkits. (#269, #256, #246)
 * asyncio support: the executor can make use of an asyncio event loop in place
   of a GUI toolkit event loop. This is potentially useful in unit tests, and
   when running headless.
@@ -143,37 +143,48 @@ Fixes
 Continuous integration and build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* The default GitHub branch has been renamed from "master" to "main".
-* Continuous integration has been migrated from Travis CI and Appveyor
-  to GitHub Actions. The per-commit tests are run on Linux and Windows, on
-  Python 3.6 and Python 3.8. There are several GitHub Actions workflows in
-  addition to the normal CI testing workflow (``run-tests.yml``):
+* The default GitHub branch has been renamed from "master" to "main". (#277)
+* Continuous integration has been migrated to GitHub Actions. The per-commit
+  tests are run on Linux and Windows, on Python 3.6 and Python 3.8. There are
+  several GitHub Actions workflows:
 
+  * The ``run-tests.yml`` workflow runs the test suite on each commit to
+    an open PR. (#237)
+  * The ``check-style.yml`` workflow performs style checks are using ``black``,
+    ``isort``, ``flake8`` and ``flake8-ets`` on each commit to an open PR.
+    (#416, #266)
+  * The ``test-docs.yml`` workflow performs a nitpicky documentation build
+    check on each commit to an open PR. (#265)
   * The ``build-docs.yml`` workflow provides automated documentation builds
     deployed to https://docs.enthought.com/traits-futures/dev/index.html on
-    each PR merge to the main branch.
+    each PR merge to the main branch. (#257, #262, #264, #259)
   * The ``publish-on-pypi.yml`` workflow automatically uploads a wheel and
     sdist to PyPI when a GitHub release is created. (#439)
-  * The ``test-docs.yml`` workflow performs a nitpicky documentation build
-    check on each commit to an open PR.
-  * The ``check-style.yml`` workflow performs style checks are using ``black``,
-    ``isort``, ``flake8`` and ``flake8-ets`` on each commit to an open PR. (#416)
   * The ``weekly-scheduled-tests.yml`` workflow runs comprehensive tests on
     a weekly basis, and reports success or failure back to a relevant Enthought
     Slack channel. (#410, #303, #297)
 
-* The ``ci`` tool now supports ``-h`` for getting help.
+* Travis CI and Appveyor configurations have been removed. (#270, #267)
+* CI runs for Qt now use PySide2 in preference to PyQt5. (#233)
+* Style checks now use ``isort`` rather than ``flake8-import-order``. (#285)
+* Copyright headers are now checked using the ``flake8-ets`` package instead
+  of local custom code. (#234)
 * Tests are always run under ``faulthandler``. (#337)
-* All example scripts except one are now subject to style checking. (#374)
-* Miscellanous minor build changes and fixes. (#408, #368)
+* All example scripts except one are now subject to style checking. (#374, #287)
+* The ``ci`` tool now supports ``-h`` for getting help. (#235)
+* The ``ci`` tool now uses the EDM executable instead of the batch file on
+  Windows, preventing mangling of version modifiers on package requirements.
+  (#247)
+* Miscellanous minor build changes and fixes. (#408, #368, #279)
 
 
 Packaging changes
 ~~~~~~~~~~~~~~~~~
 
-* Python 3.6 or later is now required.
+* Python 3.6 or later is now required. (#239)
+* Python 3.10 is now supported. (#454)
 * Traits 6.2 or later is now required.
-* The ``setuptools`` package is no longer a runtime dependency.
+* The ``setuptools`` package is no longer a runtime dependency. (#240)
 * The ``setup`` file now declares ``extras_require`` for additional
   dependencies such as ``docs``, ``pyqt5`` and ``pyside2``. (#451)
 
@@ -197,7 +208,7 @@ Documentation
 
 * New "overview" documentation section explaining why Traits Futures exists
   and what problems it solves. (#325, #327)
-* New documentation section on testing code that uses Traits Futures.
+* New documentation section on testing code that uses Traits Futures. (#278)
 * A "Read the Docs" configuration file has been added. (#411)
 * The changelog is now maintained as part of the documentation. (#447, #363, #350)
 * All examples are now part of the documentation. (#355)
@@ -208,6 +219,7 @@ Documentation
 * The ``sphinx-apidoc`` autogeneration step is now run automatically as
   part of the normal Sphinx build. (#348)
 * Sphinx 3.5 or later is now required to build the documentation. (#357)
+* Avoid using Sphinx 4.x until it has better stability. (#457)
 * Development information has been removed from ``README.rst``, and moved into
   a separate ``DEVELOP.rst`` file. (#352)
 * Various Sphinx warnings from a combination of napoleon and autodoc have been
@@ -215,13 +227,13 @@ Documentation
   #430, #424, #422, #400, #406, #405, #404, #403, #402, #401)
 * The example scripts displayed directly in the documentation no longer
   include the copyright headers. (#326)
-* The autodoc templates are no longer missing a newline at EOF.
+* The autodoc templates are no longer missing a newline at EOF. (#260)
 * The ``pi_iterations`` example has been fixed to give correct counts.
   Previously it was giving incorrect results as a result of NumPy integer
-  overflow.
+  overflow. (#249)
 * The ``prime_counting`` example has been fixed to avoid an occasional
   |AttributeError| under unusual timing conditions. (#450)
-* Miscellaneous cleanups and minor fixes. (#421)
+* Miscellaneous cleanups and minor fixes. (#421, #455, #292, #223, #221)
 
 Internal refactoring
 ~~~~~~~~~~~~~~~~~~~~
@@ -230,12 +242,12 @@ Internal refactoring
   implementation from the message routing, to decouple the future
   implementation from the executor, and to make toolkit selection easier.
   (#414, #396, #392, #381, #382, #364, #362, #360, #344, #332, #331, #322,
-  #314, #312, #306)
+  #314, #312, #306, #282, #255, #231, #226, #227)
 * The "GUI context" notion and naming has been replaced with "event loop"
   throughout. (#365)
 * Other minor fixes and non-user-facing changes. (#415, #390, #397, #393,
   #389, #384, #376, #372, #373, #361, #347, #349, #346, #342, #338, #336, #335,
-  #330, #323, #309, #308)
+  #330, #323, #309, #308, #286, #276, #232, #213, #212)
 
 
 
