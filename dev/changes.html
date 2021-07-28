@@ -81,7 +81,40 @@
             
   <div class="section" id="release-0-3-0">
 <h1>Release 0.3.0<a class="headerlink" href="#release-0-3-0" title="Permalink to this headline">¶</a></h1>
-<p>Release date: 2021-07-XX</p>
+<p>Release date: 2021-07-29</p>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>This is a feature release of Traits Futures, with a some minor backwards
+incompatible changes that users should be aware of. New features include
+multiprocessing support, wxPython support, support for delivering events using
+an <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop in place of a GUI toolkit event loop, and better
+support for synchronous executor shutdown.</p>
+</div>
+<div class="section" id="migration-guide">
+<h2>Migration guide<a class="headerlink" href="#migration-guide" title="Permalink to this headline">¶</a></h2>
+<p>The majority of existing code using Traits Futures 0.2.0 should continue to
+work with Traits Futures 0.3.0 with no changes. However, there are some minor
+changes that could affect current code, and some major backwards-incompatible
+changes for anyone making use of the <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a> interface to create
+their own background task types. For the <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a> changes, see
+the detailed PR-by-PR change list below.</p>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method on a future no longer raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> exception
+when a future is not cancellable; instead, it silently does nothing. Code
+that needs to distinguish can use the new return value of the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method
+to determine whether the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> call actually caused cancellation to occur.
+Code that currently checks the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancellable" title="traits_futures.base_future.BaseFuture.cancellable"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cancellable</span></code></a> property before cancelling
+should be able to safely drop that check.</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.state" title="traits_futures.traits_executor.TraitsExecutor.state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">state</span></code></a> trait of a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> is no longer writable.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">executor</span></code> and <code class="docutils literal notranslate"><span class="pre">callable</span></code> parameters to the <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>,
+<a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions may become
+positional-only in a future version of Traits Futures. If you’re passing
+arguments by name instead of by position, for example using
+<code class="docutils literal notranslate"><span class="pre">submit_call(executor=my_executor,</span> <span class="pre">callable=do_calculation,</span> <span class="pre">...)</span></code>, you
+should fix your code to pass by position instead: <code class="docutils literal notranslate"><span class="pre">submit_call(my_executor,</span>
+<span class="pre">do_calculation,</span> <span class="pre">...)</span></code>.</p></li>
+</ul>
+</div>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -89,68 +122,76 @@
 background tasks to a process pool instead of a thread pool. Since this
 support has not yet been tested in the wild, this support should be
 considered provisional for now - the API and the capabilities may change in a
-future release. Feedback is welcome!</p></li>
+future release. Feedback is welcome! (#387, #173, #284, #283)</p></li>
 <li><p>wxPython support: Traits Futures now supports the wxPython event loop as well
-as Qt-based toolkits.</p></li>
+as Qt-based toolkits. (#269, #256, #246)</p></li>
 <li><p>asyncio support: the executor can make use of an asyncio event loop in place
 of a GUI toolkit event loop. This is potentially useful in unit tests, and
-when running headless.</p></li>
+when running headless. (#314, #322)</p></li>
 <li><p>Improved shutdown: there’s a new <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method,
 suitable for use at process exit time, or in unit tests. This method is
 blocking: it waits for tasks created by the executor to completed, and then
-shuts down all resources associated with the executor.</p></li>
+shuts down all resources associated with the executor. (#419, #395, #380,
+#378, #334)</p></li>
 <li><p>Improved logging: there’s now debug-level logging of key state changes
-and interactions, to aid in post-mortem debugging.</p></li>
+and interactions, to aid in post-mortem debugging. (#296, #293)</p></li>
 </ul>
 </div>
 <div class="section" id="changes">
 <h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
 future is not cancellable. If a task has already completed, or has previously
-been cancelled, calling <code class="docutils literal notranslate"><span class="pre">cancel</span></code> on the associated future does not change
+been cancelled, calling <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> on the associated future does not change
 the state of the future, and the call returns <code class="docutils literal notranslate"><span class="pre">False</span></code>. Otherwise it changes
-the future’s state to <code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code>, requests cancellation of the associated
-task, and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of the <code class="docutils literal notranslate"><span class="pre">~.TraitsExecutor</span></code> is now read-only;
-previously, it was writable.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">executor</span></code> and <code class="docutils literal notranslate"><span class="pre">callable</span></code> arguments to the <code class="docutils literal notranslate"><span class="pre">submit_call</span></code>,
-<code class="docutils literal notranslate"><span class="pre">submit_iteration</span></code> and <code class="docutils literal notranslate"><span class="pre">submit_progress</span></code> convenience functions should
+the future’s state to <a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLING" title="traits_futures.future_states.CANCELLING"><code class="xref py py-data docutils literal notranslate"><span class="pre">CANCELLING</span></code></a>, requests cancellation of the associated
+task, and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>. (#420)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.state" title="traits_futures.traits_executor.TraitsExecutor.state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">state</span></code></a> trait of the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> is now read-only;
+previously, it was writable. (#344)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">executor</span></code> and <code class="docutils literal notranslate"><span class="pre">callable</span></code> arguments to the <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>,
+<a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> convenience functions should
 be considered positional-only, and should not be passed by name. This
-restriction may be enforced in a future version of the library.</p></li>
+restriction may be enforced in a future version of the library. (#409)</p></li>
 <li><p>The string representation of the exception type created by
-<code class="docutils literal notranslate"><span class="pre">marshal_exception</span></code> has been simplified: instead of appearing in the form
+<a class="reference internal" href="api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception" title="traits_futures.exception_handling.marshal_exception"><code class="xref py py-func docutils literal notranslate"><span class="pre">marshal_exception</span></code></a> has been simplified: instead of appearing in the form
 <code class="docutils literal notranslate"><span class="pre">&quot;&lt;class</span> <span class="pre">'traits.trait_errors.TraitError'&gt;&quot;</span></code>, it has the form
-<code class="docutils literal notranslate"><span class="pre">&quot;traits.trait_errors.TraitError&quot;</span></code>.</p></li>
-<li><p>Tasks may now only be submitted to a <code class="docutils literal notranslate"><span class="pre">~.TraitsExecutor</span></code> on the main thread.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">traits_futures.toolkits</span></code> setuptools entry point group used for
-supplying custom toolkit support has been renamed to
-<code class="docutils literal notranslate"><span class="pre">traits_futures.event_loops</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">&quot;traits.trait_errors.TraitError&quot;</span></code>. (#391)</p></li>
+<li><p>Tasks may now only be submitted to a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> on the main thread.
+An attempt to submit a task from a thread other than the main thread will
+raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. (#305)</p></li>
 <li><p>There are a number of backwards-incompatible changes to the machinery used
 for creating custom task types and futures. The API for creating custom
 task types should be considered provisional: it may change in future
 releases. Notable changes include:</p>
 <ul class="simple">
-<li><p>A new <code class="docutils literal notranslate"><span class="pre">BaseTask</span></code> abstract base class, which can be subclassed to create
+<li><p>A new <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a> abstract base class, which can be subclassed to create
 custom background tasks. Those background tasks should override the
-<code class="docutils literal notranslate"><span class="pre">run</span></code> method, which takes no arguments. The <code class="docutils literal notranslate"><span class="pre">BaseTask</span></code> provides
-<code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> methods to send messages to the associated
-future, and to check for cancellation requests.</p></li>
+<a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run" title="traits_futures.base_future.BaseTask.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run</span></code></a> method, which takes no arguments. The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a> provides
+<a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send" title="traits_futures.base_future.BaseTask.send"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send</span></code></a> and <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled" title="traits_futures.base_future.BaseTask.cancelled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancelled</span></code></a> methods to send messages to the associated
+future, and to check for cancellation requests. (#435, #426)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ITaskSpecification.background_task</span></code> method has been renamed to
-<code class="docutils literal notranslate"><span class="pre">task</span></code>.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">ITaskSpecification.future</span></code> method now requires a cancellation callback
-to be passed.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">IFuture</span></code> interface has a new <code class="docutils literal notranslate"><span class="pre">receive</span></code> method which receives
-messages from the background task.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">IFuture</span></code> interface is much smaller, containing only the <code class="docutils literal notranslate"><span class="pre">receive</span></code>
-and <code class="docutils literal notranslate"><span class="pre">cancel</span></code> methods.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> has a new <code class="docutils literal notranslate"><span class="pre">dispatch</span></code> public method, which can be
+<a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.task" title="traits_futures.i_task_specification.ITaskSpecification.task"><code class="xref py py-meth docutils literal notranslate"><span class="pre">task</span></code></a>. (#425)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future" title="traits_futures.i_task_specification.ITaskSpecification.future"><code class="xref py py-meth docutils literal notranslate"><span class="pre">future</span></code></a> method now requires a cancellation callback to be passed.
+(#414)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface has a new <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture.receive" title="traits_futures.i_task_specification.IFuture.receive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">receive</span></code></a> method which receives
+messages from the background task. (#396)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface is much smaller, containing only the <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture.receive" title="traits_futures.i_task_specification.IFuture.receive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">receive</span></code></a>
+and <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> methods. (#431, #436, #428)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> has a new <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch" title="traits_futures.base_future.BaseFuture.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch</span></code></a> public method, which can be
 overridden in subclasses in order to customize the dispatch of messages
 received from the associated task. The default implementation dispatches to
-methods named <code class="docutils literal notranslate"><span class="pre">_process_&lt;msgtype&gt;</span></code>, as before.</p></li>
+methods named <code class="docutils literal notranslate"><span class="pre">_process_&lt;msgtype&gt;</span></code>, as before. (#427)</p></li>
 </ul>
 <p>See the documentation for more details on how to create custom task types.</p>
 </li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">traits_futures.toolkits</span></code> setuptools entry point group used for
+supplying custom toolkit support has been renamed to
+<code class="docutils literal notranslate"><span class="pre">traits_futures.event_loops</span></code>. The old “toolkit”-based names have been
+converted to “event-loop”-based names throughout. (#312, #365)</p></li>
+<li><p>The toolkit / event-loop contribution machinery has been significantly
+reworked. The interface for contributing new event loops is currently
+undocumented and should be considered experimental: the API may change in
+future releases. (#298, #300)</p></li>
 </ul>
 </div>
 <div class="section" id="fixes">
@@ -158,94 +199,134 @@ methods named <code class="docutils literal notranslate"><span class="pre">_proc
 <ul class="simple">
 <li><p>The message routing machinery will no longer block indefinitely in the
 (hypothetical) event that no message exists to be retrieved on the message
-queue. Instead, it will fail fast with a <code class="docutils literal notranslate"><span class="pre">QueueError</span></code> exception. This
+queue. Instead, it will fail fast with a <a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Empty" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">queue.Empty</span></code></a> exception. This
 situation should never happen in normal use; please report it if you ever
-witness it.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">TaskCancelled</span></code> exception used by the background task submitted
-via <code class="docutils literal notranslate"><span class="pre">submit_progress</span></code> is now public, in case that task needs to catch
-the exception.</p></li>
-<li><p>The marshal_exception function has been fixed not to rely on the global
-<code class="docutils literal notranslate"><span class="pre">sys.exception_info</span></code> state.</p></li>
-<li><p>A bogus “message” trait that never did anything has been removed from
-<code class="docutils literal notranslate"><span class="pre">IFuture</span></code>.</p></li>
-<li><p>The cancellation callback supplied to a <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> instance is now always
-cleared when the future completes. Previously the <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> object
-would sometimes hold onto the reference to the cancellation callback.</p></li>
+witness it. (#413)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.TaskCancelled" title="traits_futures.base_future.TaskCancelled"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a> exception used by the background task submitted
+via <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> is now public and exposed in <a class="reference internal" href="api/traits_futures.api.html#module-traits_futures.api" title="traits_futures.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures.api</span></code></a>, in
+case that task needs to catch the exception. (#449, #317)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception" title="traits_futures.exception_handling.marshal_exception"><code class="xref py py-func docutils literal notranslate"><span class="pre">marshal_exception</span></code></a> function has been fixed not to rely on the global
+<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.exc_info" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.exc_info</span></code></a> state. (#390)</p></li>
+<li><p>A spurious “message” trait that never did anything has been removed from
+<a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a>. (#394)</p></li>
+<li><p>The cancellation callback supplied to a <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance is now always
+cleared when the future completes. Previously the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> object
+would sometimes hold onto the reference to the cancellation callback. (#389)</p></li>
 </ul>
 </div>
 <div class="section" id="continuous-integration-and-build">
 <h2>Continuous integration and build<a class="headerlink" href="#continuous-integration-and-build" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The default GitHub branch has been renamed from “master” to “main”.</p></li>
-<li><p>Continuous integration has been migrated from Travis CI and Appveyor
-to GitHub Actions. The per-commit tests are run on Linux and Windows, on
-Python 3.6 and Python 3.8. There are several GitHub Actions workflows in
-addition to the normal CI testing workflow (<code class="docutils literal notranslate"><span class="pre">run-tests.yml</span></code>):</p>
+<li><p>The default GitHub branch has been renamed from “master” to “main”. (#277)</p></li>
+<li><p>Continuous integration has been migrated to GitHub Actions. The per-commit
+tests are run on Linux and Windows, on Python 3.6 and Python 3.8. There are
+several GitHub Actions workflows:</p>
 <ul>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">run-tests.yml</span></code> workflow runs the test suite on each commit to
+an open PR. (#237)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">check-style.yml</span></code> workflow performs style checks are using <code class="docutils literal notranslate"><span class="pre">black</span></code>,
+<code class="docutils literal notranslate"><span class="pre">isort</span></code>, <code class="docutils literal notranslate"><span class="pre">flake8</span></code> and <code class="docutils literal notranslate"><span class="pre">flake8-ets</span></code> on each commit to an open PR.
+(#416, #266)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">test-docs.yml</span></code> workflow performs a nitpicky documentation build
+check on each commit to an open PR. (#265)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">build-docs.yml</span></code> workflow provides automated documentation builds
 deployed to <a class="reference external" href="https://docs.enthought.com/traits-futures/dev/index.html">https://docs.enthought.com/traits-futures/dev/index.html</a> on
-each PR merge to the main branch.</p></li>
+each PR merge to the main branch. (#257, #262, #264, #259)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">publish-on-pypi.yml</span></code> workflow automatically uploads a wheel and
-sdist to PyPI when a GitHub release is created.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">test-docs.yml</span></code> workflow performs a nitpicky documentation build
-check on each commit to an open PR.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">check-style.yml</span></code> workflow performs style checks are using <code class="docutils literal notranslate"><span class="pre">black</span></code>,
-<code class="docutils literal notranslate"><span class="pre">isort</span></code>, <code class="docutils literal notranslate"><span class="pre">flake8</span></code> and <code class="docutils literal notranslate"><span class="pre">flake8-ets</span></code> on each commit to an open PR.</p></li>
+sdist to PyPI when a GitHub release is created. (#439)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">weekly-scheduled-tests.yml</span></code> workflow runs comprehensive tests on
 a weekly basis, and reports success or failure back to a relevant Enthought
-Slack channel.</p></li>
+Slack channel. (#410, #303, #297)</p></li>
 </ul>
 </li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">ci</span></code> tool now supports <code class="docutils literal notranslate"><span class="pre">-h</span></code> for getting help.</p></li>
-<li><p>Tests are always run under <code class="docutils literal notranslate"><span class="pre">faulthandler</span></code>.</p></li>
-<li><p>Example files are now included in the various style checks.</p></li>
+<li><p>Travis CI and Appveyor configurations have been removed. (#270, #267)</p></li>
+<li><p>CI runs for Qt now use PySide2 in preference to PyQt5. (#233)</p></li>
+<li><p>Style checks now use <code class="docutils literal notranslate"><span class="pre">isort</span></code> rather than <code class="docutils literal notranslate"><span class="pre">flake8-import-order</span></code>. (#285)</p></li>
+<li><p>Copyright headers are now checked using the <code class="docutils literal notranslate"><span class="pre">flake8-ets</span></code> package instead
+of local custom code. (#234)</p></li>
+<li><p>Tests are always run under <code class="docutils literal notranslate"><span class="pre">faulthandler</span></code>. (#337)</p></li>
+<li><p>All example scripts except one are now subject to style checking. (#374,
+#287)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ci</span></code> tool now supports <code class="docutils literal notranslate"><span class="pre">-h</span></code> for getting help. (#235)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ci</span></code> tool now uses the EDM executable instead of the batch file on
+Windows, preventing mangling of version modifiers on package requirements.
+(#247)</p></li>
+<li><p>Miscellanous minor build changes and fixes. (#408, #368, #279)</p></li>
 </ul>
 </div>
 <div class="section" id="packaging-changes">
 <h2>Packaging changes<a class="headerlink" href="#packaging-changes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Python 3.6 or later is now required.</p></li>
-<li><p>Traits 6.2 or later is now required.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">setuptools</span></code> is no longer a runtime dependency.</p></li>
+<li><p>Python 3.6 or later is now required. (#239)</p></li>
+<li><p>Python 3.10 is now supported. (#454)</p></li>
+<li><p>Traits 6.2 or later is now required. (#373)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> package is no longer a runtime dependency. (#240)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">setup</span></code> file now declares <code class="docutils literal notranslate"><span class="pre">extras_require</span></code> for additional
-dependencies such as <code class="docutils literal notranslate"><span class="pre">docs</span></code>, <code class="docutils literal notranslate"><span class="pre">pyqt5</span></code> and <code class="docutils literal notranslate"><span class="pre">pyside2</span></code>.</p></li>
+dependencies such as <code class="docutils literal notranslate"><span class="pre">docs</span></code>, <code class="docutils literal notranslate"><span class="pre">pyqt5</span></code> and <code class="docutils literal notranslate"><span class="pre">pyside2</span></code>. (#451)</p></li>
 </ul>
 </div>
-<div class="section" id="test-suite">
-<h2>Test suite<a class="headerlink" href="#test-suite" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The test suite now uses the <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> event loop for the majority of
+<li><p>The test suite now uses the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop for the majority of
 its tests. It uses the Qt or Wx event loop only for tests specific to
-those toolkits.</p></li>
+those toolkits. (#321, #319, #315)</p></li>
+<li><p>Most tests now use the new <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method for executor shutdown. (#386)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> has been renamed to <a class="reference internal" href="api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant" title="traits_futures.testing.test_assistant.TestAssistant"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TestAssistant</span></code></a>, to avoid
+confusion with Pyface’s <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code>. This class is not yet part
+of the Traits Futures API, and users should avoid depending on it. (#388)</p></li>
+<li><p>The <a class="reference internal" href="api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant" title="traits_futures.testing.test_assistant.TestAssistant"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TestAssistant</span></code></a> is no longer toolkit-specific; the toolkit-specific
+component has been pulled into a new <a class="reference internal" href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper" title="traits_futures.i_event_loop_helper.IEventLoopHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoopHelper</span></code></a> interface, with
+implementations of that interface for each supported toolkit. (#307)</p></li>
+<li><p>New <a class="reference internal" href="api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop" title="traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exercise_event_loop</span></code></a> method on the <a class="reference internal" href="api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant" title="traits_futures.testing.test_assistant.TestAssistant"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TestAssistant</span></code></a>. (#377)</p></li>
+<li><p>Improve testing for the case of an externally-supplied worker pool. (#343)</p></li>
 </ul>
 </div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New “overview” documentation section explaining why Traits Futures exists
-and what problems it solves.</p></li>
-<li><p>New documentation section on testing code that uses Traits Futures.</p></li>
-<li><p>A “Read the Docs” configuration file has been added.</p></li>
-<li><p>The changelog is now maintained as part of the documentation.</p></li>
-<li><p>All examples are now part of the documentation.</p></li>
-<li><p>All example scripts are downloadable from the documentation.</p></li>
-<li><p>All examples now use the new <code class="docutils literal notranslate"><span class="pre">observe</span></code> machinery instead of
-<code class="docutils literal notranslate"><span class="pre">on_trait_change</span></code>.</p></li>
+and what problems it solves. (#325, #327)</p></li>
+<li><p>New documentation section on testing code that uses Traits Futures. (#278)</p></li>
+<li><p>A “Read the Docs” configuration file has been added. (#411)</p></li>
+<li><p>The changelog is now maintained as part of the documentation. (#447, #363,
+#350, #458)</p></li>
+<li><p>All examples are now part of the documentation. (#355)</p></li>
+<li><p>All example scripts are downloadable from the documentation. (#353)</p></li>
+<li><p>All examples now use the new Traits <code class="docutils literal notranslate"><span class="pre">observe</span></code> machinery instead of
+<code class="docutils literal notranslate"><span class="pre">on_trait_change</span></code>. (#441, #371, #370)</p></li>
+<li><p>All examples have been updated to use the new <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method. (#385, #423)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span></code> autogeneration step is now run automatically as
-part of the normal Sphinx build.</p></li>
-<li><p>Sphinx 3.5 or later is now required to build the documentation.</p></li>
+part of the normal Sphinx build. (#348)</p></li>
+<li><p>Sphinx 3.5 or later is now required to build the documentation. (#357)</p></li>
+<li><p>Avoid using Sphinx 4.x until it has better stability. (#457)</p></li>
 <li><p>Development information has been removed from <code class="docutils literal notranslate"><span class="pre">README.rst</span></code>, and moved into
-a separate <code class="docutils literal notranslate"><span class="pre">DEVELOP.rst</span></code> file.</p></li>
+a separate <code class="docutils literal notranslate"><span class="pre">DEVELOP.rst</span></code> file. (#352)</p></li>
 <li><p>Various Sphinx warnings from a combination of napoleon and autodoc have been
-fixed, and the documentation now builds cleanly in “nitpicky” mode.</p></li>
+fixed, and the documentation now builds cleanly in “nitpicky” mode. (#429,
+#430, #424, #422, #400, #406, #405, #404, #403, #402, #401)</p></li>
 <li><p>The example scripts displayed directly in the documentation no longer
-include the copyright headers.</p></li>
-<li><p>The autodoc templates are no longer missing a newline at EOF.</p></li>
+include the copyright headers. (#326)</p></li>
+<li><p>The autodoc templates are no longer missing a newline at EOF. (#260)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">pi_iterations</span></code> example has been fixed to give correct counts.
 Previously it was giving incorrect results as a result of NumPy integer
-overflow.</p></li>
+overflow. (#249)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">prime_counting</span></code> example has been fixed to avoid an occasional
-<code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> under unusual timing conditions.</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> under unusual timing conditions. (#450)</p></li>
+<li><p>Miscellaneous cleanups and minor fixes. (#421, #455, #292, #223, #221)</p></li>
+</ul>
+</div>
+<div class="section" id="internal-refactoring">
+<h2>Internal refactoring<a class="headerlink" href="#internal-refactoring" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Significant internal refactoring to better decouple the toolkit
+implementation from the message routing, to decouple the future
+implementation from the executor, and to make toolkit selection easier.
+(#392, #381, #382, #364, #362, #360, #332, #331,
+#306, #282, #255, #231, #226, #227)</p></li>
+<li><p>Other minor fixes and non-user-facing changes. (#415, #397, #393,
+#384, #376, #372, #361, #347, #349, #346, #342, #338, #336, #335,
+#330, #323, #309, #308, #286, #276, #232, #213, #212)</p></li>
 </ul>
 </div>
 </div>
@@ -326,8 +407,8 @@ and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
 <li><p>Don’t create a new message router at executor shutdown time. (#187)</p></li>
 </ul>
 </div>
-<div class="section" id="tests">
-<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Tests<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fix some intermittent test failures due to test interactions. (#176)</p></li>
 <li><p>The ‘null’ backend that’s used for testing in the absence of a Qt backend
@@ -354,8 +435,8 @@ environment. (#104)</p></li>
 <li><p>Don’t pin dependent packages in the build environment. (#99)</p></li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>Documentation<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Update docs to use the Enthought Sphinx Theme. (#128)</p></li>
 <li><p>Autogenerated API documentation is now included in the documentation
@@ -373,15 +454,15 @@ under ‘User Documentation’. (#191)</p></li>
 <p>This is a bugfix release, in preparation for the first public release to PyPI.
 There are no functional or API changes to the core library since 0.1.0 in this
 release.</p>
-<div class="section" id="id5">
-<h2>Fixes<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>Fixes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
 in #118)</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>Changes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>Changes<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add copyright headers to all Python and reST files. (#114, backported in
 #118)</p></li>
@@ -413,27 +494,30 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Release 0.3.0</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#migration-guide">Migration guide</a></li>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#changes">Changes</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 <li><a class="reference internal" href="#continuous-integration-and-build">Continuous integration and build</a></li>
 <li><a class="reference internal" href="#packaging-changes">Packaging changes</a></li>
-<li><a class="reference internal" href="#test-suite">Test suite</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#internal-refactoring">Internal refactoring</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-2-0">Release 0.2.0</a><ul>
 <li><a class="reference internal" href="#id1">Features</a></li>
 <li><a class="reference internal" href="#id2">Changes</a></li>
 <li><a class="reference internal" href="#id3">Fixes</a></li>
-<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#id4">Tests</a></li>
 <li><a class="reference internal" href="#developer-tooling">Developer tooling</a></li>
-<li><a class="reference internal" href="#id4">Documentation</a></li>
+<li><a class="reference internal" href="#id5">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-1-1">Release 0.1.1</a><ul>
-<li><a class="reference internal" href="#id5">Fixes</a></li>
-<li><a class="reference internal" href="#id6">Changes</a></li>
+<li><a class="reference internal" href="#id6">Fixes</a></li>
+<li><a class="reference internal" href="#id7">Changes</a></li>
 <li><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>
