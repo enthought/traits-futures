@@ -60,7 +60,8 @@ Features
 * Improved shutdown: there's a new :meth:`~.TraitsExecutor.shutdown` method,
   suitable for use at process exit time, or in unit tests. This method is
   blocking: it waits for tasks created by the executor to completed, and then
-  shuts down all resources associated with the executor. (#419, #395, #380, #378, #334)
+  shuts down all resources associated with the executor. (#419, #395, #380,
+  #378, #334)
 * Improved logging: there's now debug-level logging of key state changes
   and interactions, to aid in post-mortem debugging. (#296, #293)
 
@@ -171,7 +172,8 @@ Continuous integration and build
 * Copyright headers are now checked using the ``flake8-ets`` package instead
   of local custom code. (#234)
 * Tests are always run under ``faulthandler``. (#337)
-* All example scripts except one are now subject to style checking. (#374, #287)
+* All example scripts except one are now subject to style checking. (#374,
+  #287)
 * The ``ci`` tool now supports ``-h`` for getting help. (#235)
 * The ``ci`` tool now uses the EDM executable instead of the batch file on
   Windows, preventing mangling of version modifiers on package requirements.
@@ -211,7 +213,8 @@ Documentation
   and what problems it solves. (#325, #327)
 * New documentation section on testing code that uses Traits Futures. (#278)
 * A "Read the Docs" configuration file has been added. (#411)
-* The changelog is now maintained as part of the documentation. (#447, #363, #350)
+* The changelog is now maintained as part of the documentation. (#447, #363,
+  #350)
 * All examples are now part of the documentation. (#355)
 * All example scripts are downloadable from the documentation. (#353)
 * All examples now use the new ``observe`` machinery instead of
