@@ -15,6 +15,9 @@ Release 0.3.0
 
 Release date: 2021-07-XX
 
+Summary
+~~~~~~~
+
 This is a feature release of Traits Futures, with a some minor backwards
 incompatible changes that users should be aware of. New features include
 multiprocessing support, wxPython support, support for delivering events using
@@ -26,12 +29,17 @@ Migrating to Traits Futures 0.3.0
 
 The majority of existing code using Traits Futures 0.2.0 should continue to
 work with Traits Futures 0.3.0 with no changes. However, there are some minor
-changes that could affect current code:
+changes that could affect current code, and some major backwards-incompatible
+changes for anyone making use of the |ITaskSpecification| interface to create
+their own background task types. For the |ITaskSpecification| changes, see
+the detailed PR-by-PR change list below.
 
 * The |cancel| method on a future no longer raise a |RuntimeError| exception
   when a future is not cancellable; instead, it silently does nothing. Code
   that needs to distinguish can use the new return value of the |cancel| method
   to determine whether the |cancel| call actually caused cancellation to occur.
+  Code that currently checks the |cancellable| property before cancelling
+  should be able to safely drop that check.
 * The |executor_state| trait of a |TraitsExecutor| is no longer writable.
 * The ``executor`` and ``callable`` parameters to the |submit_call|,
   |submit_iteration| and |submit_progress| functions may become
@@ -417,6 +425,7 @@ and progress-reporting tasks for Traits UI applications based on Qt.
 .. |BaseFuture| replace:: :class:`~.BaseFuture`
 .. |BaseTask| replace:: :class:`~.BaseTask`
 .. |cancel| replace:: :meth:`~.BaseFuture.cancel`
+.. |cancellable| replace:: :attr:`~.BaseFuture.cancellable`
 .. |cancelled| replace:: :meth:`~.BaseTask.cancelled`
 .. |CANCELLING| replace:: :data:`~.CANCELLING`
 .. |dispatch| replace:: :meth:`~.BaseFuture.dispatch`
@@ -425,6 +434,7 @@ and progress-reporting tasks for Traits UI applications based on Qt.
 .. |future| replace:: :meth:`~.ITaskSpecification.future`
 .. |IEventLoopHelper| replace:: :class:`~.IEventLoopHelper`
 .. |IFuture| replace:: :class:`~.IFuture`
+.. |ITaskSpecification| replace:: :class:`~.ITaskSpecification`
 .. |marshal_exception| replace:: :func:`~.marshal_exception`
 .. |receive| replace:: :meth:`~.IFuture.receive`
 .. |run| replace:: :meth:`~.BaseTask.run`
