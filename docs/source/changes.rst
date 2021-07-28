@@ -30,12 +30,11 @@ changes that could affect current code:
 
 * The |cancel| method on a future no longer raise a |RuntimeError| exception
   when a future is not cancellable; instead, it silently does nothing. Code
-  that needs to distinguish can use the new return value of the ``cancel``
-  method to determine whether the ``cancel`` call actually caused cancellation
-  to occur.
+  that needs to distinguish can use the new return value of the |cancel| method
+  to determine whether the |cancel| call actually caused cancellation to occur.
 * The |executor_state| trait of a |TraitsExecutor| is no longer writable.
-* The ``executor`` and ``callable`` parameters to the ``submit_call``,
-  ``submit_iteration`` and ``submit_progress`` functions may become
+* The ``executor`` and ``callable`` parameters to the |submit_call|,
+  |submit_iteration| and |submit_progress| functions may become
   positional-only in a future version of Traits Futures. If you're passing
   arguments by name instead of by position (for example using
   ``submit_call(executor=my_executor, callable=do_calculation, ...)``), you
@@ -47,7 +46,7 @@ A detailed list of changes follows.
 Features
 ~~~~~~~~
 
-* Multiprocessing support: the :class:`~.TraitsExecutor` can now submit
+* Multiprocessing support: the |TraitsExecutor| can now submit
   background tasks to a process pool instead of a thread pool. Since this
   support has not yet been tested in the wild, this support should be
   considered provisional for now - the API and the capabilities may change in a
@@ -57,7 +56,7 @@ Features
 * asyncio support: the executor can make use of an asyncio event loop in place
   of a GUI toolkit event loop. This is potentially useful in unit tests, and
   when running headless. (#314, #322)
-* Improved shutdown: there's a new :meth:`~.TraitsExecutor.shutdown` method,
+* Improved shutdown: there's a new |shutdown| method,
   suitable for use at process exit time, or in unit tests. This method is
   blocking: it waits for tasks created by the executor to completed, and then
   shuts down all resources associated with the executor. (#419, #395, #380,
@@ -68,23 +67,23 @@ Features
 Changes
 ~~~~~~~
 
-* The ``cancel`` method of a future no longer raises :exc:`RuntimeError` when a
+* The |cancel| method of a future no longer raises |RuntimeError| when a
   future is not cancellable. If a task has already completed, or has previously
-  been cancelled, calling ``cancel`` on the associated future does not change
+  been cancelled, calling |cancel| on the associated future does not change
   the state of the future, and the call returns ``False``. Otherwise it changes
-  the future's state to ``CANCELLING``, requests cancellation of the associated
+  the future's state to |CANCELLING|, requests cancellation of the associated
   task, and returns ``True``. (#420)
-* The ``state`` trait of the ``~.TraitsExecutor`` is now read-only;
+* The |executor_state| trait of the |TraitsExecutor| is now read-only;
   previously, it was writable. (#344)
-* The ``executor`` and ``callable`` arguments to the ``submit_call``,
-  ``submit_iteration`` and ``submit_progress`` convenience functions should
+* The ``executor`` and ``callable`` arguments to the |submit_call|,
+  |submit_iteration| and |submit_progress| convenience functions should
   be considered positional-only, and should not be passed by name. This
   restriction may be enforced in a future version of the library. (#409)
 * The string representation of the exception type created by
-  ``marshal_exception`` has been simplified: instead of appearing in the form
+  |marshal_exception| has been simplified: instead of appearing in the form
   ``"<class 'traits.trait_errors.TraitError'>"``, it has the form
   ``"traits.trait_errors.TraitError"``. (#391)
-* Tasks may now only be submitted to a ``~.TraitsExecutor`` on the main thread.
+* Tasks may now only be submitted to a |TraitsExecutor| on the main thread.
   An attempt to submit a task from a thread other than the main thread will
   raise |RuntimeError|. (#305)
 * The ``traits_futures.toolkits`` setuptools entry point group used for
@@ -98,18 +97,18 @@ Changes
 
   * A new |BaseTask| abstract base class, which can be subclassed to create
     custom background tasks. Those background tasks should override the
-    ``run`` method, which takes no arguments. The |BaseTask| provides
-    ``send`` and ``cancelled`` methods to send messages to the associated
+    |run| method, which takes no arguments. The |BaseTask| provides
+    |send| and |cancelled| methods to send messages to the associated
     future, and to check for cancellation requests. (#435, #426)
   * The ``ITaskSpecification.background_task`` method has been renamed to
-    ``task``. (#425)
-  * The ``ITaskSpecification.future`` method now requires a cancellation
-    callback to be passed. (#414)
-  * The ``IFuture`` interface has a new ``receive`` method which receives
+    |task|. (#425)
+  * The |future| method now requires a cancellation callback to be passed.
+    (#414)
+  * The |IFuture| interface has a new |receive| method which receives
     messages from the background task. (#396)
-  * The ``IFuture`` interface is much smaller, containing only the ``receive``
-    and ``cancel`` methods. (#431, #436, #428)
-  * The ``BaseFuture`` has a new ``dispatch`` public method, which can be
+  * The |IFuture| interface is much smaller, containing only the |receive|
+    and |cancel| methods. (#431, #436, #428)
+  * The |BaseFuture| has a new |dispatch| public method, which can be
     overridden in subclasses in order to customize the dispatch of messages
     received from the associated task. The default implementation dispatches to
     methods named ``_process_<msgtype>``, as before. (#427)
@@ -128,18 +127,18 @@ Fixes
 
 * The message routing machinery will no longer block indefinitely in the
   (hypothetical) event that no message exists to be retrieved on the message
-  queue. Instead, it will fail fast with a ``QueueError`` exception. This
+  queue. Instead, it will fail fast with a |queue.Empty| exception. This
   situation should never happen in normal use; please report it if you ever
   witness it. (#413)
 * The |TaskCancelled| exception used by the background task submitted
   via |submit_progress| is now public and exposed in |traits_futures.api|, in
   case that task needs to catch the exception. (#449, #317)
 * The |marshal_exception| function has been fixed not to rely on the global
-  ``sys.exception_info`` state. (#390)
+  |sys.exc_info| state. (#390)
 * A spurious "message" trait that never did anything has been removed from
   |IFuture|. (#394)
-* The cancellation callback supplied to a ``BaseFuture`` instance is now always
-  cleared when the future completes. Previously the ``BaseFuture`` object
+* The cancellation callback supplied to a |BaseFuture| instance is now always
+  cleared when the future completes. Previously the |BaseFuture| object
   would sometimes hold onto the reference to the cancellation callback. (#389)
 
 Continuous integration and build
@@ -198,12 +197,13 @@ Tests
   its tests. It uses the Qt or Wx event loop only for tests specific to
   those toolkits. (#321, #319, #315)
 * Most tests now use the new |shutdown| method for executor shutdown. (#386)
-* The ``GuiTestAssistant`` has been renamed to ``TestAssistant``, to avoid
+* The ``GuiTestAssistant`` has been renamed to |TestAssistant|, to avoid
   confusion with Pyface's ``GuiTestAssistant``. This class is not yet part
   of the Traits Futures API, and users should avoid depending on it. (#388)
-* The ``TestAssistant`` is no longer toolkit-specific; the toolkit-specific
-  component has been pulled into a new ``EventLoopHelper`` class. (#307)
-* New ``TestAssistant.exercise_event_loop`` method. (#377)
+* The |TestAssistant| is no longer toolkit-specific; the toolkit-specific
+  component has been pulled into a new |IEventLoopHelper| interface, with
+  implementations of that interface for each supported toolkit. (#307)
+* New |exercise_event_loop| method on the |TestAssistant|. (#377)
 * Improve testing for the case of an externally-supplied worker pool. (#343)
 
 Documentation
@@ -217,7 +217,7 @@ Documentation
   #350)
 * All examples are now part of the documentation. (#355)
 * All example scripts are downloadable from the documentation. (#353)
-* All examples now use the new ``observe`` machinery instead of
+* All examples now use the new Traits ``observe`` machinery instead of
   ``on_trait_change``. (#441, #371, #370)
 * All examples have been updated to use the new |shutdown| method. (#385, #423)
 * The ``sphinx-apidoc`` autogeneration step is now run automatically as
@@ -410,15 +410,31 @@ and progress-reporting tasks for Traits UI applications based on Qt.
 
 .. |asyncio| replace:: :mod:`asyncio`
 .. |AttributeError| replace:: :exc:`AttributeError`
+.. |queue.Empty| replace:: :exc:`queue.Empty`
 .. |RuntimeError| replace:: :exc:`RuntimeError`
+.. |sys.exc_info| replace:: :func:`sys.exc_info`
 
+.. |BaseFuture| replace:: :class:`~.BaseFuture`
 .. |BaseTask| replace:: :class:`~.BaseTask`
 .. |cancel| replace:: :meth:`~.BaseFuture.cancel`
+.. |cancelled| replace:: :meth:`~.BaseTask.cancelled`
+.. |CANCELLING| replace:: :data:`~.CANCELLING`
+.. |dispatch| replace:: :meth:`~.BaseFuture.dispatch`
 .. |executor_state| replace:: :attr:`~.TraitsExecutor.state`
+.. |exercise_event_loop| replace:: :meth:`~.TestAssistant.exercise_event_loop`
+.. |future| replace:: :meth:`~.ITaskSpecification.future`
+.. |IEventLoopHelper| replace:: :class:`~.IEventLoopHelper`
 .. |IFuture| replace:: :class:`~.IFuture`
 .. |marshal_exception| replace:: :func:`~.marshal_exception`
+.. |receive| replace:: :meth:`~.IFuture.receive`
+.. |run| replace:: :meth:`~.BaseTask.run`
+.. |send| replace:: :meth:`~.BaseTask.send`
 .. |shutdown| replace:: :meth:`~.TraitsExecutor.shutdown`
+.. |submit_call| replace:: :func:`~.submit_call`
+.. |submit_iteration| replace:: :func:`~.submit_iteration`
 .. |submit_progress| replace:: :func:`~.submit_progress`
+.. |task| replace:: :meth:`~.ITaskSpecification.task`
 .. |TaskCancelled| replace:: :exc:`~.TaskCancelled`
+.. |TestAssistant| replace:: :exc:`~.TestAssistant`
 .. |traits_futures.api| replace:: :mod:`traits_futures.api`
 .. |TraitsExecutor| replace:: :class:`~.TraitsExecutor`
