@@ -217,7 +217,7 @@ however, that the GUI will remain responsive and usable during those seconds.</p
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Shouldn&#39;t ever get here: CANCELLED, FAILED and COMPLETED</span>
             <span class="c1"># are the only possible final states of a future.</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected state: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Impossible state: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -404,7 +404,7 @@ making use of the above.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Shouldn&#39;t ever get here: CANCELLED, FAILED and COMPLETED</span>
             <span class="c1"># are the only possible final states of a future.</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected state: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Impossible state: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:result_event&quot;</span><span class="p">)</span>
