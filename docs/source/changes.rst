@@ -33,7 +33,7 @@ changes that could affect current code:
   that needs to distinguish can use the new return value of the ``cancel``
   method to determine whether the ``cancel`` call actually caused cancellation
   to occur.
-* The |state| trait of a |TraitsExecutor| is no longer writable.
+* The |executor_state| trait of a |TraitsExecutor| is no longer writable.
 * The ``executor`` and ``callable`` parameters to the ``submit_call``,
   ``submit_iteration`` and ``submit_progress`` functions may become
   positional-only in a future version of Traits Futures. If you're passing
@@ -403,3 +403,22 @@ Release date: 2018-08-08
 
 Initial release. Provides support for submitting background calls, iterations,
 and progress-reporting tasks for Traits UI applications based on Qt.
+
+
+..
+   substitutions
+
+.. |asyncio| replace:: :mod:`asyncio`
+.. |AttributeError| replace:: :exc:`AttributeError`
+.. |RuntimeError| replace:: :exc:`RuntimeError`
+
+.. |BaseTask| replace:: :class:`~.BaseTask`
+.. |cancel| replace:: :meth:`~.BaseFuture.cancel`
+.. |executor_state| replace:: :attr:`~.TraitsExecutor.state`
+.. |IFuture| replace:: :class:`~.IFuture`
+.. |marshal_exception| replace:: :func:`~.marshal_exception`
+.. |shutdown| replace:: :meth:`~.TraitsExecutor.shutdown`
+.. |submit_progress| replace:: :func:`~.submit_progress`
+.. |TaskCancelled| replace:: :exc:`~.TaskCancelled`
+.. |traits_futures.api| replace:: :mod:`traits_futures.api`
+.. |TraitsExecutor| replace:: :class:`~.TraitsExecutor`
