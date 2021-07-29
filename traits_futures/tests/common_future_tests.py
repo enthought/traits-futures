@@ -199,6 +199,11 @@ class CommonFutureTests:
         future = self.future_class(_cancel=dummy_cancel_callback)
         self.assertIsInstance(future, IFuture)
 
+    def test_zero_argument_instantiation(self):
+        # Regression test for enthought/traits-futures#466
+        future = self.future_class()
+        self.assertIsInstance(future, IFuture)
+
     def send_message(self, future, message, cancel_callback):
         """Send a particular message to a future."""
         if message == "A":
