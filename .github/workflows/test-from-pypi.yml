@@ -1,0 +1,88 @@
+name: Test installation from PyPI
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run at 05:27 UTC on the 6th and 20th of every month
+    - cron: '27 5 6,20 * *'
+
+jobs:
+  test-pypi-sdist:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9, 3.10]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Install Linux packages for Qt 5 support
+      run: |
+        sudo apt-get update
+        sudo apt-get install qt5-default
+        sudo apt-get install libxkbcommon-x11-0
+        sudo apt-get install libxcb-icccm4
+        sudo apt-get install libxcb-image0
+        sudo apt-get install libxcb-keysyms1
+        sudo apt-get install libxcb-randr0
+        sudo apt-get install libxcb-render-util0
+        sudo apt-get install libxcb-xinerama0
+      if: runner.os == 'Linux'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+    - name: Install package and test dependencies from PyPI sdist
+      run: |
+        python -m pip install --no-binary traits-futures traits-futures[pyside2]
+    - name: Create clean test directory
+      run: |
+        mkdir testdir
+    - name: Run the test suite
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        working-directory: testdir
+        run: python -m unittest discover -v traits-futures
+
+  test-pypi-wheel:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9, 3.10]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Install Linux packages for Qt 5 support
+      run: |
+        sudo apt-get update
+        sudo apt-get install qt5-default
+        sudo apt-get install libxkbcommon-x11-0
+        sudo apt-get install libxcb-icccm4
+        sudo apt-get install libxcb-image0
+        sudo apt-get install libxcb-keysyms1
+        sudo apt-get install libxcb-randr0
+        sudo apt-get install libxcb-render-util0
+        sudo apt-get install libxcb-xinerama0
+      if: runner.os == 'Linux'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+    - name: Install package and test dependencies from PyPI wheel
+      run: |
+        python -m pip install --only-binary traits-futures traits-futures[pyside2]
+    - name: Create clean test directory
+      run: |
+        mkdir testdir
+    - name: Run the test suite
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        working-directory: testdir
+        run: python -m unittest discover -v traits-futures
