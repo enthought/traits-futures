@@ -46,7 +46,7 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         working-directory: testdir
-        run: python -m unittest discover -v traits-futures
+        run: python -m unittest discover -v traits_futures
 
   test-pypi-wheel:
     strategy:
@@ -86,4 +86,4 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         working-directory: testdir
-        run: python -m unittest discover -v traits-futures
+        run: python -m unittest discover -v traits_futures
