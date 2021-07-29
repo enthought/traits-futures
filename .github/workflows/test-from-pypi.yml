@@ -1,7 +1,6 @@
 name: Test installation from PyPI
 
 on:
-  pull_request:
   workflow_dispatch:
   schedule:
     # Run at 05:27 UTC on the 6th and 20th of every month
