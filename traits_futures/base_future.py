@@ -20,7 +20,7 @@ from traits.api import (
     Bool,
     Callable,
     Enum,
-    HasRequiredTraits,
+    HasStrictTraits,
     observe,
     Property,
     Str,
@@ -142,7 +142,7 @@ class _StateTransitionError(Exception):
 
 
 @IFuture.register
-class BaseFuture(HasRequiredTraits):
+class BaseFuture(HasStrictTraits):
     """
     Convenience base class for the various flavours of Future.
     """
@@ -460,7 +460,7 @@ class BaseFuture(HasRequiredTraits):
 
     #: Callback called (with no arguments) when user requests cancellation.
     #: This is reset to ``None`` once cancellation is impossible.
-    _cancel = Callable(allow_none=True, required=True)
+    _cancel = Callable(allow_none=True)
 
     #: The internal state of the future.
     _internal_state = Enum(WAITING, list(_INTERNAL_STATE_TO_STATE))
