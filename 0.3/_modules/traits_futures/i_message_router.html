@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.i_message_router &mdash; Traits Futures 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.3.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.i_message_router</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Interfaces for message routers, senders and receivers.</span>
+
+<span class="sd">Background: messages from background tasks arrive in the foreground via</span>
+<span class="sd">a single channel (usually some flavour of thread-safe or process-safe queue),</span>
+<span class="sd">and need to be dispatched to the appropriate receiver. The message router</span>
+<span class="sd">is responsible for that dispatch.</span>
+
+<span class="sd">In more detail, an :class:`IMessageRouter` instance is responsible for:</span>
+
+<span class="sd">- Creating &quot;pipes&quot;. A pipe is a pair of linked :class:`IMessageSender` and</span>
+<span class="sd">  :class:`IMessageReceiver` objects that provide communications between a</span>
+<span class="sd">  background task and a foreground receiver.</span>
+<span class="sd">- Ensuring that messages are routed appropriately via a running event loop.</span>
+<span class="sd">- Disposing of pipes on request.</span>
+
+<span class="sd">The message routing layer of Traits Futures provides no meaning or structure to</span>
+<span class="sd">the actual messages passed; that&#39;s the job of the next layer up (the futures</span>
+<span class="sd">layer).</span>
+
+
+<span class="sd">Overview of the APIs</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">An object implementing :class:`IMessageRouter` has :meth:`IMessageRouter.start`</span>
+<span class="sd">and :meth:`IMessageRouter.stop` methods to start and stop message routing.</span>
+<span class="sd">Pipes can only be created or disposed of in a running router.</span>
+
+<span class="sd">Pipes are created via the :meth:`IMessageRouter.pipe` method, which returns a</span>
+<span class="sd">pair `(sender: IMessageSender, receiver: IMessageReceiver)`. The sender is</span>
+<span class="sd">typically then passed to a background task, where its</span>
+<span class="sd">:meth:`IMessageSender.send` method can be used to send messages to the</span>
+<span class="sd">foreground receiver. The receiver has a single :attr:`IMessageReceiver.message`</span>
+<span class="sd">event trait. Objects wishing to receive the messages sent by the sender should</span>
+<span class="sd">listen to that trait.</span>
+
+<span class="sd">A receiver can be &quot;closed&quot; by passing it to the</span>
+<span class="sd">:meth:`IMessageRouter.close_pipe` method. Any messages arriving from the paired</span>
+<span class="sd">sender after the receiver is closed will be discarded (and a warning will be</span>
+<span class="sd">logged for such messages).</span>
+
+<span class="sd">The sender object also has a :meth:`IMessageSender.start` method, which</span>
+<span class="sd">must be called in the background task before the sender can be used to send</span>
+<span class="sd">messages, and a :meth:`IMessageSender.stop` method, which should also be</span>
+<span class="sd">called in the background task in order to undo any resources allocated or</span>
+<span class="sd">connections made in the :meth:`IMessageSender.start` method.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Interface</span>
+
+<span class="c1"># Note: implementations of IMessageRouter and IMessageReceiver are expected to</span>
+<span class="c1"># be HasTraits classes, so we inherit from the Traits Interface class.</span>
+<span class="c1"># IMessageSender implementations are not expected to be HasTraits classes:</span>
+<span class="c1"># since the sender may be transferred to a background task (potentially</span>
+<span class="c1"># another process), it&#39;s deliberately kept as simple as possible to avoid</span>
+<span class="c1"># difficulties with that transfer (for example, with pickling).</span>
+
+
+<div class="viewcode-block" id="IMessageSender"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender">[docs]</a><span class="k">class</span> <span class="nc">IMessageSender</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">AbstractContextManager</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for objects used to send a message to the foreground.</span>
+
+<span class="sd">    Typically an IMessageSender instance for a given router is created</span>
+<span class="sd">    in the main thread by that router and then passed to the appropriate</span>
+<span class="sd">    background task, which then effectively takes &quot;ownership&quot; of that sender.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IMessageSender.start"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender.start">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do any setup necessary to prepare for sending messages.</span>
+
+<span class="sd">        This method must be called before any messages can be sent</span>
+<span class="sd">        using the ``send`` method.</span>
+
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the sender has previously been started.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageSender.send"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender.send">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a message to the router.</span>
+
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            Typically this will be immutable, small, and pickleable.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the sender has not been started, or has already been stopped.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageSender.stop"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender.stop">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do any teardown.</span>
+
+<span class="sd">        After this method has been called, no more messages can be sent.</span>
+
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the sender has not been started, or has already been stopped.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+
+
+<div class="viewcode-block" id="IMessageReceiver"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageReceiver">[docs]</a><span class="k">class</span> <span class="nc">IMessageReceiver</span><span class="p">(</span><span class="n">Interface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for the main-thread message receiver.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Event fired when a message is received from the paired sender.</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Any</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="IMessageRouter"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter">[docs]</a><span class="k">class</span> <span class="nc">IMessageRouter</span><span class="p">(</span><span class="n">Interface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for the main-thread message router.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IMessageRouter.start"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.start">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start routing messages.</span>
+
+<span class="sd">        This method must be called before any call to ``pipe`` or</span>
+<span class="sd">        ``close_pipe`` can be made.</span>
+
+<span class="sd">        Not thread-safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router has already been started.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageRouter.stop"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.stop">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop routing messages.</span>
+
+<span class="sd">        This method should be called in the main thread after all pipes</span>
+<span class="sd">        are finished with. Calls to ``pipe`` or ``close_pipe`` are</span>
+<span class="sd">        not permitted after this method has been called.</span>
+
+<span class="sd">        Logs a warning if there are unclosed pipes.</span>
+
+<span class="sd">        Not thread safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageRouter.pipe"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.pipe">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a (sender, receiver) pair for sending and receiving messages.</span>
+
+<span class="sd">        The sender will be passed to the background task and used to send</span>
+<span class="sd">        messages, while the receiver remains in the foreground.</span>
+
+<span class="sd">        Not thread safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sender : IMessageSender</span>
+<span class="sd">            Object to be passed to the background task.</span>
+<span class="sd">        receiver : IMessageReceiver</span>
+<span class="sd">            Object kept in the foreground, which reacts to messages.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router is not currently running.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageRouter.close_pipe"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.close_pipe">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">close_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the receiver end of a pipe produced by ``pipe``.</span>
+
+<span class="sd">        Removes the receiver from the routing table, so that no new messages</span>
+<span class="sd">        can reach that receiver.</span>
+
+<span class="sd">        Not thread safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        receiver : IMessageReceiver</span>
+<span class="sd">            Receiver half of the pair returned by the ``pipe`` method.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router is not currently running.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="IMessageRouter.route_until"><a class="viewcode-back" href="../../api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.route_until">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manually drive the router until a given condition occurs, or timeout.</span>
+
+<span class="sd">        This is primarily used as part of a clean shutdown.</span>
+
+<span class="sd">        Note: this has the side-effect of moving the router from &quot;event loop&quot;</span>
+<span class="sd">        mode to &quot;manual&quot; mode. This mode switch is permanent, in the sense that</span>
+<span class="sd">        after this point, the router will no longer respond to pings: any</span>
+<span class="sd">        messages will need to be processed through this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        condition</span>
+<span class="sd">            Zero-argument callable returning a boolean. When this condition</span>
+<span class="sd">            becomes true, this method will stop routing messages. If the</span>
+<span class="sd">            condition is already true on entry, no messages will be routed.</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum number of seconds to route messages for.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the condition did not become true before timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.i_task_specification module &mdash; Traits Futures 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.multiprocessing_context module" href="traits_futures.multiprocessing_context.html" >
+    <link rel="prev" title="traits_futures.i_pingee module" href="traits_futures.i_pingee.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.3.0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.multiprocessing_context.html" title="traits_futures.multiprocessing_context module"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.i_pingee.html" title="traits_futures.i_pingee module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.i_task_specification">
+<span id="traits-futures-i-task-specification-module"></span><h1>traits_futures.i_task_specification module<a class="headerlink" href="#module-traits_futures.i_task_specification" title="Permalink to this headline">¶</a></h1>
+<p>Interface for a job specification. The job specification is the object
+that the TraitsExecutor knows how to deal with.</p>
+<dl class="py class">
+<dt id="traits_futures.i_task_specification.IFuture">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">IFuture</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Interface for futures returned by the executor.</p>
+<p>This interface can be used to implement new background task types. It
+represents the knowledge that the executor needs to interact with futures.</p>
+<dl class="py method">
+<dt id="traits_futures.i_task_specification.IFuture.cancel">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">cancel</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request cancellation of the background task.</p>
+<p>For a future that has not yet completed and has not previously been
+cancelled, this method requests cancellation of the associated
+background task and returns <code class="docutils literal notranslate"><span class="pre">True</span></code>. For a future that has already
+completed, or that has previously been cancelled, this method
+does nothing, and returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>cancelled</strong> – True if the task was cancellable and this call requested
+cancellation, False if the task was not cancellable (in which case
+this call did nothing).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.i_task_specification.IFuture.receive">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">receive</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive and process a message from the task associated to this future.</p>
+<p>This method is primarily for use by the executors, but may also be of
+use in testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>final</strong> – True if the received message should be the last one ever received
+from the paired task.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.i_task_specification.ITaskSpecification">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">ITaskSpecification</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Specify background task callable and foreground future for a task.</p>
+<p>An object implementing the ITaskSpecification interface describes how to
+create a background task and a corresponding foreground future to execute a
+particular type of background task. It’s consumed by the TraitsExecutor
+when submitting background tasks, and implemented by BackgroundCall,
+BackgroundIteration and others.</p>
+<dl class="py method">
+<dt id="traits_futures.i_task_specification.ITaskSpecification.future">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">future</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cancel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.future"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.future" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Future for the background task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cancel</strong> – Zero-argument callable, returning no useful result. The returned
+future’s <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method should call this to request cancellation
+of the associated background task.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>future</strong> – Future object that can be used to monitor the status of the
+background task.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.i_task_specification.ITaskSpecification.task">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">task</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification.task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the callable that will be invoked as the background task.</p>
+<p>This callable should be pickleable and should have the signature</p>
+<blockquote>
+<div><p>task(send, cancelled)</p>
+</div></blockquote>
+<p>Any exception raised while executing the callable, or result returned
+by the callable, will be recorded in the corresponding future.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">send</span></code> argument can be used by the background task to send
+messages back to the main thread of execution. It’s a callable that
+should be called as <code class="docutils literal notranslate"><span class="pre">send(message)</span></code>, where <code class="docutils literal notranslate"><span class="pre">message</span></code> is an
+arbitrary Python object. The argument to <code class="docutils literal notranslate"><span class="pre">send</span></code> should typically be
+both immutable and pickleable. <code class="docutils literal notranslate"><span class="pre">send</span></code> returns no useful result.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> argument may be used by the background task to check
+whether cancellation has been requested. When called with no arguments,
+it returns either <code class="docutils literal notranslate"><span class="pre">True</span></code> to indicate that cancellation has been
+requested, or <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Note that there’s no obligation for the background task to check the
+cancellation status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>task</strong> – Callable accepting arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The
+callable can use <code class="docutils literal notranslate"><span class="pre">send</span></code> to send messages and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> to
+check whether cancellation has been requested.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.i_pingee.html"
+                        title="previous chapter">traits_futures.i_pingee module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.multiprocessing_context.html"
+                        title="next chapter">traits_futures.multiprocessing_context module</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.i_task_specification.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

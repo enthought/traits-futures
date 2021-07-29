@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.background_call &mdash; Traits Futures 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.3.0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.3.0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.background_call</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Background task consisting of a simple callable.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span><span class="p">,</span> <span class="n">BaseTask</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
+
+
+<div class="viewcode-block" id="CallTask"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallTask">[docs]</a><span class="k">class</span> <span class="nc">CallTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper around the actual callable to be run. This wrapper provides the</span>
+<span class="sd">    task that will be submitted to the concurrent.futures executor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callable</span> <span class="o">=</span> <span class="n">callable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+<div class="viewcode-block" id="CallTask.run"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CallFuture"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture">[docs]</a><span class="k">class</span> <span class="nc">CallFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object representing the front-end handle to a background call.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="BackgroundCall"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall">[docs]</a><span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">BackgroundCall</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object representing the background call to be executed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The callable to be executed.</span>
+    <span class="n">callable</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">()</span>
+
+    <span class="c1">#: Positional arguments to be passed to the callable.</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">()</span>
+
+    <span class="c1">#: Named arguments to be passed to the callable.</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Str</span><span class="p">())</span>
+
+<div class="viewcode-block" id="BackgroundCall.future"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.future">[docs]</a>    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        future : CallFuture</span>
+<span class="sd">            Future object that can be used to monitor the status of the</span>
+<span class="sd">            background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CallFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackgroundCall.task"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.task">[docs]</a>    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a background callable for this task specification.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        CallTask</span>
+<span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
+<span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
+<span class="sd">            check whether cancellation has been requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CallTask</span><span class="p">(</span>
+            <span class="n">callable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="submit_call"><a class="viewcode-back" href="../../api/traits_futures.background_call.html#traits_futures.background_call.submit_call">[docs]</a><span class="k">def</span> <span class="nf">submit_call</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Submit a simple call to an executor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    executor : TraitsExecutor</span>
+<span class="sd">        Executor to submit the task to. This argument should always be passed</span>
+<span class="sd">        by position rather than by name. Future versions of the library may</span>
+<span class="sd">        enforce this restriction.</span>
+<span class="sd">    callable</span>
+<span class="sd">        Callable to execute in the background. This argument should always be</span>
+<span class="sd">        passed by position rather than by name. Future versions of the library</span>
+<span class="sd">        may enforce this restriction.</span>
+<span class="sd">    *args</span>
+<span class="sd">        Positional arguments to pass to the callable.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Named arguments to pass to the callable.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    future : CallFuture</span>
+<span class="sd">        Object representing the state of the background call.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundCall</span><span class="p">(</span><span class="n">callable</span><span class="o">=</span><span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
