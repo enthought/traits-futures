@@ -35,11 +35,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
-    - name: Install package and test dependencies from PyPI wheel (with PySide2)
+    - name: Install package and test dependencies from PyPI sdist (with PySide2)
       run: |
         python -m pip install --no-binary traits-futures traits-futures[pyside2]
       if: ${{ matrix.python-version != '3.10-dev' }}
-    - name: Install package and test dependencies from PyPI wheel (no PySide2)
+    - name: Install package and test dependencies from PyPI sdist (no PySide2)
       # PySide2 does not yet work on Python 3.10; test without it.
       run: |
         python -m pip install --no-binary traits-futures traits-futures
