@@ -10,6 +10,20 @@
    Thanks for using Enthought open source!
 
 
+Release 0.3.1
+-------------
+
+Release date: 2021-07-30
+
+This is a bugfix release that fixes a regression introduced in version 0.3.0.
+
+Fixes
+~~~~~
+
+* Fix regression where |BaseFuture| subclasses could not be instantiated
+  without any arguments. (#467)
+
+
 Release 0.3.0
 -------------
 
