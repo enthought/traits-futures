@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.qt.pingee module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures.qt package" href="traits_futures.qt.html" >
+    <link rel="next" title="traits_futures.testing package" href="traits_futures.testing.html" >
+    <link rel="prev" title="traits_futures.qt.event_loop_helper module" href="traits_futures.qt.event_loop_helper.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
+          <li class="active"><a href="traits_futures.qt.html" accesskey="U">traits_futures.qt package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.testing.html" title="traits_futures.testing package"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.qt.event_loop_helper.html" title="traits_futures.qt.event_loop_helper module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.qt.pingee">
+<span id="traits-futures-qt-pingee-module"></span><h1>traits_futures.qt.pingee module<a class="headerlink" href="#module-traits_futures.qt.pingee" title="Permalink to this headline">¶</a></h1>
+<p>Qt cross-thread pinger.</p>
+<p>This module provides a way for a background thread to request that
+the main thread execute a (fixed, parameterless) callback.</p>
+<dl class="py class">
+<dt id="traits_futures.qt.pingee.Pingee">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.qt.pingee.</span></code><code class="sig-name descname"><span class="pre">Pingee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pingee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyface.qt.QtCore.</span></code></p>
+<p>Receiver for pings.</p>
+<p>Whenever a ping is received from a linked Pinger, the receiver
+calls the given fixed parameterless callable.</p>
+<p>The ping receiver must be connected (using the <code class="docutils literal notranslate"><span class="pre">connect</span></code>) method
+before use, and should call <code class="docutils literal notranslate"><span class="pre">disconnect</span></code> when it’s no longer
+expected to receive pings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>on_ping</strong> – Zero-argument callable that’s called on the main thread
+every time a ping is received.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.qt.pingee.Pingee.connect">
+<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pingee.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pingee.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare Pingee to receive pings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.qt.pingee.Pingee.disconnect">
+<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from the on_ping callable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.qt.pingee.Pingee.pinger">
+<code class="sig-name descname"><span class="pre">pinger</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pingee.pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pingee.pinger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and return a new pinger linked to this pingee.</p>
+<p>This method is thread-safe. Typically the pingee will be passed to
+a background thread, and this method used within that background thread
+to create a pinger.</p>
+<p>This method should only be called after the ‘connect’ method has
+been called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pinger</strong> – New pinger, linked to this pingee.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#traits_futures.qt.pingee.Pinger" title="traits_futures.qt.pingee.Pinger"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pinger</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="traits_futures.qt.pingee.Pinger">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.qt.pingee.</span></code><code class="sig-name descname"><span class="pre">Pinger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pinger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Ping emitter, which can send pings to a receiver in a thread-safe manner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pingee</strong> (<a class="reference internal" href="#traits_futures.qt.pingee.Pingee" title="traits_futures.qt.pingee.Pingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pingee</span></code></a>) – The target receiver for the pings. The receiver must already be
+connected.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.qt.pingee.Pinger.connect">
+<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pinger.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pinger.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the ping receiver. No pings should be sent until
+this function is called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.qt.pingee.Pinger.disconnect">
+<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pinger.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pinger.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from the ping receiver. No pings should be sent
+after calling this function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="traits_futures.qt.pingee.Pinger.ping">
+<code class="sig-name descname"><span class="pre">ping</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/qt/pingee.html#Pinger.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.qt.pingee.Pinger.ping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a ping to the receiver.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.qt.event_loop_helper.html"
+                        title="previous chapter">traits_futures.qt.event_loop_helper module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.testing.html"
+                        title="next chapter">traits_futures.testing package</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.qt.pingee.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

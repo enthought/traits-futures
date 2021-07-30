@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.traits_executor &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.traits_executor</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Executor to submit background tasks.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Bool</span><span class="p">,</span>
+    <span class="n">Enum</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">observe</span><span class="p">,</span>
+    <span class="n">Property</span><span class="p">,</span>
+    <span class="n">Set</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.background_call</span> <span class="kn">import</span> <span class="n">submit_call</span>
+<span class="kn">from</span> <span class="nn">traits_futures.background_iteration</span> <span class="kn">import</span> <span class="n">submit_iteration</span>
+<span class="kn">from</span> <span class="nn">traits_futures.background_progress</span> <span class="kn">import</span> <span class="n">submit_progress</span>
+<span class="kn">from</span> <span class="nn">traits_futures.ets_event_loop</span> <span class="kn">import</span> <span class="n">ETSEventLoop</span>
+<span class="kn">from</span> <span class="nn">traits_futures.executor_states</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ExecutorState</span><span class="p">,</span>
+    <span class="n">RUNNING</span><span class="p">,</span>
+    <span class="n">STOPPED</span><span class="p">,</span>
+    <span class="n">STOPPING</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop</span> <span class="kn">import</span> <span class="n">IEventLoop</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="kn">import</span> <span class="n">IParallelContext</span>
+<span class="kn">from</span> <span class="nn">traits_futures.multithreading_context</span> <span class="kn">import</span> <span class="n">MultithreadingContext</span>
+<span class="kn">from</span> <span class="nn">traits_futures.wrappers</span> <span class="kn">import</span> <span class="n">FutureWrapper</span><span class="p">,</span> <span class="n">run_background_task</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># The TraitsExecutor class maintains an internal state that maps to the</span>
+<span class="c1"># publicly visible state. The internal state keeps track of some extra</span>
+<span class="c1"># details about the shutdown.</span>
+
+<span class="c1">#: Internal state arising from a timeout on &quot;shutdown&quot;: all tasks have been</span>
+<span class="c1">#: cancelled and the background tasks have been unlinked from their</span>
+<span class="c1">#: corresponding futures, but some background tasks may still be executing.</span>
+<span class="c1">#: Maps to the STOPPING public state.</span>
+<span class="n">_TERMINATING</span> <span class="o">=</span> <span class="s2">&quot;terminating&quot;</span>
+
+<span class="c1">#: Mapping from each internal state to the corresponding user-visible state.</span>
+<span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">RUNNING</span><span class="p">:</span> <span class="n">RUNNING</span><span class="p">,</span>
+    <span class="n">STOPPING</span><span class="p">:</span> <span class="n">STOPPING</span><span class="p">,</span>
+    <span class="n">STOPPED</span><span class="p">:</span> <span class="n">STOPPED</span><span class="p">,</span>
+    <span class="n">_TERMINATING</span><span class="p">:</span> <span class="n">STOPPING</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">#: Set of internal states that are considered to be &quot;running&quot; states.</span>
+<span class="n">_RUNNING_INTERNAL_STATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">internal_state</span>
+    <span class="k">for</span> <span class="n">internal_state</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">RUNNING</span>
+<span class="p">}</span>
+
+<span class="c1">#: Set of internal states that are considered to be &quot;stopped&quot; states.</span>
+<span class="n">_STOPPED_INTERNAL_STATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">internal_state</span>
+    <span class="k">for</span> <span class="n">internal_state</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">STOPPED</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">_StateTransitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception used to indicate a bad state transition.</span>
+
+<span class="sd">    Users should never see this exception. It always indicates an error in the</span>
+<span class="sd">    executor logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="TraitsExecutor"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor">[docs]</a><span class="k">class</span> <span class="nc">TraitsExecutor</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executor to initiate and manage background tasks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    thread_pool : concurrent.futures.Executor, optional</span>
+<span class="sd">        Deprecated alias for worker_pool.</span>
+
+<span class="sd">        .. deprecated:: 0.2</span>
+<span class="sd">           Use ``worker_pool`` instead.</span>
+
+<span class="sd">    worker_pool : concurrent.futures.Executor, optional</span>
+<span class="sd">        If supplied, provides the underlying worker pool executor to use. In</span>
+<span class="sd">        this case, the creator of the TraitsExecutor is responsible for</span>
+<span class="sd">        shutting down the worker pool once it&#39;s no longer needed. If not</span>
+<span class="sd">        supplied, a new private worker pool will be created, and this object&#39;s</span>
+<span class="sd">        ``stop`` method will shut down that worker pool.</span>
+<span class="sd">    max_workers : int or None, optional</span>
+<span class="sd">        Maximum number of workers for the private worker pool. This parameter</span>
+<span class="sd">        is mutually exclusive with ``worker_pool``. The default is ``None``,</span>
+<span class="sd">        which delegates the choice of number of workers to Python&#39;s</span>
+<span class="sd">        ``concurrent.futures`` module.</span>
+<span class="sd">    context : IParallelContext, optional</span>
+<span class="sd">        Parallelism context, providing appropriate concurrent primitives</span>
+<span class="sd">        and worker pools for a given choice of parallelism (for example</span>
+<span class="sd">        multithreading or multiprocessing). If not given, assumes</span>
+<span class="sd">        multithreading. Note that if both ``context`` and ``worker_pool``</span>
+<span class="sd">        are given, they must be compatible.</span>
+<span class="sd">    event_loop : IEventLoop, optional</span>
+<span class="sd">        The event loop to use for message dispatch. If not given, uses an</span>
+<span class="sd">        :class:`~.ETSEventLoop` instance, which determines the appropriate</span>
+<span class="sd">        toolkit based on availability and the value of the ETS_TOOLKIT</span>
+<span class="sd">        environment variable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Current state of this executor.</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">ExecutorState</span><span class="p">)</span>
+
+    <span class="c1">#: Derived state: true if this executor is running; False if it&#39;s</span>
+    <span class="c1">#: stopped or stopping.</span>
+    <span class="n">running</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
+
+    <span class="c1">#: Derived state: true if this executor is stopped and it&#39;s safe</span>
+    <span class="c1">#: to dispose of related resources (like the worker pool).</span>
+    <span class="n">stopped</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">thread_pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">worker_pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">event_loop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">traits</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">traits</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">thread_pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;The thread_pool argument to TraitsExecutor is &quot;</span>
+                    <span class="s2">&quot;deprecated. Use worker_pool instead.&quot;</span>
+                <span class="p">),</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">worker_pool</span> <span class="o">=</span> <span class="n">thread_pool</span>
+
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
+
+        <span class="k">if</span> <span class="n">event_loop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
+
+        <span class="n">own_worker_pool</span> <span class="o">=</span> <span class="n">worker_pool</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">own_worker_pool</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> creating worker pool&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">worker_pool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">worker_pool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">(</span>
+                    <span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">max_workers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;at most one of &#39;worker_pool&#39; and &#39;max_workers&#39; &quot;</span>
+                <span class="s2">&quot;should be supplied&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span> <span class="o">=</span> <span class="n">worker_pool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_own_worker_pool</span> <span class="o">=</span> <span class="n">own_worker_pool</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> running&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TraitsExecutor.submit_call"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_call">[docs]</a>    <span class="k">def</span> <span class="nf">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience function to submit a background call.</span>
+
+<span class="sd">        .. deprecated:: 0.2</span>
+<span class="sd">           Use the :func:`~.submit_call` function instead.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        callable</span>
+<span class="sd">            Function to execute in the background.</span>
+<span class="sd">        *args</span>
+<span class="sd">            Positional arguments to pass to that function.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Named arguments to pass to that function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        future : CallFuture</span>
+<span class="sd">            Object representing the state of the background call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The submit_call method is deprecated. Use the submit_call &quot;</span>
+            <span class="s2">&quot;convenience function instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TraitsExecutor.submit_iteration"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">submit_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience function to submit a background iteration.</span>
+
+<span class="sd">        .. deprecated:: 0.2</span>
+<span class="sd">           Use the :func:`~.submit_iteration` function instead.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        callable</span>
+<span class="sd">            Function executed in the background to provide the iterable.</span>
+<span class="sd">        *args</span>
+<span class="sd">            Positional arguments to pass to that function.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Named arguments to pass to that function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        future : IterationFuture</span>
+<span class="sd">            Object representing the state of the background iteration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The submit_iteration method is deprecated. Use the &quot;</span>
+            <span class="s2">&quot;submit_iteration convenience function instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">submit_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TraitsExecutor.submit_progress"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_progress">[docs]</a>    <span class="k">def</span> <span class="nf">submit_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience function to submit a background progress call.</span>
+
+<span class="sd">        .. deprecated:: 0.2</span>
+<span class="sd">           Use the :func:`~.submit_progress` function instead.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        callable</span>
+<span class="sd">            Function executed in the background to provide the iterable. This</span>
+<span class="sd">            should accept a &quot;progress&quot; named argument. The callable can then</span>
+<span class="sd">            call the &quot;progress&quot; object to report progress.</span>
+<span class="sd">        *args</span>
+<span class="sd">            Positional arguments to pass to that function.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Named arguments to pass to that function. These should not include</span>
+<span class="sd">            &quot;progress&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        future : ProgressFuture</span>
+<span class="sd">            Object representing the state of the background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The submit_progress method is deprecated. Use the &quot;</span>
+            <span class="s2">&quot;submit_progress convenience function instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">submit_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TraitsExecutor.submit"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit a task to the executor, and return the corresponding future.</span>
+
+<span class="sd">        This method is not thread-safe. It may only be used from the main</span>
+<span class="sd">        thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        task : ITaskSpecification</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        future : IFuture</span>
+<span class="sd">            Future for this task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We may relax this one day, but for now tasks may only be submitted</span>
+        <span class="c1"># from the main thread. ref: enthought/traits-futures#302.</span>
+        <span class="k">if</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="o">!=</span> <span class="n">threading</span><span class="o">.</span><span class="n">main_thread</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Tasks may only be sumitted on the main thread.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t submit task unless executor is running.&quot;</span><span class="p">)</span>
+
+        <span class="n">cancel_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">event</span><span class="p">()</span>
+
+        <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">pipe</span><span class="p">()</span>
+        <span class="n">runner</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task</span><span class="p">()</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">cancel_event</span><span class="o">.</span><span class="n">set</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+            <span class="n">run_background_task</span><span class="p">,</span> <span class="n">runner</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancel_event</span><span class="o">.</span><span class="n">is_set</span>
+        <span class="p">)</span>
+
+        <span class="n">future_wrapper</span> <span class="o">=</span> <span class="n">FutureWrapper</span><span class="p">(</span>
+            <span class="n">future</span><span class="o">=</span><span class="n">future</span><span class="p">,</span>
+            <span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">future_wrapper</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> created future </span><span class="si">{</span><span class="n">future</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span></div>
+
+<div class="viewcode-block" id="TraitsExecutor.shutdown"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for all tasks to complete and then shut this executor down.</span>
+
+<span class="sd">        All waiting or executing background tasks that are cancellable will be</span>
+<span class="sd">        cancelled, and then this executor will wait for all tasks to complete.</span>
+<span class="sd">        If a timeout is given and that timeout is reached before all tasks</span>
+<span class="sd">        complete, then :exc:`RuntimeError` will be raised and the executor will</span>
+<span class="sd">        remain in :data:`~.STOPPING` state. Otherwise, on return from this</span>
+<span class="sd">        method the executor will be in :data:`~.STOPPED` state</span>
+
+<span class="sd">        This method may be called at any time. If called on an executor</span>
+<span class="sd">        that&#39;s already stopped, this method does nothing.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum time to wait for background tasks to complete, in seconds.</span>
+<span class="sd">            If not given, this method will wait indefinitely.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If a timeout is given, and the background tasks fail to complete</span>
+<span class="sd">            within the given timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initiate_stop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initiate_manual_stop</span><span class="p">()</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_TERMINATING</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">route_until</span><span class="p">(</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">,</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="c1"># Re-raise with a more user-friendly error message.</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Shutdown timed out; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">)</span><span class="si">}</span><span class="s2"> tasks still running&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TraitsExecutor.stop"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiate stop: cancel existing jobs and prevent new ones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Executor is not currently running.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initiate_stop</span><span class="p">()</span>
+
+        <span class="c1"># If there are no tasks pending we can complete the stop immediately;</span>
+        <span class="c1"># otherwise, we check as each task completes using the observer below.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span></div>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;_wrappers:items:done&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_finalize_task_and_check_for_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">close_pipe</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="n">receiver</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> future </span><span class="si">{</span><span class="n">wrapper</span><span class="o">.</span><span class="n">future</span><span class="si">}</span><span class="s2"> done (</span><span class="si">{</span><span class="n">wrapper</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># If we&#39;re in STOPPING state and the last future has just exited,</span>
+        <span class="c1"># clean up and stop.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span>
+
+    <span class="c1"># State transitions #######################################################</span>
+
+    <span class="k">def</span> <span class="nf">_initiate_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prevent new tasks from being submitted and cancel existing tasks.</span>
+
+<span class="sd">        Internal state: RUNNING -&gt; STOPPING</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">RUNNING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_tasks</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">STOPPING</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected state transition in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_complete_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move to stopped state when all remaining futures have completed.</span>
+
+<span class="sd">        Internal state:</span>
+
+<span class="sd">        * STOPPING -&gt; STOPPED</span>
+<span class="sd">        * _TERMINATING -&gt; STOPPED</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="p">{</span><span class="n">STOPPING</span><span class="p">,</span> <span class="n">_TERMINATING</span><span class="p">}:</span>
+            <span class="c1"># We should only get here once all futures have completed.</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_router</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_close_context</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shutdown_worker_pool</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">STOPPED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected state transition in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_initiate_manual_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move into manual stopping mode (_TERMINATING internal state).</span>
+
+<span class="sd">        This differs from the STOPPING internal state in its handling of</span>
+<span class="sd">        completed futures: an executor in STOPPING state moves to STOPPED state</span>
+<span class="sd">        automatically when the last task completes. An executor in _TERMINATING</span>
+<span class="sd">        state must complete the stop manually.</span>
+
+<span class="sd">        Internal state: STOPPING -&gt; _TERMINATING</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">STOPPING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_TERMINATING</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected state transition in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_cancel_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel all currently running tasks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelling incomplete tasks&quot;</span><span class="p">)</span>
+        <span class="n">cancel_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+            <span class="n">cancel_count</span> <span class="o">+=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelled </span><span class="si">{</span><span class="n">cancel_count</span><span class="si">}</span><span class="s2"> tasks&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_stop_router</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop the message router.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopping message router&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_message_router</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> message router stopped&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_close_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the context, if we own it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_context</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> closing context&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> context closed&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_shutdown_worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shut down the worker pool, if we own it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_worker_pool</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> shutting down owned worker pool&quot;</span><span class="p">)</span>
+            <span class="c1"># The worker pool shutdown call is potentially blocking, but we</span>
+            <span class="c1"># should only ever reach this line when all the background tasks</span>
+            <span class="c1"># are complete, so in practice it should never block for long.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> worker pool is now shut down&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_pool</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Private traits ##########################################################</span>
+
+    <span class="c1">#: Internal state of the executor.</span>
+    <span class="n">_internal_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="n">RUNNING</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">))</span>
+
+    <span class="c1">#: Wrappers for currently-executing futures.</span>
+    <span class="n">_wrappers</span> <span class="o">=</span> <span class="n">Set</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">FutureWrapper</span><span class="p">))</span>
+
+    <span class="c1">#: Parallelization context</span>
+    <span class="n">_context</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">)</span>
+
+    <span class="c1">#: Event loop used for message dispatch</span>
+    <span class="n">_event_loop</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IEventLoop</span><span class="p">)</span>
+
+    <span class="c1">#: True if we own this context, else False.</span>
+    <span class="n">_own_context</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1">#: concurrent.futures.Executor instance providing the worker pool.</span>
+    <span class="n">_worker_pool</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Executor</span><span class="p">)</span>
+
+    <span class="c1">#: True if we own this worker pool (and are therefore responsible</span>
+    <span class="c1">#: for shutting it down), else False.</span>
+    <span class="n">_own_worker_pool</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">()</span>
+
+    <span class="c1">#: Router providing message connections between background tasks</span>
+    <span class="c1">#: and foreground futures.</span>
+    <span class="n">_message_router</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="c1">#: True if we&#39;ve created a message router, and need to shut it down.</span>
+    <span class="n">_have_message_router</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;running&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
+
+    <span class="k">def</span> <span class="nf">_get_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;stopped&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;_internal_state&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_update_property_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">old</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> internal state changed &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">old_internal_state</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_internal_state</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">old_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="n">old_internal_state</span><span class="p">]</span>
+        <span class="n">new_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="n">new_internal_state</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">old_state</span> <span class="o">!=</span> <span class="n">new_state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">old_state</span><span class="p">,</span> <span class="n">new_state</span><span class="p">)</span>
+
+        <span class="n">old_running</span> <span class="o">=</span> <span class="n">old_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
+        <span class="n">new_running</span> <span class="o">=</span> <span class="n">new_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
+        <span class="k">if</span> <span class="n">old_running</span> <span class="o">!=</span> <span class="n">new_running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="n">old_running</span><span class="p">,</span> <span class="n">new_running</span><span class="p">)</span>
+
+        <span class="n">old_stopped</span> <span class="o">=</span> <span class="n">old_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
+        <span class="n">new_stopped</span> <span class="o">=</span> <span class="n">new_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
+        <span class="k">if</span> <span class="n">old_stopped</span> <span class="o">!=</span> <span class="n">new_stopped</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;stopped&quot;</span><span class="p">,</span> <span class="n">old_stopped</span><span class="p">,</span> <span class="n">new_stopped</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__message_router_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Toolkit-specific message router.</span>
+        <span class="n">router</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">message_router</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="p">)</span>
+        <span class="n">router</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">router</span>
+
+    <span class="k">def</span> <span class="nf">__event_loop_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># By default we use the &quot;ETS&quot; event loop, which chooses which</span>
+        <span class="c1"># event loop to use based on the ETS_TOOLKIT environment variable</span>
+        <span class="c1"># and the available installed packages.</span>
+        <span class="k">return</span> <span class="n">ETSEventLoop</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__context_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># By default, we use multithreading.</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">MultithreadingContext</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_own_context</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">context</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+..
+   (C) Copyright 2018-2021 Enthought, Inc., Austin, TX
+   All rights reserved.
+
+   This software is provided without warranty under the terms of the BSD
+   license included in LICENSE.txt and may be redistributed only under
+   the conditions described in the aforementioned license. The license
+   is also available online at http://www.enthought.com/licenses/BSD.txt
+
+   Thanks for using Enthought open source!
+
+traits\_futures package
+=======================
+
+.. automodule:: traits_futures
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. toctree::
+
+   traits_futures.api
+   traits_futures.background_call
+   traits_futures.background_iteration
+   traits_futures.background_progress
+   traits_futures.base_future
+   traits_futures.ets_event_loop
+   traits_futures.exception_handling
+   traits_futures.executor_states
+   traits_futures.future_states
+   traits_futures.i_event_loop
+   traits_futures.i_event_loop_helper
+   traits_futures.i_message_router
+   traits_futures.i_parallel_context
+   traits_futures.i_pingee
+   traits_futures.i_task_specification
+   traits_futures.multiprocessing_context
+   traits_futures.multiprocessing_router
+   traits_futures.multithreading_context
+   traits_futures.multithreading_router
+   traits_futures.traits_executor
+   traits_futures.version
+   traits_futures.wrappers
+
+
+.. toctree::
+
+   traits_futures.asyncio
+   traits_futures.qt
+   traits_futures.testing
+   traits_futures.wx
