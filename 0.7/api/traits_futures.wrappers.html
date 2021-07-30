@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.wrappers module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="up" title="traits_futures package" href="traits_futures.html" >
+    <link rel="next" title="traits_futures.asyncio package" href="traits_futures.asyncio.html" >
+    <link rel="prev" title="traits_futures.version module" href="traits_futures.version.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.asyncio.html" title="traits_futures.asyncio package"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="traits_futures.version.html" title="traits_futures.version module"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="module-traits_futures.wrappers">
+<span id="traits-futures-wrappers-module"></span><h1>traits_futures.wrappers module<a class="headerlink" href="#module-traits_futures.wrappers" title="Permalink to this headline">¶</a></h1>
+<p>Wrappers for the background task callable and the foreground future.</p>
+<p>These are used by the TraitsExecutor machinery.</p>
+<dl class="py class">
+<dt id="traits_futures.wrappers.FutureWrapper">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">FutureWrapper</span></code><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<p>Wrapper for the IFuture.</p>
+<p>Passes on messages received for this future.</p>
+<dl class="py attribute">
+<dt id="traits_futures.wrappers.FutureWrapper.done">
+<code class="sig-name descname"><span class="pre">done</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool recording whether the future has completed or not. The
+executor listens to this trait to decide when it can clean up
+its own internal state.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.wrappers.FutureWrapper.future">
+<code class="sig-name descname"><span class="pre">future</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Traits Futures future being wrapped</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="traits_futures.wrappers.FutureWrapper.receiver">
+<code class="sig-name descname"><span class="pre">receiver</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(HasTraits)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object that receives messages from the background task.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="traits_futures.wrappers.run_background_task">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">run_background_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for callables submitted to the underlying executor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> – Callable representing the background task. This will be called
+with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
+<li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageSender</span></code></a>) – Object used to send messages.</p></li>
+<li><p><strong>cancelled</strong> – Zero-argument callable returning bool. This can be called to check
+whether cancellation has been requested.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="traits_futures.version.html"
+                        title="previous chapter">traits_futures.version module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="traits_futures.asyncio.html"
+                        title="next chapter">traits_futures.asyncio package</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/api/traits_futures.wrappers.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
