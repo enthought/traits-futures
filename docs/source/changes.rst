@@ -23,6 +23,18 @@ Continuous integration and build
   wheel and sdist from PyPI. (#465)
 
 
+Release 0.3.1
+-------------
+
+Release date: XXXX-XX-XX
+
+Fixes
+~~~~~
+
+* Fix regression where |BaseFuture| subclasses could not be instantiated
+  without any arguments. (#467)
+
+
 Release 0.3.0
 -------------
 
