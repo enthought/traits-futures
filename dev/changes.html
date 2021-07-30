@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>Release 0.3.1 &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <title>Release 0.4.0 &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
@@ -79,7 +79,18 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="release-0-3-1">
+  <div class="section" id="release-0-4-0">
+<h1>Release 0.4.0<a class="headerlink" href="#release-0-4-0" title="Permalink to this headline">¶</a></h1>
+<p>Release date: XXXX-XX-XX</p>
+<div class="section" id="continuous-integration-and-build">
+<h2>Continuous integration and build<a class="headerlink" href="#continuous-integration-and-build" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add cron-job-based workflow to validate installation of the latest
+wheel and sdist from PyPI. (#465)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="release-0-3-1">
 <h1>Release 0.3.1<a class="headerlink" href="#release-0-3-1" title="Permalink to this headline">¶</a></h1>
 <p>Release date: XXXX-XX-XX</p>
 <div class="section" id="fixes">
@@ -225,8 +236,8 @@ cleared when the future completes. Previously the <a class="reference internal" 
 would sometimes hold onto the reference to the cancellation callback. (#389)</p></li>
 </ul>
 </div>
-<div class="section" id="continuous-integration-and-build">
-<h2>Continuous integration and build<a class="headerlink" href="#continuous-integration-and-build" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h2>Continuous integration and build<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The default GitHub branch has been renamed from “master” to “main”. (#277)</p></li>
 <li><p>Continuous integration has been migrated to GitHub Actions. The per-commit
@@ -362,8 +373,8 @@ will be removed in a future release. See the Changes section below for more
 details.</p>
 <p>Detailed changes follow. Note that the list below is not exhaustive: many
 more minor PRs have been omitted.</p>
-<div class="section" id="id2">
-<h2>Features<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>Features<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Users can now easily create their own background task types to supplement
 the provided task types (background calls, background iterations and
@@ -389,8 +400,8 @@ implements this interface and provides the default threading back-end.
 (#149)</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>Changes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Changes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and
 <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> used to be writable. It’s now a read-only property
@@ -412,14 +423,14 @@ and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
 #132, #133, #138, #145)</p></li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>Fixes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>Fixes<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Don’t create a new message router at executor shutdown time. (#187)</p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>Tests<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>Tests<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fix some intermittent test failures due to test interactions. (#176)</p></li>
 <li><p>The ‘null’ backend that’s used for testing in the absence of a Qt backend
@@ -446,8 +457,8 @@ environment. (#104)</p></li>
 <li><p>Don’t pin dependent packages in the build environment. (#99)</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>Documentation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>Documentation<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Update docs to use the Enthought Sphinx Theme. (#128)</p></li>
 <li><p>Autogenerated API documentation is now included in the documentation
@@ -465,15 +476,15 @@ under ‘User Documentation’. (#191)</p></li>
 <p>This is a bugfix release, in preparation for the first public release to PyPI.
 There are no functional or API changes to the core library since 0.1.0 in this
 release.</p>
-<div class="section" id="id7">
-<h2>Fixes<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h2>Fixes<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
 in #118)</p></li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h2>Changes<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h2>Changes<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add copyright headers to all Python and reST files. (#114, backported in
 #118)</p></li>
@@ -504,7 +515,11 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
             </a></p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Release 0.3.1</a><ul>
+<li><a class="reference internal" href="#">Release 0.4.0</a><ul>
+<li><a class="reference internal" href="#continuous-integration-and-build">Continuous integration and build</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#release-0-3-1">Release 0.3.1</a><ul>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 </ul>
 </li>
@@ -514,7 +529,7 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#changes">Changes</a></li>
 <li><a class="reference internal" href="#id1">Fixes</a></li>
-<li><a class="reference internal" href="#continuous-integration-and-build">Continuous integration and build</a></li>
+<li><a class="reference internal" href="#id2">Continuous integration and build</a></li>
 <li><a class="reference internal" href="#packaging-changes">Packaging changes</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
@@ -522,17 +537,17 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-2-0">Release 0.2.0</a><ul>
-<li><a class="reference internal" href="#id2">Features</a></li>
-<li><a class="reference internal" href="#id3">Changes</a></li>
-<li><a class="reference internal" href="#id4">Fixes</a></li>
-<li><a class="reference internal" href="#id5">Tests</a></li>
+<li><a class="reference internal" href="#id3">Features</a></li>
+<li><a class="reference internal" href="#id4">Changes</a></li>
+<li><a class="reference internal" href="#id5">Fixes</a></li>
+<li><a class="reference internal" href="#id6">Tests</a></li>
 <li><a class="reference internal" href="#developer-tooling">Developer tooling</a></li>
-<li><a class="reference internal" href="#id6">Documentation</a></li>
+<li><a class="reference internal" href="#id7">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-1-1">Release 0.1.1</a><ul>
-<li><a class="reference internal" href="#id7">Fixes</a></li>
-<li><a class="reference internal" href="#id8">Changes</a></li>
+<li><a class="reference internal" href="#id8">Fixes</a></li>
+<li><a class="reference internal" href="#id9">Changes</a></li>
 <li><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>
