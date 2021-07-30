@@ -284,7 +284,7 @@ def main():
     )
     parser.add_argument(
         "version",
-        help="major.minor version to update documentation for, for example 3.1",
+        help="major.minor version for the documentation, for example 3.1",
     )
     args = parser.parse_args()
 
