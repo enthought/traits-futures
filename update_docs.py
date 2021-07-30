@@ -12,19 +12,43 @@
 Simple Python script to update the gh-pages documentation.
 """
 
+# XXX Fix case where there's nothing to commit
+# XXX Do sanity check on doc_version: should be either "dev"
+# or "major.minor"; nothing else
+# XXX Merge with ci module. (Or make new module? Or keep this as it is, as
+#    a script?)
+# XXX Command-line arguments (argparse?)
+
+import argparse
 import base64
 import contextlib
 import os
+import shlex
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
 
-DOCS_SOURCE_DIR = "docs/source"
+#: Path to git executable
 GIT = "git"
+
+#: URL for the upstream GitHub repository.
 UPSTREAM = "https://github.com/enthought/traits-futures"
+
+
+ROOT_DIR = os.path.abspath(".")
+DOCS_SOURCE_DIR = os.path.join(ROOT_DIR, "docs", "source")
+
+
 DOC_BRANCH = "gh-pages-testing"
 DOC_SUBFOLDER = "dev"
+
+
+def join(split_command):
+    """Return a shell-escaped string from *split_command*."""
+    # This can be replaced with shlex.join for Python >= 3.8.
+    return " ".join(shlex.quote(arg) for arg in split_command)
 
 
 def _remove_readonly(func, path, _):
@@ -52,6 +76,15 @@ def current_directory(directory):
         os.chdir(old_cwd)
 
 
+def run_git(*cmd):
+    """
+    Run the given git command in a subprocess.
+    """
+    git_cmd = [GIT, *cmd]
+    print(join(git_cmd))
+    subprocess.run([GIT, *cmd], check=True)
+
+
 def clone_branch(repo, branch, target_directory, name):
     """
     Make a shallow clone of a particular branch from upstream.
@@ -71,21 +104,10 @@ def clone_branch(repo, branch, target_directory, name):
     clone_directory = os.path.join(target_directory, name)
     os.mkdir(clone_directory)
     with current_directory(clone_directory):
-        subprocess.run([GIT, "init"], check=True)
-        subprocess.run([GIT, "remote", "add", "origin", repo], check=True)
-        subprocess.run(
-            [
-                GIT,
-                "fetch",
-                "--no-tags",
-                "--prune",
-                "--depth=1",
-                "origin",
-                branch,
-            ],
-            check=True,
-        )
-        subprocess.run([GIT, "checkout", branch], check=True)
+        run_git("init")
+        run_git("remote", "add", "origin", repo)
+        run_git("fetch", "--no-tags", "--prune", "--depth=1", "origin", branch)
+        run_git("checkout", branch)
     return clone_directory
 
 
@@ -97,37 +119,22 @@ def push_updates(clone_directory, doc_version, branch, token):
 
     with current_directory(clone_directory):
         # Stage the changes
-        subprocess.run(
-            [
-                GIT,
-                "add",
-                doc_version,
-            ],
-            check=True,
-        )
-        # Commit the changes
-        subprocess.run(
-            [GIT, "commit", "-m", "Automated update of documentation"],
-            check=True,
-        )
-
-        subprocess.run(
-            [
-                GIT,
-                "-c",
-                f"http.https://github.com/.extraheader=AUTHORIZATION: basic {b64_token}",
-                "push",
-                "origin",
-                branch,
-            ],
-            check=True,
+        run_git("add", doc_version)
+        commit_message = "Automated update of documentation"
+        run_git("commit", "-m", commit_message)
+        run_git(
+            "-c",
+            f"http.https://github.com/.extraheader=AUTHORIZATION: basic {b64_token}",
+            "push",
+            "origin",
+            branch,
         )
 
 
 def build_html_docs(source_dir, target_directory, name):
     build_dir = os.path.join(target_directory, name)
     with temporary_directory() as doctrees_dir:
-        run_sphinx_cmd = [
+        sphinx_cmd = [
             "python",
             "-m",
             "sphinx",
@@ -140,10 +147,7 @@ def build_html_docs(source_dir, target_directory, name):
             source_dir,
             build_dir,
         ]
-        subprocess.run(
-            run_sphinx_cmd,
-            check=True,
-        )
+        subprocess.run(sphinx_cmd, check=True)
         return build_dir
 
 
@@ -154,8 +158,6 @@ def replace_tree(source, target):
 
 
 def main(doc_version, token):
-    # XXX Do sanity check on doc_version: should be either "dev"
-    # or "major.minor"; nothing else
     with temporary_directory() as temp_dir:
         # Check GIT version, for the record.
         subprocess.run([GIT, "version"], check=True)
@@ -164,13 +166,42 @@ def main(doc_version, token):
         docs_gh_pages = clone_branch(
             UPSTREAM, DOC_BRANCH, temp_dir, "traits-futures"
         )
-        print("Replacing tree")
         replace_tree(docs_build_dir, os.path.join(docs_gh_pages, doc_version))
-        print("Pushing updates")
         push_updates(docs_gh_pages, doc_version, DOC_BRANCH, token)
 
 
+def main():
+    parser = argparse.ArgumentParser(
+        description="Build and upload documentation"
+    )
+    parser.add_argument("-t", "--token", help="Authorization token for GitHub")
+    parser.add_argument(
+        "version",
+        help="major.minor version to update documentation for, for example 3.1",
+    )
+    args = parser.parse_args()
+
+    # Retrieve the token
+    if args.token is None:
+        print("Attempting to retrieve token from GITHUB_TOKEN")
+        token = os.environ.get("GITHUB_TOKEN", "")
+    else:
+        token = args.token
+    if not token:
+        print(
+            "A GitHub authentication token is required. "
+            "Use the --token argument or set the "
+            "GITHUB_TOKEN environment variable."
+        )
+        sys.exit(1)
+    else:
+        print(token)
+
+    # Validate the version
+
+
+
 if __name__ == "__main__":
-    token = os.environ["GITHUB_OAUTH_TOKEN"]
-    assert token
-    main(doc_version="7.4", token=token)
+    main()
+    # token = os.environ["GITHUB_TOKEN"]
+    # main(doc_version="7.5", token=token)
