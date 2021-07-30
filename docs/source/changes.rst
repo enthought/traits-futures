@@ -10,6 +10,31 @@
    Thanks for using Enthought open source!
 
 
+Release 0.4.0
+-------------
+
+Release date: XXXX-XX-XX
+
+
+Continuous integration and build
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Add cron-job-based workflow to validate installation of the latest
+  wheel and sdist from PyPI. (#465)
+
+
+Release 0.3.1
+-------------
+
+Release date: XXXX-XX-XX
+
+Fixes
+~~~~~
+
+* Fix regression where |BaseFuture| subclasses could not be instantiated
+  without any arguments. (#467)
+
+
 Release 0.3.0
 -------------
 
