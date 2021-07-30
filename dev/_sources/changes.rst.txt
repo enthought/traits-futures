@@ -26,7 +26,9 @@ Continuous integration and build
 Release 0.3.1
 -------------
 
-Release date: XXXX-XX-XX
+Release date: 2021-07-30
+
+This is a bugfix release that fixes a regression introduced in version 0.3.0.
 
 Fixes
 ~~~~~
