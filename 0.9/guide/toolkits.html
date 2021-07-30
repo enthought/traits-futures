@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Toolkits and running headless &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="next" title="Testing Traits Futures code" href="testing.html" >
+    <link rel="prev" title="Contexts and multiprocessing" href="contexts.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="testing.html" title="Testing Traits Futures code"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="contexts.html" title="Contexts and multiprocessing"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="toolkits-and-running-headless">
+<h1>Toolkits and running headless<a class="headerlink" href="#toolkits-and-running-headless" title="Permalink to this headline">¶</a></h1>
+<p>Each <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> requires a running event loop to communicate results from
+background tasks to the foreground. In a typical GUI application, that event
+loop will be the event loop from the current GUI toolkit - for example Qt or
+Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
+Python’s standard library. This is potentially useful when writing automated
+tests, or when using Traits Futures in a headless setting (for example within
+a compute job).</p>
+<div class="section" id="specifying-a-toolkit">
+<h2>Specifying a toolkit<a class="headerlink" href="#specifying-a-toolkit" title="Permalink to this headline">¶</a></h2>
+<p>To explicitly specify which toolkit to use, you need to provide the
+<code class="docutils literal notranslate"><span class="pre">event_loop</span></code> parameter when instantiating the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>. The library
+currently provides four different event loops: <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a>,
+<a class="reference internal" href="../api/traits_futures.qt.event_loop.html#traits_futures.qt.event_loop.QtEventLoop" title="traits_futures.qt.event_loop.QtEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">QtEventLoop</span></code></a>, <a class="reference internal" href="../api/traits_futures.wx.event_loop.html#traits_futures.wx.event_loop.WxEventLoop" title="traits_futures.wx.event_loop.WxEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">WxEventLoop</span></code></a> and <a class="reference internal" href="../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop" title="traits_futures.ets_event_loop.ETSEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETSEventLoop</span></code></a>.</p>
+<p>By default, if no event loop is explicitly specified, an instance of
+<a class="reference internal" href="../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop" title="traits_futures.ets_event_loop.ETSEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETSEventLoop</span></code></a> is used. This follows the usual ETS rules to determine which
+toolkit to use based on the value of the <code class="docutils literal notranslate"><span class="pre">ETS_TOOLKIT</span></code> environment variable,
+on whether any other part of the ETS machinery has already “fixed” the toolkit,
+and on which toolkits are available in the current Python environment.</p>
+</div>
+<div class="section" id="running-traits-futures-in-a-headless-setting">
+<h2>Running Traits Futures in a headless setting<a class="headerlink" href="#running-traits-futures-in-a-headless-setting" title="Permalink to this headline">¶</a></h2>
+<p>In general, if you’re writing code that’s not GUI-oriented, you
+probably don’t want to be using Traits Futures at all: the library is
+explicitly designed for working in a GUI-based setting, in situations where you
+don’t want your computational or other tasks to block the GUI event loop and
+generate the impression of an unresponsive GUI. Instead, you might execute
+your tasks directly in the main thread or, if you need to take advantage
+of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
+directly.</p>
+<p>However, you may find yourself in a situation where you already have Traits
+Futures-based code that was written for a GUI setting, but that you want to be
+able to execute in a environment that doesn’t have the Qt or Wx toolkits
+available. In that case, Traits Futures can use the <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> to
+deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
+a GUI framework’s event loop.</p>
+<p>Here’s an <a class="reference download internal" download="" href="../_downloads/29ab09bdeb400827f4e78ea14e57d284/headless.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">script</span></code></a> that uses the
+<a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> in order to execute Traits Futures tasks within the context
+of an asyncio event loop.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Running Traits Futures without a GUI, using the asyncio event loop.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AsyncioEventLoop</span><span class="p">,</span>
+    <span class="n">submit_iteration</span><span class="p">,</span>
+    <span class="n">TraitsExecutor</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">,</span> <span class="n">report_interval</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yield successive approximations to π via Monte Carlo methods.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
+    <span class="c1"># counting the proportion that land in the quarter circle.</span>
+    <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sample_count</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">%</span> <span class="n">report_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">/</span> <span class="n">total</span>  <span class="c1"># &lt;- partial result</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(),</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="n">inside</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">1</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">/</span> <span class="n">total</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">future_wrapper</span><span class="p">(</span><span class="n">traits_future</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap a Traits Futures future as a schedulable coroutine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">set_result</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+        <span class="n">traits_future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
+        <span class="n">asyncio_future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">traits_future</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># Once we can assume a minimum Python version of 3.7, this should</span>
+    <span class="c1"># be changed to use get_running_event_loop instead of get_event_loop.</span>
+    <span class="n">asyncio_future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">create_future</span><span class="p">()</span>
+
+    <span class="n">traits_future</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">set_result</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio_future</span>
+
+
+<span class="k">def</span> <span class="nf">print_progress</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Progress reporter for the π calculation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;π is approximately </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="n">AsyncioEventLoop</span><span class="p">())</span>
+    <span class="n">traits_future</span> <span class="o">=</span> <span class="n">submit_iteration</span><span class="p">(</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">)</span>
+    <span class="n">traits_future</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">print_progress</span><span class="p">,</span> <span class="s2">&quot;result_event&quot;</span><span class="p">)</span>
+
+    <span class="c1"># For Python 3.7 and later, just use asyncio.run.</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">future_wrapper</span><span class="p">(</span><span class="n">traits_future</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Toolkits and running headless</a><ul>
+<li><a class="reference internal" href="#specifying-a-toolkit">Specifying a toolkit</a></li>
+<li><a class="reference internal" href="#running-traits-futures-in-a-headless-setting">Running Traits Futures in a headless setting</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contexts.html"
+                        title="previous chapter">Contexts and multiprocessing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="testing.html"
+                        title="next chapter">Testing Traits Futures code</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/guide/toolkits.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
