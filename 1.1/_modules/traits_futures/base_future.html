@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.base_future &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.base_future</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Base class providing common pieces of the Future machinery.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Bool</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Enum</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">observe</span><span class="p">,</span>
+    <span class="n">Property</span><span class="p">,</span>
+    <span class="n">Str</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.exception_handling</span> <span class="kn">import</span> <span class="n">marshal_exception</span>
+<span class="kn">from</span> <span class="nn">traits_futures.future_states</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CANCELLABLE_STATES</span><span class="p">,</span>
+    <span class="n">CANCELLED</span><span class="p">,</span>
+    <span class="n">CANCELLING</span><span class="p">,</span>
+    <span class="n">COMPLETED</span><span class="p">,</span>
+    <span class="n">DONE_STATES</span><span class="p">,</span>
+    <span class="n">EXECUTING</span><span class="p">,</span>
+    <span class="n">FAILED</span><span class="p">,</span>
+    <span class="n">FutureState</span><span class="p">,</span>
+    <span class="n">WAITING</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">IFuture</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Messages sent by the BaseTask, and interpreted by BaseFuture.</span>
+
+<span class="c1">#: Custom message from the future. The argument is a pair</span>
+<span class="c1">#: (message_type, message_args); the message type and message args</span>
+<span class="c1">#: are interpreted by the future.</span>
+<span class="n">SENT</span> <span class="o">=</span> <span class="s2">&quot;sent&quot;</span>
+
+<span class="c1">#: Control message sent when the callable is abandoned before execution.</span>
+<span class="n">ABANDONED</span> <span class="o">=</span> <span class="s2">&quot;abandoned&quot;</span>
+
+<span class="c1">#: Control message sent before we start to process the target callable.</span>
+<span class="c1">#: The argument is always ``None``.</span>
+<span class="n">STARTED</span> <span class="o">=</span> <span class="s2">&quot;started&quot;</span>
+
+<span class="c1">#: Control message sent when an exception was raised by the background</span>
+<span class="c1">#: callable. The argument is a tuple containing exception information.</span>
+<span class="n">RAISED</span> <span class="o">=</span> <span class="s2">&quot;raised&quot;</span>
+
+<span class="c1">#: Control message sent to indicate that the background callable succeeded</span>
+<span class="c1">#: and returned a result. The argument is that result.</span>
+<span class="n">RETURNED</span> <span class="o">=</span> <span class="s2">&quot;returned&quot;</span>
+
+<span class="c1">#: Message types that indicate a &quot;final&quot; message. After a message of this</span>
+<span class="c1">#: type is received, no more messages will be received.</span>
+<span class="n">FINAL_MESSAGES</span> <span class="o">=</span> <span class="p">{</span><span class="n">ABANDONED</span><span class="p">,</span> <span class="n">RAISED</span><span class="p">,</span> <span class="n">RETURNED</span><span class="p">}</span>
+
+<span class="c1"># The BaseFuture class maintains an internal state. That internal state maps to</span>
+<span class="c1"># the user-facing state, but is more fine-grained, allowing the class to keep</span>
+<span class="c1"># track of the internal consistency and invariants. For example, the</span>
+<span class="c1"># user-facing CANCELLING state doesn&#39;t indicate whether the task has started</span>
+<span class="c1"># or not; if it *has* already started, then a &quot;start&quot; message from the</span>
+<span class="c1"># background task is invalid; otherwise, it&#39;s valid. So we split this into</span>
+<span class="c1"># two internal states: _CANCELLING_BEFORE_STARTED and _CANCELLING_AFTER_STARTED</span>
+<span class="c1"># to allow us to detect an invalid _task_started call.</span>
+
+
+<span class="c1">#: Internal state attained when cancellation is requested before the task</span>
+<span class="c1">#: starts.</span>
+<span class="n">_CANCELLING_BEFORE_STARTED</span> <span class="o">=</span> <span class="s2">&quot;cancelling_before_started&quot;</span>
+
+<span class="c1">#: Internal state attained when cancellation is requested after the task</span>
+<span class="c1">#: starts.</span>
+<span class="n">_CANCELLING_AFTER_STARTED</span> <span class="o">=</span> <span class="s2">&quot;cancelling_after_started&quot;</span>
+
+<span class="c1">#: Internal state corresponding to a task that was abandoned due to</span>
+<span class="c1">#: cancellation.</span>
+<span class="n">_CANCELLED_ABANDONED</span> <span class="o">=</span> <span class="s2">&quot;cancelled_abandoned&quot;</span>
+
+<span class="c1">#: Internal state corresponding to a task that failed after cancellation.</span>
+<span class="n">_CANCELLED_FAILED</span> <span class="o">=</span> <span class="s2">&quot;cancelled_failed&quot;</span>
+
+<span class="c1">#: Internal state corresponding to a task that completed after cancellation.</span>
+<span class="n">_CANCELLED_COMPLETED</span> <span class="o">=</span> <span class="s2">&quot;cancelled_completed&quot;</span>
+
+<span class="c1">#: Mapping from each internal state to the corresponding user-visible state.</span>
+<span class="n">_INTERNAL_STATE_TO_STATE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">WAITING</span><span class="p">:</span> <span class="n">WAITING</span><span class="p">,</span>
+    <span class="n">EXECUTING</span><span class="p">:</span> <span class="n">EXECUTING</span><span class="p">,</span>
+    <span class="n">COMPLETED</span><span class="p">:</span> <span class="n">COMPLETED</span><span class="p">,</span>
+    <span class="n">FAILED</span><span class="p">:</span> <span class="n">FAILED</span><span class="p">,</span>
+    <span class="n">_CANCELLING_BEFORE_STARTED</span><span class="p">:</span> <span class="n">CANCELLING</span><span class="p">,</span>
+    <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span> <span class="n">CANCELLING</span><span class="p">,</span>
+    <span class="n">_CANCELLED_ABANDONED</span><span class="p">:</span> <span class="n">CANCELLED</span><span class="p">,</span>
+    <span class="n">_CANCELLED_COMPLETED</span><span class="p">:</span> <span class="n">CANCELLED</span><span class="p">,</span>
+    <span class="n">_CANCELLED_FAILED</span><span class="p">:</span> <span class="n">CANCELLED</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">#: Internal states corresponding to completed futures.</span>
+<span class="n">_DONE_INTERNAL_STATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">internal_state</span>
+    <span class="k">for</span> <span class="n">internal_state</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">DONE_STATES</span>
+<span class="p">}</span>
+
+<span class="c1">#: Internal states corresponding to cancellable futures.</span>
+<span class="n">_CANCELLABLE_INTERNAL_STATES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">internal_state</span>
+    <span class="k">for</span> <span class="n">internal_state</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">CANCELLABLE_STATES</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="TaskCancelled"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.TaskCancelled">[docs]</a><span class="k">class</span> <span class="nc">TaskCancelled</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised within the background task on cancellation.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<span class="k">class</span> <span class="nc">_StateTransitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception used to indicate a bad state transition.</span>
+
+<span class="sd">    Users should never see this exception. It indicates an error in the</span>
+<span class="sd">    sequence of operations received by the future from the background</span>
+<span class="sd">    task, from the executor, or from the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="BaseFuture"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture">[docs]</a><span class="nd">@IFuture</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">BaseFuture</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convenience base class for the various flavours of Future.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># IFuture interface #######################################################</span>
+
+<div class="viewcode-block" id="BaseFuture.cancel"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request cancellation of the background task.</span>
+
+<span class="sd">        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved</span>
+<span class="sd">        to ``CANCELLING`` state. If the task is not in ``WAITING`` or</span>
+<span class="sd">        ``EXECUTING`` state, this function does nothing.</span>
+
+<span class="sd">        .. versionchanged:: 0.3.0</span>
+
+<span class="sd">           This method no longer raises for a task that isn&#39;t cancellable.</span>
+<span class="sd">           In previous versions, :exc:`RuntimeError` was raised.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cancelled : bool</span>
+<span class="sd">            True if the task was cancelled, False if the task was not</span>
+<span class="sd">            cancellable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="p">{</span><span class="n">WAITING</span><span class="p">,</span> <span class="n">EXECUTING</span><span class="p">}:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_user_cancelled</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelled&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> not cancellable; state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BaseFuture.receive"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.receive">[docs]</a>    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receive and process a message from the task associated to this future.</span>
+
+<span class="sd">        This method is primarily for use by the executors, but may also be of</span>
+<span class="sd">        use in testing.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            The message received from the associated task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        final : bool</span>
+<span class="sd">            True if the received message should be the last one ever received</span>
+<span class="sd">            from the paired task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_task_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">message_type</span> <span class="ow">in</span> <span class="n">FINAL_MESSAGES</span></div>
+
+    <span class="c1"># BaseFuture interface ####################################################</span>
+
+    <span class="c1">#: The state of the background task, to the best of the knowledge of</span>
+    <span class="c1">#: this future. One of the six constants ``WAITING``, ``EXECUTING``,</span>
+    <span class="c1">#: ``COMPLETED``, ``FAILED``, ``CANCELLING`` or ``CANCELLED``.</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">FutureState</span><span class="p">)</span>
+
+    <span class="c1">#: True if cancellation of the background task can be requested, else</span>
+    <span class="c1">#: False. Cancellation of the background task can be requested only if</span>
+    <span class="c1">#: the future&#39;s ``state`` is either ``WAITING`` or ``EXECUTING``.</span>
+    <span class="n">cancellable</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
+
+    <span class="c1">#: True when communications from the background task are complete.</span>
+    <span class="c1">#: At that point, no further state changes can occur for this future.</span>
+    <span class="c1">#: This trait has value True if the ``state`` is one of ``COMPLETED``,</span>
+    <span class="c1">#: ``FAILED``, or ``CANCELLED``. It&#39;s safe to listen to this trait</span>
+    <span class="c1">#: for changes: it will always fire exactly once, and when it fires</span>
+    <span class="c1">#: its value will be consistent with that of the ``state`` trait.</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Result of the background task.</span>
+
+<span class="sd">        This attribute is only available if the state of the future is</span>
+<span class="sd">        ``COMPLETED``. If the future has not reached the ``COMPLETED`` state,</span>
+<span class="sd">        any attempt to access this attribute will raise an ``AttributeError``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        result : object</span>
+<span class="sd">            The result obtained from the background task.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If the task is still executing, or was cancelled, or raised an</span>
+<span class="sd">            exception instead of returning a result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">COMPLETED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;No result available. Task has not yet completed, &quot;</span>
+                <span class="s2">&quot;or was cancelled, or failed with an exception. &quot;</span>
+                <span class="s2">&quot;Task state is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exception</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Information about any exception raised by the background task.</span>
+
+<span class="sd">        This attribute is only available if the state of this future is</span>
+<span class="sd">        ``FAILED``. If the future has not reached the ``FAILED`` state, any</span>
+<span class="sd">        attempt to access this attribute will raise an ``AttributeError.``</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        exc_info : tuple</span>
+<span class="sd">            Tuple containing exception information in string form:</span>
+<span class="sd">            (exception type, exception value, formatted traceback).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If the task is still executing, or was cancelled, or completed</span>
+<span class="sd">            without raising an exception.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">FAILED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;No exception information available. Task has &quot;</span>
+                <span class="s2">&quot;not yet completed, or was cancelled, or completed &quot;</span>
+                <span class="s2">&quot;without an exception. &quot;</span>
+                <span class="s2">&quot;Task state is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span>
+
+<div class="viewcode-block" id="BaseFuture.dispatch"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dispatch a message arriving from the associated BaseTask.</span>
+
+<span class="sd">        This is a convenience function, and may be safely overridden by</span>
+<span class="sd">        subclasses that want to use a different dispatch mechanism. For</span>
+<span class="sd">        a message type ``msgtype``, it looks for a method called</span>
+<span class="sd">        ``_process_&lt;msgtype&gt;`` and dispatches the message arguments to</span>
+<span class="sd">        that method. Subclasses then only need to provide the appropriate</span>
+<span class="sd">        ``_process_&lt;msgtype&gt;`` methods.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            Message sent by the background task. The default implementation of</span>
+<span class="sd">            this method expects the message to be in the form ``(message_type,</span>
+<span class="sd">            message_args)`` with ``message_type`` a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;_process_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message_type</span><span class="p">)</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)(</span><span class="n">message_arg</span><span class="p">)</span></div>
+
+    <span class="c1"># State transitions #######################################################</span>
+
+    <span class="c1"># These methods represent state transitions in response to external events.</span>
+
+    <span class="k">def</span> <span class="nf">_task_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Automate dispatch of different types of message.</span>
+
+<span class="sd">        Delegates the actual work to the :meth:`dispatch` method,</span>
+<span class="sd">        which can be overridden by subclasses. Messages received after</span>
+<span class="sd">        cancellation are ignored.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            Message from the background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span>
+            <span class="c1"># Ignore messages that arrive after a cancellation request.</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected custom message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_task_abandoned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">none</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update state when the background task is abandoned due to cancellation.</span>
+
+<span class="sd">        Internal state:</span>
+<span class="sd">        * _CANCELLING_BEFORE_STARTED -&gt; _CANCELLED_ABANDONED</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        none : NoneType</span>
+<span class="sd">            This parameter is unused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_BEFORE_STARTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLED_ABANDONED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected &#39;started&#39; message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_task_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">none</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update state when the background task has started processing.</span>
+
+<span class="sd">        Internal state:</span>
+<span class="sd">        * WAITING -&gt; EXECUTING</span>
+<span class="sd">        * _CANCELLING_BEFORE_STARTED -&gt; _CANCELLED_AFTER_STARTED</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        none : NoneType</span>
+<span class="sd">            This parameter is unused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">WAITING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">EXECUTING</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_BEFORE_STARTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLING_AFTER_STARTED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected &#39;started&#39; message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_task_returned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update state when background task reports completing successfully.</span>
+
+<span class="sd">        Internal state:</span>
+<span class="sd">        * EXECUTING -&gt; COMPLETED</span>
+<span class="sd">        * _CANCELLING_AFTER_STARTED -&gt; _CANCELLED_COMPLETED</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        result : any</span>
+<span class="sd">            The object returned by the background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">COMPLETED</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLED_COMPLETED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected &#39;returned&#39; message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_task_raised</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception_info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update state when the background task reports completing with an error.</span>
+
+<span class="sd">        Internal state:</span>
+<span class="sd">        * EXECUTING -&gt; FAILED</span>
+<span class="sd">        * _CANCELLING_AFTER_STARTED -&gt; _CANCELLED_FAILED</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        exception_info : tuple</span>
+<span class="sd">            Tuple containing exception information in string form:</span>
+<span class="sd">            (exception type, exception value, formatted traceback).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception_info</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">FAILED</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">_CANCELLING_AFTER_STARTED</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception_info</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLED_FAILED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected &#39;raised&#39; message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_user_cancelled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update state when the user requests cancellation.</span>
+
+<span class="sd">        A future in ``WAITING`` or ``EXECUTING`` state moves to ``CANCELLING``</span>
+<span class="sd">        state.</span>
+
+<span class="sd">        Internal state:</span>
+<span class="sd">        * WAITING -&gt; _CANCELLING_BEFORE_STARTED</span>
+<span class="sd">        * EXECUTING -&gt; _CANCELLING_AFTER_STARTED</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">WAITING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLING_BEFORE_STARTED</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">==</span> <span class="n">EXECUTING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="o">=</span> <span class="n">_CANCELLING_AFTER_STARTED</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_StateTransitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected &#39;cancelled&#39; message in internal state </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Private traits ##########################################################</span>
+
+    <span class="c1">#: Callback called (with no arguments) when user requests cancellation.</span>
+    <span class="c1">#: This is reset to ``None`` once cancellation is impossible.</span>
+    <span class="n">_cancel</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">(</span><span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#: The internal state of the future.</span>
+    <span class="n">_internal_state</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="n">WAITING</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">))</span>
+
+    <span class="c1">#: Result from the background task.</span>
+    <span class="n">_result</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="c1">#: Exception information from the background task.</span>
+    <span class="n">_exception</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">Str</span><span class="p">(),</span> <span class="n">Str</span><span class="p">(),</span> <span class="n">Str</span><span class="p">())</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_cancellable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;cancellable&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_CANCELLABLE_INTERNAL_STATES</span>
+
+    <span class="k">def</span> <span class="nf">_get_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;done&quot; trait.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_DONE_INTERNAL_STATES</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;_internal_state&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_update_property_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
+        <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">old</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
+
+        <span class="n">old_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">[</span><span class="n">old_internal_state</span><span class="p">]</span>
+        <span class="n">new_state</span> <span class="o">=</span> <span class="n">_INTERNAL_STATE_TO_STATE</span><span class="p">[</span><span class="n">new_internal_state</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">old_state</span> <span class="o">!=</span> <span class="n">new_state</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">old_state</span><span class="p">,</span> <span class="n">new_state</span><span class="p">)</span>
+
+        <span class="n">old_cancellable</span> <span class="o">=</span> <span class="n">old_internal_state</span> <span class="ow">in</span> <span class="n">_CANCELLABLE_INTERNAL_STATES</span>
+        <span class="n">new_cancellable</span> <span class="o">=</span> <span class="n">new_internal_state</span> <span class="ow">in</span> <span class="n">_CANCELLABLE_INTERNAL_STATES</span>
+        <span class="k">if</span> <span class="n">old_cancellable</span> <span class="o">!=</span> <span class="n">new_cancellable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span>
+                <span class="s2">&quot;cancellable&quot;</span><span class="p">,</span> <span class="n">old_cancellable</span><span class="p">,</span> <span class="n">new_cancellable</span>
+            <span class="p">)</span>
+
+        <span class="n">old_done</span> <span class="o">=</span> <span class="n">old_internal_state</span> <span class="ow">in</span> <span class="n">_DONE_INTERNAL_STATES</span>
+        <span class="n">new_done</span> <span class="o">=</span> <span class="n">new_internal_state</span> <span class="ow">in</span> <span class="n">_DONE_INTERNAL_STATES</span>
+        <span class="k">if</span> <span class="n">old_done</span> <span class="o">!=</span> <span class="n">new_done</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait_property_changed</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">,</span> <span class="n">old_done</span><span class="p">,</span> <span class="n">new_done</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseTask"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask">[docs]</a><span class="k">class</span> <span class="nc">BaseTask</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin for background task classes, making those classes callable.</span>
+
+<span class="sd">    This class provides a callable wrapper allowing subclasses to easily</span>
+<span class="sd">    provide a background callable task.</span>
+
+<span class="sd">    Subclasses should override the ``run`` method to customize what should</span>
+<span class="sd">    happen when the task runs. This class&#39;s ``__call__`` implementation will</span>
+<span class="sd">    take care of sending standard control messages telling the future that the</span>
+<span class="sd">    task has started, completed, or raised, and delegate to the ``run`` method</span>
+<span class="sd">    for execution of the background task and sending of any custom messages.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseTask.run"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the body of the background task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        any : object</span>
+<span class="sd">            May return any object. That object will be delivered to the</span>
+<span class="sd">            future&#39;s ``result`` attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="BaseTask.send"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a message to the associated future.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message_type : str</span>
+<span class="sd">            The type of the message. This is used by ``BaseFuture`` when</span>
+<span class="sd">            dispatching messages to appropriate handlers.</span>
+<span class="sd">        message_arg : object, optional</span>
+<span class="sd">            Message argument, if any. If not given, ``None`` is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send</span><span class="p">((</span><span class="n">SENT</span><span class="p">,</span> <span class="p">(</span><span class="n">message_type</span><span class="p">,</span> <span class="n">message_arg</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="BaseTask.cancelled"><a class="viewcode-back" href="../../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled">[docs]</a>    <span class="k">def</span> <span class="nf">cancelled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether the user has requested cancellation.</span>
+
+<span class="sd">        Returns True if the user has requested cancellation via the associated</span>
+<span class="sd">        future&#39;s ``cancel`` method, and False otherwise.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cancelled</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send</span> <span class="o">=</span> <span class="n">send</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cancelled</span> <span class="o">=</span> <span class="n">cancelled</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cancelled</span><span class="p">():</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">ABANDONED</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                <span class="k">return</span>
+
+            <span class="n">send</span><span class="p">((</span><span class="n">STARTED</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">RAISED</span><span class="p">,</span> <span class="n">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">send</span><span class="p">((</span><span class="n">RETURNED</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cancelled</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

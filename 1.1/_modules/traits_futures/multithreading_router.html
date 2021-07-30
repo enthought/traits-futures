@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traits_futures.multithreading_router &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../../genindex.html" >
+    <link rel="search" title="Search" href="../../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../../index.html" >
+    <link rel="up" title="Module code" href="../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	
+          <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traits_futures.multithreading_router</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Implementations of the IMessageSender, IMessageReceiver and IMessageRouter</span>
+<span class="sd">interfaces for tasks executed on a background thread.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections.abc</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Bool</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Event</span><span class="p">,</span>
+    <span class="n">HasRequiredTraits</span><span class="p">,</span>
+    <span class="n">HasStrictTraits</span><span class="p">,</span>
+    <span class="n">Instance</span><span class="p">,</span>
+    <span class="n">Int</span><span class="p">,</span>
+    <span class="n">provides</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop</span> <span class="kn">import</span> <span class="n">IEventLoop</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_message_router</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">IMessageReceiver</span><span class="p">,</span>
+    <span class="n">IMessageRouter</span><span class="p">,</span>
+    <span class="n">IMessageSender</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_pingee</span> <span class="kn">import</span> <span class="n">IPingee</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1">#: Internal states for the sender. The sender starts in the _INITIAL state,</span>
+<span class="c1">#: moves to the _OPEN state when &#39;start&#39; is called, and from _OPEN to _CLOSED</span>
+<span class="c1">#: when &#39;stop&#39; is called. Messages can only be sent with the &#39;send&#39; method</span>
+<span class="c1">#: while the sender is in _OPEN state.</span>
+<span class="n">_INITIAL</span> <span class="o">=</span> <span class="s2">&quot;initial&quot;</span>
+<span class="n">_OPEN</span> <span class="o">=</span> <span class="s2">&quot;open&quot;</span>
+<span class="n">_CLOSED</span> <span class="o">=</span> <span class="s2">&quot;closed&quot;</span>
+
+
+<div class="viewcode-block" id="MultithreadingSender"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender">[docs]</a><span class="nd">@IMessageSender</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">MultithreadingSender</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object allowing the worker to send messages.</span>
+
+<span class="sd">    This class will be instantiated in the main thread, and the instance passed</span>
+<span class="sd">    to the worker thread to allow the worker to communicate back to the main</span>
+<span class="sd">    thread.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    connection_id : int</span>
+<span class="sd">        Id of the matching receiver; used for message routing.</span>
+<span class="sd">    pingee : IPingee</span>
+<span class="sd">        Recipient for pings, used to notify the event loop that there&#39;s</span>
+<span class="sd">        a message pending.</span>
+<span class="sd">    message_queue : queue.Queue</span>
+<span class="sd">        Thread-safe queue for passing messages to the foreground.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_id</span><span class="p">,</span> <span class="n">pingee</span><span class="p">,</span> <span class="n">message_queue</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span> <span class="o">=</span> <span class="n">connection_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pingee</span> <span class="o">=</span> <span class="n">pingee</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">message_queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_INITIAL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MultithreadingSender.start"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do any setup necessary to prepare for sending messages.</span>
+
+<span class="sd">        This method must be called before any messages can be sent</span>
+<span class="sd">        using the ``send`` method.</span>
+
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the sender has previously been started.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="n">_INITIAL</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Sender already started: state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pingee</span><span class="o">.</span><span class="n">pinger</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_OPEN</span></div>
+
+<div class="viewcode-block" id="MultithreadingSender.send"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a message to the router.</span>
+
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : object</span>
+<span class="sd">            Typically this will be immutable, small, and pickleable.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the sender has not been started, or has already been stopped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="n">_OPEN</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Sender must be in OPEN state to send messages: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MultithreadingSender.stop"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do any teardown.</span>
+
+<span class="sd">        After this method has been called, no more messages can be sent.</span>
+
+<span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
+<span class="sd">        all be called from the same thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the sender has not been started, or has already been stopped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="n">_OPEN</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Sender not started, or already stopped: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;state is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_CLOSED</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_info</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MultithreadingReceiver"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingReceiver">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageReceiver</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MultithreadingReceiver</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the IMessageReceiver interface for the case where the</span>
+<span class="sd">    sender will be in a background thread.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Event fired when a message is received from the paired sender.</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Any</span><span class="p">())</span>
+
+    <span class="c1">#: Connection id, matching that of the paired sender.</span>
+    <span class="n">connection_id</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MultithreadingRouter"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageRouter</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MultithreadingRouter</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the IMessageRouter interface for the case where the</span>
+<span class="sd">    sender will be in a background thread.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    event_loop : IEventLoop</span>
+<span class="sd">        The event loop used to trigger message dispatch.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MultithreadingRouter.start"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start routing messages.</span>
+
+<span class="sd">        This method must be called before any call to ``pipe`` or</span>
+<span class="sd">        ``close_pipe`` can be made.</span>
+
+<span class="sd">        Not thread-safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router has already been started.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;router is already running&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link_to_event_loop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> started&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultithreadingRouter.stop"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop routing messages.</span>
+
+<span class="sd">        This method should be called in the main thread after all pipes</span>
+<span class="sd">        are finished with. Calls to ``pipe`` or ``close_pipe`` are</span>
+<span class="sd">        not permitted after this method has been called.</span>
+
+<span class="sd">        Logs a warning if there are unclosed pipes.</span>
+
+<span class="sd">        Not thread safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;router is not running&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">)</span><span class="si">}</span><span class="s2"> unclosed pipes&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unlink_from_event_loop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopped&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultithreadingRouter.pipe"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.pipe">[docs]</a>    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a (sender, receiver) pair for sending and receiving messages.</span>
+
+<span class="sd">        The sender will be passed to the background task and used to send</span>
+<span class="sd">        messages, while the receiver remains in the foreground.</span>
+
+<span class="sd">        Not thread safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sender : MultithreadingSender</span>
+<span class="sd">            Object to be passed to the background task.</span>
+<span class="sd">        receiver : MultithreadingReceiver</span>
+<span class="sd">            Object kept in the foreground, which reacts to messages.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router is not currently running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;router is not running&quot;</span><span class="p">)</span>
+
+        <span class="n">connection_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connection_ids</span><span class="p">)</span>
+        <span class="n">sender</span> <span class="o">=</span> <span class="n">MultithreadingSender</span><span class="p">(</span>
+            <span class="n">connection_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
+            <span class="n">pingee</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="p">,</span>
+            <span class="n">message_queue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">receiver</span> <span class="o">=</span> <span class="n">MultithreadingReceiver</span><span class="p">(</span><span class="n">connection_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">receiver</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> created pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2"> with receiver </span><span class="si">{</span><span class="n">receiver</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span></div>
+
+<div class="viewcode-block" id="MultithreadingRouter.close_pipe"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.close_pipe">[docs]</a>    <span class="k">def</span> <span class="nf">close_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the receiver end of a pipe produced by ``pipe``.</span>
+
+<span class="sd">        Removes the receiver from the routing table, so that no new messages</span>
+<span class="sd">        can reach that receiver.</span>
+
+<span class="sd">        Not thread safe. Must always be called in the main thread.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        receiver : MultithreadingReceiver</span>
+<span class="sd">            Receiver half of the pair returned by the ``pipe`` method.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the router is not currently running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;router is not running&quot;</span><span class="p">)</span>
+
+        <span class="n">connection_id</span> <span class="o">=</span> <span class="n">receiver</span><span class="o">.</span><span class="n">connection_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">connection_id</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> closed pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2"> with receiver </span><span class="si">{</span><span class="n">receiver</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultithreadingRouter.route_until"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.route_until">[docs]</a>    <span class="k">def</span> <span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Manually drive the router until a given condition occurs, or timeout.</span>
+
+<span class="sd">        This is primarily used as part of a clean shutdown.</span>
+
+<span class="sd">        Note: this has the side-effect of moving the router from &quot;event loop&quot;</span>
+<span class="sd">        mode to &quot;manual&quot; mode. This mode switch is permanent, in the sense that</span>
+<span class="sd">        after this point, the router will no longer respond to pings: any</span>
+<span class="sd">        messages will need to be processed through this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        condition</span>
+<span class="sd">            Zero-argument callable returning a boolean. When this condition</span>
+<span class="sd">            becomes true, this method will stop routing messages. If the</span>
+<span class="sd">            condition is already true on entry, no messages will be routed.</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum number of seconds to route messages for.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the condition did not become true before timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unlink_from_event_loop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">condition</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">time_remaining</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">time_remaining</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Timed out waiting for messages&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># Public traits ###########################################################</span>
+
+    <span class="c1">#: The event loop used to trigger message dispatch.</span>
+    <span class="n">event_loop</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IEventLoop</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Private traits ##########################################################</span>
+
+    <span class="c1">#: Internal queue for messages from all senders.</span>
+    <span class="n">_message_queue</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">)</span>
+
+    <span class="c1">#: Source of new connection ids.</span>
+    <span class="n">_connection_ids</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterator</span><span class="p">)</span>
+
+    <span class="c1">#: Receivers, keyed by connection_id.</span>
+    <span class="n">_receivers</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Int</span><span class="p">(),</span> <span class="n">Instance</span><span class="p">(</span><span class="n">MultithreadingReceiver</span><span class="p">))</span>
+
+    <span class="c1">#: Receiver for the &quot;message_sent&quot; signal.</span>
+    <span class="n">_pingee</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IPingee</span><span class="p">)</span>
+
+    <span class="c1">#: Bool keeping track of whether we&#39;re linked to the event loop</span>
+    <span class="c1">#: or not.</span>
+    <span class="n">_linked</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1">#: Router status: True if running, False if stopped.</span>
+    <span class="n">_running</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_link_to_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Link this router to the event loop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span><span class="p">:</span>
+            <span class="c1"># Raise, because lifetime management of self._pingee is delicate,</span>
+            <span class="c1"># so if we ever get here then something likely needs fixing.</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Already linked to the event loop&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span><span class="o">.</span><span class="n">pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_route_message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_unlink_from_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unlink this router from the event loop, if it&#39;s linked.</span>
+
+<span class="sd">        After this call, the router will no longer react to any pending</span>
+<span class="sd">        tasks on the event loop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span><span class="p">:</span>
+            <span class="c1"># Note: it might be tempting to set self._pingee to None at this</span>
+            <span class="c1"># point, and to use the None-ness (or not) of self._pingee to avoid</span>
+            <span class="c1"># needing self._linked. But it&#39;s important not to do so: we need to</span>
+            <span class="c1"># be sure that the main thread reference to the Pingee outlives any</span>
+            <span class="c1"># reference on background threads. Otherwise we end up collection a</span>
+            <span class="c1"># Qt object (the Pingee) on a thread other than the one it was</span>
+            <span class="c1"># created on, and that&#39;s unsafe in general.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get and dispatch a message from the local message queue.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block : bool, optional</span>
+<span class="sd">            If True, block until either a message arrives or until timeout. If</span>
+<span class="sd">            False (the default), we expect a message to already be present in</span>
+<span class="sd">            the queue.</span>
+<span class="sd">        timeout : float, optional</span>
+<span class="sd">            Maximum time to wait for a message to arrive. If no timeout</span>
+<span class="sd">            is given and ``block`` is True, wait indefinitely. If ``block``</span>
+<span class="sd">            is False, this parameter is ignored.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        queue.Empty</span>
+<span class="sd">            If no message arrives within the given timeout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection_id</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">receiver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_receivers</span><span class="p">[</span><span class="n">connection_id</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> discarding message from closed pipe #</span><span class="si">{</span><span class="n">connection_id</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">receiver</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+
+    <span class="k">def</span> <span class="nf">__connection_ids_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
