@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.exception_handling &mdash; Traits Futures 0.2.0 documentation</title>
+    <title>traits_futures.exception_handling &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
@@ -14,10 +14,10 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '',
+        LINK_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
@@ -25,13 +25,12 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../../genindex.html" >
     <link rel="search" title="Search" href="../../search.html" >
-    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../../index.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../../index.html" >
     <link rel="up" title="Module code" href="../index.html" > 
   </head>
   <body>
@@ -49,7 +48,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../../index.html">Traits Futures 0.2.0 documentation</a></li>
+        <li class="active"><a href="../../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
     </ul>
@@ -78,7 +77,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.exception_handling</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -94,15 +93,59 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 
 
-<div class="viewcode-block" id="marshal_exception"><a class="viewcode-back" href="../../api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception">[docs]</a><span class="k">def</span> <span class="nf">marshal_exception</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_qualified_type_name</span><span class="p">(</span><span class="n">class_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a descriptive string representing a class, including</span>
+<span class="sd">    a module name where relevant.</span>
+
+<span class="sd">    Example outputs are &quot;RuntimeError&quot; for the built-in RuntimeError</span>
+<span class="sd">    exception, or &quot;struct.error&quot; for the struct module exception class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    class_ : type</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    class_name : str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># We&#39;re being extra conservative here and allowing for the possibility that</span>
+    <span class="c1"># the class doesn&#39;t have __module__ and/or __qualname__ attributes. This</span>
+    <span class="c1"># function is called during exception handling, so we want to minimise the</span>
+    <span class="c1"># possibility that it raises a new exception.</span>
+    <span class="n">class_module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unknown&gt;&quot;</span><span class="p">)</span>
+    <span class="n">class_qualname</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="s2">&quot;__qualname__&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unknown&gt;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">class_module</span> <span class="o">==</span> <span class="s2">&quot;builtins&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_qualname</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_module</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">class_qualname</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<div class="viewcode-block" id="marshal_exception"><a class="viewcode-back" href="../../api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception">[docs]</a><span class="k">def</span> <span class="nf">marshal_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Turn exception details into something that can be safely</span>
 <span class="sd">    transmitted across thread / process boundaries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    exception : BaseException</span>
+<span class="sd">        The exception instance to be marshalled</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    exception_type, exception_value, exception_traceback : str</span>
+<span class="sd">        Strings representing the exception type, value and</span>
+<span class="sd">        formatted traceback.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exc_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-    <span class="n">exc_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-    <span class="n">formatted_traceback</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">formatted_traceback</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_qualified_type_name</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)),</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span>
+        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span> <span class="n">exception</span><span class="p">,</span> <span class="n">exception</span><span class="o">.</span><span class="n">__traceback__</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -122,7 +165,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
         </div>
@@ -139,19 +182,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
-All rights reserved.
-
-This software is provided without warranty under the terms of the BSD
-license included in LICENSE.txt and may be redistributed only under
-the conditions described in the aforementioned license. The license
-is also available online at http://www.enthought.com/licenses/BSD.txt
-
-Thanks for using Enthought open source!
-
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.api module &mdash; Traits Futures 0.2.0 documentation</title>
+    <title>traits_futures.api module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
@@ -14,10 +14,10 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '',
+        LINK_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
@@ -25,13 +25,12 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.background_call module" href="traits_futures.background_call.html" >
     <link rel="prev" title="traits_futures package" href="traits_futures.html" > 
@@ -51,7 +50,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
@@ -111,10 +110,10 @@ guarantees are made for imports from other modules or subpackages.</p>
 <div class="section" id="types-of-futures">
 <h2>Types of futures<a class="headerlink" href="#types-of-futures" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p></li>
 <li><p><a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a></p></li>
 <li><p><a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a></p></li>
 <li><p><a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.TaskCancelled" title="traits_futures.base_future.TaskCancelled"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a></p></li>
 </ul>
 </div>
 <div class="section" id="future-states">
@@ -132,16 +131,18 @@ guarantees are made for imports from other modules or subpackages.</p>
 <div class="section" id="executor-states">
 <h2>Executor states<a class="headerlink" href="#executor-states" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.ExecutorState" title="traits_futures.traits_executor.ExecutorState"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ExecutorState</span></code></a></p></li>
-<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.RUNNING" title="traits_futures.traits_executor.RUNNING"><code class="xref py py-data docutils literal notranslate"><span class="pre">RUNNING</span></code></a></p></li>
-<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPING" title="traits_futures.traits_executor.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a></p></li>
-<li><p><a class="reference internal" href="traits_futures.traits_executor.html#traits_futures.traits_executor.STOPPED" title="traits_futures.traits_executor.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.ExecutorState" title="traits_futures.executor_states.ExecutorState"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ExecutorState</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.RUNNING" title="traits_futures.executor_states.RUNNING"><code class="xref py py-data docutils literal notranslate"><span class="pre">RUNNING</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a></p></li>
 </ul>
 </div>
 <div class="section" id="support-for-user-defined-background-tasks">
 <h2>Support for user-defined background tasks<a class="headerlink" href="#support-for-user-defined-background-tasks" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a></p></li>
 <li><p><a class="reference internal" href="traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a></p></li>
 </ul>
 </div>
@@ -149,7 +150,16 @@ guarantees are made for imports from other modules or subpackages.</p>
 <h2>Parallelism contexts<a class="headerlink" href="#parallelism-contexts" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">IParallelContext</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext" title="traits_futures.multiprocessing_context.MultiprocessingContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiprocessingContext</span></code></a></p></li>
 <li><p><a class="reference internal" href="traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext" title="traits_futures.multithreading_context.MultithreadingContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingContext</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="event-loops">
+<h2>Event loops<a class="headerlink" href="#event-loops" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoop</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a></p></li>
+<li><p><a class="reference internal" href="traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop" title="traits_futures.ets_event_loop.ETSEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">ETSEventLoop</span></code></a></p></li>
 </ul>
 </div>
 </div>
@@ -173,6 +183,7 @@ guarantees are made for imports from other modules or subpackages.</p>
 <li><a class="reference internal" href="#executor-states">Executor states</a></li>
 <li><a class="reference internal" href="#support-for-user-defined-background-tasks">Support for user-defined background tasks</a></li>
 <li><a class="reference internal" href="#parallelism-contexts">Parallelism contexts</a></li>
+<li><a class="reference internal" href="#event-loops">Event loops</a></li>
 </ul>
 </li>
 </ul>
@@ -197,7 +208,7 @@ guarantees are made for imports from other modules or subpackages.</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
         </div>
@@ -214,19 +225,10 @@ guarantees are made for imports from other modules or subpackages.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
-All rights reserved.
-
-This software is provided without warranty under the terms of the BSD
-license included in LICENSE.txt and may be redistributed only under
-the conditions described in the aforementioned license. The license
-is also available online at http://www.enthought.com/licenses/BSD.txt
-
-Thanks for using Enthought open source!
-
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

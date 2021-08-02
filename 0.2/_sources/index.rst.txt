@@ -1,5 +1,5 @@
 ..
-   (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
+   (C) Copyright 2018-2021 Enthought, Inc., Austin, TX
    All rights reserved.
 
    This software is provided without warranty under the terms of the BSD
@@ -45,20 +45,19 @@ Limitations
 
 - By design, and unlike :mod:`concurrent.futures`, |traits_futures| requires the
   UI event loop to be running in order to process results.
-- For the moment, |traits_futures| requires Qt. Support for wxPython
-  may arrive in a future release.
-- No multiprocessing support yet. Maybe one day.
-- Requires Python 3.5 or later.
+- Requires Python 3.6 or later.
 
 
 Quick start
 -----------
 
-Here's a complete example showing a minimal TraitsUI application that fires off
-a background computation when its "Calculate" button is pressed, and shows the
-result when it arrives.
+Here's a :download:`complete example <guide/examples/quick_start.py>` showing a
+minimal TraitsUI application that fires off a background computation when its
+"Calculate" button is pressed, and shows the result when it arrives.
 
-.. literalinclude:: examples/quick_start.py
+.. literalinclude:: guide/examples/quick_start.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 
 User Guide
@@ -67,9 +66,14 @@ User Guide
 .. toctree::
    :maxdepth: 4
 
+   guide/overview.rst
    guide/intro.rst
    guide/cancel.rst
+   guide/contexts.rst
+   guide/toolkits.rst
+   guide/testing.rst
    guide/advanced.rst
+   guide/examples.rst
 
 
 API Documentation
@@ -79,6 +83,15 @@ API Documentation
    :maxdepth: 4
 
    api/traits_futures.rst
+
+
+Changelog
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   changes.rst
 
 
 Indices and tables

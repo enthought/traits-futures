@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.wrappers module &mdash; Traits Futures 0.2.0 documentation</title>
+    <title>traits_futures.wrappers module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
@@ -14,10 +14,10 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '',
+        LINK_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
@@ -25,15 +25,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
-    <link rel="next" title="traits_futures.null package" href="traits_futures.null.html" >
+    <link rel="next" title="traits_futures.asyncio package" href="traits_futures.asyncio.html" >
     <link rel="prev" title="traits_futures.version module" href="traits_futures.version.html" > 
   </head>
   <body>
@@ -51,7 +50,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
@@ -67,7 +66,7 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="traits_futures.null.html" title="traits_futures.null package"
+        <a href="traits_futures.asyncio.html" title="traits_futures.asyncio package"
            accesskey="N">next</a>
       </li>
       <li class="active">
@@ -91,99 +90,49 @@
 <span id="traits-futures-wrappers-module"></span><h1>traits_futures.wrappers module<a class="headerlink" href="#module-traits_futures.wrappers" title="Permalink to this headline">¶</a></h1>
 <p>Wrappers for the background task callable and the foreground future.</p>
 <p>These are used by the TraitsExecutor machinery.</p>
-<dl class="class">
-<dt id="traits_futures.wrappers.BackgroundTaskWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">BackgroundTaskWrapper</code><span class="sig-paren">(</span><em class="sig-param">background_task</em>, <em class="sig-param">sender</em>, <em class="sig-param">cancel_event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Wrapper for callables submitted to the underlying executor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>background_task</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.8)"><em>collections.abc.Callable</em></a>) – Callable representing the background task. This will be called
-with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
-<li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.null.message_router.html#traits_futures.null.message_router.MessageSender" title="traits_futures.null.message_router.MessageSender"><em>MessageSender</em></a>) – Object used to send messages.</p></li>
-<li><p><strong>cancelled</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.8)"><em>collections.abc.Callable</em></a>) – Zero-argument callable returning bool. This can be called to check
-whether cancellation has been requested.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="traits_futures.wrappers.BackgroundTaskWrapper.send_control_message">
-<code class="sig-name descname">send_control_message</code><span class="sig-paren">(</span><em class="sig-param">message_type</em>, <em class="sig-param">message_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_control_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_control_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a control message from the background task to the future.</p>
-<p>These messages apply to all futures, and are used to communicate
-changes to the state of the future.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message">
-<code class="sig-name descname">send_custom_message</code><span class="sig-paren">(</span><em class="sig-param">message_type</em>, <em class="sig-param">message_args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#BackgroundTaskWrapper.send_custom_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.BackgroundTaskWrapper.send_custom_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a custom message from the background task to the future.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The message type.</p></li>
-<li><p><strong>message_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a><em>, </em><em>optional</em>) – Any arguments providing additional information for the message.
-If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is passed.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="data">
-<dt id="traits_futures.wrappers.CONTROL">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">CONTROL</code><em class="property"> = 'control'</em><a class="headerlink" href="#traits_futures.wrappers.CONTROL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prefix used for control messages.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="traits_futures.wrappers.CUSTOM">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">CUSTOM</code><em class="property"> = 'custom'</em><a class="headerlink" href="#traits_futures.wrappers.CUSTOM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prefix used for custom messages.</p>
-</dd></dl>
-
-<dl class="class">
+<dl class="py class">
 <dt id="traits_futures.wrappers.FutureWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">FutureWrapper</code><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">FutureWrapper</span></code><a class="reference internal" href="../_modules/traits_futures/wrappers.html#FutureWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasStrictTraits</span></code></a></p>
 <p>Wrapper for the IFuture.</p>
-<p>This wrapper handles control messages from the background task, and
-delegates custom messages to the future.</p>
-<dl class="attribute">
-<dt id="traits_futures.wrappers.FutureWrapper.future">
-<code class="sig-name descname">future</code><em class="property"> = Instance(IFuture)</em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
-<dd><p>Future being wrapped</p>
+<p>Passes on messages received for this future.</p>
+<dl class="py attribute">
+<dt id="traits_futures.wrappers.FutureWrapper.done">
+<code class="sig-name descname"><span class="pre">done</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Bool(False)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool recording whether the future has completed or not. The
+executor listens to this trait to decide when it can clean up
+its own internal state.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
+<dt id="traits_futures.wrappers.FutureWrapper.future">
+<code class="sig-name descname"><span class="pre">future</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(IFuture)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.future" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Traits Futures future being wrapped</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="traits_futures.wrappers.FutureWrapper.receiver">
-<code class="sig-name descname">receiver</code><em class="property"> = Instance(HasTraits)</em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">receiver</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Instance(HasTraits)</span></em><a class="headerlink" href="#traits_futures.wrappers.FutureWrapper.receiver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object that receives messages from the background task.</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="data">
-<dt id="traits_futures.wrappers.RAISED">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">RAISED</code><em class="property"> = 'raised'</em><a class="headerlink" href="#traits_futures.wrappers.RAISED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent when an exception was raised by the background
-callable. The argument is a tuple containing exception information.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="traits_futures.wrappers.RETURNED">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">RETURNED</code><em class="property"> = 'returned'</em><a class="headerlink" href="#traits_futures.wrappers.RETURNED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent to indicate that the background callable succeeded
-and returned a result. The argument is that result.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="traits_futures.wrappers.STARTED">
-<code class="sig-prename descclassname">traits_futures.wrappers.</code><code class="sig-name descname">STARTED</code><em class="property"> = 'started'</em><a class="headerlink" href="#traits_futures.wrappers.STARTED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control message sent before we start to process the target callable.
-The argument is always <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="py function">
+<dt id="traits_futures.wrappers.run_background_task">
+<code class="sig-prename descclassname"><span class="pre">traits_futures.wrappers.</span></code><code class="sig-name descname"><span class="pre">run_background_task</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancelled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wrappers.html#run_background_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wrappers.run_background_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for callables submitted to the underlying executor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> – Callable representing the background task. This will be called
+with arguments <code class="docutils literal notranslate"><span class="pre">send</span></code> and <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>.</p></li>
+<li><p><strong>sender</strong> (<a class="reference internal" href="traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageSender</span></code></a>) – Object used to send messages.</p></li>
+<li><p><strong>cancelled</strong> – Zero-argument callable returning bool. This can be called to check
+whether cancellation has been requested.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -201,8 +150,8 @@ The argument is always <code class="docutils literal notranslate"><span class="p
   <p class="topless"><a href="traits_futures.version.html"
                         title="previous chapter">traits_futures.version module</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.null.html"
-                        title="next chapter">traits_futures.null package</a></p>
+  <p class="topless"><a href="traits_futures.asyncio.html"
+                        title="next chapter">traits_futures.asyncio package</a></p>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.wrappers.rst.txt"
@@ -217,7 +166,7 @@ The argument is always <code class="docutils literal notranslate"><span class="p
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
         </div>
@@ -234,19 +183,10 @@ The argument is always <code class="docutils literal notranslate"><span class="p
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
-All rights reserved.
-
-This software is provided without warranty under the terms of the BSD
-license included in LICENSE.txt and may be redistributed only under
-the conditions described in the aforementioned license. The license
-is also available online at http://www.enthought.com/licenses/BSD.txt
-
-Thanks for using Enthought open source!
-
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

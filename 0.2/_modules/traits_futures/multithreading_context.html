@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.multithreading_context &mdash; Traits Futures 0.2.0 documentation</title>
+    <title>traits_futures.multithreading_context &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
@@ -14,10 +14,10 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '',
+        LINK_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
@@ -25,13 +25,12 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../../genindex.html" >
     <link rel="search" title="Search" href="../../search.html" >
-    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../../index.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../../index.html" >
     <link rel="up" title="Module code" href="../index.html" > 
   </head>
   <body>
@@ -49,7 +48,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../../index.html">Traits Futures 0.2.0 documentation</a></li>
+        <li class="active"><a href="../../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
     </ul>
@@ -78,7 +77,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.multithreading_context</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -95,8 +94,8 @@
 <span class="kn">import</span> <span class="nn">concurrent.futures</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="k">import</span> <span class="n">IParallelContext</span>
-<span class="kn">from</span> <span class="nn">traits_futures.toolkit_support</span> <span class="k">import</span> <span class="n">toolkit</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="kn">import</span> <span class="n">IParallelContext</span>
+<span class="kn">from</span> <span class="nn">traits_futures.multithreading_router</span> <span class="kn">import</span> <span class="n">MultithreadingRouter</span>
 
 
 <div class="viewcode-block" id="MultithreadingContext"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext">[docs]</a><span class="k">class</span> <span class="nc">MultithreadingContext</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">):</span>
@@ -104,7 +103,7 @@
 <span class="sd">    Context for multithreading, suitable for use with the TraitsExecutor.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="MultithreadingContext.worker_pool"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.worker_pool">[docs]</a>    <span class="k">def</span> <span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -129,21 +128,28 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        event : event-like</span>
+<span class="sd">        event : object</span>
 <span class="sd">            An event that can be shared safely with workers.</span>
+<span class="sd">            The event should have the same API as :class:`threading.Event`</span>
+<span class="sd">            and :class:`multiprocessing.Event`, providing at a minimum</span>
+<span class="sd">            the ``set`` and ``is_set`` methods from that API.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="MultithreadingContext.message_router"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router">[docs]</a>    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultithreadingContext.message_router"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router">[docs]</a>    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a message router suitable for use in this context.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event_loop : IEventLoop</span>
+<span class="sd">            The event loop used to trigger message dispatch.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        message_router : MessageRouter</span>
+<span class="sd">        message_router : MultithreadingRouter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">router_class</span> <span class="o">=</span> <span class="n">toolkit</span><span class="p">(</span><span class="s2">&quot;message_router:MessageRouter&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">router_class</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">MultithreadingRouter</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="n">event_loop</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingContext.close"><a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -176,7 +182,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
         </div>
@@ -193,19 +199,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
-All rights reserved.
-
-This software is provided without warranty under the terms of the BSD
-license included in LICENSE.txt and may be redistributed only under
-the conditions described in the aforementioned license. The license
-is also available online at http://www.enthought.com/licenses/BSD.txt
-
-Thanks for using Enthought open source!
-
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

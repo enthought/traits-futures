@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>Advanced topics &mdash; Traits Futures 0.2.0 documentation</title>
+    <title>Advanced topics &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
@@ -14,10 +14,10 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '',
+        LINK_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
@@ -25,15 +25,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../index.html" >
-    <link rel="next" title="traits_futures package" href="../api/traits_futures.html" >
-    <link rel="prev" title="Making tasks interruptible" href="cancel.html" > 
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="next" title="Complete examples" href="examples.html" >
+    <link rel="prev" title="Testing Traits Futures code" href="testing.html" > 
   </head>
   <body>
   <div class="container">
@@ -50,7 +49,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.2.0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
 	 
     </ul>
               
@@ -65,11 +64,11 @@
            >modules</a>
       </li>
       <li class="active">
-        <a href="../api/traits_futures.html" title="traits_futures package"
+        <a href="examples.html" title="Complete examples"
            accesskey="N">next</a>
       </li>
       <li class="active">
-        <a href="cancel.html" title="Making tasks interruptible"
+        <a href="testing.html" title="Testing Traits Futures code"
            accesskey="P">previous</a>
       </li>
     </ul>
@@ -87,29 +86,38 @@
             
   <div class="section" id="advanced-topics">
 <h1>Advanced topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Support for writing custom tasks is provisional. The API is subject to
+change in future releases. Feedback on the feature is welcome.</p>
+</div>
 <div class="section" id="creating-your-own-background-task-type">
 <h2>Creating your own background task type<a class="headerlink" href="#creating-your-own-background-task-type" title="Permalink to this headline">¶</a></h2>
 <p>Traits Futures comes with three basic background task types: background calls,
 background iterations and background progress calls, created via the
 <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions,
 respectively. In each case, communication from the background task to the
-corresponding foreground <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> instance is implemented by sending
-custom task-type-specific messages, with the type of message identified by
-a suitable string. For example, the background progress task sends messages
-of type <code class="docutils literal notranslate"><span class="pre">&quot;progress&quot;</span></code> to report progress, while the background iteration task
-sends messages of type <code class="docutils literal notranslate"><span class="pre">&quot;generated&quot;</span></code>.</p>
+corresponding foreground <a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> instance is implemented by sending custom
+task-type-specific messages of the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_value)</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">message_type</span></code> is a suitable string describing the type of the message.
+For example, the progress task sends messages of type <code class="docutils literal notranslate"><span class="pre">&quot;progress&quot;</span></code> to report
+progress, while the background iteration task sends messages of type
+<code class="docutils literal notranslate"><span class="pre">&quot;generated&quot;</span></code>.</p>
 <p>If none of the standard task types meets your needs, it’s possible to write
-your own background task type, that sends whatever message types you like. This
-section describes how to do this in detail.</p>
+your own background task type, that sends whatever messages you like. Two base
+classes, <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a>, are made available to make this easier.
+This section describes how to do this in detail.</p>
 <p>To create your own task type, you’ll need three ingredients:</p>
 <ul class="simple">
 <li><p>A factory for the background callable.</p></li>
-<li><p>A suitable future type, implementing the <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface.</p></li>
+<li><p>A suitable future type, implementing the <a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface.</p></li>
 <li><p>A <em>task specification</em> class, implementing the <a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a>
 interface. The <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit" title="traits_futures.traits_executor.TraitsExecutor.submit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">submit</span></code></a> method of the TraitsExecutor expects an instance of
 <a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a>, and interrogates that instance to get the background
 callable and the corresponding foreground future.</p></li>
 </ul>
+<p>You may optionally also want to create a convenience function analogous to the
+existing <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions.</p>
 <p>Below we give a worked example that demonstrates how to create each of these
 ingredients for a simple case.</p>
 </div>
@@ -123,10 +131,13 @@ multiples of 5, and “Fizz Buzz” messages on multiples of 15. Each message
 is accompanied by the corresponding number.</p>
 <div class="section" id="message-types">
 <h3>Message types<a class="headerlink" href="#message-types" title="Permalink to this headline">¶</a></h3>
-<p>In general, a message sent from the background to the foreground has two parts:
-a message type, and an optional message argument. The message type should be a
-string, while the message argument can be any Python object (though it should
-usually be pickleable and immutable).</p>
+<p>In general, each message sent from the background task to the future can be any
+Python object, and the future can interpret the sent object in any way that it
+likes. However, the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a> convenience base classes that
+we’ll use below provide helper functions to handle and dispatch messages of
+the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_args)</span></code>. Here the message type should be
+a string that’s valid as a Python identifier, while the message argument can be
+any Python object (though it should usually be pickleable and immutable).</p>
 <p>We first define named constants representing our three message types. This
 isn’t strictly necessary, but it makes the code cleaner.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz&quot;</span>
@@ -134,83 +145,86 @@ isn’t strictly necessary, but it makes the code cleaner.</p>
 <span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
 </pre></div>
 </div>
-<p>Note that the message types are all strings. Ideally, those strings should be
-valid Python identifiers, since (as we’ll see later) the default message
-dispatch mechanism uses these strings directly in the corresponding message
-handler names.</p>
 </div>
 <div class="section" id="the-background-callable">
 <h3>The background callable<a class="headerlink" href="#the-background-callable" title="Permalink to this headline">¶</a></h3>
-<p>Next, we define the callable that will be run in the background. This callable
-must accept two arguments (which will be passed by position): <code class="docutils literal notranslate"><span class="pre">send</span></code> and
+<p>Next, we define the callable that will be run in the background. The callable
+itself expects two arguments (which will be passed by position): <code class="docutils literal notranslate"><span class="pre">send</span></code> and
 <code class="docutils literal notranslate"><span class="pre">cancelled</span></code>. The <code class="docutils literal notranslate"><span class="pre">send</span></code> object is a callable which will be used to send
 messages to the foreground. The <code class="docutils literal notranslate"><span class="pre">cancelled</span></code> object is a zero-argument
-callable which can be used to check for cancellation requests. Here’s the
-<code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> callable.</p>
+callable which can be used to check for cancellation requests.</p>
+<p>However, instead of implementing this callable directly, we inherit from the
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask" title="traits_futures.base_future.BaseTask"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTask</span></code></a> abstract base class. This requires us to implement a (parameterless)
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run" title="traits_futures.base_future.BaseTask.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run</span></code></a> method for the body of the task. The <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run" title="traits_futures.base_future.BaseTask.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run</span></code></a> method has access to methods
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send" title="traits_futures.base_future.BaseTask.send"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled" title="traits_futures.base_future.BaseTask.cancelled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancelled</span></code></a> to send messages to the associated <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance
+and to check whether the user has requested cancellation.</p>
+<p>Here’s the <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> callable.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseTask</span>
 
-<span class="k">def</span> <span class="nf">fizz_buzz</span><span class="p">(</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Count slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
+<span class="sd">    Background task for Fizz Buzz</span>
+
+<span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    send : callable(message_type, message_argument) -&gt; None</span>
-<span class="sd">        Callable accepting two arguments: a message type (a string) as the</span>
-<span class="sd">        first argument, and the message argument (if any) as the optional</span>
-<span class="sd">        second argument. The message argument should be pickleable, and</span>
-<span class="sd">        preferably immutable (or at least, not intended to be mutated). It</span>
-<span class="sd">        should return nothing.</span>
-<span class="sd">    cancelled : callable</span>
+<span class="sd">    send</span>
+<span class="sd">        Callable accepting the message to be sent, and returning nothing. The</span>
+<span class="sd">        message argument should be pickleable, and preferably immutable (or at</span>
+<span class="sd">        least, not intended to be mutated).</span>
+<span class="sd">    cancelled</span>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">cancelled</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
 
-        <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
 
-        <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
-            <span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
 <p>In this example, we don’t return anything from the <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> function, but
 in general any object returned by the background callable will be made
-available under the <a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture.result" title="traits_futures.i_future.IFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a> property of the corresponding future. Similarly,
+available under the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a> property of the corresponding future. Similarly,
 any exception raised during execution will be made available under the
-<a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture.exception" title="traits_futures.i_future.IFuture.exception"><code class="xref py py-attr docutils literal notranslate"><span class="pre">exception</span></code></a> property of the corresponding future.</p>
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception" title="traits_futures.base_future.BaseFuture.exception"><code class="xref py py-attr docutils literal notranslate"><span class="pre">exception</span></code></a> property of the corresponding future.</p>
 </div>
 <div class="section" id="the-foreground-future">
 <h3>The foreground Future<a class="headerlink" href="#the-foreground-future" title="Permalink to this headline">¶</a></h3>
 <p>Now we define a dedicated future class <code class="docutils literal notranslate"><span class="pre">FizzBuzzFuture</span></code> for this background
 task type. The most convenient way to do this is to inherit from the
-<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> class, which is a <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a> subclass that provides the
-<a class="reference internal" href="../api/traits_futures.i_future.html#traits_futures.i_future.IFuture" title="traits_futures.i_future.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface. Messages coming into the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance from the
-background task are processed by the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_dispatch_message</span></code> method. The default
-implementation of this method does a couple of things:</p>
-<ul class="simple">
-<li><p>it dispatches the argument of each message to a method named
-<code class="docutils literal notranslate"><span class="pre">_process_&lt;message_type&gt;</span></code>.</p></li>
-<li><p>it suppresses any messages that arrive after cancellation has been requested</p></li>
-</ul>
-<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">_dispatch_message</span></code> method can be safely overridden by subclasses if some
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> class, which is a <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a> subclass that provides the
+<a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface. Messages coming into the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance from the
+background task are processed by the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch" title="traits_futures.base_future.BaseFuture.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch</span></code></a> method. The default
+implementation of this method expects incoming messages to have the form
+<code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, and it converts each such message to a call to
+a method named <code class="docutils literal notranslate"><span class="pre">_process_&lt;message_type&gt;</span></code>, passing <code class="docutils literal notranslate"><span class="pre">message_arg</span></code> as an
+argument.</p>
+<p>The <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch" title="traits_futures.base_future.BaseFuture.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch</span></code></a> method can be safely overridden by subclasses if messages
+do not have the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span> <span class="pre">message_arg)</span></code>, or if some
 other dispatch mechanism is wanted. For this example, we use the default
 dispatch mechanism, so all we need to do is to define methods
 <code class="docutils literal notranslate"><span class="pre">_process_fizz</span></code>, <code class="docutils literal notranslate"><span class="pre">_process_buzz</span></code> and <code class="docutils literal notranslate"><span class="pre">_process_fizz_buzz</span></code> to handle
 messages of types <code class="docutils literal notranslate"><span class="pre">FIZZ</span></code>, <code class="docutils literal notranslate"><span class="pre">BUZZ</span></code> and <code class="docutils literal notranslate"><span class="pre">FIZZ_BUZZ</span></code> respectively. We choose
 to process each message by firing a corresponding event on the future.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="k">import</span> <span class="n">BaseFuture</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
 
 
 <span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
@@ -247,14 +261,14 @@ to process each message by firing a corresponding event on the future.</p>
 <h3>Putting it all together: the task specification<a class="headerlink" href="#putting-it-all-together-the-task-specification" title="Permalink to this headline">¶</a></h3>
 <p>The last piece we need is a task specification, which is the object that can be
 submitted to the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>. This object needs to have two attributes:
-<code class="docutils literal notranslate"><span class="pre">future</span></code> and <code class="docutils literal notranslate"><span class="pre">background_task</span></code>. Given an instance <code class="docutils literal notranslate"><span class="pre">task</span></code> of a task
-specification, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> calls <code class="docutils literal notranslate"><span class="pre">task.future()</span></code>
-to create the future, and <code class="docutils literal notranslate"><span class="pre">task.background_task()</span></code> to create the background
+<code class="docutils literal notranslate"><span class="pre">future</span></code> and <code class="docutils literal notranslate"><span class="pre">task</span></code>. Given an instance <code class="docutils literal notranslate"><span class="pre">task</span></code> of a task
+specification, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> calls <code class="docutils literal notranslate"><span class="pre">task.future(cancel)</span></code>
+to create the future, and <code class="docutils literal notranslate"><span class="pre">task.task()</span></code> to create the background
 callable. For the background task, we want to return (but not call!) the
 <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> function that we defined above. For the future, we create and
 return a new <code class="docutils literal notranslate"><span class="pre">FizzBuzzFuture</span></code> instance. So our task specification
 looks like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="k">import</span> <span class="n">ITaskSpecification</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
@@ -263,9 +277,16 @@ looks like this:</p>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -273,9 +294,9 @@ looks like this:</p>
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
@@ -286,7 +307,7 @@ looks like this:</p>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">fizz_buzz</span>
+        <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -319,23 +340,177 @@ encapsulate that operation in a function:</p>
 </div>
 <div class="section" id="an-example-gui">
 <h3>An example GUI<a class="headerlink" href="#an-example-gui" title="Permalink to this headline">¶</a></h3>
-<p>Putting everything together, here’s an example GUI that makes use of the new
-background task type:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
-<span class="c1"># All rights reserved.</span>
-<span class="c1">#</span>
-<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
-<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
-<span class="c1"># the conditions described in the aforementioned license. The license</span>
-<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
-<span class="c1">#</span>
-<span class="c1"># Thanks for using Enthought open source!</span>
-
+<p>Here’s the <a class="reference download internal" download="" href="../_downloads/c3ba6c80aacc0c4457e8c865f82049cf/fizz_buzz_task.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">script</span></code></a> obtained
+from putting together the above snippets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of a user-created background task type.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># This Python file provides supporting code for the &quot;advanced&quot; section of the</span>
+<span class="c1"># user guide. Because we&#39;re using pieces of the file for documentation</span>
+<span class="c1"># snippets, the overall structure of this file is a little odd, and doesn&#39;t</span>
+<span class="c1"># follow standard style guidelines (for example, placing imports at the top</span>
+<span class="c1"># of the file). The various &#39;# -- start&#39; and &#39;# -- end&#39; markers are there</span>
+<span class="c1"># to allow the documentation build to extract the appropriate pieces.</span>
+
+
+<span class="c1"># -- start message types</span>
+<span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz&quot;</span>
+<span class="n">BUZZ</span> <span class="o">=</span> <span class="s2">&quot;buzz&quot;</span>
+<span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
+<span class="c1"># -- end message types</span>
+
+
+<span class="c1"># -- start fizz_buzz --</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseTask</span>
+
+
+<span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Background task for Fizz Buzz</span>
+
+<span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    send</span>
+<span class="sd">        Callable accepting the message to be sent, and returning nothing. The</span>
+<span class="sd">        message argument should be pickleable, and preferably immutable (or at</span>
+<span class="sd">        least, not intended to be mutated).</span>
+<span class="sd">    cancelled</span>
+<span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
+<span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
+<span class="sd">        otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
+
+            <span class="n">n_is_multiple_of_3</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_is_multiple_of_5</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="n">n_is_multiple_of_3</span> <span class="ow">and</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ_BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">FIZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">n_is_multiple_of_5</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">BUZZ</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="c1"># -- end fizz_buzz --</span>
+
+
+<span class="c1"># -- start FizzBuzzFuture --</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
+
+
+<span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Event fired whenever we get a FIZZ message. The payload is the</span>
+    <span class="c1">#: corresponding integer.</span>
+    <span class="n">fizz</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+
+    <span class="c1">#: Event fired whenever we get a BUZZ message. The payload is the</span>
+    <span class="c1">#: corresponding integer.</span>
+    <span class="n">buzz</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+
+    <span class="c1">#: Event fired whenever a FIZZ_BUZZ arrives from the background.</span>
+    <span class="c1">#: The payload is the corresponding integer.</span>
+    <span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">Event</span><span class="p">(</span><span class="n">Int</span><span class="p">)</span>
+
+    <span class="c1"># Private methods #########################################################</span>
+
+    <span class="k">def</span> <span class="nf">_process_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fizz</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">_process_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buzz</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">_process_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">n</span>
+<span class="c1"># -- end FizzBuzzFuture --</span>
+
+
+<span class="c1"># -- start BackgroundFizzBuzz --</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
+
+
+<span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
+<span class="k">class</span> <span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Task specification for Fizz Buzz background tasks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        FizzBuzzFuture</span>
+<span class="sd">            Future object that can be used to monitor the status of the</span>
+<span class="sd">            background task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a background callable for this task specification.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        collections.abc.Callable</span>
+<span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
+<span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
+<span class="sd">            check whether cancellation has been requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
+<span class="c1"># -- end BackgroundFizzBuzz</span>
+
+
+<span class="c1"># -- start submit_fizz_buzz</span>
+<span class="k">def</span> <span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    executor : TraitsExecutor</span>
+<span class="sd">        The executor to submit the task to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    future : FizzBuzzFuture</span>
+<span class="sd">        The future for the background task, allowing monitoring and</span>
+<span class="sd">        cancellation of the background task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundFizzBuzz</span><span class="p">()</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">future</span>
+<span class="c1"># -- end submit_fizz_buzz</span>
+</pre></div>
+</div>
+<p>And here’s an <a class="reference download internal" download="" href="../_downloads/7ccb602d9eec5511385b374338d26b47/fizz_buzz_ui.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">GUI</span></code></a> that makes use
+of the new background task type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Example of a custom background job type.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
@@ -344,15 +519,15 @@ background task type:</p>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="k">import</span> <span class="n">TraitsExecutor</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="k">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">TraitsExecutor</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
 
-<span class="kn">from</span> <span class="nn">fizz_buzz_task</span> <span class="k">import</span> <span class="n">FizzBuzzFuture</span><span class="p">,</span> <span class="n">submit_fizz_buzz</span>
+<span class="kn">from</span> <span class="nn">fizz_buzz_task</span> <span class="kn">import</span> <span class="n">FizzBuzzFuture</span><span class="p">,</span> <span class="n">submit_fizz_buzz</span>
 
 
 <span class="k">class</span> <span class="nc">FizzBuzzUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
-    <span class="n">executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">,</span> <span class="p">())</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
     <span class="c1">#: The future object returned on task submission.</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">FizzBuzzFuture</span><span class="p">)</span>
@@ -362,16 +537,16 @@ background task type:</p>
 
     <span class="c1">#: Button to calculate, plus its enabled state.</span>
     <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
-    <span class="n">can_calculate</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future&quot;</span><span class="p">)</span>
+    <span class="n">can_calculate</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future&quot;</span><span class="p">)</span>
 
     <span class="c1">#: Button to cancel, plus its enabled state.</span>
     <span class="n">cancel</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
-    <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">depends_on</span><span class="o">=</span><span class="s2">&quot;future.cancellable&quot;</span><span class="p">)</span>
+    <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.cancellable&quot;</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Running&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_cancel_running_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
@@ -412,7 +587,11 @@ background task type:</p>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">FizzBuzzUI</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">FizzBuzzUI</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -446,11 +625,11 @@ background task type:</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="cancel.html"
-                        title="previous chapter">Making tasks interruptible</a></p>
+  <p class="topless"><a href="testing.html"
+                        title="previous chapter">Testing Traits Futures code</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../api/traits_futures.html"
-                        title="next chapter">traits_futures package</a></p>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">Complete examples</a></p>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/guide/advanced.rst.txt"
@@ -465,7 +644,7 @@ background task type:</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
         </div>
@@ -482,19 +661,10 @@ background task type:</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
-All rights reserved.
-
-This software is provided without warranty under the terms of the BSD
-license included in LICENSE.txt and may be redistributed only under
-the conditions described in the aforementioned license. The license
-is also available online at http://www.enthought.com/licenses/BSD.txt
-
-Thanks for using Enthought open source!
-
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>

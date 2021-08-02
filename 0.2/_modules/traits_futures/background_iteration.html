@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     
-    <title>traits_futures.background_iteration &mdash; Traits Futures 0.2.0 documentation</title>
+    <title>traits_futures.background_iteration &mdash; Traits Futures 0.4.0.dev0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../../_static/css/spc-extend.css">
@@ -14,10 +14,10 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.0.dev0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        LINK_SUFFIX: '',
+        LINK_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
@@ -25,13 +25,12 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../../_static/img/favicon.ico">
     <link rel="index" title="Index" href="../../genindex.html" >
     <link rel="search" title="Search" href="../../search.html" >
-    <link rel="top" title="Traits Futures 0.2.0 documentation" href="../../index.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../../index.html" >
     <link rel="up" title="Module code" href="../index.html" > 
   </head>
   <body>
@@ -49,7 +48,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../../index.html">Traits Futures 0.2.0 documentation</a></li>
+        <li class="active"><a href="../../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
 	
           <li class="active"><a href="../index.html" accesskey="U">Module code</a></li> 
     </ul>
@@ -78,7 +77,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.background_iteration</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2020 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2021 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -92,39 +91,31 @@
 <span class="sd">Background task that sends results from an iteration.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">Dict</span><span class="p">,</span>
-    <span class="n">Event</span><span class="p">,</span>
-    <span class="n">HasStrictTraits</span><span class="p">,</span>
-    <span class="n">Str</span><span class="p">,</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="k">import</span> <span class="n">BaseFuture</span>
-<span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="k">import</span> <span class="n">ITaskSpecification</span>
-
+<span class="kn">from</span> <span class="nn">traits_futures.base_future</span> <span class="kn">import</span> <span class="n">BaseFuture</span><span class="p">,</span> <span class="n">BaseTask</span>
+<span class="kn">from</span> <span class="nn">traits_futures.i_task_specification</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 <span class="c1">#: Message sent whenever the iteration yields a result.</span>
 <span class="c1">#: The message argument is the result generated.</span>
 <span class="n">GENERATED</span> <span class="o">=</span> <span class="s2">&quot;generated&quot;</span>
 
 
-<div class="viewcode-block" id="IterationBackgroundTask"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationBackgroundTask">[docs]</a><span class="k">class</span> <span class="nc">IterationBackgroundTask</span><span class="p">:</span>
+<div class="viewcode-block" id="IterationTask"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationTask">[docs]</a><span class="k">class</span> <span class="nc">IterationTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iteration to be executed in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callable</span> <span class="o">=</span> <span class="n">callable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
+<div class="viewcode-block" id="IterationTask.run"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationTask.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">cancelled</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -134,9 +125,9 @@
                 <span class="c1"># exception carries that value. Return it.</span>
                 <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
 
-            <span class="n">send</span><span class="p">(</span><span class="n">GENERATED</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">GENERATED</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
             <span class="c1"># Don&#39;t keep a reference around until the next iteration.</span>
-            <span class="k">del</span> <span class="n">result</span></div>
+            <span class="k">del</span> <span class="n">result</span></div></div>
 
 
 <div class="viewcode-block" id="IterationFuture"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture">[docs]</a><span class="k">class</span> <span class="nc">IterationFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
@@ -169,9 +160,16 @@
     <span class="c1">#: Named arguments to be passed to the callable.</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Str</span><span class="p">())</span>
 
-<div class="viewcode-block" id="BackgroundIteration.future"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future">[docs]</a>    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BackgroundIteration.future"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future">[docs]</a>    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cancel</span>
+<span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
+<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -179,36 +177,40 @@
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">IterationFuture</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="n">IterationFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BackgroundIteration.background_task"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.background_task">[docs]</a>    <span class="k">def</span> <span class="nf">background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BackgroundIteration.task"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.task">[docs]</a>    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        collections.abc.Callable</span>
+<span class="sd">        task : IterationTask</span>
 <span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">IterationBackgroundTask</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">IterationTask</span><span class="p">(</span>
             <span class="n">callable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
-            <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="submit_iteration"><a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration">[docs]</a><span class="k">def</span> <span class="nf">submit_iteration</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convenience function to submit a background iteration to an executor.</span>
+<span class="sd">    Submit an iteration to an executor.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    executor : TraitsExecutor</span>
-<span class="sd">        Executor to submit the task to.</span>
-<span class="sd">    callable : collections.abc.Callable</span>
+<span class="sd">        Executor to submit the task to. This argument should always be</span>
+<span class="sd">        passed by position rather than by name. Future versions of the library</span>
+<span class="sd">        may enforce this restriction.</span>
+<span class="sd">    callable</span>
 <span class="sd">        Callable returning an iterator when called with the given arguments.</span>
+<span class="sd">        This argument should always be passed by position rather than by name.</span>
+<span class="sd">        Future versions of the library may enforce this restriction.</span>
 <span class="sd">    *args</span>
 <span class="sd">        Positional arguments to pass to the callable.</span>
 <span class="sd">    **kwargs</span>
@@ -240,7 +242,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
         </div>
@@ -257,19 +259,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright (C) Copyright 2018-2020 Enthought, Inc., Austin, TX
-All rights reserved.
-
-This software is provided without warranty under the terms of the BSD
-license included in LICENSE.txt and may be redistributed only under
-the conditions described in the aforementioned license. The license
-is also available online at http://www.enthought.com/licenses/BSD.txt
-
-Thanks for using Enthought open source!
-
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 2.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
       </li>
     </ul>
     </div>
