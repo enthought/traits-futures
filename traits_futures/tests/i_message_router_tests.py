@@ -50,6 +50,26 @@ def send_messages(sender, messages, message_delay=None):
         sender.stop()
 
 
+def send_messages_using_context_manager(sender, messages, message_delay=None):
+    """
+    Variant of send_messages that uses the context manager interface.
+
+    Parameters
+    ----------
+    sender : IMessageSender
+        The sender to use to send messages.
+    messages : list
+        List of objects to send.
+    message_delay : float, optional
+        If given, the time to sleep before sending each message.
+    """
+    with sender:
+        for message in messages:
+            if message_delay is not None:
+                time.sleep(message_delay)
+            sender.send(message)
+
+
 class ReceiverListener(HasStrictTraits):
     """
     Listener for a receiver, recording received messages.
@@ -181,6 +201,24 @@ class IMessageRouterTests:
 
             # When
             send_messages(sender, messages)
+
+            # Then
+            self.assertEventuallyReceives(listener, messages)
+
+            # Cleanup
+            router.close_pipe(receiver)
+
+    def test_send_and_receive_main_thread_using_context_manager(self):
+        # Variant of send_and_receive where we send on the main thread,
+        # without using a worker. This should still work.
+        with self.started_router() as router:
+            # Given
+            sender, receiver = router.pipe()
+            listener = ReceiverListener(receiver=receiver)
+            messages = ["Just testing", 314]
+
+            # When
+            send_messages_using_context_manager(sender, messages)
 
             # Then
             self.assertEventuallyReceives(listener, messages)
