@@ -132,7 +132,9 @@ def clone_branch(repo, branch, target_directory, name):
     clone_directory = os.path.join(target_directory, name)
     os.mkdir(clone_directory)
     with current_directory(clone_directory):
-        run_git("init")
+        # Specify a branch name to silence Git's output about the master->main
+        # change.
+        run_git("init", "--initial-branch=main")
         run_git("remote", "add", "origin", repo)
         run_git("fetch", "--no-tags", "--prune", "--depth=1", "origin", branch)
         run_git("checkout", branch)
