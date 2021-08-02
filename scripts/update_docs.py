@@ -37,6 +37,11 @@ DOC_BRANCH = "gh-pages-testing"
 ROOT_DIR = os.path.abspath(".")
 DOCS_SOURCE_DIR = os.path.join(ROOT_DIR, "docs", "source")
 
+#: Branch patterns that we know about
+BRANCH_PATTERN = re.compile(
+    r"\A(refs/heads/)?(main|maint/(?P<version>\d+\.\d+))\Z"
+)
+
 
 def join(split_command):
     """Return a shell-escaped string from *split_command*."""
@@ -236,7 +241,7 @@ def replace_tree(source, target):
     os.rename(source, target)
 
 
-def build_and_upload_docs(doc_version, token):
+def build_and_upload_docs(branch, token):
     """
     Build and upload the documentation.
 
@@ -245,16 +250,19 @@ def build_and_upload_docs(doc_version, token):
 
     Parameters
     ----------
-    doc_version : str
-        The subdirectory to upload to. This should either be 'dev', or have the
-        form "major.minor". If the subdirectory already exists in gh-pages, the
-        current contents will be overwritten. If it doesn't exist, it will be
-        created.
+    branch : str
+        The branch that we're generating the documentation for. This should
+        have the form 'main' or 'maint/<major.minor>', optionally preceded
+        by 'refs/heads/'.
     token : str
         GitHub authorization token.
     """
     # Print git version for the benefit of the log.
     run_git("version")
+
+    doc_version = doc_version_from_current_branch(branch)
+    print("Writing to documentation directory", doc_version)
+
     with temporary_directory() as temp_dir:
         docs_build_dir = build_html_docs(DOCS_SOURCE_DIR, temp_dir, "build")
         docs_gh_pages = clone_branch(
@@ -264,8 +272,38 @@ def build_and_upload_docs(doc_version, token):
         push_updates(docs_gh_pages, doc_version, DOC_BRANCH, token)
 
 
-#: Regex for valid versions
-VERSION_REGEX = re.compile(r"\A(\d+\.\d+|dev)\Z")
+def doc_version_from_current_branch(branch_ref):
+    """
+    Compute directory to update from the current branch name.
+
+    Expects a branch name like "maint/0.3" or "main", optionally
+    prefixed with "refs/heads/" (which is how the branch name will be
+    passed in a GitHub Action workflow).
+
+    Examples
+    --------
+    >>> doc_version_from_current_branch("main")
+    'dev'
+    >>> doc_version_from_current_branch("refs/heads/main")
+    'dev'
+    >>> doc_version_from_current_branch("refs/heads/maint/3.4")
+    '3.4'
+    >>> doc_version_from_current_branch("maint/0.3")
+    '0.3'
+    """
+    match = BRANCH_PATTERN.match(branch_ref)
+    if match is None:
+        raise ValueError(
+            "Branch should be either main or maint/<major>.<minor>. "
+            f"Got {branch_ref}"
+        )
+
+    version = match.group("version")
+    if version is not None:
+        return version
+    else:
+        return "dev"
+
 
 #: Description for the script.
 DESCRIPTION = """Build documentation and deploy to gh-pages branch."""
@@ -283,8 +321,11 @@ def main():
         help="Authorization token for GitHub",
     )
     parser.add_argument(
-        "version",
-        help="major.minor version for the documentation, for example 3.1",
+        "branch",
+        help=(
+            "The GitHub branch the documentation is being built for, "
+            "for example 'maint/1.2'"
+        ),
     )
     args = parser.parse_args()
 
@@ -297,12 +338,15 @@ def main():
     if token == "":
         parser.error("no token provided, and GITHUB_TOKEN is not defined")
 
-    # Validate the version
-    version = args.version.lower()
-    if not VERSION_REGEX.match(version):
-        parser.error("version should be 'dev' or have the form 12.34")
+    # Validate the branch
+    branch = args.branch
+    if not BRANCH_PATTERN.match(branch):
+        parser.error(
+            "BRANCH should have the form 'main' or 'maint/<major>.<minor>', "
+            f"optionally preceded by 'refs/heads/'. Got {branch!r}."
+        )
 
-    build_and_upload_docs(version, token)
+    build_and_upload_docs(branch, token)
 
 
 if __name__ == "__main__":
