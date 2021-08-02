@@ -33,6 +33,6 @@ jobs:
       run: |
         git config user.name "Documentation Bot"
         git config user.email "<>"
-    - name: Build and deploy documentation
+    - name: Build documentation and deploy to gh-pages
       run: |
         python scripts/update_docs.py --token ${{ secrets.GITHUB_TOKEN }} ${{ env.GITHUB_REF }}
