@@ -176,6 +176,7 @@ def push_updates(clone_directory, doc_version, branch, token):
 
         commit_message = "Automated update of documentation"
         run_git("commit", "-m", commit_message)
+        run_git("config", "--list")
         run_git(
             "-c",
             (
