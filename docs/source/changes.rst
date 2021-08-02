@@ -23,7 +23,7 @@ Continuous integration and build
   wheel and sdist from PyPI. (#465)
 * Add new script for automating gh-pages updates, and extend automated
   documentation building to the maintenance branches in addition to
-  the main branch. (#474)
+  the main branch. (#474, #477)
 
 
 Release 0.3.1
