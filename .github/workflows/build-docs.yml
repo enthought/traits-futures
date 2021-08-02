@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - maint/[0-9]+.[0-9]+
+      # For testing purposes only; delete me before merging
+      - docs/automatic-doc-updates
 
 env:
   PYTHONUNBUFFERED: 1
@@ -33,6 +35,11 @@ jobs:
       run: |
         git config user.name "Documentation Bot"
         git config user.email "<>"
+    - name: Test environment variable reporting
+      run: |
+        echo $GITHUB_REF
+        echo ${{ env.GITHUB_REF }}
+        echo ${{ github.ref }}
     - name: Build documentation and deploy to gh-pages
       run: |
-        python scripts/update_docs.py --token ${{ secrets.GITHUB_TOKEN }} ${{ env.GITHUB_REF }}
+        python scripts/update_docs.py --token ${{ secrets.GITHUB_TOKEN }} ${{ github.ref }}
