@@ -1,11 +1,9 @@
-name: Update gh-pages documentation for main and maintenance branches
+name: Update gh-pages documentation for main branch
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
-      - maint/[0-9]+.[0-9]+
+    - main
 
 env:
   PYTHONUNBUFFERED: 1
@@ -29,10 +27,21 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install .[docs]
+    - name: Build HTML documentation with Sphinx
+      run: |
+        cd docs
+        python -m sphinx -b html -d doctrees source build
     - name: Configure Git
       run: |
-        git config --global user.name "Documentation Bot"
-        git config --global user.email "<>"
-    - name: Build documentation and deploy to gh-pages
+        git config user.name "Documentation Bot"
+        git config user.email "<>"
+    - name: Update gh-pages branch
       run: |
-        python scripts/update_docs.py --token ${{ secrets.GITHUB_TOKEN }} ${{ github.ref }}
+        git fetch --depth=1 origin gh-pages
+        git checkout gh-pages
+        rm -r dev
+        mv docs/build dev
+        git add dev
+        # Only commit if there are changes
+        git diff-index --quiet --cached HEAD || git commit -m "Automated update of main branch documentation"
+        git push origin gh-pages
