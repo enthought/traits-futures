@@ -35,11 +35,6 @@ jobs:
       run: |
         git config user.name "Documentation Bot"
         git config user.email "<>"
-    - name: Test environment variable reporting
-      run: |
-        echo $GITHUB_REF
-        echo ${{ env.GITHUB_REF }}
-        echo ${{ github.ref }}
     - name: Build documentation and deploy to gh-pages
       run: |
         python scripts/update_docs.py --token ${{ secrets.GITHUB_TOKEN }} ${{ github.ref }}
