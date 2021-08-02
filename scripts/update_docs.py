@@ -134,7 +134,7 @@ def clone_branch(repo, branch, target_directory, name):
     with current_directory(clone_directory):
         # Specify a branch name to silence Git's output about the master->main
         # change.
-        run_git("init", "-b", "main")
+        run_git("init", "--initial-branch=main")
         run_git("remote", "add", "origin", repo)
         run_git("fetch", "--no-tags", "--prune", "--depth=1", "origin", branch)
         run_git("checkout", branch)
