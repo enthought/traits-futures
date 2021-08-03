@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>Threading carefully &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4.0.dev0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="index" title="Index" href="../genindex.html" >
+    <link rel="search" title="Search" href="../search.html" >
+    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="next" title="Making tasks interruptible" href="cancel.html" >
+    <link rel="prev" title="Introduction" href="intro.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+	 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+      <li class="active">
+        <a href="cancel.html" title="Making tasks interruptible"
+           accesskey="N">next</a>
+      </li>
+      <li class="active">
+        <a href="intro.html" title="Introduction"
+           accesskey="P">previous</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <div class="section" id="threading-carefully">
+<h1>Threading carefully<a class="headerlink" href="#threading-carefully" title="Permalink to this headline">¶</a></h1>
+<p>Traits Futures eliminates some potential threading-related pitfalls, but by no
+means all of them. When using Traits Futures it’s still important to have a
+good understanding of general concurrency and threading-related issues
+(deadlocks, race conditions, and so on). This section gives some
+things to consider. Most of these recommendations are not specific to
+Traits Futures, but apply more generally any time that you’re writing
+concurrent (and especially multithreaded) code.</p>
+<ul>
+<li><p><strong>Never execute GUI code off the main thread.</strong> With a few documented
+exceptions, most GUI objects should only ever be manipulated on the main
+thread. For example, a call to <code class="docutils literal notranslate"><span class="pre">QLabel.setText</span></code> that occurs on a worker
+thread may cause a crash or traceback, or may be completely fine until your
+application is deployed on a customer’s machine. It’s important to be aware
+that the Traits observation mechanisms together with the way that most
+TraitsUI editors work make it easy to <em>accidentally</em> make a change that
+triggers a GUI update from a worker thread.</p>
+<p>One possible solution to this problem is to make use of <code class="docutils literal notranslate"><span class="pre">dispatch=&quot;ui&quot;</span></code>
+when observing a trait that might be modified on a worker thread, and
+indeed TraitsUI <em>does</em> use <code class="docutils literal notranslate"><span class="pre">dispatch=&quot;ui&quot;</span></code> already for some key trait
+listeners. This solves the issue of making GUI updates off the main thread,
+but introduces its own complications: because the updates are now
+asynchronous, the state of the toolkit components can get out of sync with
+the model.</p>
+<p>By using <code class="docutils literal notranslate"><span class="pre">dispatch=&quot;ui&quot;</span></code>, we’re not really addressing the root cause
+of our issues, which is having a mutable model that’s shared between
+multiple threads. Traits Futures makes it easier to write code in such a
+way that the model is kept in the main thread.</p>
+</li>
+<li><p><strong>Avoid making blocking waits on the main thread.</strong>
+To keep a running GUI responsive, avoid doing anything on the main thread
+that will block for more than a small amount of time (say 0.1 seconds).
+Where possible, set up your code to make asynchronous calls and react to
+the results of those calls, rather than making synchronous blocking calls
+on the main thread. In brief: reacting is preferable to polling; polling is
+preferable to blocking. (This is one of the key design principles behind
+Traits Futures.)</p></li>
+<li><p><strong>Include a timeout in blocking calls.</strong> If you’re making
+a blocking wait call, consider including a timeout to avoid the possibility
+of that blocking wait blocking forever. If you’re exposing potentially
+blocking calls to others in your own API, provide a timeout parameter that
+clients of your API can use. Having a timeout available is especially
+important for test suites, where you want to avoid the possibility of a
+single bad test hanging the entire test suite.</p></li>
+<li><p><strong>Avoid writes to public traits on worker threads.</strong> Public traits may have
+arbitrary listeners attached to them, and writes to those traits from a
+worker thread will trigger those listeners on the same thread, meaning that
+those listeners will have to be thread-safe. In general, people writing
+listeners for a public trait don’t expect to have to make their listener
+thread-safe. Writing to a public trait from a worker thread is a
+common cause of making accidental GUI updates from a worker thread.</p></li>
+<li><p><strong>Avoid reads from public traits on worker threads.</strong> If there’s any chance
+that a trait value might be modified while a background task is running,
+then that background task may run into race conditions. Instead of
+accessing a trait value on an object from a background task, consider
+retrieving the value at task submission time instead and passing it to the
+background task.</p>
+<p>Bad:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SomeView</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">submit_background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_square</span><span class="p">)</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">do_square</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># BAD: the return value might not even be a square, if the</span>
+        <span class="c1"># value of self.input changes between the first attribute</span>
+        <span class="c1"># access and the second.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
+</pre></div>
+</div>
+<p>Better:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SomeView</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">submit_background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_square</span><span class="p">)</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">do_square</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Only access self.input once, and cache and re-use the result</span>
+        <span class="c1"># of that access.</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
+        <span class="k">return</span> <span class="nb">input</span> <span class="o">*</span> <span class="nb">input</span>
+</pre></div>
+</div>
+<p>Best:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computation represented by a &quot;pure&quot; function with no access to</span>
+<span class="c1"># shared state.</span>
+
+<span class="k">def</span> <span class="nf">do_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">input</span><span class="o">*</span><span class="nb">input</span>
+
+
+<span class="k">class</span> <span class="nc">SomeView</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">submit_background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Do the attribute access in the main thread; pass the result</span>
+        <span class="c1"># of that access to the worker. Now we&#39;re no longer sharing</span>
+        <span class="c1"># mutable state between threads.</span>
+
+        <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Make copies of mutable data.</strong> This is a generalization of the previous
+recommendation. If a background task depends on mutable data (for example,
+a dictionary of configuration values), it may make sense to make a private
+copy to pass to the background task. That way the background task doesn’t
+have to worry about those data changing while it’s running.</p></li>
+<li><p><strong>Protect both reads and writes of shared state.</strong> Where sharing of
+mutable state can’t be avoided, make sure that both writes <em>and</em> reads
+of that shared state are protected by a suitable lock. Don’t rely on the
+GIL to do your locking for you: Python makes few guarantees about
+atomicity of operations. For example, <code class="docutils literal notranslate"><span class="pre">list.append</span></code> may happen to be
+atomic in current versions of CPython, but there’s no guarantee that that
+will remain the case, and you may find that your code is actually working
+with a subclass of <code class="docutils literal notranslate"><span class="pre">list</span></code> (like <code class="docutils literal notranslate"><span class="pre">TraitList</span></code>) for which <code class="docutils literal notranslate"><span class="pre">append</span></code>
+is not thread-safe.</p></li>
+<li><p><strong>Beware Traits defaults!</strong> Idiomatic Traits-based code makes
+frequent use of lazy instantiation and defaults. For example, if your
+<code class="docutils literal notranslate"><span class="pre">HasTraits</span></code> class needs a lock to protect some piece of shared state, you
+might consider writing code like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="c1">#: State shared by multiple threads</span>
+    <span class="n">_results</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">Str</span><span class="p">,</span> <span class="n">AnalysisResult</span><span class="p">)</span>
+
+    <span class="c1">#: Lock used to protect access to results</span>
+    <span class="n">_results_lock</span> <span class="o">=</span> <span class="n">Any</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__results_lock_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_id</span><span class="p">,</span> <span class="n">analysis_result</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">experiment_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">analysis_result</span>
+</pre></div>
+</div>
+<p>But this is dangerous! The <code class="docutils literal notranslate"><span class="pre">__results_lock_default</span></code> method will be
+invoked lazily on first use, and can be invoked simultaneously (or
+near-simultaneously) on two different threads. We then temporarily have two
+different locks, allowing <code class="docutils literal notranslate"><span class="pre">_results</span></code> to be simultaneously accessed from
+multiple threads and defeating the point of the lock.</p>
+<p>In this case, it’s better to create the <code class="docutils literal notranslate"><span class="pre">_results_lock</span></code> explicitly in the
+main thread when <code class="docutils literal notranslate"><span class="pre">MyModel</span></code> is instantiated (e.g., by adding an
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> method). Better still, rework the design to avoid needing to
+access <code class="docutils literal notranslate"><span class="pre">_results</span></code> from multiple threads in the first place.</p>
+</li>
+<li><p><strong>Have a clear, documented thread-ownership model.</strong> The organization and
+documentation of your code should make it clear which pieces of code are
+intended for possible execution by a worker thread, which pieces of code
+might be executed simultaneously by multiple threads, and which pieces of
+code are required to be thread-safe. Ideally, the portion of the codebase
+that needs to be thread-safe should be small, isolated, and clearly
+identifiable. (Writing, reasoning about, maintaining and testing
+thread-safe code is difficult and error-prone. We want to do as little of
+it as we possibly can.)</p></li>
+<li><p><strong>Keep task-coordination logic in the main thread.</strong> Sometimes you want to
+execute additional tasks depending on the results of an earlier task. In
+that case it may be tempting to try to launch those additional tasks
+directly within the code for the earlier task, but the logic is likely to
+be more manageable if it’s all kept in the main thread: fire off the first
+task, then add a trait listener for its completion that inspects the
+results and fires off additional tasks as necessary. Traits Futures
+currently encourages this model by forbidding submission of new tasks from
+a background thread, though that restriction may be lifted in the future.</p></li>
+<li><p><strong>Avoid having too many Python threads.</strong> CPython’s GIL logic can have
+limiting effects when there are too many Python threads, in some cases
+causing non-CPU-bound threads not to have a chance to run at all. Avoid
+creating too many Python threads in your process. The reasonable upper
+bound will be context dependent, but as a rule of thumb, if you have more
+than 20 Python threads, consider whether there’s a way of reducing the
+total number. For more about the problems caused by the GIL, see David
+Beazley’s talk <a class="reference external" href="https://www.dabeaz.com/python/UnderstandingGIL.pdf">Understanding the Python GIL</a> (especially Part 5).</p></li>
+<li><p><strong>Always join your threads.</strong> At application shutdown time, or on exit from
+a script, or in a test’s <code class="docutils literal notranslate"><span class="pre">tearDown</span></code> method, explicitly join any threads
+that you created directly. Similarly, explicitly shut down worker pools and
+executors. Clean shutdown helps to avoid odd side-effects at Python process
+exit time, and to avoid hard-to-debug interactions between tests in a test
+suite.</p>
+<p>In particular, you should avoid completely the use of <code class="docutils literal notranslate"><span class="pre">dispatch=&quot;new&quot;</span></code> in
+Traits listeners. This creates a new thread with no easy way to shut that
+thread down again, and while it may be an attractive solution in simple
+cases it generally creates more problems than it solves for more
+complicated code.</p>
+</li>
+<li><p><strong>Watch your references.</strong> Each Qt <code class="docutils literal notranslate"><span class="pre">QObject</span></code> is “owned” by a particular
+thread (usually the thread that the <code class="docutils literal notranslate"><span class="pre">QObject</span></code> was created on, which for
+most objects will be the main thread). From the Qt documentation on
+<a class="reference external" href="https://doc.qt.io/qt-5/threads-qobject.html">Threads and QObjects</a>, a <code class="docutils literal notranslate"><span class="pre">QObject</span></code> must not be deleted on a thread other
+than the one which owns that <code class="docutils literal notranslate"><span class="pre">QObject</span></code>. Python’s garbage collection
+semantics can make conforming to this rule challenging. With good
+model-view separation, it’s usually simple to ensure that worker threads
+don’t hold references to any part of the GUI. However, this isn’t enough:
+Python’s cyclic garbage collector can kick in unpredictably at any time and
+on any thread (even on a thread that’s completely unrelated to the objects
+being collected), so if a GUI object is part of a reference cycle, or is
+merely <em>reachable</em> from a reference cycle, then it may be deleted at a
+moment out of your control, on an arbitrary thread, potentially causing a
+segmentation fault. Being disciplined about cleanup and shutdown of GUI
+components (including explicitly breaking cycles during that cleanup) helps
+avoid these situations by ensuring that objects are deallocated at a time
+and on a thread of your choosing.</p>
+<p>If you suspect you may be running into issues with GUI objects being
+collected off the main thread, consider turning off the cyclic garbage
+collection (<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">gc;</span> <span class="pre">gc.disable()</span></code>) as a diagnosis step.</p>
+</li>
+<li><p><strong>Use thread pools.</strong> Use thread pools in preference to creating your own
+worker threads. This makes it easy to shut down worker threads, and to
+avoid an explosion of Python threads (see the last two items).</p></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cancel.html"
+                        title="next chapter">Making tasks interruptible</a></p>
+  <h3>This Page</h3>
+  <div>
+    <a href="../_sources/guide/threading.rst.txt"
+       rel="nofollow">Show Source</a>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2018-2021 Enthought, Inc., Austin, TX
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
