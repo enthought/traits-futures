@@ -68,6 +68,7 @@ User Guide
 
    guide/overview.rst
    guide/intro.rst
+   guide/threading.rst
    guide/cancel.rst
    guide/contexts.rst
    guide/toolkits.rst
