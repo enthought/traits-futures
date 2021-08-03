@@ -139,7 +139,11 @@ concurrent (and especially multithreaded) code.
     mutable state can't be avoided, make sure that both writes *and* reads
     of that shared state are protected by a suitable lock. Don't rely on the
     GIL to do your locking for you: Python makes few guarantees about
-    atomicity of operations.
+    atomicity of operations. For example, ``list.append`` may happen to be
+    atomic in current versions of CPython, but there's no guarantee that that
+    will remain the case, and you may find that your code is actually working
+    with a subclass of ``list`` (like ``TraitList``) for which ``append``
+    is not thread-safe.
 
 -   **Beware Traits defaults!** Idiomatic Traits-based code makes
     frequent use of lazy instantiation and defaults. For example, if your
