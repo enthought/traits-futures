@@ -99,18 +99,25 @@ concurrent (and especially multithreaded) code.
 
     Best::
 
+        # Computation represented by a "pure" function with no access to
+        # shared state.
+
+        def do_square(input):
+            return input*input
+
+
         class SomeView(HasStrictTraits):
 
             input = Int()
 
             def submit_background_task(self):
                 # Do the attribute access in the main thread; pass the result
-                # of that access to the worker.
+                # of that access to the worker. Now we're no longer sharing
+                # mutable state between threads.
+
                 future = submit_call(self.traits_executor, self.do_square, self.input)
                 ...
 
-            def do_square(self, input):
-                return input*input
 
 -   **Make copies of mutable data.** This is a generalization of the previous
     recommendation. If a background task depends on mutable data (for example,
