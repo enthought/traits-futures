@@ -16,6 +16,12 @@ Release 0.4.0
 Release date: XXXX-XX-XX
 
 
+Documentation
+~~~~~~~~~~~~~
+
+* Add some general advice on writing applications that make use of
+  multithreading. (#452)
+
 Continuous integration and build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
