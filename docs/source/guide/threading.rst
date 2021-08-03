@@ -30,8 +30,18 @@ concurrent (and especially multithreaded) code.
     TraitsUI editors work make it easy to *accidentally* make a change that
     triggers a GUI update from a worker thread.
 
-    See |threads_and_qobjects| for some information about the constraints
-    and expectations of multithreaded Qt-using code.
+    One possible solution to this problem is to make use of ``dispatch="ui"``
+    when observing a trait that might be modified on a worker thread, and
+    indeed TraitsUI *does* use ``dispatch="ui"`` already for some key trait
+    listeners. This solves the issue of making GUI updates off the main thread,
+    but introduces its own complications: because the updates are now
+    asynchronous, the state of the toolkit components can get out of sync with
+    the model.
+
+    By using ``dispatch="ui"``, we're not really addressing the root cause
+    of our issues, which is having a mutable model that's shared between
+    multiple threads. Traits Futures makes it easier to write code in such a
+    way that the model is kept in the main thread.
 
 -   **Avoid making blocking waits on the main thread.**
     To keep a running GUI responsive, avoid doing anything on the main thread
