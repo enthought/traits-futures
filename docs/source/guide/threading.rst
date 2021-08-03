@@ -135,6 +135,12 @@ concurrent (and especially multithreaded) code.
     copy to pass to the background task. That way the background task doesn't
     have to worry about those data changing while it's running.
 
+-   **Protect both reads and writes of shared state.** Where sharing of
+    mutable state can't be avoided, make sure that both writes *and* reads
+    of that shared state are protected by a suitable lock. Don't rely on the
+    GIL to do your locking for you: Python makes few guarantees about
+    atomicity of operations.
+
 -   **Beware Traits defaults!** Idiomatic Traits-based code makes
     frequent use of lazy instantiation and defaults. For example, if your
     ``HasTraits`` class needs a lock to protect some piece of shared state, you
