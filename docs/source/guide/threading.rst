@@ -175,13 +175,14 @@ concurrent (and especially multithreaded) code.
     currently encourages this model by forbidding submission of new tasks from
     a background thread, though that restriction may be lifted in the future.
 
--   **Avoid having too many Python threads.** Python 3's GIL logic can have
+-   **Avoid having too many Python threads.** CPython's GIL logic can have
     limiting effects when there are too many Python threads, in some cases
     causing non-CPU-bound threads not to have a chance to run at all. Avoid
     creating too many Python threads in your process. The reasonable upper
     bound will be context dependent, but as a rule of thumb, if you have more
     than 20 Python threads, consider whether there's a way of reducing the
-    total number.
+    total number. For more about the problems caused by the GIL, see David
+    Beazley's talk |beazley_GIL| (especially Part 5).
 
 -   **Always join your threads.** At application shutdown time, or on exit from
     a script, or in a test's ``tearDown`` method, explicitly join any threads
@@ -199,4 +200,5 @@ concurrent (and especially multithreaded) code.
     substitutions
 
 
+.. |beazley_GIL| replace:: `Understanding the Python GIL <https://www.dabeaz.com/python/UnderstandingGIL.pdf>`__
 .. |threads_and_qobjects| replace:: `Threads and QObjects <https://doc.qt.io/qt-5/threads-qobject.html>`__
