@@ -201,6 +201,12 @@ concurrent (and especially multithreaded) code.
     exit time, and to avoid hard-to-debug interactions between tests in a test
     suite.
 
+    In particular, you should avoid completely the use of ``dispatch="new"`` in
+    Traits listeners. This creates a new thread with no easy way to shut that
+    thread down again, and while it may be an attractive solution in simple
+    cases it generally creates more problems than it solves for more
+    complicated code.
+
 -   **Watch your references.** Each Qt ``QObject`` is "owned" by a particular
     thread (usually the thread that the ``QObject`` was created on, which for
     most objects will be the main thread). From the Qt documentation on
