@@ -191,6 +191,28 @@ concurrent (and especially multithreaded) code.
     exit time, and to avoid hard-to-debug interactions between tests in a test
     suite.
 
+-   **Watch your references.** Each Qt ``QObject`` is "owned" by a particular
+    thread (usually the thread that the ``QObject`` was created on, which for
+    most objects will be the main thread). From the Qt documentation on
+    |threads_and_qobjects|, a ``QObject`` must not be deleted on a thread other
+    than the one which owns that ``QObject``. Python's garbage collection
+    semantics can make conforming to this rule challenging. With good
+    model-view separation, it's usually simple to ensure that worker threads
+    don't hold references to any part of the GUI. However, this isn't enough:
+    Python's cyclic garbage collector can kick in unpredictably at any time and
+    on any thread (even on a thread that's completely unrelated to the objects
+    being collected), so if a GUI object is part of a reference cycle, or is
+    merely *reachable* from a reference cycle, then it may be deleted at a
+    moment out of your control, on an arbitrary thread, potentially causing a
+    segmentation fault. Being disciplined about cleanup and shutdown of GUI
+    components (including explicitly breaking cycles during that cleanup) helps
+    avoid these situations by ensuring that objects are deallocated at a time
+    and on a thread of your choosing.
+
+    If you suspect you may be running into issues with GUI objects being
+    collected off the main thread, consider turning off the cyclic garbage
+    collection (``import gc; gc.disable()``) as a diagnosis step.
+
 -   **Use thread pools.** Use thread pools in preference to creating your own
     worker threads. This makes it easy to shut down worker threads, and to
     avoid an explosion of Python threads (see the last two items).
