@@ -88,10 +88,7 @@ from traits_futures.background_iteration import (
     IterationFuture,
     submit_iteration,
 )
-from traits_futures.background_progress import (
-    ProgressFuture,
-    submit_progress,
-)
+from traits_futures.background_progress import ProgressFuture, submit_progress
 from traits_futures.background_steps import (
     IStepsReporter,
     StepsFuture,

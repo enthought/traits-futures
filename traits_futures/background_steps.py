@@ -25,14 +25,8 @@ from abc import ABC
 
 from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple, Union
 
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
-
-
-class StepsCancelled(Exception):
-    """
-    Exception raised interally when the user cancels the background task.
-    """
 
 
 class IStepsReporter(ABC):
@@ -53,7 +47,7 @@ class IStepsReporter(ABC):
 
         Raises
         ------
-        StepsCancelled
+        TaskCancelled
             If the user has called ``cancel()`` before this.
         """
 
@@ -73,7 +67,7 @@ class IStepsReporter(ABC):
 
         Raises
         ------
-        StepsCancelled
+        TaskCancelled
             If the user has called ``cancel()`` before this.
         """
 
@@ -115,11 +109,11 @@ class StepsReporter(HasStrictTraits):
 
         Raises
         ------
-        StepsCancelled
+        TaskCancelled
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
-        self._send((STEP, (0, steps, message)))
+        self._send(STEP, (0, steps, message))
 
     def step(self, message=None, step=None, steps=None):
         """Emit a step event.
@@ -137,14 +131,14 @@ class StepsReporter(HasStrictTraits):
 
         Raises
         ------
-        StepsCancelled
+        TaskCancelled
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
         if steps is None:
             steps = -1
 
-        self._send((STEP, (step, steps, message)))
+        self._send(STEP, (step, steps, message))
 
     # Private traits ##########################################################
 
@@ -163,14 +157,14 @@ class StepsReporter(HasStrictTraits):
 
         Raises
         ------
-        StepsCancelled
+        TaskCancelled
             If the task has been cancelled.
         """
         if self._cancelled():
-            raise StepsCancelled("Cancellation requested via the future")
+            raise TaskCancelled("Cancellation requested via the future")
 
 
-class StepsBackgroundTask:
+class StepsTask(BaseTask):
     """
     Wrapper around the actual callable to be run.
 
@@ -183,13 +177,15 @@ class StepsBackgroundTask:
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, send, cancelled):
-        progress = StepsReporter(_send=send, _cancelled=cancelled)
+    def run(self):
+        progress = StepsReporter(_send=self.send, _cancelled=self.cancelled)
         try:
             result = self.callable(
-                *self.args, **self.kwargs, progress=progress
+                *self.args,
+                **self.kwargs,
+                progress=progress,
             )
-        except StepsCancelled:
+        except TaskCancelled:
             return None
         else:
             return result
@@ -258,9 +254,16 @@ class BackgroundSteps(HasStrictTraits):
 
     # --- ITaskSpecification implementation -----------------------------------
 
-    def future(self):
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------
@@ -270,7 +273,7 @@ class BackgroundSteps(HasStrictTraits):
         """
         return StepsFuture()
 
-    def background_task(self):
+    def task(self):
         """
         Return a background callable for this task specification.
 
@@ -281,10 +284,10 @@ class BackgroundSteps(HasStrictTraits):
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return StepsBackgroundTask(
+        return StepsTask(
             callable=self.callable,
             args=self.args,
-            kwargs=self.kwargs.copy(),
+            kwargs=self.kwargs,
         )
 
 

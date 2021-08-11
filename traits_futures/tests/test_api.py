@@ -36,7 +36,6 @@ class TestApi(unittest.TestCase):
             MultithreadingContext,
             ProgressFuture,
             RUNNING,
-            StepsCancelled,
             StepsFuture,
             STOPPED,
             STOPPING,

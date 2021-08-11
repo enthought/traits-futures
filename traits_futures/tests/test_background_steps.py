@@ -20,16 +20,16 @@ from traits_futures.api import (
     StepsFuture,
     TraitsExecutor,
 )
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.background_steps_tests import BackgroundStepsTests
 from traits_futures.tests.common_future_tests import CommonFutureTests
 
 
 class TestBackgroundSteps(
-    GuiTestAssistant, BackgroundStepsTests, unittest.TestCase
+    TestAssistant, BackgroundStepsTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
         self.executor = TraitsExecutor(
             context=self._context,
@@ -39,7 +39,7 @@ class TestBackgroundSteps(
     def tearDown(self):
         self.halt_executor()
         self._context.close()
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
 
 class TestStepsFuture(CommonFutureTests, unittest.TestCase):
