@@ -36,10 +36,10 @@ class StepsListener(HasStrictTraits):
 
 
 # Consider (a) storing the state on the StepsReporter, so that it can be
-# accessed directly by the writer of the function, and then (b) there
-# can be a single simple message type which sends the state (message, step, steps)
-# to the foreground. We can add helper functions to do things like increment
-# the step and set a new message all at the same time.
+# accessed directly by the writer of the function, and then (b) there can be a
+# single simple message type which sends the state (message, step, steps) to
+# the foreground. We can add helper functions to do things like increment the
+# step and set a new message all at the same time.
 
 # State is:
 # - step: number of completed steps
@@ -47,9 +47,12 @@ class StepsListener(HasStrictTraits):
 # - message: description of step currently in progress
 
 # XXX Simplest use-case: no calls to progress at all; just a long-running task.
-# XXX Next simplest: progress.step("uploading file 1"), progress.step("uploading file 2")
-# XXX Next simplest: progress.steps = 2; progress.step("..."), progress.step("...")
-# XXX Advanced: progress.sync() / progress.update() / .... after manual changes.
+# XXX Next simplest: progress.step("uploading file 1"),
+#     progress.step("uploading file 2")
+# XXX Next simplest: progress.steps = 2; progress.step("..."),
+#     progress.step("...")
+# XXX Advanced: progress.sync() / progress.update() / .... after manual
+#     changes.
 
 # XXX Does the steps reporter actually _need_ to be a `HasStrictTraits` class?
 
@@ -79,15 +82,15 @@ class BackgroundStepsTests:
             progress.step("Uploading file 2")
 
         future = submit_steps(self.executor, send_messages)
-        listener = StepsListener(future=future)
+        # listener = StepsListener(future=future)
         self.wait_for_result(future)
 
-        expected_messages = [
-            dict(message="Uploading file 1", step=0),
-            dict(message="Uploading file 2", step=1),
-        ]
+        # expected_messages = [
+        #     dict(message="Uploading file 1", step=0),
+        #     dict(message="Uploading file 2", step=1),
+        # ]
 
-        actual_messages = listener.messages
+        # actual_messages = listener.messages
 
         # self.assertEqual(expected_messages, actual_messages)
 
