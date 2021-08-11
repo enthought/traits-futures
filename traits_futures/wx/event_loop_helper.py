@@ -38,7 +38,7 @@ class TimeoutTimer(wx.Timer):
     ----------
     timeout : float
         Timeout in seconds.
-    callback : callable
+    callback
         Callable taking no arguments, to be executed when the timer
         times out.
     args : tuple, optional
@@ -195,7 +195,7 @@ class EventLoopHelper:
             Object whose trait we monitor.
         trait : str
             Name of the trait to monitor for changes.
-        condition : callable
+        condition
             Single-argument callable, returning a boolean. This will be
             called with *object* as the only input.
         timeout : float
@@ -212,11 +212,11 @@ class EventLoopHelper:
 
         timeout_timer = TimeoutTimer(timeout, lambda: wx_app.exit(1))
 
-        def stop_if_condition():
+        def stop_if_condition(event):
             if condition(object):
                 wx_app.exit(0)
 
-        object.on_trait_change(stop_if_condition, trait)
+        object.observe(stop_if_condition, trait)
         try:
             # The condition may have become True before we
             # started listening to changes. So start with a check.
@@ -230,7 +230,7 @@ class EventLoopHelper:
                     timed_out = wx_app.exit_code
                     timeout_timer.stop()
         finally:
-            object.on_trait_change(stop_if_condition, trait, remove=True)
+            object.observe(stop_if_condition, trait, remove=True)
 
         if timed_out:
             raise RuntimeError(

@@ -12,18 +12,22 @@
 Base class providing common pieces of the Future machinery.
 """
 
+import abc
+import logging
+
 from traits.api import (
     Any,
     Bool,
     Callable,
     Enum,
     HasStrictTraits,
+    observe,
     Property,
-    provides,
     Str,
     Tuple,
 )
 
+from traits_futures.exception_handling import marshal_exception
 from traits_futures.future_states import (
     CANCELLABLE_STATES,
     CANCELLED,
@@ -35,7 +39,35 @@ from traits_futures.future_states import (
     FutureState,
     WAITING,
 )
-from traits_futures.i_future import IFuture
+from traits_futures.i_task_specification import IFuture
+
+logger = logging.getLogger(__name__)
+
+# Messages sent by the BaseTask, and interpreted by BaseFuture.
+
+#: Custom message from the future. The argument is a pair
+#: (message_type, message_args); the message type and message args
+#: are interpreted by the future.
+SENT = "sent"
+
+#: Control message sent when the callable is abandoned before execution.
+ABANDONED = "abandoned"
+
+#: Control message sent before we start to process the target callable.
+#: The argument is always ``None``.
+STARTED = "started"
+
+#: Control message sent when an exception was raised by the background
+#: callable. The argument is a tuple containing exception information.
+RAISED = "raised"
+
+#: Control message sent to indicate that the background callable succeeded
+#: and returned a result. The argument is that result.
+RETURNED = "returned"
+
+#: Message types that indicate a "final" message. After a message of this
+#: type is received, no more messages will be received.
+FINAL_MESSAGES = {ABANDONED, RAISED, RETURNED}
 
 # The BaseFuture class maintains an internal state. That internal state maps to
 # the user-facing state, but is more fine-grained, allowing the class to keep
@@ -47,12 +79,6 @@ from traits_futures.i_future import IFuture
 # to allow us to detect an invalid _task_started call.
 
 
-#: Internal state: initial state, not yet initialized by the executor.
-_NOT_INITIALIZED = "not_initialized"
-
-#: Internal state: initialized by the executor, waiting for the task to start.
-_INITIALIZED = "initialized"
-
 #: Internal state attained when cancellation is requested before the task
 #: starts.
 _CANCELLING_BEFORE_STARTED = "cancelling_before_started"
@@ -61,16 +87,27 @@ _CANCELLING_BEFORE_STARTED = "cancelling_before_started"
 #: starts.
 _CANCELLING_AFTER_STARTED = "cancelling_after_started"
 
+#: Internal state corresponding to a task that was abandoned due to
+#: cancellation.
+_CANCELLED_ABANDONED = "cancelled_abandoned"
+
+#: Internal state corresponding to a task that failed after cancellation.
+_CANCELLED_FAILED = "cancelled_failed"
+
+#: Internal state corresponding to a task that completed after cancellation.
+_CANCELLED_COMPLETED = "cancelled_completed"
+
 #: Mapping from each internal state to the corresponding user-visible state.
 _INTERNAL_STATE_TO_STATE = {
-    _NOT_INITIALIZED: WAITING,
-    _INITIALIZED: WAITING,
+    WAITING: WAITING,
     EXECUTING: EXECUTING,
     COMPLETED: COMPLETED,
     FAILED: FAILED,
     _CANCELLING_BEFORE_STARTED: CANCELLING,
     _CANCELLING_AFTER_STARTED: CANCELLING,
-    CANCELLED: CANCELLED,
+    _CANCELLED_ABANDONED: CANCELLED,
+    _CANCELLED_COMPLETED: CANCELLED,
+    _CANCELLED_FAILED: CANCELLED,
 }
 
 #: Internal states corresponding to completed futures.
@@ -88,6 +125,12 @@ _CANCELLABLE_INTERNAL_STATES = {
 }
 
 
+class TaskCancelled(Exception):
+    """
+    Exception raised within the background task on cancellation.
+    """
+
+
 class _StateTransitionError(Exception):
     """
     Exception used to indicate a bad state transition.
@@ -98,11 +141,65 @@ class _StateTransitionError(Exception):
     """
 
 
-@provides(IFuture)
+@IFuture.register
 class BaseFuture(HasStrictTraits):
     """
     Convenience base class for the various flavours of Future.
     """
+
+    # IFuture interface #######################################################
+
+    def cancel(self):
+        """
+        Request cancellation of the background task.
+
+        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
+        to ``CANCELLING`` state. If the task is not in ``WAITING`` or
+        ``EXECUTING`` state, this function does nothing.
+
+        .. versionchanged:: 0.3.0
+
+           This method no longer raises for a task that isn't cancellable.
+           In previous versions, :exc:`RuntimeError` was raised.
+
+        Returns
+        -------
+        cancelled : bool
+            True if the task was cancelled, False if the task was not
+            cancellable.
+        """
+        if self.state in {WAITING, EXECUTING}:
+            self._user_cancelled()
+            logger.debug(f"{self} cancelled")
+            return True
+        else:
+            logger.debug(f"{self} not cancellable; state is {self.state}")
+            return False
+
+    def receive(self, message):
+        """
+        Receive and process a message from the task associated to this future.
+
+        This method is primarily for use by the executors, but may also be of
+        use in testing.
+
+        Parameters
+        ----------
+        message : object
+            The message received from the associated task.
+
+        Returns
+        -------
+        final : bool
+            True if the received message should be the last one ever received
+            from the paired task.
+        """
+        message_type, message_arg = message
+        method_name = "_task_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
+        return message_type in FINAL_MESSAGES
+
+    # BaseFuture interface ####################################################
 
     #: The state of the background task, to the best of the knowledge of
     #: this future. One of the six constants ``WAITING``, ``EXECUTING``,
@@ -161,7 +258,7 @@ class BaseFuture(HasStrictTraits):
 
         Returns
         -------
-        exc_info : tuple(str, str, str)
+        exc_info : tuple
             Tuple containing exception information in string form:
             (exception type, exception value, formatted traceback).
 
@@ -180,37 +277,9 @@ class BaseFuture(HasStrictTraits):
             )
         return self._exception
 
-    def cancel(self):
+    def dispatch(self, message):
         """
-        Request cancellation of the background task.
-
-        A task in ``WAITING`` or ``EXECUTING`` state will immediately be moved
-        to ``CANCELLING`` state. If the task is not in ``WAITING`` or
-        ``EXECUTING`` state, this function will raise ``RuntimeError``.
-
-        Raises
-        ------
-        RuntimeError
-            If the task has already completed or cancellation has already
-            been requested.
-        """
-        if not self.cancellable:
-            raise RuntimeError(
-                "Can only cancel a waiting or executing task. "
-                "Task state is {}".format(self.state)
-            )
-        self._user_cancelled()
-
-    # Semi-private methods ####################################################
-
-    # These methods represent the state transitions in response to external
-    # events. They're used by the FutureWrapper, and are potentially useful for
-    # unit testing, but are not intended for use by the users of Traits
-    # Futures.
-
-    def _task_sent(self, message):
-        """
-        Automate dispatch of different types of message.
+        Dispatch a message arriving from the associated BaseTask.
 
         This is a convenience function, and may be safely overridden by
         subclasses that want to use a different dispatch mechanism. For
@@ -219,26 +288,65 @@ class BaseFuture(HasStrictTraits):
         that method. Subclasses then only need to provide the appropriate
         ``_process_<msgtype>`` methods.
 
-        If the future is already in ``CANCELLING`` state, no message is
-        dispatched.
+        Parameters
+        ----------
+        message : object
+            Message sent by the background task. The default implementation of
+            this method expects the message to be in the form ``(message_type,
+            message_args)`` with ``message_type`` a string.
+        """
+        message_type, message_arg = message
+        method_name = "_process_{}".format(message_type)
+        getattr(self, method_name)(message_arg)
+
+    # State transitions #######################################################
+
+    # These methods represent state transitions in response to external events.
+
+    def _task_sent(self, message):
+        """
+        Automate dispatch of different types of message.
+
+        Delegates the actual work to the :meth:`dispatch` method,
+        which can be overridden by subclasses. Messages received after
+        cancellation are ignored.
 
         Parameters
         ----------
-        message : tuple(str, object)
-            Message from the background task, in the form (message_type,
-            message_args).
+        message : object
+            Message from the background task.
         """
 
         if self._internal_state == _CANCELLING_AFTER_STARTED:
             # Ignore messages that arrive after a cancellation request.
             return
         elif self._internal_state == EXECUTING:
-            message_type, message_arg = message
-            method_name = "_process_{}".format(message_type)
-            getattr(self, method_name)(message_arg)
+            self.dispatch(message)
         else:
             raise _StateTransitionError(
                 "Unexpected custom message in internal state {!r}".format(
+                    self._internal_state
+                )
+            )
+
+    def _task_abandoned(self, none):
+        """
+        Update state when the background task is abandoned due to cancellation.
+
+        Internal state:
+        * _CANCELLING_BEFORE_STARTED -> _CANCELLED_ABANDONED
+
+        Parameters
+        ----------
+        none : NoneType
+            This parameter is unused.
+        """
+        if self._internal_state == _CANCELLING_BEFORE_STARTED:
+            self._cancel = None
+            self._internal_state = _CANCELLED_ABANDONED
+        else:
+            raise _StateTransitionError(
+                "Unexpected 'started' message in internal state {!r}".format(
                     self._internal_state
                 )
             )
@@ -247,12 +355,16 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when the background task has started processing.
 
+        Internal state:
+        * WAITING -> EXECUTING
+        * _CANCELLING_BEFORE_STARTED -> _CANCELLED_AFTER_STARTED
+
         Parameters
         ----------
         none : NoneType
             This parameter is unused.
         """
-        if self._internal_state == _INITIALIZED:
+        if self._internal_state == WAITING:
             self._internal_state = EXECUTING
         elif self._internal_state == _CANCELLING_BEFORE_STARTED:
             self._internal_state = _CANCELLING_AFTER_STARTED
@@ -267,6 +379,10 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when background task reports completing successfully.
 
+        Internal state:
+        * EXECUTING -> COMPLETED
+        * _CANCELLING_AFTER_STARTED -> _CANCELLED_COMPLETED
+
         Parameters
         ----------
         result : any
@@ -277,7 +393,9 @@ class BaseFuture(HasStrictTraits):
             self._result = result
             self._internal_state = COMPLETED
         elif self._internal_state == _CANCELLING_AFTER_STARTED:
-            self._internal_state = CANCELLED
+            self._cancel = None
+            self._result = result
+            self._internal_state = _CANCELLED_COMPLETED
         else:
             raise _StateTransitionError(
                 "Unexpected 'returned' message in internal state {!r}".format(
@@ -289,9 +407,13 @@ class BaseFuture(HasStrictTraits):
         """
         Update state when the background task reports completing with an error.
 
+        Internal state:
+        * EXECUTING -> FAILED
+        * _CANCELLING_AFTER_STARTED -> _CANCELLED_FAILED
+
         Parameters
         ----------
-        exception_info : tuple(str, str, str)
+        exception_info : tuple
             Tuple containing exception information in string form:
             (exception type, exception value, formatted traceback).
         """
@@ -300,7 +422,9 @@ class BaseFuture(HasStrictTraits):
             self._exception = exception_info
             self._internal_state = FAILED
         elif self._internal_state == _CANCELLING_AFTER_STARTED:
-            self._internal_state = CANCELLED
+            self._cancel = None
+            self._exception = exception_info
+            self._internal_state = _CANCELLED_FAILED
         else:
             raise _StateTransitionError(
                 "Unexpected 'raised' message in internal state {!r}".format(
@@ -314,8 +438,12 @@ class BaseFuture(HasStrictTraits):
 
         A future in ``WAITING`` or ``EXECUTING`` state moves to ``CANCELLING``
         state.
+
+        Internal state:
+        * WAITING -> _CANCELLING_BEFORE_STARTED
+        * EXECUTING -> _CANCELLING_AFTER_STARTED
         """
-        if self._internal_state == _INITIALIZED:
+        if self._internal_state == WAITING:
             self._cancel()
             self._internal_state = _CANCELLING_BEFORE_STARTED
         elif self._internal_state == EXECUTING:
@@ -328,26 +456,6 @@ class BaseFuture(HasStrictTraits):
                 )
             )
 
-    def _executor_initialized(self, cancel):
-        """
-        Update state when the executor initializes the future.
-
-        Parameters
-        ----------
-        cancel : callable
-            The callback to be called when the user requests cancellation.
-            The callback accepts no arguments, and has no return value.
-        """
-        if self._internal_state == _NOT_INITIALIZED:
-            self._cancel = cancel
-            self._internal_state = _INITIALIZED
-        else:
-            raise _StateTransitionError(
-                "Unexpected initialization in internal state {!r}".format(
-                    self._internal_state
-                )
-            )
-
     # Private traits ##########################################################
 
     #: Callback called (with no arguments) when user requests cancellation.
@@ -355,7 +463,7 @@ class BaseFuture(HasStrictTraits):
     _cancel = Callable(allow_none=True)
 
     #: The internal state of the future.
-    _internal_state = Enum(_NOT_INITIALIZED, list(_INTERNAL_STATE_TO_STATE))
+    _internal_state = Enum(WAITING, list(_INTERNAL_STATE_TO_STATE))
 
     #: Result from the background task.
     _result = Any()
@@ -377,8 +485,11 @@ class BaseFuture(HasStrictTraits):
         """Property getter for the "done" trait."""
         return self._internal_state in _DONE_INTERNAL_STATES
 
-    def __internal_state_changed(self, old_internal_state, new_internal_state):
+    @observe("_internal_state")
+    def _update_property_traits(self, event):
         """Trait change handler for the "_internal_state" trait."""
+        old_internal_state, new_internal_state = event.old, event.new
+
         old_state = _INTERNAL_STATE_TO_STATE[old_internal_state]
         new_state = _INTERNAL_STATE_TO_STATE[new_internal_state]
         if old_state != new_state:
@@ -395,3 +506,76 @@ class BaseFuture(HasStrictTraits):
         new_done = new_internal_state in _DONE_INTERNAL_STATES
         if old_done != new_done:
             self.trait_property_changed("done", old_done, new_done)
+
+
+class BaseTask(abc.ABC):
+    """
+    Mixin for background task classes, making those classes callable.
+
+    This class provides a callable wrapper allowing subclasses to easily
+    provide a background callable task.
+
+    Subclasses should override the ``run`` method to customize what should
+    happen when the task runs. This class's ``__call__`` implementation will
+    take care of sending standard control messages telling the future that the
+    task has started, completed, or raised, and delegate to the ``run`` method
+    for execution of the background task and sending of any custom messages.
+    """
+
+    @abc.abstractmethod
+    def run(self):
+        """
+        Run the body of the background task.
+
+        Returns
+        -------
+        any : object
+            May return any object. That object will be delivered to the
+            future's ``result`` attribute.
+        """
+
+    def send(self, message_type, message_arg=None):
+        """
+        Send a message to the associated future.
+
+        Parameters
+        ----------
+        message_type : str
+            The type of the message. This is used by ``BaseFuture`` when
+            dispatching messages to appropriate handlers.
+        message_arg : object, optional
+            Message argument, if any. If not given, ``None`` is used.
+        """
+        self.__send((SENT, (message_type, message_arg)))
+
+    def cancelled(self):
+        """
+        Determine whether the user has requested cancellation.
+
+        Returns True if the user has requested cancellation via the associated
+        future's ``cancel`` method, and False otherwise.
+
+        Returns
+        -------
+        bool
+        """
+        return self.__cancelled()
+
+    def __call__(self, send, cancelled):
+        self.__send = send
+        self.__cancelled = cancelled
+        try:
+            if cancelled():
+                send((ABANDONED, None))
+                return
+
+            send((STARTED, None))
+            try:
+                result = self.run()
+            except BaseException as e:
+                send((RAISED, marshal_exception(e)))
+            else:
+                send((RETURNED, result))
+        finally:
+            del self.__cancelled
+            del self.__send

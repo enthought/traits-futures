@@ -11,7 +11,9 @@
 """
 Test methods run for all future types.
 """
-from traits.api import Any, Bool, HasStrictTraits, List, on_trait_change, Tuple
+import weakref
+
+from traits.api import Any, Bool, HasStrictTraits, List, observe, Tuple
 
 from traits_futures.api import IFuture
 from traits_futures.base_future import _StateTransitionError
@@ -23,6 +25,33 @@ def dummy_cancel_callback():
     """
     Dummy callback for cancellation, that does nothing.
     """
+
+
+# Set of all possible complete valid sequences of internal state changes
+# that a future might encounter. Here:
+#
+# * A represents the background task being abandoned before starting
+# * S represents the background task starting
+# * X represents the background task failing with an exception
+# * R represents the background task returning a result
+# * C represents the user cancelling.
+#
+# A complete run must always involve "abandoned", "started, raised" or
+# "started, returned" in that order. In addition, a single cancellation is
+# possible at any time before the end of the sequence, and abandoned can only
+# ever occur following cancellation.
+
+MESSAGE_TYPES = "ASRXC"
+
+COMPLETE_VALID_SEQUENCES = {
+    "SR",
+    "SX",
+    "CSR",
+    "CSX",
+    "SCR",
+    "SCX",
+    "CA",
+}
 
 
 class FutureListener(HasStrictTraits):
@@ -37,12 +66,14 @@ class FutureListener(HasStrictTraits):
     #: Changes to the 'done' trait.
     done_changes = List(Tuple(Bool(), Bool()))
 
-    @on_trait_change("future:cancellable")
-    def _record_cancellable_change(self, object, name, old, new):
+    @observe("future:cancellable")
+    def _record_cancellable_change(self, event):
+        old, new = event.old, event.new
         self.cancellable_changes.append((old, new))
 
-    @on_trait_change("future:done")
-    def _record_done_change(self, object, name, old, new):
+    @observe("future:done")
+    def _record_done_change(self, event):
+        old, new = event.old, event.new
         self.done_changes.append((old, new))
 
 
@@ -55,17 +86,16 @@ class CommonFutureTests:
         # Triples (state, cancellable, done)
         states = []
 
-        def record_states():
+        def record_states(event=None):
             """Record the future's state and derived traits."""
             states.append((future.state, future.cancellable, future.done))
 
         # Record state when any of the three traits changes.
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
-        future.on_trait_change(record_states, "cancellable")
-        future.on_trait_change(record_states, "done")
-        future.on_trait_change(record_states, "state")
+        future.observe(record_states, "cancellable")
+        future.observe(record_states, "done")
+        future.observe(record_states, "state")
 
         # Record initial, synthesize some state changes, then record final.
         record_states()
@@ -79,8 +109,7 @@ class CommonFutureTests:
             self.assertEqual(done, state in DONE_STATES)
 
     def test_cancellable_and_done_success(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -91,8 +120,7 @@ class CommonFutureTests:
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_failure(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -103,8 +131,7 @@ class CommonFutureTests:
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_cancellation(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -116,8 +143,7 @@ class CommonFutureTests:
         self.assertEqual(listener.done_changes, [(False, True)])
 
     def test_cancellable_and_done_early_cancellation(self):
-        future = self.future_class()
-        future._executor_initialized(dummy_cancel_callback)
+        future = self.future_class(_cancel=dummy_cancel_callback)
 
         listener = FutureListener(future=future)
 
@@ -128,39 +154,18 @@ class CommonFutureTests:
         self.assertEqual(listener.cancellable_changes, [(True, False)])
         self.assertEqual(listener.done_changes, [(False, True)])
 
-    # Tests for the various possible message sequences.
-
-    # The BaseFuture processes four different messages: started / raised /
-    # returned messages from the task, and a possible cancellation message from
-    # the user. We denote these with the letters S, X (for eXception), R and C,
-    # and add machinery to test various combinations. We also write I to
-    # denote initialization of the future.
-
     def test_invalid_message_sequences(self):
-        # A future must always be initialized before anything else happens, and
-        # then a complete run must always involve "started, raised" or
-        # "started, returned" in that order. In addition, a single cancellation
-        # is possible at any time before the end of the sequence.
-        complete_valid_sequences = {
-            "ISR",
-            "ISX",
-            "ICSR",
-            "ICSX",
-            "ISCR",
-            "ISCX",
-        }
-
         # Systematically generate invalid sequences of messages.
         valid_initial_sequences = {
             seq[:i]
-            for seq in complete_valid_sequences
+            for seq in COMPLETE_VALID_SEQUENCES
             for i in range(len(seq) + 1)
         }
         continuations = {
             seq[:i] + msg
             for seq in valid_initial_sequences
             for i in range(len(seq) + 1)
-            for msg in "ICRSX"
+            for msg in MESSAGE_TYPES
         }
         invalid_sequences = continuations - valid_initial_sequences
 
@@ -171,34 +176,57 @@ class CommonFutureTests:
                     self.send_message_sequence(sequence)
 
         # Check all complete valid sequences.
-        for sequence in complete_valid_sequences:
+        for sequence in COMPLETE_VALID_SEQUENCES:
             with self.subTest(sequence=sequence):
                 future = self.send_message_sequence(sequence)
                 self.assertTrue(future.done)
 
+    def test_cancel_callback_released(self):
+        for sequence in COMPLETE_VALID_SEQUENCES:
+            with self.subTest(sequence=sequence):
+
+                def do_nothing():
+                    return None
+
+                finalizer = weakref.finalize(do_nothing, lambda: None)
+                future = self.send_message_sequence(sequence, do_nothing)
+                self.assertTrue(future.done)
+                self.assertTrue(finalizer.alive)
+                del do_nothing
+                self.assertFalse(finalizer.alive)
+
     def test_interface(self):
+        future = self.future_class(_cancel=dummy_cancel_callback)
+        self.assertIsInstance(future, IFuture)
+
+    def test_zero_argument_instantiation(self):
+        # Regression test for enthought/traits-futures#466
         future = self.future_class()
         self.assertIsInstance(future, IFuture)
 
-    def send_message(self, future, message):
+    def send_message(self, future, message, cancel_callback):
         """Send a particular message to a future."""
-        if message == "I":
-            future._executor_initialized(dummy_cancel_callback)
+        if message == "A":
+            future._task_abandoned(None)
         elif message == "S":
             future._task_started(None)
-        elif message == "X":
-            future._task_raised(self.fake_exception())
         elif message == "R":
             future._task_returned(23)
-        else:
-            assert message == "C"
+        elif message == "X":
+            future._task_raised(self.fake_exception())
+        elif message == "C":
             future._user_cancelled()
+        else:
+            raise ValueError(f"message {message} not understood")
 
-    def send_message_sequence(self, messages):
+    def send_message_sequence(self, messages, cancel_callback=None):
         """Create a new future, and send the given message sequence to it."""
-        future = self.future_class()
+        if cancel_callback is None:
+            cancel_callback = dummy_cancel_callback
+
+        future = self.future_class(_cancel=dummy_cancel_callback)
         for message in messages:
-            self.send_message(future, message)
+            self.send_message(future, message, cancel_callback)
         return future
 
     def fake_exception(self):

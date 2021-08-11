@@ -98,6 +98,46 @@ todo_include_todos = False
 # Don't include parentheses after function and method names.
 add_function_parentheses = False
 
+# Do use nitpicky mode: we want to know about broken references.
+nitpicky = True
+
+# Ignore complaints about references to classes in wx and pyface.qt.QtCore
+nitpick_ignore = [
+    # Exclusions needed for Sphinx < 4.
+    ("py:class", "pyface.qt.QtCore.QObject"),
+    ("py:class", "wx.App"),
+    ("py:class", "wx.EvtHandler"),
+    ("py:class", "wx.Timer"),
+    # These two slightly strange class descriptions (note the trailing dot)
+    # appear with Sphinx >= 4. This may be a bug in Sphinx.
+    ("py:class", "pyface.qt.QtCore."),
+    ("py:class", "wx."),
+]
+
+# -- Options for Napoleon extension ---------------------------------------
+
+# Do pre-process NumPyDoc - style type strings. This prevents warnings
+# resembling "py:class reference target not found: optional".
+napoleon_preprocess_types = True
+
+# Other terms that might appear in type strings.
+napoleon_type_aliases = {
+    "CallFuture": ":class:`~.CallFuture`",
+    "IEventLoop": ":class:`~.IEventLoop`",
+    "IEventLoopHelper": ":class:`~.IEventLoopHelper`",
+    "IFuture": ":class:`~.IFuture`",
+    "IMessageRouter": ":class:`~.IMessageRouter`",
+    "IMessageSender": ":class:`~.IMessageSender`",
+    "IParallelContext": ":class:`~.IParallelContext`",
+    "IPingee": ":class:`~.IPingee`",
+    "ITaskSpecification": ":class:`~.ITaskSpecification`",
+    "IterationFuture": ":class:`~.IterationFuture`",
+    "MultiprocessingRouter": ":class:`~.MultiprocessingRouter`",
+    "MultithreadingRouter": ":class:`~.MultithreadingRouter`",
+    "ProgressFuture": ":class:`~.ProgressFuture`",
+    "TraitsExecutor": ":class:`~.TraitsExecutor`",
+}
+
 # -- Options for Graphviz extension ---------------------------------------
 
 # Output format when building HTML files

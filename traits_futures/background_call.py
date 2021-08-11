@@ -13,11 +13,11 @@ Background task consisting of a simple callable.
 """
 from traits.api import Callable, Dict, HasStrictTraits, Str, Tuple
 
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask
 from traits_futures.i_task_specification import ITaskSpecification
 
 
-class CallBackgroundTask:
+class CallTask(BaseTask):
     """
     Wrapper around the actual callable to be run. This wrapper provides the
     task that will be submitted to the concurrent.futures executor
@@ -28,7 +28,7 @@ class CallBackgroundTask:
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, send, cancelled):
+    def run(self):
         return self.callable(*self.args, **self.kwargs)
 
 
@@ -53,9 +53,16 @@ class BackgroundCall(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str())
 
-    def future(self):
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------
@@ -63,36 +70,40 @@ class BackgroundCall(HasStrictTraits):
             Future object that can be used to monitor the status of the
             background task.
         """
-        return CallFuture()
+        return CallFuture(_cancel=cancel)
 
-    def background_task(self):
+    def task(self):
         """
         Return a background callable for this task specification.
 
         Returns
         -------
-        collections.abc.Callable
+        CallTask
             Callable accepting arguments ``send`` and ``cancelled``. The
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return CallBackgroundTask(
+        return CallTask(
             callable=self.callable,
             args=self.args,
-            kwargs=self.kwargs.copy(),
+            kwargs=self.kwargs,
         )
 
 
 def submit_call(executor, callable, *args, **kwargs):
     """
-    Convenience function to submit a background call to an executor.
+    Submit a simple call to an executor.
 
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the task to.
-    callable : collections.abc.Callable
-        Callable to execute in the background.
+        Executor to submit the task to. This argument should always be passed
+        by position rather than by name. Future versions of the library may
+        enforce this restriction.
+    callable
+        Callable to execute in the background. This argument should always be
+        passed by position rather than by name. Future versions of the library
+        may enforce this restriction.
     *args
         Positional arguments to pass to the callable.
     **kwargs

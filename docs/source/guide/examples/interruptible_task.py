@@ -34,7 +34,7 @@ from traits_futures.api import (
     CANCELLED,
     COMPLETED,
     FAILED,
-    IFuture,
+    IterationFuture,
     submit_iteration,
     TraitsExecutor,
 )
@@ -56,10 +56,10 @@ def approximate_pi(sample_count=10 ** 8):
 
 class InterruptibleTaskExample(HasStrictTraits):
     #: The executor to submit tasks to.
-    executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
-    future = Instance(IFuture)
+    future = Instance(IterationFuture)
 
     #: Number of points to use.
     sample_count = Int(10 ** 8)
@@ -69,17 +69,17 @@ class InterruptibleTaskExample(HasStrictTraits):
 
     #: Button to calculate, plus its enabled state.
     calculate = Button()
-    can_calculate = Property(Bool(), depends_on="future")
+    can_calculate = Property(Bool(), observe="future")
 
     #: Button to cancel, plus its enabled state.
     cancel = Button()
-    can_cancel = Property(Bool(), depends_on="future.cancellable")
+    can_cancel = Property(Bool(), observe="future.cancellable")
 
     @observe("calculate")
     def _submit_calculation(self, event):
         self.message = "Calculating π"
         self.future = submit_iteration(
-            self.executor, approximate_pi, self.sample_count
+            self.traits_executor, approximate_pi, self.sample_count
         )
 
     @observe("cancel")
@@ -98,7 +98,7 @@ class InterruptibleTaskExample(HasStrictTraits):
         else:
             # Shouldn't ever get here: CANCELLED, FAILED and COMPLETED
             # are the only possible final states of a future.
-            raise RuntimeError(f"Unexpected state: {self.future.state}")
+            assert False, f"Impossible state: {self.future.state}"
         self.future = None
 
     @observe("future:result_event")
@@ -123,4 +123,10 @@ class InterruptibleTaskExample(HasStrictTraits):
 
 
 if __name__ == "__main__":
-    InterruptibleTaskExample().configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        InterruptibleTaskExample(
+            traits_executor=traits_executor
+        ).configure_traits()
+    finally:
+        traits_executor.shutdown()

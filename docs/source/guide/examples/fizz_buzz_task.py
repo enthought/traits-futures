@@ -30,37 +30,42 @@ FIZZ_BUZZ = "fizz_buzz"
 # -- start fizz_buzz --
 import time
 
+from traits_futures.api import BaseTask
 
-def fizz_buzz(send, cancelled):
+
+class FizzBuzzTask(BaseTask):
     """
-    Count slowly from 1, sending FIZZ / BUZZ messages to the foreground.
+    Background task for Fizz Buzz
+
+    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.
 
     Parameters
     ----------
-    send : callable(object) -> None
+    send
         Callable accepting the message to be sent, and returning nothing. The
         message argument should be pickleable, and preferably immutable (or at
         least, not intended to be mutated).
-    cancelled : callable
+    cancelled
         Callable accepting no arguments and returning a boolean result. It
         returns ``True`` if cancellation has been requested, and ``False``
         otherwise.
     """
-    n = 1
-    while not cancelled():
+    def run(self):
+        n = 1
+        while not self.cancelled():
 
-        n_is_multiple_of_3 = n % 3 == 0
-        n_is_multiple_of_5 = n % 5 == 0
+            n_is_multiple_of_3 = n % 3 == 0
+            n_is_multiple_of_5 = n % 5 == 0
 
-        if n_is_multiple_of_3 and n_is_multiple_of_5:
-            send((FIZZ_BUZZ, n))
-        elif n_is_multiple_of_3:
-            send((FIZZ, n))
-        elif n_is_multiple_of_5:
-            send((BUZZ, n))
+            if n_is_multiple_of_3 and n_is_multiple_of_5:
+                self.send(FIZZ_BUZZ, n)
+            elif n_is_multiple_of_3:
+                self.send(FIZZ, n)
+            elif n_is_multiple_of_5:
+                self.send(BUZZ, n)
 
-        time.sleep(1.0)
-        n += 1
+            time.sleep(1.0)
+            n += 1
 # -- end fizz_buzz --
 
 
@@ -109,9 +114,16 @@ class BackgroundFizzBuzz:
     Task specification for Fizz Buzz background tasks.
     """
 
-    def future(self):
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------
@@ -119,9 +131,9 @@ class BackgroundFizzBuzz:
             Future object that can be used to monitor the status of the
             background task.
         """
-        return FizzBuzzFuture()
+        return FizzBuzzFuture(_cancel=cancel)
 
-    def background_task(self):
+    def task(self):
         """
         Return a background callable for this task specification.
 
@@ -132,7 +144,7 @@ class BackgroundFizzBuzz:
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        return fizz_buzz
+        return FizzBuzzTask()
 # -- end BackgroundFizzBuzz
 
 

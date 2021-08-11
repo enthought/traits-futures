@@ -12,7 +12,17 @@ import logging
 import random
 import time
 
-from traits.api import Button, Dict, Instance, List, Property, Range, Str
+from traits.api import (
+    Button,
+    Dict,
+    HasStrictTraits,
+    Instance,
+    List,
+    observe,
+    Property,
+    Range,
+    Str,
+)
 from traits_futures.api import (
     CallFuture,
     CANCELLED,
@@ -25,7 +35,6 @@ from traits_futures.api import (
     WAITING,
 )
 from traitsui.api import (
-    Handler,
     HGroup,
     Item,
     TabularAdapter,
@@ -88,9 +97,9 @@ class JobTabularAdapter(TabularAdapter):
         return state_text
 
 
-class SquaringHelper(Handler):
+class SquaringHelper(HasStrictTraits):
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: List of the submitted jobs, for display purposes.
     current_futures = List(Instance(CallFuture))
@@ -107,21 +116,18 @@ class SquaringHelper(Handler):
     #: Value that we'll square.
     input = Range(low=0, high=100)
 
-    def closed(self, info, is_ok):
-        # Cancel all jobs at shutdown.
-        self.traits_executor.stop()
-        super().closed(info, is_ok)
-
-    def _square_fired(self):
+    @observe("square")
+    def _do_slow_square(self, event):
         future = submit_call(self.traits_executor, slow_square, self.input)
         self.current_futures.append(future)
 
-    def _cancel_all_fired(self):
+    @observe("cancel_all")
+    def _cancel_all_futures(self, event):
         for future in self.current_futures:
-            if future.cancellable:
-                future.cancel()
+            future.cancel()
 
-    def _clear_finished_fired(self):
+    @observe("clear_finished")
+    def _clear_finished_futures(self, event):
         for future in list(self.current_futures):
             if future.done:
                 self.current_futures.remove(future)
@@ -158,5 +164,9 @@ if __name__ == "__main__":
             "%(asctime)s %(levelname)-8.8s [%(name)s:%(lineno)s] %(message)s"
         ),
     )
-    view = SquaringHelper()
-    view.configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        view = SquaringHelper(traits_executor=traits_executor)
+        view.configure_traits()
+    finally:
+        traits_executor.shutdown()

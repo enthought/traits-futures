@@ -16,13 +16,14 @@ in different contexts.
 import contextlib
 import queue
 import threading
+import time
 
 from traits.api import (
     Bool,
     HasStrictTraits,
     Instance,
     List,
-    on_trait_change,
+    observe,
     Property,
     Tuple,
 )
@@ -60,6 +61,18 @@ def test_iteration(*args, **kwargs):
 def test_progress(arg1, arg2, kwd1, kwd2, progress):
     """Simple test target for submit_progress."""
     return arg1, arg2, kwd1, kwd2
+
+
+def slow_call(starting, stopping):
+    """Target background task used to check waiting behaviour of 'shutdown'.
+
+    Parameters
+    ----------
+    starting, stopping : threading.Event
+    """
+    starting.set()
+    time.sleep(0.1)
+    stopping.set()
 
 
 def wait_for_event(started, event, timeout):
@@ -101,20 +114,23 @@ class ExecutorListener(HasStrictTraits):
     #: Changes to the 'stopped' trait value.
     stopped_changes = List(Tuple(Bool(), Bool()))
 
-    @on_trait_change("executor:state")
-    def _record_state_change(self, obj, name, old_state, new_state):
+    @observe("executor:state")
+    def _record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change("executor:running")
-    def _record_running_change(self, object, name, old, new):
+    @observe("executor:running")
+    def _record_running_change(self, event):
+        old, new = event.old, event.new
         self.running_changes.append((old, new))
 
-    @on_trait_change("executor:stopped")
-    def _record_stopped_change(self, object, name, old, new):
+    @observe("executor:stopped")
+    def _record_stopped_change(self, event):
+        old, new = event.old, event.new
         self.stopped_changes.append((old, new))
 
 
@@ -127,7 +143,7 @@ class FuturesListener(HasStrictTraits):
     futures = List(Instance(CallFuture))
 
     #: True when all futures have completed.
-    all_done = Property(Bool(), depends_on="futures:done")
+    all_done = Property(Bool(), observe="futures:items:done")
 
     def _get_all_done(self):
         return all(future.done for future in self.futures)
@@ -166,6 +182,68 @@ class TraitsExecutorTests:
         self.assertEqual(self.executor.state, STOPPED)
         with self.assertRaises(RuntimeError):
             self.executor.stop()
+
+    def test_shutdown_when_already_stopping(self):
+        with self.long_running_task(self.executor):
+            self.assertEqual(self.executor.state, RUNNING)
+            self.executor.stop()
+
+        self.assertEqual(self.executor.state, STOPPING)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPED)
+
+    def test_shutdown_does_nothing_if_stopped(self):
+        self.assertEqual(self.executor.state, RUNNING)
+        self.executor.stop()
+        self.wait_until_stopped(self.executor)
+        self.assertEqual(self.executor.state, STOPPED)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPED)
+
+    def test_shutdown_cancels_running_futures(self):
+        future = submit_call(self.executor, pow, 3, 5)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(future.state, CANCELLED)
+        self.assertTrue(self.executor.stopped)
+
+    def test_no_future_updates_after_shutdown(self):
+        future = submit_call(self.executor, pow, 3, 5)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(future.state, CANCELLED)
+        self.exercise_event_loop()
+        self.assertEqual(future.state, CANCELLED)
+
+    def test_shutdown_goes_through_stopping_state(self):
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(
+            self.listener.states,
+            [RUNNING, STOPPING, STOPPED],
+        )
+
+    def test_shutdown_waits_for_background_tasks(self):
+        starting = self._context.event()
+        stopping = self._context.event()
+        submit_call(self.executor, slow_call, starting, stopping)
+
+        # Make sure background task has started, else it might be
+        # cancelled altogether.
+        self.assertTrue(starting.wait(timeout=SAFETY_TIMEOUT))
+
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertTrue(stopping.is_set())
+
+    def test_shutdown_timeout(self):
+        start_time = time.monotonic()
+        with self.long_running_task(self.executor):
+            with self.assertRaisesRegex(RuntimeError, "1 tasks still running"):
+                self.executor.shutdown(timeout=0.1)
+
+        actual_timeout = time.monotonic() - start_time
+        self.assertLess(actual_timeout, 1.0)
+        self.assertEqual(self.executor.state, STOPPING)
+
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
+        self.assertEqual(self.executor.state, STOPPED)
 
     def test_cant_submit_new_unless_running(self):
         with self.long_running_task(self.executor):
@@ -247,9 +325,7 @@ class TraitsExecutorTests:
             )
 
         results = []
-        future.on_trait_change(
-            lambda result: results.append(result), "result_event"
-        )
+        future.observe(lambda event: results.append(event.new), "result_event")
 
         self.wait_until_done(future)
         self.assertEqual(
@@ -292,7 +368,7 @@ class TraitsExecutorTests:
         # Triples (state, running, stopped).
         states = []
 
-        def record_states():
+        def record_states(event=None):
             states.append(
                 (
                     self.executor.state,
@@ -301,9 +377,9 @@ class TraitsExecutorTests:
                 )
             )
 
-        self.executor.on_trait_change(record_states, "running")
-        self.executor.on_trait_change(record_states, "stopped")
-        self.executor.on_trait_change(record_states, "state")
+        self.executor.observe(record_states, "running")
+        self.executor.observe(record_states, "stopped")
+        self.executor.observe(record_states, "state")
         submit_call(self.executor, int)
 
         # Record states before, during, and after stopping.

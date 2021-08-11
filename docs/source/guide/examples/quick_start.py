@@ -16,7 +16,7 @@ from traits.api import (
     HasStrictTraits,
     Instance,
     Int,
-    on_trait_change,
+    observe,
     Property,
     Str,
 )
@@ -32,7 +32,7 @@ def slow_square(n):
 
 class QuickStartExample(HasStrictTraits):
     #: The executor to submit tasks to.
-    executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
     future = Instance(CallFuture)
@@ -50,20 +50,21 @@ class QuickStartExample(HasStrictTraits):
     calculate = Button()
 
     #: Boolean used to decide whether to enable the "calculate" button.
-    no_running_future = Property(Bool(), depends_on="future:done")
+    no_running_future = Property(Bool(), observe="future:done")
 
-    @on_trait_change("calculate")
-    def _submit_background_call(self):
+    @observe("calculate")
+    def _submit_background_call(self, event):
         # Returns immediately.
         input = self.input
         self.input_for_calculation = self.input
         self.message = "Calculating square of {} ...".format(input)
-        self.future = submit_call(self.executor, slow_square, input)
+        self.future = submit_call(self.traits_executor, slow_square, input)
         # Keep a record so that we can present messages accurately.
         self.input_for_calculation = input
 
-    @on_trait_change("future:done")
-    def _report_result(self, future, name, done):
+    @observe("future:done")
+    def _report_result(self, event):
+        future = event.object
         self.message = "The square of {} is {}.".format(
             self.input_for_calculation, future.result
         )
@@ -79,4 +80,9 @@ class QuickStartExample(HasStrictTraits):
     )
 
 
-QuickStartExample().configure_traits()
+if __name__ == "__main__":
+    traits_executor = TraitsExecutor()
+    try:
+        QuickStartExample(traits_executor=traits_executor).configure_traits()
+    finally:
+        traits_executor.shutdown()

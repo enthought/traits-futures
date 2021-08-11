@@ -16,6 +16,7 @@ class TestApi(unittest.TestCase):
         from traits_futures.api import (  # noqa: F401
             AsyncioEventLoop,
             BaseFuture,
+            BaseTask,
             CallFuture,
             CANCELLED,
             CANCELLING,
@@ -33,7 +34,6 @@ class TestApi(unittest.TestCase):
             IterationFuture,
             MultiprocessingContext,
             MultithreadingContext,
-            ProgressCancelled,
             ProgressFuture,
             RUNNING,
             StepsCancelled,
@@ -44,6 +44,7 @@ class TestApi(unittest.TestCase):
             submit_iteration,
             submit_progress,
             submit_steps,
+            TaskCancelled,
             TraitsExecutor,
             WAITING,
         )

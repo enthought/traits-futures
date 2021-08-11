@@ -68,6 +68,13 @@ class TestETSEventLoop(IEventLoopTests, unittest.TestCase):
     #: Factory for instances of the event loop.
     event_loop_factory = ETSEventLoop
 
+    def test_toolkit_choice_cached(self):
+        event_loop = ETSEventLoop()
+        # Check that we get the same instance both times.
+        event_loop1 = event_loop.toolkit_event_loop
+        event_loop2 = event_loop.toolkit_event_loop
+        self.assertIs(event_loop1, event_loop2)
+
 
 class TestToolkitSelection(unittest.TestCase):
     @requires_qt

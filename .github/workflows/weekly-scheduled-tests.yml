@@ -1,0 +1,101 @@
+name: Integration tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run at 04:35 UTC every Sunday
+    - cron: '35 4 * * 0'
+
+env:
+  PYTHONUNBUFFERED: 1
+
+jobs:
+  test-all-platform-python-combinations:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9, 3.10-dev]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies and local packages
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install .
+    - name: Run the test suite
+      run: |
+        mkdir testdir
+        cd testdir
+        python -X faulthandler -m unittest discover -v traits_futures
+
+  test-bleeding-edge:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.6, 3.8, 3.9]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Linux packages for Qt 5 support
+      run: |
+        sudo apt-get update
+        sudo apt-get install qt5-default
+        sudo apt-get install libxkbcommon-x11-0
+        sudo apt-get install libxcb-icccm4
+        sudo apt-get install libxcb-image0
+        sudo apt-get install libxcb-keysyms1
+        sudo apt-get install libxcb-randr0
+        sudo apt-get install libxcb-render-util0
+        sudo apt-get install libxcb-xinerama0
+      if: runner.os == 'Linux'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies and local packages
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install git+https://github.com/enthought/traits
+        python -m pip install git+https://github.com/enthought/pyface
+        python -m pip install .[pyside2]
+    - name: Run the test suite
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        working-directory: ${{ runner.temp }}
+        run: python -X faulthandler -m unittest discover -v traits_futures
+
+  notify-on-failure:
+    needs: [test-all-platform-python-combinations, test-bleeding-edge]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack channel on failure
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel_id: ${{ secrets.ETS_BOTS_SLACK_CHANNEL_ID }}
+          status: FAILED
+          color: danger
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ACTION_SECRET }}
+
+  notify-on-success:
+    needs: [test-all-platform-python-combinations, test-bleeding-edge]
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack channel on success
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel_id: ${{ secrets.ETS_BOTS_SLACK_CHANNEL_ID }}
+          status: SUCCESS
+          color: good
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_ACTION_SECRET }}

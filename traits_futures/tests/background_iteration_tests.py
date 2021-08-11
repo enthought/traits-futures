@@ -13,7 +13,7 @@ Tests for the background iteration functionality.
 """
 import weakref
 
-from traits.api import Any, HasStrictTraits, Instance, List, on_trait_change
+from traits.api import Any, HasStrictTraits, Instance, List, observe
 
 from traits_futures.api import (
     CANCELLED,
@@ -127,16 +127,18 @@ class IterationFutureListener(HasStrictTraits):
     #: List of results from the future.
     results = List(Any())
 
-    @on_trait_change("future:state")
-    def record_state_change(self, obj, name, old_state, new_state):
+    @observe("future:state")
+    def record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
             self.states.append(old_state)
         self.states.append(new_state)
 
-    @on_trait_change("future:result_event")
-    def record_iteration_result(self, result):
+    @observe("future:result_event")
+    def record_iteration_result(self, event):
+        result = event.new
         self.results.append(result)
 
 
@@ -335,8 +337,8 @@ class BackgroundIterationTests:
         future.cancel()
         self.assertFalse(future.cancellable)
 
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
     def test_completed_cancel(self):
         future = submit_iteration(self.executor, squares, 0, 10)
@@ -344,8 +346,8 @@ class BackgroundIterationTests:
         self.wait_until_done(future)
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
     def test_generator_closed_on_cancellation(self):
         resource_acquired = self._context.event()
@@ -401,7 +403,7 @@ class BackgroundIterationTests:
 
         try:
             # midpoint won't be set until we next invoke "next(iterable)",
-            # by which time the IterationBackgroundTask's reference should
+            # by which time the IterationTask's reference should
             # have been deleted.
             self.assertTrue(midpoint.wait(timeout=TIMEOUT))
             self.assertIsNone(ref())
@@ -427,8 +429,7 @@ class BackgroundIterationTests:
         Wait for the executor to stop.
         """
         executor = self.executor
-        executor.stop()
-        self.run_until(executor, "stopped", lambda executor: executor.stopped)
+        executor.shutdown(timeout=TIMEOUT)
         del self.executor
 
     def wait_until_done(self, future):
@@ -447,7 +448,7 @@ class BackgroundIterationTests:
             future.result
 
     def assertException(self, future, exc_type):
-        self.assertEqual(future.exception[0], str(exc_type))
+        self.assertIn(exc_type.__name__, future.exception[0])
 
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):

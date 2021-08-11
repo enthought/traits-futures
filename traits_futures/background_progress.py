@@ -21,22 +21,15 @@ be cancelled.
 
 from traits.api import Callable, Dict, Event, HasStrictTraits, Str, Tuple
 
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
 
-# Message types for messages from ProgressBackgroundTask
+# Message types for messages from ProgressTask
 # to ProgressFuture.
 
 #: Task sends progress. Argument is a single object giving progress
 #: information. This module does not interpret the contents of the argument.
 PROGRESS = "progress"
-
-
-class ProgressCancelled(Exception):
-    """
-    Exception raised when progress reporting is interrupted by
-    task cancellation.
-    """
 
 
 class ProgressReporter:
@@ -63,17 +56,17 @@ class ProgressReporter:
 
         Raises
         ------
-        ProgressCancelled
+        TaskCancelled
             If a cancellation request for this task has already been made.
             In this case, the exception will be raised before any progress
             information is sent.
         """
         if self.cancelled():
-            raise ProgressCancelled("Task was cancelled")
-        self.send((PROGRESS, progress_info))
+            raise TaskCancelled("Task was cancelled")
+        self.send(PROGRESS, progress_info)
 
 
-class ProgressBackgroundTask:
+class ProgressTask(BaseTask):
     """
     Background portion of a progress background task.
 
@@ -86,19 +79,21 @@ class ProgressBackgroundTask:
         self.args = args
         self.kwargs = kwargs
 
-    def __call__(self, send, cancelled):
-        progress = ProgressReporter(send=send, cancelled=cancelled)
-        self.kwargs["progress"] = progress.report
-
+    def run(self):
+        progress = ProgressReporter(send=self.send, cancelled=self.cancelled)
         try:
-            return self.callable(*self.args, **self.kwargs)
-        except ProgressCancelled:
+            return self.callable(
+                *self.args,
+                **self.kwargs,
+                progress=progress.report,
+            )
+        except TaskCancelled:
             return None
 
 
 class ProgressFuture(BaseFuture):
     """
-    Object representing the front-end handle to a ProgressBackgroundTask.
+    Object representing the front-end handle to a ProgressTask.
     """
 
     #: Event fired whenever a progress message arrives from the background.
@@ -125,9 +120,16 @@ class BackgroundProgress(HasStrictTraits):
     #: Named arguments to be passed to the callable.
     kwargs = Dict(Str())
 
-    def future(self):
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------
@@ -135,42 +137,42 @@ class BackgroundProgress(HasStrictTraits):
             Future object that can be used to monitor the status of the
             background task.
         """
-        return ProgressFuture()
+        return ProgressFuture(_cancel=cancel)
 
-    def background_task(self):
+    def task(self):
         """
         Return a background callable for this task specification.
 
         Returns
         -------
-        collections.abc.Callable
+        task : ProgressTask
             Callable accepting arguments ``send`` and ``cancelled``. The
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
         """
-        if "progress" in self.kwargs:
-            raise TypeError("progress may not be passed as a named argument")
-
-        return ProgressBackgroundTask(
+        return ProgressTask(
             callable=self.callable,
             args=self.args,
-            kwargs=self.kwargs.copy(),
+            kwargs=self.kwargs,
         )
 
 
 def submit_progress(executor, callable, *args, **kwargs):
     """
-    Convenience function to submit a background progress call.
+    Submit a progress-reporting task to an executor.
 
     Parameters
     ----------
     executor : TraitsExecutor
-        Executor to submit the task to.
-    callable : collections.abc.Callable
+        Executor to submit the task to. This argument should always be passed
+        by position rather than by name. Future versions of the library may
+        enforce this restriction.
+    callable
         Callable that executes the progress-providing function. This callable
         must accept a "progress" named argument, in addition to the provided
-        arguments. The callable may then call the "progress" argument to
-        report progress.
+        arguments. The callable may then call the "progress" argument to report
+        progress. This argument should always be passed by position rather than
+        by name. Future versions of the library may enforce this restriction.
     *args
         Positional arguments to pass to the callable.
     **kwargs
@@ -182,5 +184,8 @@ def submit_progress(executor, callable, *args, **kwargs):
     future : ProgressFuture
         Object representing the state of the background task.
     """
+    if "progress" in kwargs:
+        raise TypeError("progress may not be passed as a named argument")
+
     task = BackgroundProgress(callable=callable, args=args, kwargs=kwargs)
     return executor.submit(task)

@@ -3,6 +3,9 @@ name: Check that documentation builds cleanly
 on:
   pull_request
 
+env:
+  PYTHONUNBUFFERED: 1
+
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -12,19 +15,18 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install graphviz
-    - name: Set up Python 3.9
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.8
     - name: Install necessary Python packages
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        python -m pip install sphinx enthought-sphinx-theme
     - name: Check out the PR branch
       uses: actions/checkout@v2
-    - name: Install local package
+    - name: Install local package and documentation dependencies
       run: |
-        python -m pip install .
+        python -m pip install .[docs]
     - name: Build HTML documentation
       run: |
         cd docs

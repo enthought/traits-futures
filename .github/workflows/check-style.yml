@@ -3,19 +3,22 @@ name: Style check
 on:
   pull_request
 
+env:
+  PYTHONUNBUFFERED: 1
+
 jobs:
   style:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up Python 3.9
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.8
     - name: Install necessary Python packages
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        python -m pip install flake8 flake8-ets isort
+        python -m pip install black flake8 flake8-ets isort
     - name: Check out the PR branch
       uses: actions/checkout@v2
     - name: Run style checks
@@ -23,3 +26,4 @@ jobs:
         python -m flake8
         python -m isort . --check --diff
         python -m isort docs/source/guide/examples --check --diff
+        python -m black . --check --diff

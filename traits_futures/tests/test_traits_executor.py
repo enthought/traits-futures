@@ -21,11 +21,16 @@ from traits_futures.api import (
     MultithreadingContext,
     TraitsExecutor,
 )
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
 from traits_futures.tests.traits_executor_tests import (
     ExecutorListener,
     TraitsExecutorTests,
 )
+
+#: Maximum timeout for blocking calls, in seconds. A successful test should
+#: never hit this timeout - it's there to prevent a failing test from hanging
+#: forever and blocking the rest of the test suite.
+SAFETY_TIMEOUT = 5.0
 
 
 class TrackingTraitsExecutor(TraitsExecutor):
@@ -49,14 +54,14 @@ class TrackingTraitsExecutor(TraitsExecutor):
         return TraitsExecutor._TraitsExecutor__context_default(self)
 
 
-class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
+class TestTraitsExecutorCreation(TestAssistant, unittest.TestCase):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
 
     def tearDown(self):
         self._context.close()
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
     def test_max_workers(self):
         executor = TraitsExecutor(
@@ -65,8 +70,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             event_loop=self._event_loop,
         )
         self.assertEqual(executor._worker_pool._max_workers, 11)
-        executor.stop()
-        self.wait_until_stopped(executor)
+        executor.shutdown(timeout=SAFETY_TIMEOUT)
 
     def test_max_workers_mutually_exclusive_with_worker_pool(self):
         with self.temporary_worker_pool() as worker_pool:
@@ -110,8 +114,7 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         )
         worker_pool = executor._worker_pool
 
-        executor.stop()
-        self.wait_until_stopped(executor)
+        executor.shutdown(timeout=SAFETY_TIMEOUT)
 
         # Check that the internally-created worker pool has been shut down.
         with self.assertRaises(RuntimeError):
@@ -125,14 +128,13 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
                     context=self._context,
                     event_loop=self._event_loop,
                 )
-            executor.stop()
-            self.wait_until_stopped(executor)
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
 
         # Check we're using the right stack level in the warning.
         _, _, this_module = __name__.rpartition(".")
         self.assertIn(this_module, warning_info.filename)
 
-    def test_shared_worker_pool(self):
+    def test_shared_worker_pool_stop(self):
         with self.temporary_worker_pool() as worker_pool:
             executor = TraitsExecutor(
                 worker_pool=worker_pool,
@@ -146,7 +148,20 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             cf_future = worker_pool.submit(int)
             self.assertEqual(cf_future.result(), 0)
 
-    def test_no_objects_created_at_shutdown(self):
+    def test_shared_worker_pool_shutdown(self):
+        with self.temporary_worker_pool() as worker_pool:
+            executor = TraitsExecutor(
+                worker_pool=worker_pool,
+                context=self._context,
+                event_loop=self._event_loop,
+            )
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
+
+            # Check that the the shared worker pool is still usable.
+            cf_future = worker_pool.submit(int)
+            self.assertEqual(cf_future.result(), 0)
+
+    def test_no_objects_created_at_stop(self):
         # An executor that has no jobs submitted to it should not
         # need to instantiate either the context or the message router.
         with self.temporary_worker_pool() as worker_pool:
@@ -155,6 +170,24 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
             )
             executor.stop()
             self.wait_until_stopped(executor)
+
+        self.assertFalse(
+            executor._message_router_created,
+            msg="Message router unexpectedly created",
+        )
+        self.assertFalse(
+            executor._context_created,
+            msg="Context unexpectedly created",
+        )
+
+    def test_no_objects_created_at_shutdown(self):
+        # An executor that has no jobs submitted to it should not
+        # need to instantiate either the context or the message router.
+        with self.temporary_worker_pool() as worker_pool:
+            executor = TrackingTraitsExecutor(
+                worker_pool=worker_pool, event_loop=self._event_loop
+            )
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
 
         self.assertFalse(
             executor._message_router_created,
@@ -191,15 +224,14 @@ class TestTraitsExecutorCreation(GuiTestAssistant, unittest.TestCase):
         try:
             yield executor
         finally:
-            executor.stop()
-            self.wait_until_stopped(executor)
+            executor.shutdown(timeout=SAFETY_TIMEOUT)
 
 
 class TestTraitsExecutor(
-    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+    TestAssistant, TraitsExecutorTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
         self.executor = TraitsExecutor(
             context=self._context,
@@ -209,21 +241,18 @@ class TestTraitsExecutor(
 
     def tearDown(self):
         del self.listener
-        if self.executor.running:
-            self.executor.stop()
-        if not self.executor.stopped:
-            self.wait_until_stopped(self.executor)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
         del self.executor
         self._context.close()
         del self._context
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
 
 class TestTraitsExecutorWithExternalWorkerPool(
-    GuiTestAssistant, TraitsExecutorTests, unittest.TestCase
+    TestAssistant, TraitsExecutorTests, unittest.TestCase
 ):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
         self._context = MultithreadingContext()
         self._worker_pool = self._context.worker_pool()
         self.executor = TraitsExecutor(
@@ -235,13 +264,10 @@ class TestTraitsExecutorWithExternalWorkerPool(
 
     def tearDown(self):
         del self.listener
-        if self.executor.running:
-            self.executor.stop()
-        if not self.executor.stopped:
-            self.wait_until_stopped(self.executor)
+        self.executor.shutdown(timeout=SAFETY_TIMEOUT)
         del self.executor
         self._worker_pool.shutdown()
         del self._worker_pool
         self._context.close()
         del self._context
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)

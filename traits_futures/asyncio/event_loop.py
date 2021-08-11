@@ -33,7 +33,7 @@ class AsyncioEventLoop:
 
         Parameters
         ----------
-        on_ping : callable
+        on_ping
             Zero-argument callable, called on the main thread (under a running
             event loop) as a result of each ping sent. The return value of the
             callable is ignored.

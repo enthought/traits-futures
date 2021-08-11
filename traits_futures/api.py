@@ -28,19 +28,17 @@ Task submission functions
 - :func:`~.submit_call`
 - :func:`~.submit_iteration`
 - :func:`~.submit_progress`
-- :exc:`~.ProgressCancelled`
 - :func:`~.submit_steps`
 - :class:`~.IStepsReporter`
-- :exc:`~.StepsCancelled`
 
 Types of futures
 ----------------
 
-- :class:`~.IFuture`
 - :class:`~.CallFuture`
 - :class:`~.IterationFuture`
 - :class:`~.ProgressFuture`
 - :class:`~.StepsFuture`
+- :exc:`~.TaskCancelled`
 
 Future states
 -------------
@@ -65,6 +63,8 @@ Support for user-defined background tasks
 -----------------------------------------
 
 - :class:`~.BaseFuture`
+- :class:`~.BaseTask`
+- :class:`~.IFuture`
 - :class:`~.ITaskSpecification`
 
 Parallelism contexts
@@ -89,17 +89,15 @@ from traits_futures.background_iteration import (
     submit_iteration,
 )
 from traits_futures.background_progress import (
-    ProgressCancelled,
     ProgressFuture,
     submit_progress,
 )
 from traits_futures.background_steps import (
     IStepsReporter,
-    StepsCancelled,
     StepsFuture,
     submit_steps,
 )
-from traits_futures.base_future import BaseFuture
+from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.ets_event_loop import ETSEventLoop
 from traits_futures.executor_states import (
     ExecutorState,
@@ -117,23 +115,20 @@ from traits_futures.future_states import (
     WAITING,
 )
 from traits_futures.i_event_loop import IEventLoop
-from traits_futures.i_future import IFuture
 from traits_futures.i_parallel_context import IParallelContext
-from traits_futures.i_task_specification import ITaskSpecification
+from traits_futures.i_task_specification import IFuture, ITaskSpecification
 from traits_futures.multiprocessing_context import MultiprocessingContext
 from traits_futures.multithreading_context import MultithreadingContext
 from traits_futures.traits_executor import TraitsExecutor
 
 __all__ = [
     # Different types of Future
-    "IFuture",
     "CallFuture",
     "IterationFuture",
     "ProgressFuture",
-    "ProgressCancelled",
-    "IStepsReporter",
     "StepsFuture",
-    "StepsCancelled",
+    "IStepsReporter",
+    "TaskCancelled",
     # Future states
     "FutureState",
     "CANCELLED",
@@ -156,6 +151,8 @@ __all__ = [
     "submit_steps",
     # Support for creating new task types
     "BaseFuture",
+    "BaseTask",
+    "IFuture",
     "ITaskSpecification",
     # Contexts
     "IParallelContext",

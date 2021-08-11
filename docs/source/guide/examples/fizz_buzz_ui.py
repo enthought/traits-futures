@@ -29,7 +29,7 @@ from fizz_buzz_task import FizzBuzzFuture, submit_fizz_buzz
 
 class FizzBuzzUI(HasStrictTraits):
     #: The executor to submit tasks to.
-    executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
     future = Instance(FizzBuzzFuture)
@@ -39,16 +39,16 @@ class FizzBuzzUI(HasStrictTraits):
 
     #: Button to calculate, plus its enabled state.
     calculate = Button()
-    can_calculate = Property(Bool(), depends_on="future")
+    can_calculate = Property(Bool(), observe="future")
 
     #: Button to cancel, plus its enabled state.
     cancel = Button()
-    can_cancel = Property(Bool(), depends_on="future.cancellable")
+    can_cancel = Property(Bool(), observe="future.cancellable")
 
     @observe("calculate")
     def _submit_calculation(self, event):
         self.message = "Running"
-        self.future = submit_fizz_buzz(self.executor)
+        self.future = submit_fizz_buzz(self.traits_executor)
 
     @observe("cancel")
     def _cancel_running_task(self, event):
@@ -89,4 +89,8 @@ class FizzBuzzUI(HasStrictTraits):
 
 
 if __name__ == "__main__":
-    FizzBuzzUI().configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        FizzBuzzUI(traits_executor=traits_executor).configure_traits()
+    finally:
+        traits_executor.shutdown()

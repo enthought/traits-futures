@@ -13,10 +13,58 @@ Interface for a job specification. The job specification is the object
 that the TraitsExecutor knows how to deal with.
 """
 
-from abc import ABC, abstractmethod
+import abc
 
 
-class ITaskSpecification(ABC):
+class IFuture(abc.ABC):
+    """
+    Interface for futures returned by the executor.
+
+    This interface can be used to implement new background task types. It
+    represents the knowledge that the executor needs to interact with futures.
+    """
+
+    @abc.abstractmethod
+    def cancel(self):
+        """
+        Request cancellation of the background task.
+
+        For a future that has not yet completed and has not previously been
+        cancelled, this method requests cancellation of the associated
+        background task and returns ``True``. For a future that has already
+        completed, or that has previously been cancelled, this method
+        does nothing, and returns ``False``.
+
+        Returns
+        -------
+        cancelled : bool
+            True if the task was cancellable and this call requested
+            cancellation, False if the task was not cancellable (in which case
+            this call did nothing).
+        """
+
+    @abc.abstractmethod
+    def receive(self, message):
+        """
+        Receive and process a message from the task associated to this future.
+
+        This method is primarily for use by the executors, but may also be of
+        use in testing.
+
+        Parameters
+        ----------
+        message : object
+            The message received from the associated task.
+
+        Returns
+        -------
+        final : bool
+            True if the received message should be the last one ever received
+            from the paired task.
+        """
+
+
+class ITaskSpecification(abc.ABC):
     """
     Specify background task callable and foreground future for a task.
 
@@ -27,8 +75,8 @@ class ITaskSpecification(ABC):
     BackgroundIteration and others.
     """
 
-    @abstractmethod
-    def background_task(self):
+    @abc.abstractmethod
+    def task(self):
         """
         Return the callable that will be invoked as the background task.
 
@@ -55,13 +103,23 @@ class ITaskSpecification(ABC):
 
         Returns
         -------
-        task : callable
+        task : object
+            Callable accepting arguments ``send`` and ``cancelled``. The
+            callable can use ``send`` to send messages and ``cancelled`` to
+            check whether cancellation has been requested.
         """
 
-    @abstractmethod
-    def future(self):
+    @abc.abstractmethod
+    def future(self, cancel):
         """
         Return a Future for the background task.
+
+        Parameters
+        ----------
+        cancel
+            Zero-argument callable, returning no useful result. The returned
+            future's ``cancel`` method should call this to request cancellation
+            of the associated background task.
 
         Returns
         -------

@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 
-from traits.api import HasStrictTraits, Instance, List, on_trait_change
+from traits.api import HasStrictTraits, Instance, List, observe
 
 from traits_futures.api import (
     CallFuture,
@@ -57,8 +57,9 @@ class CallFutureListener(HasStrictTraits):
     #: List of states of that future.
     states = List(FutureState)
 
-    @on_trait_change("future:state")
-    def record_state_change(self, obj, name, old_state, new_state):
+    @observe("future:state")
+    def record_state_change(self, event):
+        old_state, new_state = event.old, event.new
         if not self.states:
             # On the first state change, record the initial state as well as
             # the new one.
@@ -190,8 +191,8 @@ class BackgroundCallTests:
         self.wait_until_done(future)
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
         self.assertResult(future, 8)
         self.assertNoException(future)
@@ -207,8 +208,8 @@ class BackgroundCallTests:
         self.wait_until_done(future)
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
         self.assertNoResult(future)
         self.assertException(future, ZeroDivisionError)
@@ -222,10 +223,12 @@ class BackgroundCallTests:
         listener = CallFutureListener(future=future)
 
         self.assertTrue(future.cancellable)
-        future.cancel()
+        cancelled = future.cancel()
+        self.assertTrue(cancelled)
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
+        self.assertFalse(future.cancellable)
 
         self.wait_until_done(future)
 
@@ -253,8 +256,8 @@ class BackgroundCallTests:
         test_ready.set()
 
         self.assertFalse(future.cancellable)
-        with self.assertRaises(RuntimeError):
-            future.cancel()
+        cancelled = future.cancel()
+        self.assertFalse(cancelled)
 
         self.wait_until_done(future)
 
@@ -272,8 +275,7 @@ class BackgroundCallTests:
         Wait for the executor to stop.
         """
         executor = self.executor
-        executor.stop()
-        self.run_until(executor, "stopped", lambda executor: executor.stopped)
+        executor.shutdown(timeout=TIMEOUT)
         del self.executor
 
     def wait_until_done(self, future):
@@ -292,7 +294,7 @@ class BackgroundCallTests:
             future.result
 
     def assertException(self, future, exc_type):
-        self.assertEqual(future.exception[0], str(exc_type))
+        self.assertIn(exc_type.__name__, future.exception[0])
 
     def assertNoException(self, future):
         with self.assertRaises(AttributeError):

@@ -17,7 +17,7 @@ import queue
 import threading
 import weakref
 
-from traits.api import Bool, Event, HasStrictTraits, Int
+from traits.api import Event, HasStrictTraits, Int, observe
 
 #: Safety timeout, in seconds, for blocking operations, to prevent
 #: the test suite from blocking indefinitely if something goes wrong.
@@ -90,7 +90,8 @@ class PingListener(HasStrictTraits):
     #: Total number of pings received.
     ping_count = Int(0)
 
-    def _ping_fired(self):
+    @observe("ping")
+    def _handle_incoming_ping(self, event):
         self.ping_count += 1
 
     def fire_ping(self):
@@ -105,7 +106,7 @@ class IPingeeTests:
     """
     Mixin class for testing IPingee and IPinger implementations.
 
-    Should be used in combination with the GuiTestAssistant.
+    Should be used in combination with the TestAssistant.
     """
 
     def test_single_background_ping(self):
@@ -180,17 +181,21 @@ class IPingeeTests:
         # There shouldn't be any ping-related activity queued on the event
         # loop at this point. We exercise the event loop, in the hope
         # of flushing out any such activity.
-
-        class Sentinel(HasStrictTraits):
-            #: Simple boolean flag.
-            flag = Bool(False)
-
-        sentinel = Sentinel()
-
-        self._event_loop_helper.setattr_soon(sentinel, "flag", True)
-        self.run_until(sentinel, "flag", lambda sentinel: sentinel.flag)
-
+        self.exercise_event_loop()
         self.assertEqual(listener.ping_count, 0)
+
+    def test_pinger_disconnect_removes_pingee_reference(self):
+
+        with self.connected_pingee(on_ping=lambda: None) as pingee:
+            pinger = pingee.pinger()
+            pinger.connect()
+
+        finalizer = weakref.finalize(pingee, lambda: None)
+        self.assertTrue(finalizer.alive)
+        del pingee
+        # This should remove any remaining reference to the pingee.
+        pinger.disconnect()
+        self.assertFalse(finalizer.alive)
 
     def test_disconnect_removes_callback_reference(self):
         # Implementation detail: after disconnection, the pingee should
@@ -240,7 +245,7 @@ class IPingeeTests:
 
         Parameters
         ----------
-        on_ping : callable
+        on_ping
             Callback to execute whenever a ping is received.
         """
         pingee = self._event_loop.pingee(on_ping=on_ping)

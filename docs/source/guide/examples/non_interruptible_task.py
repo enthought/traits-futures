@@ -31,10 +31,10 @@ from traits.api import (
     Str,
 )
 from traits_futures.api import (
+    CallFuture,
     CANCELLED,
     COMPLETED,
     FAILED,
-    IFuture,
     submit_call,
     TraitsExecutor,
 )
@@ -54,10 +54,10 @@ def approximate_pi(sample_count=10 ** 8):
 
 class NonInterruptibleTaskExample(HasStrictTraits):
     #: The executor to submit tasks to.
-    executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: The future object returned on task submission.
-    future = Instance(IFuture)
+    future = Instance(CallFuture)
 
     #: Number of points to use.
     sample_count = Int(10 ** 8)
@@ -67,17 +67,17 @@ class NonInterruptibleTaskExample(HasStrictTraits):
 
     #: Button to calculate, plus its enabled state.
     calculate = Button()
-    can_calculate = Property(Bool(), depends_on="future")
+    can_calculate = Property(Bool(), observe="future")
 
     #: Button to cancel, plus its enabled state.
     cancel = Button()
-    can_cancel = Property(Bool(), depends_on="future.cancellable")
+    can_cancel = Property(Bool(), observe="future.cancellable")
 
     @observe("calculate")
     def _submit_calculation(self, event):
         self.message = "Calculating π"
         self.future = submit_call(
-            self.executor, approximate_pi, self.sample_count
+            self.traits_executor, approximate_pi, self.sample_count
         )
 
     @observe("cancel")
@@ -96,7 +96,7 @@ class NonInterruptibleTaskExample(HasStrictTraits):
         else:
             # Shouldn't ever get here: CANCELLED, FAILED and COMPLETED
             # are the only possible final states of a future.
-            raise RuntimeError(f"Unexpected state: {self.future.state}")
+            assert False, f"Impossible state: {self.future.state}"
         self.future = None
 
     def _get_can_calculate(self):
@@ -117,4 +117,10 @@ class NonInterruptibleTaskExample(HasStrictTraits):
 
 
 if __name__ == "__main__":
-    NonInterruptibleTaskExample().configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        NonInterruptibleTaskExample(
+            traits_executor=traits_executor
+        ).configure_traits()
+    finally:
+        traits_executor.shutdown()

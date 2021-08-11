@@ -29,7 +29,7 @@ We'll examine the future objects in the next section. This section deals with
 the executor's main top-level methods and the task submission functions.
 
 To submit a task, use one of the convenience submission functions available
-from ``traits_futures.api``:
+from |traits_futures.api|:
 
 - The |submit_call| function allows submission of a simple Python callable,
   with given positional and named arguments. For example::
@@ -56,7 +56,7 @@ from ``traits_futures.api``:
   "progress" parameter can then be called to send progress reports to the
   associated |ProgressFuture| object. If the future has been cancelled, the
   next call to ``progress`` in the background task will raise a
-  |ProgressCancelled| exception.
+  |TaskCancelled| exception.
 
   For example, your callable might look like this::
 
@@ -72,10 +72,10 @@ from ``traits_futures.api``:
   The computation consists of ``n`` steps: a progress report is sent before
   each step, and after the end of the computation. The ``progress`` callable
   accepts a single Python object, but of course that Python object can be a
-  compound object like a ``tuple`` or a ``dict``. It's up to you to choose the
-  format of the objects you want to send. They'll arrive in exactly the same
-  format in the |ProgressFuture|, and then your application can choose how to
-  interpret them.
+  compound object like a :class:`tuple` or a :class:`dict`. It's up to you to
+  choose the format of the objects you want to send. They'll arrive in exactly
+  the same format in the |ProgressFuture|, and then your application can choose
+  how to interpret them.
 
 In the current version of Traits Futures, tasks may only be submitted from the
 main thread. An attempt to submit a task from a background thread will raise
@@ -101,8 +101,9 @@ Future states
 ~~~~~~~~~~~~~
 
 The |CallFuture|, |IterationFuture| and |ProgressFuture| objects all provide a
-``state`` trait, of trait type |FutureState|, that represents the state of the
-underlying computation. That state has one of six possible different values:
+|future_state| trait, of trait type |FutureState|, that represents the state of
+the underlying computation. That state has one of six possible different
+values:
 
 |WAITING|
    The background task has been scheduled to run, but has not yet started
@@ -115,12 +116,12 @@ underlying computation. That state has one of six possible different values:
 |COMPLETED|
    The background task has completed without error. For a progress task or a
    simple call, this implies that a result has been returned and is available
-   via the ``result`` property of the future. For an iteration, it means that
+   via the |result| property of the future. For an iteration, it means that
    the iteration has completed.
 
 |FAILED|
    The background task raised an exception at some point in its execution.
-   Information about the exception is available via the ``exception`` property
+   Information about the exception is available via the |exception| property
    of the future.
 
 |CANCELLING|
@@ -130,14 +131,14 @@ underlying computation. That state has one of six possible different values:
 |CANCELLED|
    The task has stopped following a cancellation request.
 
-In addition, there are two traits whose values are derived from the ``state``
-trait: the ``done`` trait is ``True`` when ``state`` is one of |COMPLETED|,
-|FAILED| or |CANCELLED|, and the ``cancellable`` trait is ``True`` when
-``state`` is one of |WAITING| or |EXECUTING|.
+In addition, there are two traits whose values are derived from the
+|future_state| trait: the |done| trait is ``True`` when |future_state| is one
+of |COMPLETED|, |FAILED| or |CANCELLED|, and the |cancellable| trait is
+``True`` when |future_state| is one of |WAITING| or |EXECUTING|.
 
-It's important to understand that the ``state`` trait represents the state of
-the background task *to the best of knowledge* of the main thread. For example,
-when the background task starts executing, it sends a message to the
+It's important to understand that the |future_state| trait represents the state
+of the background task *to the best of knowledge* of the main thread. For
+example, when the background task starts executing, it sends a message to the
 corresponding future telling it to change its state from |WAITING| to
 |EXECUTING|. However, that message won't necessarily get processed immediately,
 so there will be a brief interval during which the background task has, in
@@ -172,48 +173,51 @@ futures.
 
 The |submit_call| and |submit_progress| functions run callables that eventually
 expect to return a result. Once the state of the corresponding future reaches
-|COMPLETED|, the result of the call is available via the ``result`` attribute.
+|COMPLETED|, the result of the call is available via the |result| attribute.
 Assuming that your calculation future is stored in a trait called ``future``,
 you might use this as follows::
 
-    @on_trait_change('future:done')
-    def _update_result(self, future, name, done):
+    @observe('future:done')
+    def _update_result(self, event):
+        future = event.object
         self.my_results.append(future.result)
 
-Any attempt to access ``future.result`` before the future completes
-successfully raises an ``AttributeError``. This includes the cases where
+Any attempt to access the future's |result| before the future completes
+successfully will raise an |AttributeError|. This includes the cases where
 the background task was cancelled, or failed with an exception, as well
 as the cases where the task is still executing or has yet to start running.
 
 A |ProgressFuture| object also receives progress information send by the
-background task via its ``progress`` event trait. You might use that
+background task via its |progress| event trait. You might use that
 trait like this::
 
-    @on_trait_change('future:progress')
-    def _report_progress(self, progress_info):
+    @observe('future:progress')
+    def _report_progress(self, event):
+        progress_info = event.new
         current_step, max_steps, matches = progress_info
         self.message = "{} of {} chunks processed. {} matches so far".format(
             current_step, max_steps, matches)
 
 The |submit_iteration| function is a little bit different: it produces a result
 on each iteration, but doesn't necessarily give a final result. Its
-``result_event`` trait is an ``Event`` that you can hook listeners up to in
-order to receive the iteration results. For example::
+|result_event| is an |Event| trait that you can hook
+listeners up to in order to receive the iteration results. For example::
 
-    @on_trait_change('future:result_event')
-    def _record_result(self, result):
+    @observe('future:result_event')
+    def _record_result(self, event):
+        result = event.new
         self.results.append(result)
         self.update_plot_data()
 
-If a background task fails with an exception, then the corresponding
-future ``future`` eventually reaches |FAILED| state. In that case,
-information about the exception that occurred is available in the
-``future.exception`` attribute. This information takes the form of
-a ``tuple`` of length 3, containing stringified versions of the
-exception type, the exception value and the exception traceback.
+If a background task fails with an exception, then the corresponding future
+eventually reaches |FAILED| state. In that case, information about the
+exception that occurred is available in the future's |exception| attribute.
+This information takes the form of a tuple of length 3, containing stringified
+versions of the exception type, the exception value and the exception
+traceback.
 
-As with ``future.result``, an attempt to access ``future.exception`` for a
-``future`` that's not in |FAILED| state will give an ``AttributeError``.
+As with |result|, an attempt to access |exception| for a future that's not in
+|FAILED| state will give an |AttributeError|.
 
 
 Cancelling the background task
@@ -237,44 +241,110 @@ For |ProgressFuture|, the |cancel| method causes a running
 task to abort the next time that task calls ``progress``. No further
 progress results are received after calling |cancel|.
 
-In all cases, a future may only be cancelled if its state is one of |WAITING|
-or |EXECUTING|. Attempting to cancel a future in another state will raise a
-``RuntimeError``. Calling |cancel| immediately puts the future into
-|CANCELLING| state, and the state is updated to |CANCELLED| once the future has
-finished executing. No results or exception information are received from a
-future in |CANCELLING| state. A cancelled future will never reach |FAILED|
-state, and will never record information from a background task exception that
-occurs after the |cancel| call.
+In all cases, a task may only be cancelled if the state of the associated
+future is either |WAITING| or |EXECUTING|. When |cancel| is called on a future
+in one of these two states, the future's state is changed to |CANCELLING|,
+a cancellation request is sent to the associated task, and the call returns
+``True``. When |cancel| is called on a future in another state, the call has
+no effect, and returns ``False``.
+
+A successful |cancel| immediately puts the future into |CANCELLING| state, and
+the state is updated to |CANCELLED| once the future has finished executing. No
+results or exception information are received from a future in |CANCELLING|
+state. A cancelled future will never reach |FAILED| state, and will never
+record information from a background task exception that occurs after the
+|cancel| call.
 
 
 Stopping the executor
 ---------------------
 
-Like the various future classes, a |TraitsExecutor| also has a state trait, of
-type |ExecutorState|. This state is one of the following:
+To avoid unexpected side-effects during Python process finalization, it's
+recommended to shut down a running |TraitsExecutor| explicitly prior to process
+exit. Similarly, when writing a unit test that makes use of a |TraitsExecutor|,
+that executor should be shut down at test exit, to avoid potential for
+unexpected interactions with other tests.
+
+This section describes the two methods available for executor shutdown:
+|shutdown| and |stop|.
+
+Executor states
+~~~~~~~~~~~~~~~
+
+Like the various future classes, a |TraitsExecutor| also has a |executor_state|
+trait, of type |ExecutorState|. This state is one of the following:
 
 |RUNNING|
-   The executor is running and accepting task submissions.
+   The executor is running and accepting task submissions. This is the state
+   of a newly-created executor.
 |STOPPING|
-   The user has requested that the executor stop, but there are still
-   running futures associated with this executor. An executor in |STOPPING|
-   state will not accept new task submissions.
+   Shutdown has been initiated or partially completed, but there are still
+   running background tasks associated with this executor. An executor in
+   |STOPPING| state will not accept new task submissions.
 |STOPPED|
-   The executor has stopped, and all futures associated with this
-   executor have finished. An executor in this state cannot be
-   used to submit new tasks, and cannot be restarted.
+   The executor has stopped, all resources associated with the executor have
+   been released, and all background tasks associated with this executor have
+   finished. An executor in |STOPPED| state will not accept new task
+   submissions, and cannot be restarted.
+
+Executor shutdown
+~~~~~~~~~~~~~~~~~
 
 Once a |TraitsExecutor| object is no longer needed (for example at application
-shutdown time), its |stop| method may be called. This cancels all current
-executing or waiting futures, puts the executor into |STOPPING| state and then
-returns.
+shutdown time), it can be shut down via its |shutdown| method. This method is
+blocking: it waits for all of the background tasks to complete before
+returning. In more detail, if called on a running executor, the |shutdown|
+method performs the following tasks, in order:
 
-Once all futures reach |CANCELLED| state, an executor in |STOPPING| state moves
-into |STOPPED| state. If the executor owns its worker pool, that worker pool is
-shut down immediately before moving into |STOPPED| state.
+* Moves the executor to |STOPPING| state.
+* Requests cancellation of all waiting or executing background tasks.
+* Waits for all background tasks to complete.
+* Shuts down the worker pool (if that worker pool is owned by the executor).
+* Moves the executor to |STOPPED| state.
 
-It's advisable to stop the executor explicitly and wait for it to reach
-|STOPPING| state before exiting an application using it.
+If called on an executor in |STOPPED| state, |shutdown| simply returns
+without taking any action. If called on an executor in |STOPPING| state,
+any of the above actions that have not already been taken will be taken.
+
+
+Shutdown with a timeout
+~~~~~~~~~~~~~~~~~~~~~~~
+
+To avoid blocking indefinitely, the |shutdown| method also accepts a
+``timeout`` parameter. That timeout is used when waiting for the background
+tasks to complete. If the background tasks fail to complete within the given
+timeout, |shutdown| will raise |RuntimeError| and leave the executor in
+|STOPPING| state. The worker pool used by the executor will not have been shut
+down.
+
+Non-blocking executor shutdown
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Occasionally, it may be desirable to shut down an executor during normal
+application execution, rather than at application shutdown time. In this
+situation calling |shutdown| is problematic, since that method is blocking and
+so will make the GUI unresponsive. Instead, users can call the non-blocking
+|stop| method. This method:
+
+* Moves the executor to |STOPPING| state.
+* Requests cancellation of all waiting or executing background tasks.
+
+Typically, the event loop will continue to run after calling the |stop| method.
+Under that running event loop, all futures will eventually reach one of the
+final states (|COMPLETED|, |FAILED| or |CANCELLED|). When that happens, the
+system automatically:
+
+* Shuts down the worker pool (if that worker pool is owned by the executor).
+* Moves the executor to |STOPPED| state.
+
+If there are no waiting or executing background tasks, then |stop| goes
+through all of the steps above at once, moving the executor through
+the |STOPPING| state to |STOPPED| state.
+
+Note that while |stop| can only be called on an executor in |RUNNING| state,
+it's always legal to call |shutdown| on an executor, regardless of the current
+state of that executor. In particular, calling |shutdown| after |stop| is
+permissible, but calling |stop| after |shutdown| would be an error.
 
 
 Using a shared worker pool
@@ -285,7 +355,7 @@ worker pool down when its |stop| method is called. In a large multithreaded
 application, you might want to use a shared worker pool for multiple different
 application components. In that case, you can instantiate the |TraitsExecutor|
 with an existing worker pool, which should be an instance of
-``concurrent.futures.ThreadPoolExecutor``::
+:class:`concurrent.futures.ThreadPoolExecutor`::
 
     worker_pool = concurrent.futures.ThreadPoolExecutor(max_workers=24)
     executor = TraitsExecutor(worker_pool=worker_pool)
@@ -300,24 +370,33 @@ needed.
 .. |traits_futures.api| replace:: :mod:`traits_futures.api`
 
 .. |TraitsExecutor| replace:: :class:`~traits_futures.traits_executor.TraitsExecutor`
+.. |shutdown| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.shutdown`
 .. |stop| replace:: :meth:`~traits_futures.traits_executor.TraitsExecutor.stop`
 
-.. |ExecutorState| replace:: :meth:`~traits_futures.executor_states.ExecutorState`
+.. |executor_state| replace:: :attr:`~traits_futures.traits_executor.TraitsExecutor.state`
+.. |ExecutorState| replace:: :data:`~traits_futures.executor_states.ExecutorState`
 .. |RUNNING| replace:: :data:`~traits_futures.executor_states.RUNNING`
 .. |STOPPING| replace:: :data:`~traits_futures.executor_states.STOPPING`
 .. |STOPPED| replace:: :data:`~traits_futures.executor_states.STOPPED`
 
 .. |cancel| replace:: :meth:`~traits_futures.base_future.BaseFuture.cancel`
+.. |cancellable| replace:: :attr:`~traits_futures.base_future.BaseFuture.cancellable`
+.. |done| replace:: :attr:`~traits_futures.base_future.BaseFuture.done`
+.. |future_state| replace:: :attr:`~traits_futures.base_future.BaseFuture.state`
+.. |result| replace:: :attr:`~traits_futures.base_future.BaseFuture.result`
+.. |exception| replace:: :attr:`~traits_futures.base_future.BaseFuture.exception`
 
 .. |CallFuture| replace:: :class:`~traits_futures.background_call.CallFuture`
 .. |submit_call| replace:: :func:`~traits_futures.background_call.submit_call`
 
 .. |IterationFuture| replace:: :class:`~traits_futures.background_iteration.IterationFuture`
 .. |submit_iteration| replace:: :func:`~traits_futures.background_iteration.submit_iteration`
+.. |result_event| replace:: :attr:`~traits_futures.background_iteration.IterationFuture.result_event`
 
-.. |ProgressCancelled| replace:: :exc:`~traits_futures.background_progress.ProgressCancelled`
+.. |TaskCancelled| replace:: :exc:`~traits_futures.base_future.TaskCancelled`
 .. |ProgressFuture| replace:: :class:`~traits_futures.background_progress.ProgressFuture`
 .. |submit_progress| replace:: :func:`~traits_futures.background_progress.submit_progress`
+.. |progress| replace:: :attr:`~traits_futures.background_progress.ProgressFuture.progress`
 
 .. |FutureState| replace:: :data:`~traits_futures.future_states.FutureState`
 .. |WAITING| replace:: :data:`~traits_futures.future_states.WAITING`
@@ -327,4 +406,7 @@ needed.
 .. |CANCELLING| replace:: :data:`~traits_futures.future_states.CANCELLING`
 .. |CANCELLED| replace:: :data:`~traits_futures.future_states.CANCELLED`
 
+.. |Event| replace:: :class:`traits.trait_types.Event`
+
+.. |AttributeError| replace:: :exc:`AttributeError`
 .. |RuntimeError| replace:: :exc:`RuntimeError`

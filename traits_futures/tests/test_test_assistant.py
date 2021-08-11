@@ -9,10 +9,10 @@
 # Thanks for using Enthought open source!
 
 """
-Tests for the GuiTestAssistant.
+Tests for the TestAssistant.
 """
 import time
-import unittest
+import unittest.mock
 
 from traits.api import Event, HasStrictTraits
 
@@ -22,7 +22,12 @@ from traits_futures.api import (
     submit_call,
     TraitsExecutor,
 )
-from traits_futures.testing.gui_test_assistant import GuiTestAssistant
+from traits_futures.testing.test_assistant import TestAssistant
+
+#: Maximum timeout for blocking calls, in seconds. A successful test should
+#: never hit this timeout - it's there to prevent a failing test from hanging
+#: forever and blocking the rest of the test suite.
+SAFETY_TIMEOUT = 5.0
 
 
 class Dummy(HasStrictTraits):
@@ -37,12 +42,12 @@ def slow_return():
     return 1729
 
 
-class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
+class TestTestAssistant(TestAssistant, unittest.TestCase):
     def setUp(self):
-        GuiTestAssistant.setUp(self)
+        TestAssistant.setUp(self)
 
     def tearDown(self):
-        GuiTestAssistant.tearDown(self)
+        TestAssistant.tearDown(self)
 
     def test_run_until_timeout(self):
         # Trait never fired, condition never true.
@@ -80,12 +85,7 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
             )
         actual_timeout = time.monotonic() - start_time
 
-        executor.stop()
-        self.run_until(
-            executor,
-            "stopped",
-            condition=lambda executor: executor.stopped,
-        )
+        executor.shutdown(timeout=SAFETY_TIMEOUT)
         self.assertLess(actual_timeout, 1.0)
 
     def test_run_until_timeout_with_true_condition(self):
@@ -127,3 +127,17 @@ class TestGuiTestAssistant(GuiTestAssistant, unittest.TestCase):
             condition=lambda executor: executor.stopped,
         )
         self.assertTrue(executor.stopped)
+
+    def test_exercise_event_loop(self):
+        # There's little that we can usefully test here: exercising the event
+        # loop is *likely* to flush out pending events, but there are no
+        # *guaranteed* observable changes from exercising the event loop. So we
+        # merely call the method to check that it exists, and check that
+        # the event loop helper's run_until was called as a side-effect.
+        with unittest.mock.patch.object(
+            self._event_loop_helper,
+            "run_until",
+            wraps=self._event_loop_helper.run_until,
+        ) as mock_run_until:
+            self.exercise_event_loop()
+        mock_run_until.assert_called()

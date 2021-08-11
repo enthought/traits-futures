@@ -24,10 +24,11 @@ from traits.api import (
     Bool,
     Button,
     Float,
+    HasStrictTraits,
     Instance,
     Int,
     List,
-    on_trait_change,
+    observe,
     Property,
     Tuple,
 )
@@ -36,7 +37,7 @@ from traits_futures.api import (
     submit_iteration,
     TraitsExecutor,
 )
-from traitsui.api import Handler, HGroup, Item, UItem, VGroup, View
+from traitsui.api import HGroup, Item, UItem, VGroup, View
 
 
 def pi_iterations(chunk_size):
@@ -79,13 +80,13 @@ def pi_iterations(chunk_size):
         yield nsamples, approximation, error
 
 
-class PiIterator(Handler):
+class PiIterator(HasStrictTraits):
     """
     View and plot of pi approximation running in the background.
     """
 
     #: The Traits executor for the background jobs.
-    traits_executor = Instance(TraitsExecutor, ())
+    traits_executor = Instance(TraitsExecutor)
 
     #: Chunk size to use for the approximations.
     chunk_size = Int(1000000)
@@ -100,13 +101,13 @@ class PiIterator(Handler):
     approximate = Button()
 
     #: Is the approximate button enabled?
-    approximate_enabled = Property(Bool(), depends_on="future.state")
+    approximate_enabled = Property(Bool(), observe="future.state")
 
     #: Button to cancel the pi approximation.
     cancel = Button()
 
     #: Is the cancel button enabled?
-    cancel_enabled = Property(Bool(), depends_on="future.state")
+    cancel_enabled = Property(Bool(), observe="future.state")
 
     #: Maximum number of points to show in the plot.
     max_points = Int(100)
@@ -117,25 +118,23 @@ class PiIterator(Handler):
     #: The plot.
     plot = Instance(Plot)
 
-    def closed(self, info, is_ok):
-        # Stopping the executor cancels any running future.
-        self.traits_executor.stop()
-        super().closed(info, is_ok)
-
-    def _approximate_fired(self):
+    @observe("approximate")
+    def _calculate_pi_approximately(self, event):
         self.future = submit_iteration(
             self.traits_executor, pi_iterations, chunk_size=self.chunk_size
         )
 
-    def _cancel_fired(self):
+    @observe("cancel")
+    def _cancel_future(self, event):
         self.future.cancel()
 
-    @on_trait_change("future")
-    def _reset_results(self):
+    @observe("future")
+    def _reset_results(self, event):
         self.results = []
 
-    @on_trait_change("future:result_event")
-    def _record_result(self, result):
+    @observe("future:result_event")
+    def _record_result(self, event):
+        result = event.new
         self.results.append(result)
         self._update_plot_data()
 
@@ -196,5 +195,9 @@ class PiIterator(Handler):
 
 
 if __name__ == "__main__":
-    view = PiIterator()
-    view.configure_traits()
+    traits_executor = TraitsExecutor()
+    try:
+        view = PiIterator(traits_executor=traits_executor)
+        view.configure_traits()
+    finally:
+        traits_executor.shutdown()
