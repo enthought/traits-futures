@@ -32,25 +32,6 @@ from traits_futures.i_task_specification import ITaskSpecification
 class IStepsReporter(ABC):
     """Interface for step-reporting object passed to the background job."""
 
-    def start(self, message=None, steps=None):
-        """Start reporting progress.
-
-        Parameters
-        ----------
-        message : str, optional
-            A description for the job at the start.
-        steps : int, optional
-            The number of steps this job will perform. By default,
-            this job has no known number of steps. Any UI
-            representation will just show that work is being done
-            without making any claims about quantitative progress.
-
-        Raises
-        ------
-        TaskCancelled
-            If the user has called ``cancel()`` before this.
-        """
-
     def step(self, message=None, step=None, steps=None):
         """Emit a step event.
 
@@ -93,6 +74,13 @@ class StepsReporter(HasStrictTraits):
     background task to report progress.
 
     """
+
+    def start(self, *, steps):
+        """
+        Set the number of steps.
+        """
+        self._steps = steps
+        self._send(STEP, (self._step, self._steps, self._message))
 
     def step(self, message, *, step_size=1):
         """

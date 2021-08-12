@@ -11,7 +11,12 @@
 
 from traits.api import HasStrictTraits, Instance, List, observe
 
-from traits_futures.api import IStepsReporter, StepsFuture, submit_steps
+from traits_futures.api import (
+    COMPLETED,
+    IStepsReporter,
+    StepsFuture,
+    submit_steps,
+)
 
 
 def check_steps_reporter_interface(progress):
@@ -105,6 +110,31 @@ class BackgroundStepsTests:
         ]
         self.check_messages(listener.messages, expected_messages)
 
+    def test_set_total(self):
+        def send_messages(progress):
+            progress.start(steps=2)
+            progress.step("Uploading file 1")
+            progress.step("Uploading file 2")
+            progress.complete()
+
+        future = submit_steps(self.executor, send_messages)
+        listener = StepsListener(future=future)
+        self.wait_for_result(future)
+
+        expected_messages = [
+            # Initial values
+            dict(message=None, steps=None, step=0),
+            # Updates on setting 'steps' to 2.
+            dict(steps=2),
+            # Updates on start of first step
+            dict(message="Uploading file 1"),
+            # Updates on start of second step
+            dict(message="Uploading file 2", step=1),
+            # Updates on completion.
+            dict(message="Complete", step=2),
+        ]
+        self.check_messages(listener.messages, expected_messages)
+
     def check_messages(self, actual_messages, expected_messages):
 
         actual_messages = actual_messages.copy()
@@ -134,4 +164,7 @@ class BackgroundStepsTests:
 
     def wait_for_result(self, future):
         self.run_until(future, "done", lambda future: future.done)
-        return future.result
+        if future.state == COMPLETED:
+            return future.result
+        else:
+            self.fail(f"Future did not return a result: {future.exception}")
