@@ -42,6 +42,8 @@ user with visual feedback, and keep a GUI responsive, while a blocking task
 runs.
 
 .. literalinclude:: examples/simple_blocking_call.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 
 Prime counting
