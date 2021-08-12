@@ -19,7 +19,6 @@ from traits.api import (
     Instance,
     Int,
     observe,
-    on_trait_change,
     Property,
     Str,
 )
@@ -33,8 +32,19 @@ from traits_futures.api import EXECUTING, StepsFuture
 
 # XXX Rename "progress_future" trait to just "future".
 
-# XXX Convert everything to use observe instead of on_trait_change.
-
+# XXX Diagnose and fix errors seen when launching a non-modal dialog and then
+#     clicking its close button:
+"""
+Exception occurred in traits notification handler for event object: TraitChangeEvent(object=<background_progress_dialog.ProgressFutureDialog object at 0x10d8cd040>, name='message', old=<undefined>, new='executing: processing item 10 of 10')
+Traceback (most recent call last):
+  File "/Users/mdickinson/.venvs/traits-futures/lib/python3.9/site-packages/traits/observation/_trait_event_notifier.py", line 122, in __call__
+    self.dispatcher(handler, event)
+  File "/Users/mdickinson/.venvs/traits-futures/lib/python3.9/site-packages/traits/observation/observe.py", line 26, in dispatch_same
+    handler(event)
+  File "/Users/mdickinson/Enthought/Projects/traits-futures/docs/source/guide/examples/background_progress_dialog.py", line 137, in _update_message_in_message_control
+    self._message_control.setText(event.new)
+AttributeError: 'NoneType' object has no attribute 'setText'
+"""
 
 class ProgressFutureDialog(Dialog):
     """Show a cancellable progress dialog listening to a progress manager."""
@@ -123,14 +133,15 @@ class ProgressFutureDialog(Dialog):
             self._progress_bar.setFormat("%v")
         return self._progress_bar
 
-    @on_trait_change("closing")
-    def _destroy_traits_on_dialog_closing(self):
+    @observe("closing")
+    def _destroy_traits_on_dialog_closing(self, event):
         self._message_control = None
         self._progress_bar = None
         self._cancel_button_control = None
 
-    @on_trait_change("maximum")
-    def _update_max_on_progress_bar(self, maximum):
+    @observe("maximum")
+    def _update_max_on_progress_bar(self, event):
+        maximum = event.new
         if self._progress_bar is not None:
             self._progress_bar.setRange(0, maximum)
 
@@ -148,15 +159,17 @@ class ProgressFutureDialog(Dialog):
         else:
             return f"{future.state}"
 
-    @on_trait_change("progress_future:steps")
-    def _update_maximum(self, steps):
+    @observe("progress_future:steps")
+    def _update_maximum(self, event):
+        steps = event.new
         self.maximum = max(steps, 0)
 
-    @on_trait_change("progress_future:step")
-    def _update_value(self, step):
+    @observe("progress_future:step")
+    def _update_value(self, event):
+        step = event.new
         if self._progress_bar is not None:
             self._progress_bar.setValue(step)
 
-    @on_trait_change("progress_future:done")
+    @observe("progress_future:done")
     def _on_end(self, event):
         self.close()
