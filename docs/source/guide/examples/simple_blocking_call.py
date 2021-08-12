@@ -102,6 +102,13 @@ class SlowCallDialog(Dialog):
 
 
 class FibonacciCalculator(HasStrictTraits):
+    """
+    GUI with a 'calculate' button that runs a blocking calculation.
+
+    While the blocking operation is running, a minimal progress
+    dialog is displayed to the user.
+    """
+
     #: The executor to submit tasks to.
     traits_executor = Instance(TraitsExecutor)
 
