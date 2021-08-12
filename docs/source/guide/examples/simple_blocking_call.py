@@ -30,10 +30,9 @@ in use, Qt will often animate the progress bar.
 
 from pyface.api import Dialog
 from pyface.qt import QtCore, QtGui
-
 from traits.api import Button, HasStrictTraits, Instance, observe, Range
+from traits_futures.api import CallFuture, submit_call, TraitsExecutor
 from traitsui.api import Item, UItem, View
-from traits_futures.api import TraitsExecutor, CallFuture, submit_call
 
 
 def fibonacci(n):
