@@ -29,6 +29,9 @@ calculation may fail randomly, with an increased chance of failure for larger
 inputs.
 
 .. literalinclude:: examples/slow_squares.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
+
 
 Blocking call with dialog
 -------------------------
@@ -57,6 +60,9 @@ This :download:`example script <examples/prime_counting.py>` demonstrates the
 GUI as the background computation progresses.
 
 .. literalinclude:: examples/prime_counting.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
+
 
 Approximating Pi
 ----------------
@@ -70,3 +76,5 @@ Successive approximations to π are computed and plotted, with the plot
 updated live with each new value reported by the background task.
 
 .. literalinclude:: examples/pi_iterations.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-

@@ -58,6 +58,8 @@ Here's an :download:`example script <examples/headless.py>` that uses the
 of an asyncio event loop.
 
 .. literalinclude:: examples/headless.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
 
 ..
    substitutions
