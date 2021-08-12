@@ -25,6 +25,7 @@ from background_progress_dialog import ProgressFutureDialog
 
 
 def count(target, *, sleep=1.0, progress):
+    progress.start(steps=target)
     for i in range(target):
         progress.step(f"processing item {i+1} of {target}")
         time.sleep(sleep)
