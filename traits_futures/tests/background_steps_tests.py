@@ -30,6 +30,13 @@ class StepsListener(HasStrictTraits):
 
     future = Instance(StepsFuture)
 
+    @observe("future")
+    def _capture_initial_state(self, event):
+        future = event.new
+        self.messages.append(("message", future.message))
+        self.messages.append(("step", future.step))
+        self.messages.append(("steps", future.steps))
+
     @observe("future:message,future:step,future:steps")
     def _update_messages(self, event):
         self.messages.append((event.name, event.new))
@@ -80,19 +87,39 @@ class BackgroundStepsTests:
         def send_messages(progress):
             progress.step("Uploading file 1")
             progress.step("Uploading file 2")
+            progress.complete()
 
         future = submit_steps(self.executor, send_messages)
-        # listener = StepsListener(future=future)
+        listener = StepsListener(future=future)
         self.wait_for_result(future)
 
-        # expected_messages = [
-        #     dict(message="Uploading file 1", step=0),
-        #     dict(message="Uploading file 2", step=1),
-        # ]
+        expected_messages = [
+            # Initial values
+            dict(message=None, steps=None, step=0),
+            # Updates on start of first step
+            dict(message="Uploading file 1"),
+            # Updates on start of second step
+            dict(message="Uploading file 2", step=1),
+            # Updates on completion.
+            dict(message="Complete", step=2),
+        ]
+        self.check_messages(listener.messages, expected_messages)
 
-        # actual_messages = listener.messages
+    def check_messages(self, actual_messages, expected_messages):
 
-        # self.assertEqual(expected_messages, actual_messages)
+        actual_messages = actual_messages.copy()
+
+        # Expected messages should match actual messages, in chunks
+        for message_set in expected_messages:
+            message_count = len(message_set)
+            self.assertCountEqual(
+                actual_messages[:message_count],
+                list(message_set.items()),
+            )
+            actual_messages = actual_messages[message_count:]
+
+        # Check we got everything.
+        self.assertFalse(actual_messages)
 
     # Helper functions
 

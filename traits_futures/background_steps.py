@@ -94,40 +94,18 @@ class StepsReporter(HasStrictTraits):
 
     """
 
-    def start(self, message=None, steps=None):
-        """Start reporting progress.
-
-        Parameters
-        ----------
-        message : str, optional
-            A description for the task at the start.
-        steps : int, optional
-            The number of steps this task will perform. By default,
-            this task has no known number of steps. Any UI
-            representation will just show that work is being done
-            without making any claims about quantitative progress.
-
-        Raises
-        ------
-        TaskCancelled
-            If the user has called ``cancel()`` before this.
+    def step(self, message, *, step_size=1):
         """
-        self._check_cancel()
-        self._send(STEP, (0, steps, message))
-
-    def step(self, message=None, step=None, steps=None):
-        """Emit a step event.
+        Start a new step.
 
         Parameters
         ----------
-        message : str, optional
+        message : str
             A description of what is currently being done, replacing the
             current message.
-        step : int, optional
-            The step number. If omitted, an internal count will be
-            incremented by one.
-        steps : int, optional
-            The new total number of steps, if changed.
+        step_size : int
+            The size of this step in whatever units have been chosen.
+            Defaults to 1.
 
         Raises
         ------
@@ -135,12 +113,41 @@ class StepsReporter(HasStrictTraits):
             If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
-        if steps is None:
-            steps = -1
 
-        self._send(STEP, (step, steps, message))
+        # Close the previous step, if any.
+        if self._step_size is not None:
+            self._step += self._step_size
+            self._step_size = None
+
+        self._message = message
+        self._step_size = step_size
+        self._send(STEP, (self._step, self._steps, self._message))
+
+    def complete(self, message="Complete"):
+        self._check_cancel()
+
+        # Close the previous step, if any.
+        if self._step_size is not None:
+            self._step += self._step_size
+            self._step_size = None
+
+        self._message = message
+        self._send(STEP, (self._step, self._steps, self._message))
 
     # Private traits ##########################################################
+
+    #: Total number of steps, if known. None if not known.
+    _steps = Union(None, Int())
+
+    #: Number of steps completed.
+    _step = Int(0)
+
+    #: Size of the step currently in progress, or None if there's no current
+    #: step (because we haven't started, or have finished).
+    _step_size = Union(None, Int())
+
+    #: Description of the step currently in progress, or None.
+    _message = Union(None, Str())
 
     #: Hook to send messages to the foreground. In normal use, this is provided
     #: by the Traits Futures machinery.
