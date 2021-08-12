@@ -56,6 +56,7 @@ GUI as the background computation progresses.
 
 .. literalinclude:: examples/prime_counting.py
 
+
 Approximating Pi
 ----------------
 
