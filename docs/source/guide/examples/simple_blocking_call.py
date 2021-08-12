@@ -24,7 +24,7 @@ call is in progress, we want to:
 The solution shown in this example is to push the computation to a background
 thread using ``submit_call`` and pop up a simple non-cancellable non-closable
 progress dialog while the computation is running. Since all we have is a simple
-call, no actuall progress is shown, but depending on the OS and Qt stylesheet
+call, no actual progress is shown, but depending on the OS and Qt stylesheet
 in use, Qt will often animate the progress bar.
 """
 
