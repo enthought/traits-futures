@@ -233,19 +233,6 @@ class StepsFuture(BaseFuture):
 class BackgroundSteps(HasStrictTraits):
     """
     Object representing the background call to be executed.
-
-    The *callable* function will be called with an additional
-    argument, passed via the name "progress". The object passed
-    can then be used to submit progress information to the foreground.
-
-    Parameters
-    ----------
-    callable : callable
-        The callable to be executed in the background.
-    args : tuple
-        Positional arguments to be passed to *callable*.
-    kwargs : mapping
-        Keyword arguments to be passed to *callable*.
     """
 
     #: The callable for the task.
@@ -278,7 +265,7 @@ class BackgroundSteps(HasStrictTraits):
             Future object that can be used to monitor the status of the
             background task.
         """
-        return StepsFuture()
+        return StepsFuture(_cancel=cancel)
 
     def task(self):
         """
@@ -286,7 +273,7 @@ class BackgroundSteps(HasStrictTraits):
 
         Returns
         -------
-        collections.abc.Callable
+        task : StepsTask
             Callable accepting arguments ``send`` and ``cancelled``. The
             callable can use ``send`` to send messages and ``cancelled`` to
             check whether cancellation has been requested.
@@ -321,8 +308,11 @@ def submit_steps(executor, callable, *args, **kwargs):
     Returns
     -------
     future : StepsFuture
-        Object representing the state of the background call.
+        Object representing the state of the background task.
     """
+    if "progress" in kwargs:
+        raise TypeError("progress may not be passed as a named argument")
+
     return executor.submit(
         BackgroundSteps(
             callable=callable,
