@@ -8,18 +8,32 @@
 #
 # Thanks for using Enthought open source!
 
-""" Qt implementation of a Pyface Dialog that listens to
-a ProgressFuture.
+""" Qt implementation of a Pyface Dialog that listens to a StepsFuture.
 """
 
 from pyface.api import Dialog
 from pyface.qt import QtCore, QtGui
-from traits.api import Any, Bool, Instance, Int, on_trait_change
+from traits.api import (
+    Any,
+    Bool,
+    Instance,
+    Int,
+    observe,
+    on_trait_change,
+    Property,
+    Str,
+)
 from traits_futures.api import EXECUTING, StepsFuture
 
 # XXX Fix behaviour on dialog close button. Should match pressing the
 #  "cancelling" button. (What do users want?)
-# Similarly for doing a Ctrl-C
+# Similarly for doing a Ctrl-C.
+
+# XXX Rename "ProgressFutureDialog" to "StepsFutureDialog"
+
+# XXX Rename "progress_future" trait to just "future".
+
+# XXX Convert everything to use observe instead of on_trait_change.
 
 
 class ProgressFutureDialog(Dialog):
@@ -42,6 +56,9 @@ class ProgressFutureDialog(Dialog):
 
     #: The traited ``Future`` representing the state of the background call.
     progress_future = Instance(StepsFuture)
+
+    #: The message to display
+    message = Property(Str, observe="progress_future:[state,message]")
 
     def cancel(self):
         """Cancel the job.
@@ -90,9 +107,7 @@ class ProgressFutureDialog(Dialog):
         return buttons
 
     def _create_message(self, dialog, layout):
-        self._message_control = QtGui.QLabel(
-            self.progress_future.message, dialog
-        )
+        self._message_control = QtGui.QLabel(self.message, dialog)
         self._message_control.setAlignment(
             QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft
         )
@@ -119,13 +134,19 @@ class ProgressFutureDialog(Dialog):
         if self._progress_bar is not None:
             self._progress_bar.setRange(0, maximum)
 
-    @on_trait_change("progress_future:[message,state]")
-    def _update_message(self, future, name, new):
-        if future.state == EXECUTING and future.message != "":
-            message = f"{future.state}: {future.message}"
+    @observe("message")
+    def _update_message_in_message_control(self, event):
+        self._message_control.setText(event.new)
+
+    def _get_message(self):
+        """
+        Property getter for the 'message' trait.
+        """
+        future = self.progress_future
+        if future.state == EXECUTING and future.message is not None:
+            return f"{future.state}: {future.message}"
         else:
-            message = f"{future.state}"
-        self._message_control.setText(message)
+            return f"{future.state}"
 
     @on_trait_change("progress_future:steps")
     def _update_maximum(self, steps):

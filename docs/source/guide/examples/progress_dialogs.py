@@ -12,6 +12,8 @@
 Demo script for modal progress dialog.
 """
 
+# XXX Rename to steps_dialogs.
+
 import concurrent.futures
 import time
 
@@ -23,9 +25,8 @@ from background_progress_dialog import ProgressFutureDialog
 
 
 def count(target, *, sleep=1.0, progress):
-    progress.start("counting", steps=target)
     for i in range(target):
-        progress.step(f"step {i} of {target}", step=i)
+        progress.step(f"processing item {i+1} of {target}")
         time.sleep(sleep)
 
 
