@@ -23,7 +23,17 @@ from background_progress_dialog import ProgressFutureDialog
 
 
 def count(target, *, sleep=1.0, reporter):
-    reporter.start(steps=target)
+    """
+    Parameters
+    ----------
+    target : int
+        Value to count to.
+    sleep : float
+        Time to sleep between each count.
+    reporter : IStepsReporter
+        Object used to report progress.
+    """
+    reporter.start("Starting processing", steps=target)
     for i in range(target):
         reporter.step(f"processing item {i+1} of {target}")
         time.sleep(sleep)
