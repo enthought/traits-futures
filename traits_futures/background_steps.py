@@ -18,15 +18,14 @@ which the task can be interrupted.
 
 """
 
-# XXX Consider renaming the 'progress' argument to 'reporter'.
-# XXX manually test the dialog! Does it work with the default future state?
-
 from abc import ABC
 
 from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple, Union
 
 from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
+
+# XXX Fix IStepsReporter to match the actual interface of the reporter.
 
 
 class IStepsReporter(ABC):
@@ -58,7 +57,7 @@ class IStepsReporter(ABC):
 #: Message sent on a start or step operation. Argument is a tuple
 #: (step, steps, message), with:
 #:
-#: * step: int or None - number of completed steps so far
+#: * step: int - number of completed steps so far
 #: * steps: int or None - total number of steps, if known
 #: * message: str or None - message to display for this step
 STEP = "step"
@@ -75,11 +74,19 @@ class StepsReporter(HasStrictTraits):
 
     """
 
-    def start(self, *, steps):
+    def start(self, message=None, *, steps=None):
         """
         Set the number of steps.
+
+        Parameters
+        ----------
+        message : str, optional
+            Message to set at start time.
+        steps : int, optional
+            Number of steps, if known.
         """
         self._steps = steps
+        self._message = message
         self._send(STEP, (self._step, self._steps, self._message))
 
     def step(self, message, *, step_size=1):
@@ -111,7 +118,7 @@ class StepsReporter(HasStrictTraits):
         self._step_size = step_size
         self._send(STEP, (self._step, self._steps, self._message))
 
-    def complete(self, message="Complete"):
+    def stop(self, message="Complete"):
         self._check_cancel()
 
         # Close the previous step, if any.
@@ -147,6 +154,14 @@ class StepsReporter(HasStrictTraits):
 
     # Private methods #########################################################
 
+    def _close(self):
+        if self._step_size is not None:
+            self._step += self._step_size
+            self._step_size = None
+            self._message = None
+
+        self._send(STEP, (self._step, self._steps, self._message))
+
     def _check_cancel(self):
         """Check if the task has been cancelled.
 
@@ -173,13 +188,14 @@ class StepsTask(BaseTask):
         self.kwargs = kwargs
 
     def run(self):
-        progress = StepsReporter(_send=self.send, _cancelled=self.cancelled)
+        reporter = StepsReporter(_send=self.send, _cancelled=self.cancelled)
         try:
             result = self.callable(
                 *self.args,
                 **self.kwargs,
-                progress=progress,
+                reporter=reporter,
             )
+            reporter._close()
         except TaskCancelled:
             return None
         else:
@@ -207,14 +223,9 @@ class StepsFuture(BaseFuture):
         Process a STEP message from the background task.
         """
         step, steps, message = step_event
-        if message is not None:
-            self.message = message
-        if steps is not None:
-            self.steps = steps
-        if step is None:
-            self.step += 1
-        else:
-            self.step = step
+        self.message = message
+        self.steps = steps
+        self.step = step
 
 
 @ITaskSpecification.register
@@ -229,8 +240,8 @@ class BackgroundSteps(HasStrictTraits):
     #: Positional arguments to be passed to the callable.
     args = Tuple()
 
-    #: Named arguments to be passed to the callable, excluding the "progress"
-    #: named argument. The "progress" argument will be supplied through the
+    #: Named arguments to be passed to the callable, excluding the "reporter"
+    #: named argument. The "reporter" argument will be supplied through the
     #: execution machinery.
     kwargs = Dict(Str())
 
@@ -275,7 +286,7 @@ class BackgroundSteps(HasStrictTraits):
 
 def submit_steps(executor, callable, *args, **kwargs):
     """
-    Convenience function to submit a background progress task to an executor.
+    Convenience function to submit a BackgroundSteps task to an executor.
 
     Parameters
     ----------
@@ -298,8 +309,11 @@ def submit_steps(executor, callable, *args, **kwargs):
     future : StepsFuture
         Object representing the state of the background task.
     """
-    if "progress" in kwargs:
-        raise TypeError("progress may not be passed as a named argument")
+    if "reporter" in kwargs:
+        raise TypeError(
+            "The 'reporter' parameter will be passed automatically; it "
+            "should not be included in the named parameters."
+        )
 
     return executor.submit(
         BackgroundSteps(

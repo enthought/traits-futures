@@ -12,8 +12,6 @@
 Demo script for modal progress dialog.
 """
 
-# XXX Rename to steps_dialogs.
-
 import concurrent.futures
 import time
 
@@ -25,7 +23,7 @@ from background_progress_dialog import ProgressFutureDialog
 
 
 def count(target, *, sleep=1.0, reporter):
-    reporter.start("Starting", steps=target)
+    reporter.start(steps=target)
     for i in range(target):
         reporter.step(f"processing item {i+1} of {target}")
         time.sleep(sleep)
@@ -49,20 +47,22 @@ class MyView(HasStrictTraits):
     cf_executor = Any()
 
     def _calculate_fired(self):
-        future = submit_steps(self.executor, count, target=self.target)
+        target = self.target
+        future = submit_steps(self.executor, count, target=target)
         dialog = ProgressFutureDialog(
             progress_future=future,
             style="modal",  # this is the default
-            title=f"Counting to {self.target}",
+            title=f"Counting to {target}",
         )
         dialog.open()
 
     def _nonmodal_fired(self):
-        future = submit_steps(self.executor, count, self.target)
+        target = self.target
+        future = submit_steps(self.executor, count, target)
         dialog = ProgressFutureDialog(
             progress_future=future,
             style="nonmodal",  # this is the default
-            title=f"Counting to {self.target}",
+            title=f"Counting to {target}",
         )
         dialog.open()
         # Keep a reference to open dialogs, else they'll

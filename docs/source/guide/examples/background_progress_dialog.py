@@ -46,6 +46,7 @@ Traceback (most recent call last):
 AttributeError: 'NoneType' object has no attribute 'setText'
 """
 
+
 class ProgressFutureDialog(Dialog):
     """Show a cancellable progress dialog listening to a progress manager."""
 

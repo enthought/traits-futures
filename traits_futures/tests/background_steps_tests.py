@@ -19,13 +19,6 @@ from traits_futures.api import (
 )
 
 
-def check_steps_reporter_interface(progress):
-    """
-    Check that 'progress' has been declared to support the right interface.
-    """
-    return isinstance(progress, IStepsReporter)
-
-
 class StepsListener(HasStrictTraits):
     """
     Listener recording all state changes for a StepsFuture.
@@ -47,12 +40,6 @@ class StepsListener(HasStrictTraits):
         self.messages.append((event.name, event.new))
 
 
-# Consider (a) storing the state on the StepsReporter, so that it can be
-# accessed directly by the writer of the function, and then (b) there can be a
-# single simple message type which sends the state (message, step, steps) to
-# the foreground. We can add helper functions to do things like increment the
-# step and set a new message all at the same time.
-
 # State is:
 # - step: number of completed steps
 # - steps: total number of steps
@@ -70,13 +57,23 @@ class StepsListener(HasStrictTraits):
 
 
 class BackgroundStepsTests:
-    def test_progress_implements_i_steps_reporter(self):
+    def test_reporter_implements_i_steps_reporter(self):
+        def check_steps_reporter_interface(reporter):
+            return isinstance(reporter, IStepsReporter)
+
         future = submit_steps(self.executor, check_steps_reporter_interface)
         result = self.wait_for_result(future)
         self.assertTrue(result)
 
+    def test_reporter_passed_by_name(self):
+        def reporter_by_name(*, reporter):
+            return 46
+
+        future = submit_steps(self.executor, reporter_by_name)
+        self.assertEqual(self.wait_for_result(future), 46)
+
     def test_initial_values(self):
-        def do_nothing(progress):
+        def do_nothing(reporter):
             return 23
 
         future = submit_steps(self.executor, do_nothing)
@@ -89,10 +86,10 @@ class BackgroundStepsTests:
         self.assertEqual(result, 23)
 
     def test_simple_messages(self):
-        def send_messages(progress):
-            progress.step("Uploading file 1")
-            progress.step("Uploading file 2")
-            progress.complete()
+        def send_messages(reporter):
+            reporter.step("Uploading file 1")
+            reporter.step("Uploading file 2")
+            reporter.stop("Finished")
 
         future = submit_steps(self.executor, send_messages)
         listener = StepsListener(future=future)
@@ -106,16 +103,16 @@ class BackgroundStepsTests:
             # Updates on start of second step
             dict(message="Uploading file 2", step=1),
             # Updates on completion.
-            dict(message="Complete", step=2),
+            dict(message="Finished", step=2),
         ]
         self.check_messages(listener.messages, expected_messages)
 
     def test_set_total(self):
-        def send_messages(progress):
-            progress.start(steps=2)
-            progress.step("Uploading file 1")
-            progress.step("Uploading file 2")
-            progress.complete()
+        def send_messages(reporter):
+            reporter.start(steps=2)
+            reporter.step("Uploading file 1")
+            reporter.step("Uploading file 2")
+            reporter.stop("All done")
 
         future = submit_steps(self.executor, send_messages)
         listener = StepsListener(future=future)
@@ -131,8 +128,35 @@ class BackgroundStepsTests:
             # Updates on start of second step
             dict(message="Uploading file 2", step=1),
             # Updates on completion.
-            dict(message="Complete", step=2),
+            dict(message="All done", step=2),
         ]
+        self.check_messages(listener.messages, expected_messages)
+
+    def test_no_stop(self):
+        # If the user doesn't call stop, we should still get a final update
+        # that sets the 'step'.
+        def send_messages(reporter):
+            reporter.start(steps=2)
+            reporter.step("Uploading file 1")
+            reporter.step("Uploading file 2")
+
+        future = submit_steps(self.executor, send_messages)
+        listener = StepsListener(future=future)
+        self.wait_for_result(future)
+
+        expected_messages = [
+            # Initial values
+            dict(message=None, steps=None, step=0),
+            # Updates on setting 'steps' to 2.
+            dict(steps=2),
+            # Updates on start of first step
+            dict(message="Uploading file 1"),
+            # Updates on start of second step
+            dict(message="Uploading file 2", step=1),
+            # Updates on completion.
+            dict(message=None, step=2),
+        ]
+
         self.check_messages(listener.messages, expected_messages)
 
     def check_messages(self, actual_messages, expected_messages):
