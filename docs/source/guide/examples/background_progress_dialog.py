@@ -25,8 +25,8 @@ from traits.api import (
 from traits_futures.api import EXECUTING, StepsFuture
 
 # XXX Fix behaviour on dialog close button. Should match pressing the
-#  "cancelling" button. (What do users want?)
-# Similarly for doing a Ctrl-C.
+#  "cancelling" button, and also pressing ESC. (What do users want?)
+# XXX What should behaviour be on a Ctrl-C?
 
 # XXX Rename "ProgressFutureDialog" to "StepsFutureDialog"
 
@@ -34,17 +34,22 @@ from traits_futures.api import EXECUTING, StepsFuture
 
 # XXX Diagnose and fix errors seen when launching a non-modal dialog and then
 #     clicking its close button:
-"""
-Exception occurred in traits notification handler for event object: TraitChangeEvent(object=<background_progress_dialog.ProgressFutureDialog object at 0x10d8cd040>, name='message', old=<undefined>, new='executing: processing item 10 of 10')
-Traceback (most recent call last):
-  File "/Users/mdickinson/.venvs/traits-futures/lib/python3.9/site-packages/traits/observation/_trait_event_notifier.py", line 122, in __call__
-    self.dispatcher(handler, event)
-  File "/Users/mdickinson/.venvs/traits-futures/lib/python3.9/site-packages/traits/observation/observe.py", line 26, in dispatch_same
-    handler(event)
-  File "/Users/mdickinson/Enthought/Projects/traits-futures/docs/source/guide/examples/background_progress_dialog.py", line 137, in _update_message_in_message_control
-    self._message_control.setText(event.new)
-AttributeError: 'NoneType' object has no attribute 'setText'
-"""
+# Exception occurred in traits notification handler for event object:
+#    TraitChangeEvent(object=<background_progress_dialog.ProgressFutureDialog
+#    object at 0x10d8cd040>, name='message', old=<undefined>, new='executing:
+#    processing item 10 of 10')
+# Traceback (most recent call last):
+#   File "/Users/mdickinson/.venvs/traits-futures/lib/python3.9/site-packages/
+#        traits/observation/_trait_event_notifier.py", line 122, in __call__
+#     self.dispatcher(handler, event)
+#   File "/Users/mdickinson/.venvs/traits-futures/lib/python3.9/site-packages/
+#        traits/observation/observe.py", line 26, in dispatch_same
+#     handler(event)
+#   File "/Users/mdickinson/Enthought/Projects/traits-futures/docs/source/
+#         guide/examples/background_progress_dialog.py", line 137, in
+#         _update_message_in_message_control
+#     self._message_control.setText(event.new)
+# AttributeError: 'NoneType' object has no attribute 'setText'
 
 
 class ProgressFutureDialog(Dialog):

@@ -25,8 +25,14 @@ from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple, Union
 from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
 
-# XXX Fix IStepsReporter to match the actual interface of the reporter.
 # XXX Add NullReporter, for convenience in testing.
+# XXX Add "check" method to just check for cancellation.
+# XXX In the StepsFuture, update all traits before sending trait-change
+#     notifications. (Is this possible?)
+# XXX Consider renaming "_step", "_total", etc.
+# XXX Consider namedtuple encapsulating progress state.
+# XXX Rethink setting of message - should only happen when a message is
+#     provided?
 
 
 class IStepsReporter(abc.ABC):
@@ -51,7 +57,7 @@ class IStepsReporter(abc.ABC):
         """
 
     @abc.abstractmethod
-    def step(self, message=None, *, step_size=1):
+    def step(self, message=None, *, size=1):
         """
         Start a processing step.
 
@@ -59,9 +65,9 @@ class IStepsReporter(abc.ABC):
         ----------
         message : str, optional
             A description of this step.
-        step_size : int, optional
-            The size of this step (in whatever units are being used).
-            Defaults to 1.
+        size : int, optional
+            The size of this step (in whatever units make sense for the
+            application at hand). Defaults to 1.
 
         Raises
         ------
@@ -70,8 +76,18 @@ class IStepsReporter(abc.ABC):
         """
 
     @abc.abstractmethod
-    def stop(self, message=None, *, ):
+    def stop(self, message=None):
         """
+        Report that processing is complete.
+
+        Also updates the total number of steps completed.
+
+        Parameters
+        ----------
+        message : str, optional
+            Message to display on completion. For a progress dialog that
+            disappears on completion, this message will never be seen by
+            the user, but for other views the message may be visible.
         """
 
 
@@ -87,7 +103,7 @@ STEP = "step"
 
 
 @IStepsReporter.register
-class StepsReporter(HasStrictTraits):
+class StepsReporter:
     """
     Object used by the background task to report progress information.
 
@@ -96,6 +112,26 @@ class StepsReporter(HasStrictTraits):
     background task to report progress.
 
     """
+
+    def __init__(self, send, cancelled):
+        # Communications support.
+        self._send = send
+        self._cancelled = cancelled
+
+        # Set up internal state.
+
+        #: Total number of steps completed.
+        self._step = 0
+
+        #: Total number of steps, if known. None if not known.
+        self._steps = None
+
+        #: Description for the currently-in-progress step, or None.
+        self._message = None
+
+        #: Size of the currently executing step. None if no step
+        #: is currently executing.
+        self._size = None
 
     def start(self, message=None, *, steps=None):
         """
@@ -117,7 +153,7 @@ class StepsReporter(HasStrictTraits):
         self._message = message
         self._send(STEP, (self._step, self._steps, self._message))
 
-    def step(self, message, *, step_size=1):
+    def step(self, message=None, *, size=1):
         """
         Start a processing step.
 
@@ -125,7 +161,7 @@ class StepsReporter(HasStrictTraits):
         ----------
         message : str, optional
             A description of this step.
-        step_size : int, optional
+        size : int, optional
             The size of this step (in whatever units are being used).
             Defaults to 1.
 
@@ -137,54 +173,43 @@ class StepsReporter(HasStrictTraits):
         self._check_cancel()
 
         # Close the previous step, if any.
-        if self._step_size is not None:
-            self._step += self._step_size
-            self._step_size = None
+        if self._size is not None:
+            self._step += self._size
+            self._size = None
 
         self._message = message
-        self._step_size = step_size
+        self._size = size
         self._send(STEP, (self._step, self._steps, self._message))
 
-    def stop(self, message="Complete"):
+    def stop(self, message=None):
+        """
+        Report that processing is complete.
+
+        Also updates the total number of steps completed.
+
+        Parameters
+        ----------
+        message : str, optional
+            Message to display on completion. For a progress dialog that
+            disappears on completion, this message will never be seen by
+            the user, but for other views the message may be visible.
+        """
         self._check_cancel()
 
         # Close the previous step, if any.
-        if self._step_size is not None:
-            self._step += self._step_size
-            self._step_size = None
+        if self._size is not None:
+            self._step += self._size
+            self._size = None
 
         self._message = message
         self._send(STEP, (self._step, self._steps, self._message))
-
-    # Private traits ##########################################################
-
-    #: Total number of steps, if known. None if not known.
-    _steps = Union(None, Int())
-
-    #: Number of steps completed.
-    _step = Int(0)
-
-    #: Size of the step currently in progress, or None if there's no current
-    #: step (because we haven't started, or have finished).
-    _step_size = Union(None, Int())
-
-    #: Description of the step currently in progress, or None.
-    _message = Union(None, Str())
-
-    #: Hook to send messages to the foreground. In normal use, this is provided
-    #: by the Traits Futures machinery.
-    _send = Callable()
-
-    #: Callable to check whether the task has been cancelled, provided
-    #: by the Traits Futures machinery.
-    _cancelled = Callable()
 
     # Private methods #########################################################
 
     def _close(self):
-        if self._step_size is not None:
-            self._step += self._step_size
-            self._step_size = None
+        if self._size is not None:
+            self._step += self._size
+            self._size = None
             self._message = None
 
         self._send(STEP, (self._step, self._steps, self._message))
@@ -215,7 +240,7 @@ class StepsTask(BaseTask):
         self.kwargs = kwargs
 
     def run(self):
-        reporter = StepsReporter(_send=self.send, _cancelled=self.cancelled)
+        reporter = StepsReporter(send=self.send, cancelled=self.cancelled)
         try:
             result = self.callable(
                 *self.args,
