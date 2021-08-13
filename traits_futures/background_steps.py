@@ -18,7 +18,7 @@ which the task can be interrupted.
 
 """
 
-from abc import ABC
+import abc
 
 from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple, Union
 
@@ -26,29 +26,52 @@ from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
 
 # XXX Fix IStepsReporter to match the actual interface of the reporter.
+# XXX Add NullReporter, for convenience in testing.
 
 
-class IStepsReporter(ABC):
+class IStepsReporter(abc.ABC):
     """Interface for step-reporting object passed to the background job."""
 
-    def step(self, message=None, step=None, steps=None):
-        """Emit a step event.
+    @abc.abstractmethod
+    def start(self, message=None, *, steps=None):
+        """
+        Set an initial message and set the total number of steps.
 
         Parameters
         ----------
         message : str, optional
-            A description of what is currently being done, replacing the
-            current message.
-        step : int, optional
-            The step number. If omitted, an internal count will be
-            incremented by one.
+            Message to set at start time.
         steps : int, optional
-            The new total number of steps, if changed.
+            Number of steps, if known.
 
         Raises
         ------
         TaskCancelled
             If the user has called ``cancel()`` before this.
+        """
+
+    @abc.abstractmethod
+    def step(self, message=None, *, step_size=1):
+        """
+        Start a processing step.
+
+        Parameters
+        ----------
+        message : str, optional
+            A description of this step.
+        step_size : int, optional
+            The size of this step (in whatever units are being used).
+            Defaults to 1.
+
+        Raises
+        ------
+        TaskCancelled
+            If the user has called ``cancel()`` before this.
+        """
+
+    @abc.abstractmethod
+    def stop(self, message=None, *, ):
+        """
         """
 
 
@@ -76,7 +99,7 @@ class StepsReporter(HasStrictTraits):
 
     def start(self, message=None, *, steps=None):
         """
-        Set the number of steps.
+        Set an initial message and set the total number of steps.
 
         Parameters
         ----------
@@ -84,6 +107,11 @@ class StepsReporter(HasStrictTraits):
             Message to set at start time.
         steps : int, optional
             Number of steps, if known.
+
+        Raises
+        ------
+        TaskCancelled
+            If the user has called ``cancel()`` before this.
         """
         self._steps = steps
         self._message = message
@@ -91,15 +119,14 @@ class StepsReporter(HasStrictTraits):
 
     def step(self, message, *, step_size=1):
         """
-        Start a new step.
+        Start a processing step.
 
         Parameters
         ----------
-        message : str
-            A description of what is currently being done, replacing the
-            current message.
-        step_size : int
-            The size of this step in whatever units have been chosen.
+        message : str, optional
+            A description of this step.
+        step_size : int, optional
+            The size of this step (in whatever units are being used).
             Defaults to 1.
 
         Raises
