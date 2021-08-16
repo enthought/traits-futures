@@ -19,36 +19,49 @@ which the task can be interrupted.
 """
 
 import abc
+import collections
 
-from traits.api import Callable, Dict, HasStrictTraits, Int, Str, Tuple, Union
+from traits.api import (
+    Callable,
+    Dict,
+    HasStrictTraits,
+    Instance,
+    Int,
+    observe,
+    Property,
+    Str,
+    Tuple,
+    Union,
+)
 
 from traits_futures.base_future import BaseFuture, BaseTask, TaskCancelled
 from traits_futures.i_task_specification import ITaskSpecification
 
-# XXX Add NullReporter, for convenience in testing.
-# XXX Add "check" method to just check for cancellation.
-# XXX In the StepsFuture, update all traits before sending trait-change
-#     notifications. (Is this possible?)
-# XXX Consider renaming "_step", "_total", etc.
-# XXX Consider namedtuple encapsulating progress state.
-# XXX Rethink setting of message - should only happen when a message is
-#     provided?
+# XXX Add NullReporter, for convenience in testing progress-reporting tasks
+#     - later?
+# XXX Add "check" method to just check for cancellation - later?
+
+
+#: Tuple encapsulating the entire progress state of the task.
+StepsState = collections.namedtuple(
+    "StepsState", ["total", "complete", "pending", "message"]
+)
 
 
 class IStepsReporter(abc.ABC):
     """Interface for step-reporting object passed to the background job."""
 
     @abc.abstractmethod
-    def start(self, message=None, *, steps=None):
+    def start(self, message=None, *, total=None):
         """
-        Set an initial message and set the total number of steps.
+        Set an initial message and set the progress total.
 
         Parameters
         ----------
         message : str, optional
             Message to set at start time.
-        steps : int, optional
-            Number of steps, if known.
+        total : int, optional
+            Total progress, in whatever units makes sense for the application.
 
         Raises
         ------
@@ -80,7 +93,7 @@ class IStepsReporter(abc.ABC):
         """
         Report that processing is complete.
 
-        Also updates the total number of steps completed.
+        Also updates the total progress, if any tasks are pending.
 
         Parameters
         ----------
@@ -93,13 +106,9 @@ class IStepsReporter(abc.ABC):
 
 # Message types for messages sent from the background to the future.
 
-#: Message sent on a start or step operation. Argument is a tuple
-#: (step, steps, message), with:
-#:
-#: * step: int - number of completed steps so far
-#: * steps: int or None - total number of steps, if known
-#: * message: str or None - message to display for this step
-STEP = "step"
+#: Message sent on a start or step operation. Argument is an instance
+#: of StepsState.
+UPDATE = "update"
 
 
 @IStepsReporter.register
@@ -113,45 +122,39 @@ class StepsReporter:
 
     """
 
-    def __init__(self, send, cancelled):
-        # Communications support.
+    def __init__(self, send, cancelled, initial_steps_state):
+        #: Callable used to send messages to the linked future.
         self._send = send
+
+        #: Callable used to check for task cancellation.
         self._cancelled = cancelled
 
-        # Set up internal state.
+        #: Progress state.
+        self._steps_state = initial_steps_state
 
-        #: Total number of steps completed.
-        self._step = 0
-
-        #: Total number of steps, if known. None if not known.
-        self._steps = None
-
-        #: Description for the currently-in-progress step, or None.
-        self._message = None
-
-        #: Size of the currently executing step. None if no step
-        #: is currently executing.
-        self._size = None
-
-    def start(self, message=None, *, steps=None):
+    def start(self, message=None, *, total=None):
         """
-        Set an initial message and set the total number of steps.
+        Set an initial message and set the progress total.
 
         Parameters
         ----------
         message : str, optional
             Message to set at start time.
-        steps : int, optional
-            Number of steps, if known.
+        total : int, optional
+            Total progress, in whatever units makes sense for the application.
 
         Raises
         ------
         TaskCancelled
             If the user has called ``cancel()`` before this.
         """
-        self._steps = steps
-        self._message = message
-        self._send(STEP, (self._step, self._steps, self._message))
+        self._check_cancel()
+
+        self._steps_state = self._steps_state._replace(
+            total=self._steps_state.total if total is None else total,
+            message=self._steps_state.message if message is None else message,
+        )
+        self._report_state()
 
     def step(self, message=None, *, size=1):
         """
@@ -162,8 +165,8 @@ class StepsReporter:
         message : str, optional
             A description of this step.
         size : int, optional
-            The size of this step (in whatever units are being used).
-            Defaults to 1.
+            The size of this step (in whatever units make sense for the
+            application at hand). Defaults to 1.
 
         Raises
         ------
@@ -172,20 +175,19 @@ class StepsReporter:
         """
         self._check_cancel()
 
-        # Close the previous step, if any.
-        if self._size is not None:
-            self._step += self._size
-            self._size = None
+        self._steps_state = self._steps_state._replace(
+            complete=self._steps_state.complete + self._steps_state.pending,
+            pending=size,
+            message=self._steps_state.message if message is None else message,
+        )
 
-        self._message = message
-        self._size = size
-        self._send(STEP, (self._step, self._steps, self._message))
+        self._report_state()
 
     def stop(self, message=None):
         """
         Report that processing is complete.
 
-        Also updates the total number of steps completed.
+        Also updates the total progress, if any tasks are pending.
 
         Parameters
         ----------
@@ -196,23 +198,29 @@ class StepsReporter:
         """
         self._check_cancel()
 
-        # Close the previous step, if any.
-        if self._size is not None:
-            self._step += self._size
-            self._size = None
+        self._steps_state = self._steps_state._replace(
+            complete=self._steps_state.complete + self._steps_state.pending,
+            pending=0,
+            message=self._steps_state.message if message is None else message,
+        )
+        self._report_state()
 
-        self._message = message
-        self._send(STEP, (self._step, self._steps, self._message))
-
-    # Private methods #########################################################
+    # Private methods and properties ##########################################
 
     def _close(self):
-        if self._size is not None:
-            self._step += self._size
-            self._size = None
-            self._message = None
+        if self._steps_state.pending:
+            self._steps_state = StepsState(
+                total=self._steps_state.total,
+                complete=self._steps_state.complete
+                + self._steps_state.pending,
+                pending=0,
+                message=self._steps_state.message,
+            )
 
-        self._send(STEP, (self._step, self._steps, self._message))
+            self._report_state()
+
+    def _report_state(self):
+        self._send(UPDATE, self._steps_state)
 
     def _check_cancel(self):
         """Check if the task has been cancelled.
@@ -234,13 +242,18 @@ class StepsTask(BaseTask):
     the task on completion.
     """
 
-    def __init__(self, callable, args, kwargs):
+    def __init__(self, initial_steps_state, callable, args, kwargs):
         self.callable = callable
         self.args = args
         self.kwargs = kwargs
+        self.initial_steps_state = initial_steps_state
 
     def run(self):
-        reporter = StepsReporter(send=self.send, cancelled=self.cancelled)
+        reporter = StepsReporter(
+            send=self.send,
+            cancelled=self.cancelled,
+            initial_steps_state=self.initial_steps_state,
+        )
         try:
             result = self.callable(
                 *self.args,
@@ -256,35 +269,72 @@ class StepsTask(BaseTask):
 
 class StepsFuture(BaseFuture):
     """
-    Object representing the front-end handle to a background call.
+    Object representing the front-end handle to a background steps task.
     """
 
-    #: Total number of steps, if known. None if not known.
-    steps = Union(None, Int())
-
-    #: The most recently completed step, if any.
-    step = Int(0)
-
     #: Most recently received message from the background task.
-    message = Union(None, Str())
+    message = Property(Union(None, Str()))
+
+    #: Total work, in whatever units make sense for the application.
+    total = Property(Union(None, Int()))
+
+    #: Units of work completed so far.
+    complete = Property(Int())
+
+    # Private traits ##########################################################
+
+    #: The progress state of the background task.
+    _steps_state = Instance(StepsState, allow_none=False)
 
     # Private methods #########################################################
 
-    def _process_step(self, step_event):
+    def _process_update(self, steps_state):
         """
-        Process a STEP message from the background task.
+        Process an UPDATE message from the background task.
         """
-        step, steps, message = step_event
-        self.message = message
-        self.steps = steps
-        self.step = step
+        self._steps_state = steps_state
+
+    def _get_message(self):
+        return self._steps_state.message
+
+    def _get_total(self):
+        return self._steps_state.total
+
+    def _get_complete(self):
+        return self._steps_state.complete
+
+    @observe("_steps_state")
+    def _update_state_traits(self, event):
+        if event.old is None:
+            return
+
+        old_state, new_state = event.old, event.new
+
+        if old_state.message != new_state.message:
+            self.trait_property_changed(
+                "message", old_state.message, new_state.message
+            )
+        if old_state.total != new_state.total:
+            self.trait_property_changed(
+                "total", old_state.total, new_state.total
+            )
+        if old_state.complete != new_state.complete:
+            self.trait_property_changed(
+                "complete", old_state.complete, new_state.complete
+            )
 
 
 @ITaskSpecification.register
 class BackgroundSteps(HasStrictTraits):
     """
-    Object representing the background call to be executed.
+    Object representing the background task to be executed.
     """
+
+    #: Total units of work for the task, if known. None if not known.
+    total = Union(None, Int())
+
+    #: Initial message.
+    message = Union(None, Str())
 
     #: The callable for the task.
     callable = Callable()
@@ -316,7 +366,10 @@ class BackgroundSteps(HasStrictTraits):
             Future object that can be used to monitor the status of the
             background task.
         """
-        return StepsFuture(_cancel=cancel)
+        return StepsFuture(
+            _cancel=cancel,
+            _steps_state=self._initial_steps_state,
+        )
 
     def task(self):
         """
@@ -330,30 +383,51 @@ class BackgroundSteps(HasStrictTraits):
             check whether cancellation has been requested.
         """
         return StepsTask(
+            initial_steps_state=self._initial_steps_state,
             callable=self.callable,
             args=self.args,
             kwargs=self.kwargs,
         )
 
+    # Private methods #########################################################
 
-def submit_steps(executor, callable, *args, **kwargs):
+    @property
+    def _initial_steps_state(self):
+        return StepsState(
+            total=self.total,
+            complete=0,
+            pending=0,
+            message=self.message,
+        )
+
+
+def submit_steps(executor, total, message, callable, *args, **kwargs):
     """
     Convenience function to submit a BackgroundSteps task to an executor.
+
+    Note: the 'executor', 'total', 'message', and 'callable' parameters should
+    be treated as positional only, and should always be passed by position
+    instead of by name. Future versions of the library may enforce this
+    restriction.
 
     Parameters
     ----------
     executor : TraitsExecutor
         Executor to submit the task to.
+    total : int or None
+        Total units of work for this task, if known.
+    message : str or None
+        Initial message.
     callable : collections.abc.Callable
         Callable to execute in the background. This should accept a
-        "progress" keyword argument, in addition to any other positional
+        "reporter" keyword argument, in addition to any other positional
         and named arguments it needs. When the callable is invoked, an
-        instance of "StepsReporter" will be supplied via that "progress"
+        instance of "StepsReporter" will be supplied via that "reporter"
         argument.
     *args
         Positional arguments to pass to the callable.
     **kwargs
-        Named arguments to pass to the callable, excluding the "progress"
+        Named arguments to pass to the callable, excluding the "reporter"
         argument. That argument will be passed separately.
 
     Returns
@@ -369,6 +443,8 @@ def submit_steps(executor, callable, *args, **kwargs):
 
     return executor.submit(
         BackgroundSteps(
+            total=total,
+            message=message,
             callable=callable,
             args=args,
             kwargs=kwargs,

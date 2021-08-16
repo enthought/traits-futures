@@ -15,11 +15,19 @@ Demo script for modal progress dialog.
 import concurrent.futures
 import time
 
-from traits.api import Any, Button, HasStrictTraits, Instance, List, Range
+from traits.api import (
+    Any,
+    Button,
+    HasStrictTraits,
+    Instance,
+    List,
+    observe,
+    Range,
+)
 from traits_futures.api import submit_steps, TraitsExecutor
 from traitsui.api import Item, View
 
-from background_progress_dialog import ProgressFutureDialog
+from steps_dialog import StepsDialog
 
 
 def count(target, *, sleep=1.0, reporter):
@@ -33,7 +41,7 @@ def count(target, *, sleep=1.0, reporter):
     reporter : IStepsReporter
         Object used to report progress.
     """
-    reporter.start("Starting processing", steps=target)
+    reporter.start("Starting processing", total=target)
     for i in range(target):
         reporter.step(f"processing item {i+1} of {target}")
         time.sleep(sleep)
@@ -52,25 +60,31 @@ class MyView(HasStrictTraits):
     def _executor_default(self):
         return TraitsExecutor()  # worker_pool=self.cf_executor)
 
-    dialogs = List(ProgressFutureDialog)
+    dialogs = List(StepsDialog)
 
     cf_executor = Any()
 
-    def _calculate_fired(self):
+    @observe("calculate")
+    def _open_modal_dialog(self, event):
         target = self.target
-        future = submit_steps(self.executor, count, target=target)
-        dialog = ProgressFutureDialog(
-            progress_future=future,
+        future = submit_steps(
+            self.executor, target, "Counting...", count, target=target
+        )
+        dialog = StepsDialog(
+            future=future,
             style="modal",  # this is the default
             title=f"Counting to {target}",
         )
         dialog.open()
 
-    def _nonmodal_fired(self):
+    @observe("nonmodal")
+    def _open_nonmodal_dialog(self, event):
         target = self.target
-        future = submit_steps(self.executor, count, target)
-        dialog = ProgressFutureDialog(
-            progress_future=future,
+        future = submit_steps(
+            self.executor, target, "Counting...", count, target
+        )
+        dialog = StepsDialog(
+            future=future,
             style="nonmodal",  # this is the default
             title=f"Counting to {target}",
         )

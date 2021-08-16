@@ -13,29 +13,17 @@
 
 from pyface.api import Dialog
 from pyface.qt import QtCore, QtGui
-from traits.api import (
-    Any,
-    Bool,
-    Instance,
-    Int,
-    observe,
-    Property,
-    Str,
-)
+from traits.api import Any, Bool, Instance, Int, observe, Property, Str
 from traits_futures.api import EXECUTING, StepsFuture
 
 # XXX Fix behaviour on dialog close button. Should match pressing the
 #  "cancelling" button, and also pressing ESC. (What do users want?)
 # XXX What should behaviour be on a Ctrl-C?
 
-# XXX Rename "ProgressFutureDialog" to "StepsFutureDialog"
-
-# XXX Rename "progress_future" trait to just "future".
-
 # XXX Diagnose and fix errors seen when launching a non-modal dialog and then
 #     clicking its close button:
 # Exception occurred in traits notification handler for event object:
-#    TraitChangeEvent(object=<background_progress_dialog.ProgressFutureDialog
+#    TraitChangeEvent(object=<background_progress_dialog.StepsDialog
 #    object at 0x10d8cd040>, name='message', old=<undefined>, new='executing:
 #    processing item 10 of 10')
 # Traceback (most recent call last):
@@ -52,7 +40,7 @@ from traits_futures.api import EXECUTING, StepsFuture
 # AttributeError: 'NoneType' object has no attribute 'setText'
 
 
-class ProgressFutureDialog(Dialog):
+class StepsDialog(Dialog):
     """Show a cancellable progress dialog listening to a progress manager."""
 
     #: Text to show for cancellation label.
@@ -64,17 +52,17 @@ class ProgressFutureDialog(Dialog):
     #: Whether to show a 'Cancel' button or not.
     cancellable = Bool(True)
 
-    #: The maximum number of steps.
-    maximum = Int(0)
-
     #: Whether to show the percentage complete or not.
     show_percent = Bool(True)
 
     #: The traited ``Future`` representing the state of the background call.
-    progress_future = Instance(StepsFuture)
+    future = Instance(StepsFuture)
 
-    #: The message to display
-    message = Property(Str, observe="progress_future:[state,message]")
+    #: The message to display.
+    message = Property(Str(), observe="future:[state,message]")
+
+    #: The maximum for the dialog.
+    maximum = Property(Int(), observe="future:total")
 
     def cancel(self):
         """Cancel the job.
@@ -83,7 +71,7 @@ class ProgressFutureDialog(Dialog):
         down to the progress manager since this method will prevent
         the job from starting if it has not already.
         """
-        self.progress_future.cancel()
+        self.future.cancel()
         self._cancel_button_control.setEnabled(False)
 
     # Private implementation ##################################################
@@ -132,7 +120,7 @@ class ProgressFutureDialog(Dialog):
     def _create_gauge(self, dialog, layout):
         self._progress_bar = QtGui.QProgressBar(dialog)
         self._progress_bar.setRange(0, self.maximum)
-        self._progress_bar.setValue(self.progress_future.step)
+        self._progress_bar.setValue(self.future.complete)
         if self.show_percent:
             self._progress_bar.setFormat("%p%")
         else:
@@ -159,23 +147,28 @@ class ProgressFutureDialog(Dialog):
         """
         Property getter for the 'message' trait.
         """
-        future = self.progress_future
+        future = self.future
         if future.state == EXECUTING and future.message is not None:
             return f"{future.state}: {future.message}"
         else:
             return f"{future.state}"
 
-    @observe("progress_future:steps")
-    def _update_maximum(self, event):
-        steps = event.new
-        self.maximum = max(steps, 0)
+    def _get_maximum(self):
+        """
+        Property getter for the 'maximum' trait.
+        """
+        future = self.future
+        if future.total is None:
+            return 0
+        else:
+            return max(future.total, 0)
 
-    @observe("progress_future:step")
+    @observe("future:complete")
     def _update_value(self, event):
-        step = event.new
+        complete = event.new
         if self._progress_bar is not None:
-            self._progress_bar.setValue(step)
+            self._progress_bar.setValue(complete)
 
-    @observe("progress_future:done")
+    @observe("future:done")
     def _on_end(self, event):
         self.close()
