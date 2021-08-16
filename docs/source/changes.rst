@@ -22,7 +22,7 @@ Features
 * New "steps" background task type for cancellable progress-reporting tasks.
   This has a richer interface than the existing progress background task type.
   It can be used via the new |submit_steps| convenience function, which
-  returns a |StepsFuture| object. (#483)
+  returns a |StepsFuture| object. (#484)
 
 Documentation
 ~~~~~~~~~~~~~
