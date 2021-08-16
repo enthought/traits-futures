@@ -12,8 +12,8 @@
 Complete examples
 =================
 
-This section describes three complete examples, that make use of the
-three different background task types that Traits Futures currently supports.
+This section describes a number of complete examples, that make use of the
+various different background task types that Traits Futures currently supports.
 
 Slow squares
 ------------
@@ -29,6 +29,22 @@ calculation may fail randomly, with an increased chance of failure for larger
 inputs.
 
 .. literalinclude:: examples/slow_squares.py
+   :start-after: Thanks for using Enthought
+   :lines: 2-
+
+
+Blocking call with dialog
+-------------------------
+
+.. image:: images/simple_blocking_call.png
+   :alt: Screenshot of the simple blocking call example GUI
+
+This :download:`example script <examples/simple_blocking_call.py>` demonstrates
+use of simple non-cancellable non-closable modal progress dialog to provide a
+user with visual feedback, and keep a GUI responsive, while a blocking task
+runs.
+
+.. literalinclude:: examples/simple_blocking_call.py
    :start-after: Thanks for using Enthought
    :lines: 2-
 
