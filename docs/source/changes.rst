@@ -29,6 +29,9 @@ Documentation
 
 * Add some general advice on writing applications that make use of
   multithreading. (#452)
+* Add an example script to demonstrate use of a simple progress dialog
+  while a blocking call is running. (#482)
+
 
 Continuous integration and build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
