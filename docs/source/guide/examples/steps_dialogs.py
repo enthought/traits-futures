@@ -12,6 +12,11 @@
 Demo script for modal progress dialog.
 """
 
+# XXX To do list (including for StepsFutures)
+# * Add NullReporter implementation of IStepsReporter, for convenience in
+#   testing progress-reporting tasks.
+# * Add IStepsReporter "check" method that simply checks for cancellation.
+
 import concurrent.futures
 import time
 
@@ -41,7 +46,6 @@ def count(target, *, sleep=1.0, reporter):
     reporter : IStepsReporter
         Object used to report progress.
     """
-    reporter.start("Starting processing", total=target)
     for i in range(target):
         reporter.step(f"processing item {i+1} of {target}")
         time.sleep(sleep)
@@ -68,7 +72,11 @@ class MyView(HasStrictTraits):
     def _open_modal_dialog(self, event):
         target = self.target
         future = submit_steps(
-            self.executor, target, "Counting...", count, target=target
+            self.executor,
+            target,
+            "Starting processing...",
+            count,
+            target=target,
         )
         dialog = StepsDialog(
             future=future,
@@ -81,7 +89,7 @@ class MyView(HasStrictTraits):
     def _open_nonmodal_dialog(self, event):
         target = self.target
         future = submit_steps(
-            self.executor, target, "Counting...", count, target
+            self.executor, target, "Starting processing...", count, target
         )
         dialog = StepsDialog(
             future=future,
