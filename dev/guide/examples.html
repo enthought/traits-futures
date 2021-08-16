@@ -86,8 +86,8 @@
             
   <div class="section" id="complete-examples">
 <h1>Complete examples<a class="headerlink" href="#complete-examples" title="Permalink to this headline">¶</a></h1>
-<p>This section describes three complete examples, that make use of the
-three different background task types that Traits Futures currently supports.</p>
+<p>This section describes a number of complete examples, that make use of the
+various different background task types that Traits Futures currently supports.</p>
 <div class="section" id="slow-squares">
 <h2>Slow squares<a class="headerlink" href="#slow-squares" title="Permalink to this headline">¶</a></h2>
 <img alt="Screenshot of the slow squares GUI in action" src="../_images/slow_squares.png" />
@@ -257,6 +257,145 @@ inputs.</p>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">view</span> <span class="o">=</span> <span class="n">SquaringHelper</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span>
         <span class="n">view</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="blocking-call-with-dialog">
+<h2>Blocking call with dialog<a class="headerlink" href="#blocking-call-with-dialog" title="Permalink to this headline">¶</a></h2>
+<img alt="Screenshot of the simple blocking call example GUI" src="../_images/simple_blocking_call.png" />
+<p>This <a class="reference download internal" download="" href="../_downloads/3c1c91987c0dbd2c8aa8725538c925bc/simple_blocking_call.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">script</span></code></a> demonstrates
+use of simple non-cancellable non-closable modal progress dialog to provide a
+user with visual feedback, and keep a GUI responsive, while a blocking task
+runs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example of popping up a modal progress dialog during a simple call.</span>
+
+<span class="sd">Use-case: in a running GUI, we want to make a short-running computation</span>
+<span class="sd">or service call, let&#39;s say taking a few seconds. While the computation or</span>
+<span class="sd">call is in progress, we want to:</span>
+
+<span class="sd">(a) provide some visual feedback to the user to let them know that something is</span>
+<span class="sd">    happening.</span>
+<span class="sd">(b) free up the GUI thread so that the GUI doesn&#39;t appear to be frozen to</span>
+<span class="sd">    either the user or the operating system, avoiding system reports of the</span>
+<span class="sd">    form &quot;Python is not responding&quot;.</span>
+
+<span class="sd">The solution shown in this example is to push the computation to a background</span>
+<span class="sd">thread using ``submit_call`` and pop up a simple non-cancellable non-closable</span>
+<span class="sd">progress dialog while the computation is running. Since all we have is a simple</span>
+<span class="sd">call, no actual progress is shown, but depending on the OS and Qt stylesheet</span>
+<span class="sd">in use, Qt will often animate the progress bar.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pyface.api</span> <span class="kn">import</span> <span class="n">Dialog</span>
+<span class="kn">from</span> <span class="nn">pyface.qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">Range</span>
+<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">CallFuture</span><span class="p">,</span> <span class="n">submit_call</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+
+
+<span class="k">def</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deliberately inefficient recursive implementation of the Fibonacci series.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : int</span>
+<span class="sd">        Nonnegative integer - the index into the Fibonacci series.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fib : int</span>
+<span class="sd">        The value of the Fibonacci series at n.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">NonClosableDialog</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Modification of QDialog that does nothing on attempts to close.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># By default, a QDialog closes when its close button is used, or when</span>
+    <span class="c1"># the &quot;ESC&quot; key is pressed. Both actions are routed through the dialog&#39;s</span>
+    <span class="c1"># &#39;reject&#39; method, so we can override that method to prevent closing.</span>
+
+    <span class="k">def</span> <span class="nf">reject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do nothing on close.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">SlowCallDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple Pyface dialog showing a progress bar, a title, and nothing else</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The future representing the running background task.</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">CallFuture</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="c1"># Override base class implementation to provide a simple progress bar.</span>
+        <span class="n">progress_bar</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QProgressBar</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">progress_bar</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">progress_bar</span><span class="p">)</span>
+        <span class="n">parent</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="c1"># Override base class implementation in order to customize title hints,</span>
+        <span class="c1"># and in particular to remove the close button.</span>
+        <span class="n">dlg</span> <span class="o">=</span> <span class="n">NonClosableDialog</span><span class="p">(</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomizeWindowHint</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowTitleHint</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">dlg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dlg</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_close_dialog_on_future_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the dialog when the background task completes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">FibonacciCalculator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GUI with a &#39;calculate&#39; button that runs a blocking calculation.</span>
+
+<span class="sd">    While the blocking operation is running, a minimal progress</span>
+<span class="sd">    dialog is displayed to the user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The executor to submit tasks to.</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
+
+    <span class="c1">#: Input for the calculation</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+
+    <span class="c1">#: Button to start the calculation</span>
+    <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">&quot;Calculate&quot;</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">SlowCallDialog</span><span class="p">(</span>
+            <span class="n">future</span><span class="o">=</span><span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">fibonacci</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">),</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Calculating Fib(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">). Please wait.&quot;</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">FibonacciCalculator</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
@@ -734,6 +873,7 @@ updated live with each new value reported by the background task.</p>
   <ul>
 <li><a class="reference internal" href="#">Complete examples</a><ul>
 <li><a class="reference internal" href="#slow-squares">Slow squares</a></li>
+<li><a class="reference internal" href="#blocking-call-with-dialog">Blocking call with dialog</a></li>
 <li><a class="reference internal" href="#prime-counting">Prime counting</a></li>
 <li><a class="reference internal" href="#approximating-pi">Approximating Pi</a></li>
 </ul>
