@@ -166,10 +166,10 @@ class StepsReporter:
 
     Parameters
     ----------
-    send : callable
+    send
         Callable provided by the Traits Futures machinery, and used to send
         messages to the linked future.
-    cancelled : callable
+    cancelled
         Callable provided by the Traits Futures machinery, and used to check
         for cancellation requests.
     state : StepsState
