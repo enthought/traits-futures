@@ -36,7 +36,7 @@ SAFETY_TIMEOUT = 5.0
 
 
 #: Trait type for the progress state: total, complete, message.
-ProgressState = Tuple(Union(None, Int()), Int(), Union(None, Str()))
+ProgressState = Tuple(Int(), Int(), Str())
 
 
 class StepsListener(HasStrictTraits):
