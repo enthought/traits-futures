@@ -421,10 +421,15 @@ class BackgroundSteps(HasStrictTraits):
             kwargs=self.kwargs,
         )
 
-    # Private methods #########################################################
+    # Private traits and methods ##############################################
 
-    @property
-    def _initial_state(self):
+    #: Initial progress state to be passed to both the task and the future.
+    _initial_state = Property(
+        Instance(StepsState), observe=["total", "message"]
+    )
+
+    def _get__initial_state(self):
+        """Traits property getter for the _initial_state trait."""
         return StepsState.initial(total=self.total, message=self.message)
 
 
