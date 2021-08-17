@@ -71,6 +71,11 @@ class IStepsReporter(abc.ABC):
             Message to display on completion. For a progress dialog that
             disappears on completion, this message will never be seen by
             the user, but for other views the message may be visible.
+
+        Raises
+        ------
+        TaskCancelled
+            If the user has called ``cancel()`` before this.
         """
 
 
@@ -214,6 +219,11 @@ class StepsReporter:
             Message to display on completion. For a progress dialog that
             disappears on completion, this message will never be seen by
             the user, but for other views the message may be visible.
+
+        Raises
+        ------
+        TaskCancelled
+            If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
         self._state = self._state.set_step(0).set_message(message)
