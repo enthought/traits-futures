@@ -37,7 +37,12 @@ from traits_futures.i_task_specification import ITaskSpecification
 
 
 class IStepsReporter(abc.ABC):
-    """Interface for step-reporting object passed to the background job."""
+    """
+    Interface for progress reporters.
+
+    This is the interface that's implemented by the StepsReporter
+    object that's passed to the background tasks.
+    """
 
     @abc.abstractmethod
     def step(self, message, *, size=1):
