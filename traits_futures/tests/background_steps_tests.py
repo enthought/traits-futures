@@ -248,7 +248,7 @@ class BackgroundStepsTests:
         )
         listener = StepsListener(future=future)
 
-        # Run until we get the first progress message, then cancel and allow
+        # Run until we get the second progress message, then cancel and allow
         # the background job to proceed.
         self.run_until(
             listener,
