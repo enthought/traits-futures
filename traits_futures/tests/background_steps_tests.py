@@ -36,7 +36,7 @@ SAFETY_TIMEOUT = 5.0
 
 
 #: Trait type for the progress state: total, complete, message.
-ProgressState = Tuple(Union(None, Int()), Int(), Union(None, Str()))
+ProgressState = Tuple(Int(), Int(), Str())
 
 
 class StepsListener(HasStrictTraits):
@@ -248,7 +248,7 @@ class BackgroundStepsTests:
         )
         listener = StepsListener(future=future)
 
-        # Run until we get the first progress message, then cancel and allow
+        # Run until we get the second progress message, then cancel and allow
         # the background job to proceed.
         self.run_until(
             listener,

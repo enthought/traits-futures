@@ -37,7 +37,12 @@ from traits_futures.i_task_specification import ITaskSpecification
 
 
 class IStepsReporter(abc.ABC):
-    """Interface for step-reporting object passed to the background job."""
+    """
+    Interface for progress reporters.
+
+    This is the interface that's implemented by the StepsReporter
+    object that's passed to the background tasks.
+    """
 
     @abc.abstractmethod
     def step(self, message, *, size=1):
@@ -71,6 +76,11 @@ class IStepsReporter(abc.ABC):
             Message to display on completion. For a progress dialog that
             disappears on completion, this message will never be seen by
             the user, but for other views the message may be visible.
+
+        Raises
+        ------
+        TaskCancelled
+            If the user has called ``cancel()`` before this.
         """
 
 
@@ -214,6 +224,11 @@ class StepsReporter:
             Message to display on completion. For a progress dialog that
             disappears on completion, this message will never be seen by
             the user, but for other views the message may be visible.
+
+        Raises
+        ------
+        TaskCancelled
+            If the user has called ``cancel()`` before this.
         """
         self._check_cancel()
         self._state = self._state.set_step(0).set_message(message)
@@ -411,10 +426,15 @@ class BackgroundSteps(HasStrictTraits):
             kwargs=self.kwargs,
         )
 
-    # Private methods #########################################################
+    # Private traits and methods ##############################################
 
-    @property
-    def _initial_state(self):
+    #: Initial progress state to be passed to both the task and the future.
+    _initial_state = Property(
+        Instance(StepsState), observe=["total", "message"]
+    )
+
+    def _get__initial_state(self):
+        """Traits property getter for the _initial_state trait."""
         return StepsState.initial(total=self.total, message=self.message)
 
 
