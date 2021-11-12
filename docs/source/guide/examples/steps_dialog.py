@@ -19,6 +19,13 @@ from traits_futures.api import EXECUTING, StepsFuture
 # XXX Fix behaviour on dialog close button. Should match pressing the
 #  "cancelling" button, and also pressing ESC. (What do users want?)
 # XXX What should behaviour be on a Ctrl-C?
+# XXX Two possible desirable behaviours: (1) cancel then close immediately
+#     (2) prevent closing, close when cancel completes
+#     (1) is more likely to be important with a modal dialog
+#     All three of (a) pressing the cancel button, (b) using the dialog close
+#     button, (c) hitting ESC should have the same behaviour.
+# For the preventing closing behaviour, the dialog itself needs some state.
+
 
 # XXX Diagnose and fix errors seen when launching a non-modal dialog and then
 #     clicking its close button:
