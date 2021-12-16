@@ -15,6 +15,11 @@ Release 0.4.0
 
 Release date: XXXX-XX-XX
 
+Features
+~~~~~~~~
+
+* Support Qt6-based toolkits PyQt6 and PySide6. (This is dependent on
+  corresponding support in Pyface.) (#488)
 
 Documentation
 ~~~~~~~~~~~~~

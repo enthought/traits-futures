@@ -138,7 +138,15 @@ class EventLoopHelper:
                 timeout_timer.timeout.connect(stop_on_timeout)
                 timeout_timer.start()
                 try:
-                    timed_out = qt_app.exec_()
+                    # Qt wrapper support is a bit of a mess here. PyQt6 has
+                    # only "exec". PyQt5 and PySide6 support both "exec" and
+                    # "exec_", with "exec" the preferred spelling. PyQt4 and
+                    # PySide2 support only "exec_".
+                    try:
+                        exec_method = qt_app.exec
+                    except AttributeError:
+                        exec_method = qt_app.exec_
+                    timed_out = exec_method()
                 finally:
                     timeout_timer.stop()
                     timeout_timer.timeout.disconnect(stop_on_timeout)
