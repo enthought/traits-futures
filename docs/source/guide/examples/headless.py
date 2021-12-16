@@ -14,6 +14,7 @@ Running Traits Futures without a GUI, using the asyncio event loop.
 
 import asyncio
 import random
+import sys
 
 from traits_futures.api import (
     AsyncioEventLoop,
@@ -47,9 +48,13 @@ async def future_wrapper(traits_future):
         traits_future = event.object
         asyncio_future.set_result(traits_future.result)
 
-    # Once we can assume a minimum Python version of 3.7, this should
-    # be changed to use get_running_event_loop instead of get_event_loop.
-    asyncio_future = asyncio.get_event_loop().create_future()
+    if sys.version_info < (3, 7):
+        # We want to use get_running_loop, but it's new in Python 3.7.
+        # This branch can be dropped once we can assume a minimum Python
+        # version of 3.7.
+        asyncio_future = asyncio.get_event_loop().create_future()
+    else:
+        asyncio_future = asyncio.get_running_loop().create_future()
 
     traits_future.observe(set_result, "done")
 
