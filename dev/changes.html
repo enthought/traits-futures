@@ -82,6 +82,13 @@
   <div class="section" id="release-0-4-0">
 <h1>Release 0.4.0<a class="headerlink" href="#release-0-4-0" title="Permalink to this headline">¶</a></h1>
 <p>Release date: XXXX-XX-XX</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Support Qt6-based toolkits PyQt6 and PySide6. (This is dependent on
+corresponding support in Pyface.) (#488)</p></li>
+</ul>
+</div>
 <div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -119,7 +126,7 @@ without any arguments. (#467)</p></li>
 <p>This is a feature release of Traits Futures, with a some minor backwards
 incompatible changes that users should be aware of. New features include
 multiprocessing support, wxPython support, support for delivering events using
-an <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop in place of a GUI toolkit event loop, and better
+an <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop in place of a GUI toolkit event loop, and better
 support for synchronous executor shutdown.</p>
 </div>
 <div class="section" id="migration-guide">
@@ -131,7 +138,7 @@ changes for anyone making use of the <a class="reference internal" href="api/tra
 their own background task types. For the <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a> changes, see
 the detailed PR-by-PR change list below.</p>
 <ul class="simple">
-<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method on a future no longer raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> exception
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method on a future no longer raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> exception
 when a future is not cancellable; instead, it silently does nothing. Code
 that needs to distinguish can use the new return value of the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method
 to determine whether the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> call actually caused cancellation to occur.
@@ -147,8 +154,8 @@ should fix your code to pass by position instead: <code class="docutils literal 
 <span class="pre">do_calculation,</span> <span class="pre">...)</span></code>.</p></li>
 </ul>
 </div>
-<div class="section" id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h2>Features<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Multiprocessing support: the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> can now submit
 background tasks to a process pool instead of a thread pool. Since this
@@ -172,7 +179,7 @@ and interactions, to aid in post-mortem debugging. (#296, #293)</p></li>
 <div class="section" id="changes">
 <h2>Changes<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
 future is not cancellable. If a task has already completed, or has previously
 been cancelled, calling <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> on the associated future does not change
 the state of the future, and the call returns <code class="docutils literal notranslate"><span class="pre">False</span></code>. Otherwise it changes
@@ -190,7 +197,7 @@ restriction may be enforced in a future version of the library. (#409)</p></li>
 <code class="docutils literal notranslate"><span class="pre">&quot;traits.trait_errors.TraitError&quot;</span></code>. (#391)</p></li>
 <li><p>Tasks may now only be submitted to a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> on the main thread.
 An attempt to submit a task from a thread other than the main thread will
-raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. (#305)</p></li>
+raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. (#305)</p></li>
 <li><p>There are a number of backwards-incompatible changes to the machinery used
 for creating custom task types and futures. The API for creating custom
 task types should be considered provisional: it may change in future
@@ -226,19 +233,19 @@ undocumented and should be considered experimental: the API may change in
 future releases. (#298, #300)</p></li>
 </ul>
 </div>
-<div class="section" id="id1">
-<h2>Fixes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h2>Fixes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The message routing machinery will no longer block indefinitely in the
 (hypothetical) event that no message exists to be retrieved on the message
-queue. Instead, it will fail fast with a <a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Empty" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">queue.Empty</span></code></a> exception. This
+queue. Instead, it will fail fast with a <a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Empty" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">queue.Empty</span></code></a> exception. This
 situation should never happen in normal use; please report it if you ever
 witness it. (#413)</p></li>
 <li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.TaskCancelled" title="traits_futures.base_future.TaskCancelled"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a> exception used by the background task submitted
 via <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> is now public and exposed in <a class="reference internal" href="api/traits_futures.api.html#module-traits_futures.api" title="traits_futures.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures.api</span></code></a>, in
 case that task needs to catch the exception. (#449, #317)</p></li>
 <li><p>The <a class="reference internal" href="api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception" title="traits_futures.exception_handling.marshal_exception"><code class="xref py py-func docutils literal notranslate"><span class="pre">marshal_exception</span></code></a> function has been fixed not to rely on the global
-<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.exc_info" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.exc_info</span></code></a> state. (#390)</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.exc_info" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.exc_info</span></code></a> state. (#390)</p></li>
 <li><p>A spurious “message” trait that never did anything has been removed from
 <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a>. (#394)</p></li>
 <li><p>The cancellation callback supplied to a <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance is now always
@@ -246,8 +253,8 @@ cleared when the future completes. Previously the <a class="reference internal" 
 would sometimes hold onto the reference to the cancellation callback. (#389)</p></li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2>Continuous integration and build<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>Continuous integration and build<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The default GitHub branch has been renamed from “master” to “main”. (#277)</p></li>
 <li><p>Continuous integration has been migrated to GitHub Actions. The per-commit
@@ -300,7 +307,7 @@ dependencies such as <code class="docutils literal notranslate"><span class="pre
 <div class="section" id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The test suite now uses the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop for the majority of
+<li><p>The test suite now uses the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop for the majority of
 its tests. It uses the Qt or Wx event loop only for tests specific to
 those toolkits. (#321, #319, #315)</p></li>
 <li><p>Most tests now use the new <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method for executor shutdown. (#386)</p></li>
@@ -314,8 +321,8 @@ implementations of that interface for each supported toolkit. (#307)</p></li>
 <li><p>Improve testing for the case of an externally-supplied worker pool. (#343)</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>Documentation<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Documentation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New “overview” documentation section explaining why Traits Futures exists
 and what problems it solves. (#325, #327)</p></li>
@@ -344,7 +351,7 @@ include the copyright headers. (#326)</p></li>
 Previously it was giving incorrect results as a result of NumPy integer
 overflow. (#249)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">prime_counting</span></code> example has been fixed to avoid an occasional
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> under unusual timing conditions. (#450)</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> under unusual timing conditions. (#450)</p></li>
 <li><p>Miscellaneous cleanups and minor fixes. (#421, #455, #292, #223, #221)</p></li>
 </ul>
 </div>
@@ -383,8 +390,8 @@ will be removed in a future release. See the Changes section below for more
 details.</p>
 <p>Detailed changes follow. Note that the list below is not exhaustive: many
 more minor PRs have been omitted.</p>
-<div class="section" id="id4">
-<h2>Features<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>Features<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Users can now easily create their own background task types to supplement
 the provided task types (background calls, background iterations and
@@ -410,8 +417,8 @@ implements this interface and provides the default threading back-end.
 (#149)</p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>Changes<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>Changes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">state</span></code> trait of <a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and
 <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> used to be writable. It’s now a read-only property
@@ -419,7 +426,7 @@ that reflects the internal state. (#163)</p></li>
 <li><p>The default number of workers in an owned worker pool (that is, a worker pool
 created by a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>) has changed. Previously it was
 hard-coded as <code class="docutils literal notranslate"><span class="pre">4</span></code>. Now it defaults to whatever Python’s
-<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> executors give, but can be controlled by passing
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> executors give, but can be controlled by passing
 the <code class="docutils literal notranslate"><span class="pre">max_workers</span></code> argument. (#125)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">submit_call</span></code>, <code class="docutils literal notranslate"><span class="pre">submit_iteration</span></code> and <code class="docutils literal notranslate"><span class="pre">submit_progress</span></code>
 methods on the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> have been deprecated. Use the
@@ -433,18 +440,18 @@ and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
 #132, #133, #138, #145)</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>Fixes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>Fixes<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Don’t create a new message router at executor shutdown time. (#187)</p></li>
 </ul>
 </div>
-<div class="section" id="id7">
-<h2>Tests<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h2>Tests<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fix some intermittent test failures due to test interactions. (#176)</p></li>
 <li><p>The ‘null’ backend that’s used for testing in the absence of a Qt backend
-now uses a <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>-based event loop instead of a custom event loop.
+now uses a <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>-based event loop instead of a custom event loop.
 (#107, #179)</p></li>
 <li><p>Rewrite the Qt <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> to react rather than polling. This
 significantly speeds up the test run. (#153)</p></li>
@@ -467,8 +474,8 @@ environment. (#104)</p></li>
 <li><p>Don’t pin dependent packages in the build environment. (#99)</p></li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h2>Documentation<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h2>Documentation<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Update docs to use the Enthought Sphinx Theme. (#128)</p></li>
 <li><p>Autogenerated API documentation is now included in the documentation
@@ -486,15 +493,15 @@ under ‘User Documentation’. (#191)</p></li>
 <p>This is a bugfix release, in preparation for the first public release to PyPI.
 There are no functional or API changes to the core library since 0.1.0 in this
 release.</p>
-<div class="section" id="id9">
-<h2>Fixes<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h2>Fixes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add missing <code class="docutils literal notranslate"><span class="pre">long_description</span></code> field in setup script. (#116, backported
 in #118)</p></li>
 </ul>
 </div>
-<div class="section" id="id10">
-<h2>Changes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id11">
+<h2>Changes<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Add copyright headers to all Python and reST files. (#114, backported in
 #118)</p></li>
@@ -526,6 +533,7 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Release 0.4.0</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#documentation">Documentation</a></li>
 <li><a class="reference internal" href="#continuous-integration-and-build">Continuous integration and build</a></li>
 </ul>
@@ -537,28 +545,28 @@ and progress-reporting tasks for Traits UI applications based on Qt.</p>
 <li><a class="reference internal" href="#release-0-3-0">Release 0.3.0</a><ul>
 <li><a class="reference internal" href="#summary">Summary</a></li>
 <li><a class="reference internal" href="#migration-guide">Migration guide</a></li>
-<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#id1">Features</a></li>
 <li><a class="reference internal" href="#changes">Changes</a></li>
-<li><a class="reference internal" href="#id1">Fixes</a></li>
-<li><a class="reference internal" href="#id2">Continuous integration and build</a></li>
+<li><a class="reference internal" href="#id2">Fixes</a></li>
+<li><a class="reference internal" href="#id3">Continuous integration and build</a></li>
 <li><a class="reference internal" href="#packaging-changes">Packaging changes</a></li>
 <li><a class="reference internal" href="#tests">Tests</a></li>
-<li><a class="reference internal" href="#id3">Documentation</a></li>
+<li><a class="reference internal" href="#id4">Documentation</a></li>
 <li><a class="reference internal" href="#internal-refactoring">Internal refactoring</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-2-0">Release 0.2.0</a><ul>
-<li><a class="reference internal" href="#id4">Features</a></li>
-<li><a class="reference internal" href="#id5">Changes</a></li>
-<li><a class="reference internal" href="#id6">Fixes</a></li>
-<li><a class="reference internal" href="#id7">Tests</a></li>
+<li><a class="reference internal" href="#id5">Features</a></li>
+<li><a class="reference internal" href="#id6">Changes</a></li>
+<li><a class="reference internal" href="#id7">Fixes</a></li>
+<li><a class="reference internal" href="#id8">Tests</a></li>
 <li><a class="reference internal" href="#developer-tooling">Developer tooling</a></li>
-<li><a class="reference internal" href="#id8">Documentation</a></li>
+<li><a class="reference internal" href="#id9">Documentation</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-0-1-1">Release 0.1.1</a><ul>
-<li><a class="reference internal" href="#id9">Fixes</a></li>
-<li><a class="reference internal" href="#id10">Changes</a></li>
+<li><a class="reference internal" href="#id10">Fixes</a></li>
+<li><a class="reference internal" href="#id11">Changes</a></li>
 <li><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>

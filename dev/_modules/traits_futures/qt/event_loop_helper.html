@@ -217,7 +217,15 @@
                 <span class="n">timeout_timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">stop_on_timeout</span><span class="p">)</span>
                 <span class="n">timeout_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">timed_out</span> <span class="o">=</span> <span class="n">qt_app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+                    <span class="c1"># Qt wrapper support is a bit of a mess here. PyQt6 has</span>
+                    <span class="c1"># only &quot;exec&quot;. PyQt5 and PySide6 support both &quot;exec&quot; and</span>
+                    <span class="c1"># &quot;exec_&quot;, with &quot;exec&quot; the preferred spelling. PyQt4 and</span>
+                    <span class="c1"># PySide2 support only &quot;exec_&quot;.</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">exec_method</span> <span class="o">=</span> <span class="n">qt_app</span><span class="o">.</span><span class="n">exec</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="n">exec_method</span> <span class="o">=</span> <span class="n">qt_app</span><span class="o">.</span><span class="n">exec_</span>
+                    <span class="n">timed_out</span> <span class="o">=</span> <span class="n">exec_method</span><span class="p">()</span>
                 <span class="k">finally</span><span class="p">:</span>
                     <span class="n">timeout_timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
                     <span class="n">timeout_timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">stop_on_timeout</span><span class="p">)</span>

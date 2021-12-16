@@ -96,7 +96,7 @@ easily be extended to support other messaging patterns.</p></li>
 <li><p>access to result(s) arriving from the background task</p></li>
 </ul>
 </li>
-<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
+<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
 into a TraitsUI application.</p></li>
 <li><p>No need to be a threading expert! Incoming results arrive as trait changes in
 the main thread. This eliminates a large class of potential issues with
@@ -108,7 +108,7 @@ updates off the main thread).</p></li>
 <div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
+<li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
 UI event loop to be running in order to process results.</p></li>
 <li><p>Requires Python 3.6 or later.</p></li>
 </ul>
@@ -347,6 +347,7 @@ minimal TraitsUI application that fires off a background computation when its
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Release 0.4.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#features">Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#continuous-integration-and-build">Continuous integration and build</a></li>
 </ul>
@@ -358,28 +359,28 @@ minimal TraitsUI application that fires off a background computation when its
 <li class="toctree-l1"><a class="reference internal" href="changes.html#release-0-3-0">Release 0.3.0</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#summary">Summary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#migration-guide">Migration guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id1">Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes">Changes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id1">Fixes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id2">Continuous integration and build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id2">Fixes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id3">Continuous integration and build</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#packaging-changes">Packaging changes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#tests">Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id3">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id4">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#internal-refactoring">Internal refactoring</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html#release-0-2-0">Release 0.2.0</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id4">Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id5">Changes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id6">Fixes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id7">Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id5">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id6">Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id7">Fixes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id8">Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#developer-tooling">Developer tooling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id8">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id9">Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html#release-0-1-1">Release 0.1.1</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id9">Fixes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changes.html#id10">Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id10">Fixes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#id11">Changes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#build">Build</a></li>
 </ul>
 </li>
