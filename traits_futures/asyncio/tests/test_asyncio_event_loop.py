@@ -12,7 +12,7 @@
 Tests for the asyncio event loop.
 """
 
-
+import asyncio
 import unittest
 
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
@@ -28,6 +28,26 @@ class TestAsyncioEventLoop(IEventLoopTests, unittest.TestCase):
         -------
         event_loop: IEventLoop
         """
+        asyncio_event_loop = asyncio.new_event_loop()
+        self.addCleanup(asyncio_event_loop.close)
+        return AsyncioEventLoop(event_loop=asyncio_event_loop)
+
+    def test_asyncio_event_loop_closed(self):
         event_loop = AsyncioEventLoop()
-        self.addCleanup(event_loop.close)
-        return event_loop
+        # Dig out the underlying asyncio event loop.
+        asyncio_event_loop = event_loop._event_loop
+        self.assertFalse(asyncio_event_loop.is_closed())
+        event_loop.close()
+        self.assertTrue(asyncio_event_loop.is_closed())
+
+    def test_creation_from_asyncio_event_loop(self):
+        asyncio_event_loop = asyncio.new_event_loop()
+        event_loop = AsyncioEventLoop(event_loop=asyncio_event_loop)
+        self.assertEqual(event_loop._event_loop, asyncio_event_loop)
+        try:
+            self.assertFalse(asyncio_event_loop.is_closed())
+            # Closing our wrapper shouldn't close the asyncio event loop.
+            event_loop.close()
+            self.assertFalse(asyncio_event_loop.is_closed())
+        finally:
+            asyncio_event_loop.close()

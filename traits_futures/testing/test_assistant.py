@@ -13,6 +13,8 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
+import asyncio
+
 from traits.api import Bool, HasStrictTraits
 
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
@@ -52,9 +54,9 @@ class TestAssistant:
         -------
         event_loop: IEventLoop
         """
-        event_loop = AsyncioEventLoop()
-        self.addCleanup(event_loop.close)
-        return event_loop
+        asyncio_event_loop = asyncio.new_event_loop()
+        self.addCleanup(asyncio_event_loop.close)
+        return AsyncioEventLoop(event_loop=asyncio_event_loop)
 
     def setUp(self):
         self._event_loop = self.event_loop_factory()

@@ -22,16 +22,28 @@ from traits_futures.i_event_loop import IEventLoop
 class AsyncioEventLoop:
     """
     IEventLoop implementation wrapping an asyncio event loop.
+
+    Parameters
+    ----------
+    event_loop : asyncio.BaseEventLoop, optional
+        The asyncio event loop to wrap. If not provided, a new
+        event loop will be created and used.
     """
 
-    def __init__(self):
-        self._event_loop = asyncio.new_event_loop()
+    def __init__(self, event_loop=None):
+        own_event_loop = event_loop is None
+        if own_event_loop:
+            event_loop = asyncio.new_event_loop()
+
+        self._own_event_loop = own_event_loop
+        self._event_loop = event_loop
 
     def close(self):
         """
         Free any resources allocated by this object.
         """
-        self._event_loop.close()
+        if self._own_event_loop:
+            self._event_loop.close()
 
     def pingee(self, on_ping):
         """

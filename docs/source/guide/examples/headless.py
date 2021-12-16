@@ -64,9 +64,11 @@ def print_progress(event):
 
 
 if __name__ == "__main__":
-    traits_executor = TraitsExecutor(event_loop=AsyncioEventLoop())
+    asyncio_event_loop = asyncio.new_event_loop()
+    traits_executor = TraitsExecutor(
+        event_loop=AsyncioEventLoop(event_loop=asyncio_event_loop)
+    )
     traits_future = submit_iteration(traits_executor, approximate_pi)
     traits_future.observe(print_progress, "result_event")
 
-    # For Python 3.7 and later, just use asyncio.run.
-    asyncio.get_event_loop().run_until_complete(future_wrapper(traits_future))
+    asyncio_event_loop.run_until_complete(future_wrapper(traits_future))
