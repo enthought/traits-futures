@@ -25,7 +25,7 @@ class AsyncioEventLoop:
 
     Parameters
     ----------
-    event_loop : asyncio.events.AbstractEventLoop, optional
+    event_loop : asyncio.AbstractEventLoop, optional
         The asyncio event loop to wrap. If not provided, a new
         event loop will be created and used.
     """
