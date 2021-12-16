@@ -29,7 +29,12 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 #: resolved by ETSEventLoop.
 PRINT_TOOLKIT = """
 from traits_futures.ets_event_loop import ETSEventLoop
-print(type(ETSEventLoop().toolkit_event_loop).__name__)
+try:
+    event_loop = ETSEventLoop().toolkit_event_loop
+except Exception as e:
+    print("Failed:", type(e).__name__)
+else:
+    print("Loop:", type(event_loop).__name__)
 """
 
 
@@ -64,6 +69,7 @@ def find_selected_toolkit(ets_toolkit=None):
     return process.stdout.rstrip()
 
 
+@requires_qt
 class TestETSEventLoop(IEventLoopTests, unittest.TestCase):
     #: Factory for instances of the event loop.
     event_loop_factory = ETSEventLoop
@@ -79,16 +85,23 @@ class TestETSEventLoop(IEventLoopTests, unittest.TestCase):
 class TestToolkitSelection(unittest.TestCase):
     @requires_qt
     def test_selects_qt(self):
-        self.assertEqual(find_selected_toolkit("qt"), "QtEventLoop")
-        self.assertEqual(find_selected_toolkit("qt4"), "QtEventLoop")
+        self.assertEqual(find_selected_toolkit("qt"), "Loop: QtEventLoop")
+        self.assertEqual(find_selected_toolkit("qt4"), "Loop: QtEventLoop")
+
+    @requires_qt
+    def test_qt_priority(self):
+        # If Qt is present, under current ETS rules it takes priority,
+        # regardless of what other toolkits are available.
+        self.assertEqual(find_selected_toolkit(), "Loop: QtEventLoop")
 
     @requires_wx
     def test_selects_wx(self):
-        self.assertEqual(find_selected_toolkit("wx"), "WxEventLoop")
+        self.assertEqual(find_selected_toolkit("wx"), "Loop: WxEventLoop")
 
-    def test_null_selects_asyncio(self):
-        self.assertEqual(find_selected_toolkit("asyncio"), "AsyncioEventLoop")
-        self.assertEqual(find_selected_toolkit("null"), "AsyncioEventLoop")
+    def test_bogus_value(self):
+        self.assertEqual(
+            find_selected_toolkit("bogus"), "Failed: RuntimeError"
+        )
 
     def test_no_ets_toolkit_var(self):
         toolkit_event_loop = find_selected_toolkit()
@@ -96,5 +109,9 @@ class TestToolkitSelection(unittest.TestCase):
         # the toolkit selection is performed in.
         self.assertIn(
             toolkit_event_loop,
-            ["QtEventLoop", "WxEventLoop", "AsyncioEventLoop"],
+            [
+                "Loop: QtEventLoop",
+                "Loop: WxEventLoop",
+                "Failed: RuntimeError",
+            ],
         )

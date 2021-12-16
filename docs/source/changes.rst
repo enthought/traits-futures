@@ -15,6 +15,19 @@ Release 0.4.0
 
 Release date: XXXX-XX-XX
 
+Features
+~~~~~~~~
+
+* Support Qt6-based toolkits PyQt6 and PySide6. (This is dependent on
+  corresponding support in Pyface.) (#488)
+
+Changes
+~~~~~~~
+
+* The "asyncio" and "null" entry points for the "traits_futures.event_loops"
+  entry point group have been removed. Their behaviour was ill-defined, and
+  dependent on ``asyncio.get_event_loop``, which is deprecated in Python.
+  (#490)
 
 Documentation
 ~~~~~~~~~~~~~
