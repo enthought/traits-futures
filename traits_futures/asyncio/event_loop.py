@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 
 """
-IEventLoop implementation for the main-thread asyncio event loop.
+IEventLoop implementation wrapping an asyncio event loop.
 """
 import asyncio
 
@@ -21,11 +21,17 @@ from traits_futures.i_event_loop import IEventLoop
 @IEventLoop.register
 class AsyncioEventLoop:
     """
-    IEventLoop implementation for the main-thread asyncio event loop.
+    IEventLoop implementation wrapping an asyncio event loop.
     """
 
     def __init__(self):
-        self._event_loop = asyncio.get_event_loop()
+        self._event_loop = asyncio.new_event_loop()
+
+    def close(self):
+        """
+        Free any resources allocated by this object.
+        """
+        self._event_loop.close()
 
     def pingee(self, on_ping):
         """

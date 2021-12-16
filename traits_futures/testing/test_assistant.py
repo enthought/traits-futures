@@ -47,7 +47,10 @@ class TestAssistant:
     #: Factory for the event loop. This should be a zero-argument callable
     #: that provides an IEventLoop instance. Override in subclasses to
     #: run tests with a particular toolkit.
-    event_loop_factory = AsyncioEventLoop
+    def event_loop_factory(self):
+        event_loop = AsyncioEventLoop()
+        self.addCleanup(event_loop.close)
+        return event_loop
 
     def setUp(self):
         self._event_loop = self.event_loop_factory()

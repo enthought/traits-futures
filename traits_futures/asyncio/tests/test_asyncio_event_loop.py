@@ -22,4 +22,7 @@ from traits_futures.tests.i_event_loop_tests import IEventLoopTests
 class TestAsyncioEventLoop(IEventLoopTests, unittest.TestCase):
 
     #: Factory for instances of the event loop.
-    event_loop_factory = AsyncioEventLoop
+    def event_loop_factory(self):
+        event_loop = AsyncioEventLoop()
+        self.addCleanup(event_loop.close)
+        return event_loop
