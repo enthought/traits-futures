@@ -21,6 +21,13 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 class TestPingee(TestAssistant, IPingeeTests, unittest.TestCase):
     def event_loop_factory(self):
+        """
+        Factory for the event loop.
+
+        Returns
+        -------
+        event_loop: IEventLoop
+        """
         event_loop = AsyncioEventLoop()
         self.addCleanup(event_loop.close)
         return event_loop
