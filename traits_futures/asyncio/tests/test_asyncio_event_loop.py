@@ -33,7 +33,8 @@ class TestAsyncioEventLoop(IEventLoopTests, unittest.TestCase):
         return AsyncioEventLoop(event_loop=asyncio_event_loop)
 
     def test_asyncio_event_loop_closed(self):
-        event_loop = AsyncioEventLoop()
+        with self.assertWarns(DeprecationWarning):
+            event_loop = AsyncioEventLoop()
         # Dig out the underlying asyncio event loop.
         asyncio_event_loop = event_loop._event_loop
         self.assertFalse(asyncio_event_loop.is_closed())

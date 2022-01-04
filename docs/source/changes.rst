@@ -34,7 +34,10 @@ Changes
   ``asyncio.new_event_loop`` if no event loop is explicitly passed in, instead
   of trying to get the currently-set event loop using the (now deprecated)
   ``asyncio.get_event_loop`` function. A new ``AsyncioEventLoop.close`` method
-  is available to close the event loop owned by ``AsyncioEventLoop``. (#492)
+  is available to close the event loop owned by ``AsyncioEventLoop``.
+  Moreover, in a future version of Traits Futures it will be required to
+  pass an explicit event loop. Instantiating an ``AsyncioEventLoop`` without
+  an ``asyncio`` event loop is deprecated. (#492)
 
 Documentation
 ~~~~~~~~~~~~~

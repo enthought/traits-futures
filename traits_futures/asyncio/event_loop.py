@@ -12,6 +12,7 @@
 IEventLoop implementation wrapping an asyncio event loop.
 """
 import asyncio
+import warnings
 
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.asyncio.pingee import Pingee
@@ -30,9 +31,16 @@ class AsyncioEventLoop:
         event loop will be created and used.
     """
 
-    def __init__(self, event_loop=None):
+    def __init__(self, *, event_loop=None):
         own_event_loop = event_loop is None
         if own_event_loop:
+            warnings.warn(
+                (
+                    "The event_loop parameter to AsyncioEventLoop will "
+                    "become required in a future version of Traits Futures"
+                ),
+                DeprecationWarning,
+            )
             event_loop = asyncio.new_event_loop()
 
         self._own_event_loop = own_event_loop
