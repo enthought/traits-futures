@@ -12,6 +12,7 @@
 Tests for the asyncio implementation of IEventLoopHelper.
 """
 
+import asyncio
 import unittest
 
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
@@ -21,6 +22,14 @@ from traits_futures.tests.i_event_loop_helper_tests import (
 
 
 class TestEventLoopHelper(IEventLoopHelperTests, unittest.TestCase):
+    def event_loop_factory(self):
+        """
+        Factory for the event loop.
 
-    #: Zero-parameter callable that creates a suitable IEventLoop instance.
-    event_loop_factory = AsyncioEventLoop
+        Returns
+        -------
+        event_loop: IEventLoop
+        """
+        asyncio_event_loop = asyncio.new_event_loop()
+        self.addCleanup(asyncio_event_loop.close)
+        return AsyncioEventLoop(event_loop=asyncio_event_loop)

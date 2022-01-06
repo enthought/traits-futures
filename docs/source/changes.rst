@@ -20,6 +20,8 @@ Features
 
 * Support Qt6-based toolkits PyQt6 and PySide6. (This is dependent on
   corresponding support in Pyface.) (#488)
+* Allow an ``asyncio`` event loop to be specified when creating an
+  instance of ``AsyncioEventLoop``. (#492)
 
 Changes
 ~~~~~~~
@@ -28,6 +30,14 @@ Changes
   entry point group have been removed. Their behaviour was ill-defined, and
   dependent on ``asyncio.get_event_loop``, which is deprecated in Python.
   (#490)
+* ``AsyncioEventLoop`` now creates a new ``asyncio`` event loop using
+  ``asyncio.new_event_loop`` if no event loop is explicitly passed in, instead
+  of trying to get the currently-set event loop using the (now deprecated)
+  ``asyncio.get_event_loop`` function. A new ``AsyncioEventLoop.close`` method
+  is available to close the event loop owned by ``AsyncioEventLoop``.
+  Moreover, in a future version of Traits Futures it will be required to
+  pass an explicit event loop. Instantiating an ``AsyncioEventLoop`` without
+  an ``asyncio`` event loop is deprecated. (#492)
 
 Documentation
 ~~~~~~~~~~~~~

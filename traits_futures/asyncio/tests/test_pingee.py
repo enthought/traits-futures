@@ -12,6 +12,7 @@
 Tests for the asyncio implementations of IPingee and IPinger.
 """
 
+import asyncio
 import unittest
 
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
@@ -20,5 +21,14 @@ from traits_futures.tests.i_pingee_tests import IPingeeTests
 
 
 class TestPingee(TestAssistant, IPingeeTests, unittest.TestCase):
+    def event_loop_factory(self):
+        """
+        Factory for the event loop.
 
-    event_loop_factory = AsyncioEventLoop
+        Returns
+        -------
+        event_loop: IEventLoop
+        """
+        asyncio_event_loop = asyncio.new_event_loop()
+        self.addCleanup(asyncio_event_loop.close)
+        return AsyncioEventLoop(event_loop=asyncio_event_loop)

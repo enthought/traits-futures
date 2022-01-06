@@ -9,9 +9,10 @@
 # Thanks for using Enthought open source!
 
 """
-IEventLoop implementation for the main-thread asyncio event loop.
+IEventLoop implementation wrapping an asyncio event loop.
 """
 import asyncio
+import warnings
 
 from traits_futures.asyncio.event_loop_helper import EventLoopHelper
 from traits_futures.asyncio.pingee import Pingee
@@ -21,11 +22,36 @@ from traits_futures.i_event_loop import IEventLoop
 @IEventLoop.register
 class AsyncioEventLoop:
     """
-    IEventLoop implementation for the main-thread asyncio event loop.
+    IEventLoop implementation wrapping an asyncio event loop.
+
+    Parameters
+    ----------
+    event_loop : asyncio.AbstractEventLoop, optional
+        The asyncio event loop to wrap. If not provided, a new
+        event loop will be created and used.
     """
 
-    def __init__(self):
-        self._event_loop = asyncio.get_event_loop()
+    def __init__(self, *, event_loop=None):
+        own_event_loop = event_loop is None
+        if own_event_loop:
+            warnings.warn(
+                (
+                    "The event_loop parameter to AsyncioEventLoop will "
+                    "become required in a future version of Traits Futures"
+                ),
+                DeprecationWarning,
+            )
+            event_loop = asyncio.new_event_loop()
+
+        self._own_event_loop = own_event_loop
+        self._event_loop = event_loop
+
+    def close(self):
+        """
+        Free any resources allocated by this object.
+        """
+        if self._own_event_loop:
+            self._event_loop.close()
 
     def pingee(self, on_ping):
         """

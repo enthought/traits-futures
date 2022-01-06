@@ -13,6 +13,8 @@ Test support, providing the ability to run the event loop from within tests.
 """
 
 
+import asyncio
+
 from traits.api import Bool, HasStrictTraits
 
 from traits_futures.asyncio.event_loop import AsyncioEventLoop
@@ -44,10 +46,17 @@ class TestAssistant:
     Most of the logic is devolved to a toolkit-specific EventLoopHelper class.
     """
 
-    #: Factory for the event loop. This should be a zero-argument callable
-    #: that provides an IEventLoop instance. Override in subclasses to
-    #: run tests with a particular toolkit.
-    event_loop_factory = AsyncioEventLoop
+    def event_loop_factory(self):
+        """
+        Factory for the event loop.
+
+        Returns
+        -------
+        event_loop: IEventLoop
+        """
+        asyncio_event_loop = asyncio.new_event_loop()
+        self.addCleanup(asyncio_event_loop.close)
+        return AsyncioEventLoop(event_loop=asyncio_event_loop)
 
     def setUp(self):
         self._event_loop = self.event_loop_factory()
