@@ -88,9 +88,10 @@
 <span class="c1"># Thanks for using Enthought open source!</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">IEventLoop implementation for the main-thread asyncio event loop.</span>
+<span class="sd">IEventLoop implementation wrapping an asyncio event loop.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">traits_futures.asyncio.event_loop_helper</span> <span class="kn">import</span> <span class="n">EventLoopHelper</span>
 <span class="kn">from</span> <span class="nn">traits_futures.asyncio.pingee</span> <span class="kn">import</span> <span class="n">Pingee</span>
@@ -100,11 +101,36 @@
 <div class="viewcode-block" id="AsyncioEventLoop"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop">[docs]</a><span class="nd">@IEventLoop</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">AsyncioEventLoop</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    IEventLoop implementation for the main-thread asyncio event loop.</span>
+<span class="sd">    IEventLoop implementation wrapping an asyncio event loop.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    event_loop : asyncio.AbstractEventLoop, optional</span>
+<span class="sd">        The asyncio event loop to wrap. If not provided, a new</span>
+<span class="sd">        event loop will be created and used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">event_loop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">own_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">own_event_loop</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;The event_loop parameter to AsyncioEventLoop will &quot;</span>
+                    <span class="s2">&quot;become required in a future version of Traits Futures&quot;</span>
+                <span class="p">),</span>
+                <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_own_event_loop</span> <span class="o">=</span> <span class="n">own_event_loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
+
+<div class="viewcode-block" id="AsyncioEventLoop.close"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Free any resources allocated by this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_event_loop</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="AsyncioEventLoop.pingee"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop.pingee">[docs]</a>    <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -87,6 +87,8 @@
 <ul class="simple">
 <li><p>Support Qt6-based toolkits PyQt6 and PySide6. (This is dependent on
 corresponding support in Pyface.) (#488)</p></li>
+<li><p>Allow an <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> event loop to be specified when creating an
+instance of <code class="docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code>. (#492)</p></li>
 </ul>
 </div>
 <div class="section" id="changes">
@@ -96,6 +98,14 @@ corresponding support in Pyface.) (#488)</p></li>
 entry point group have been removed. Their behaviour was ill-defined, and
 dependent on <code class="docutils literal notranslate"><span class="pre">asyncio.get_event_loop</span></code>, which is deprecated in Python.
 (#490)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code> now creates a new <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> event loop using
+<code class="docutils literal notranslate"><span class="pre">asyncio.new_event_loop</span></code> if no event loop is explicitly passed in, instead
+of trying to get the currently-set event loop using the (now deprecated)
+<code class="docutils literal notranslate"><span class="pre">asyncio.get_event_loop</span></code> function. A new <code class="docutils literal notranslate"><span class="pre">AsyncioEventLoop.close</span></code> method
+is available to close the event loop owned by <code class="docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code>.
+Moreover, in a future version of Traits Futures it will be required to
+pass an explicit event loop. Instantiating an <code class="docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code> without
+an <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> event loop is deprecated. (#492)</p></li>
 </ul>
 </div>
 <div class="section" id="documentation">

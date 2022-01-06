@@ -92,6 +92,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
+<span class="kn">import</span> <span class="nn">asyncio</span>
+
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">HasStrictTraits</span>
 
 <span class="kn">from</span> <span class="nn">traits_futures.asyncio.event_loop</span> <span class="kn">import</span> <span class="n">AsyncioEventLoop</span>
@@ -123,10 +125,17 @@
 <span class="sd">    Most of the logic is devolved to a toolkit-specific EventLoopHelper class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: Factory for the event loop. This should be a zero-argument callable</span>
-    <span class="c1">#: that provides an IEventLoop instance. Override in subclasses to</span>
-    <span class="c1">#: run tests with a particular toolkit.</span>
-    <span class="n">event_loop_factory</span> <span class="o">=</span> <span class="n">AsyncioEventLoop</span>
+<div class="viewcode-block" id="TestAssistant.event_loop_factory"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.event_loop_factory">[docs]</a>    <span class="k">def</span> <span class="nf">event_loop_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Factory for the event loop.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        event_loop: IEventLoop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">asyncio_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addCleanup</span><span class="p">(</span><span class="n">asyncio_event_loop</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AsyncioEventLoop</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="n">asyncio_event_loop</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestAssistant.setUp"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_loop_factory</span><span class="p">()</span>

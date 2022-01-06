@@ -89,12 +89,24 @@
             
   <div class="section" id="module-traits_futures.asyncio.event_loop">
 <span id="traits-futures-asyncio-event-loop-module"></span><h1>traits_futures.asyncio.event_loop module<a class="headerlink" href="#module-traits_futures.asyncio.event_loop" title="Permalink to this headline">¶</a></h1>
-<p>IEventLoop implementation for the main-thread asyncio event loop.</p>
+<p>IEventLoop implementation wrapping an asyncio event loop.</p>
 <dl class="py class">
 <dt id="traits_futures.asyncio.event_loop.AsyncioEventLoop">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.event_loop.</span></code><code class="sig-name descname"><span class="pre">AsyncioEventLoop</span></code><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop.html#AsyncioEventLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.asyncio.event_loop.</span></code><code class="sig-name descname"><span class="pre">AsyncioEventLoop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop.html#AsyncioEventLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>IEventLoop implementation for the main-thread asyncio event loop.</p>
+<p>IEventLoop implementation wrapping an asyncio event loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event_loop</strong> (<a class="reference external" href="https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.AbstractEventLoop" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.AbstractEventLoop</span></code></a>, <em>optional</em>) – The asyncio event loop to wrap. If not provided, a new
+event loop will be created and used.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="traits_futures.asyncio.event_loop.AsyncioEventLoop.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop.html#AsyncioEventLoop.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop.AsyncioEventLoop.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free any resources allocated by this object.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="traits_futures.asyncio.event_loop.AsyncioEventLoop.helper">
 <code class="sig-name descname"><span class="pre">helper</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/asyncio/event_loop.html#AsyncioEventLoop.helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.asyncio.event_loop.AsyncioEventLoop.helper" title="Permalink to this definition">¶</a></dt>

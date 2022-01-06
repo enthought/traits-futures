@@ -106,10 +106,18 @@ forever and blocking the rest of the test suite.</p>
 <p>This class is designed to be used as a mixin alongside unittest.TestCase
 for tests that need to run the event loop as part of the test.</p>
 <p>Most of the logic is devolved to a toolkit-specific EventLoopHelper class.</p>
-<dl class="py attribute">
+<dl class="py method">
 <dt id="traits_futures.testing.test_assistant.TestAssistant.event_loop_factory">
-<code class="sig-name descname"><span class="pre">event_loop_factory</span></code><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.event_loop_factory" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.asyncio.event_loop.AsyncioEventLoop</span></code></a></p>
+<code class="sig-name descname"><span class="pre">event_loop_factory</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.event_loop_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.event_loop_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory for the event loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>event_loop</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoop</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
