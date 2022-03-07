@@ -27,7 +27,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
-    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
     <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
@@ -581,10 +581,10 @@ GUI as the background computation progresses.</p>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ProgressFuture</span><span class="p">)</span>
 
     <span class="c1">#: Number to count primes up to.</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">)</span>
 
     <span class="c1">#: Chunk size to use for the calculation.</span>
-    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
 
     <span class="c1">#: Button to start the calculation.</span>
     <span class="n">count</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
@@ -730,7 +730,7 @@ updated live with each new value reported by the background task.</p>
         <span class="c1"># https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval</span>
         <span class="n">approximation</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">ninside</span> <span class="o">/</span> <span class="n">nsamples</span>
         <span class="n">noutside</span> <span class="o">=</span> <span class="n">nsamples</span> <span class="o">-</span> <span class="n">ninside</span>
-        <span class="n">error</span> <span class="o">=</span> <span class="mf">7.839856</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ninside</span> <span class="o">*</span> <span class="n">noutside</span> <span class="o">/</span> <span class="p">(</span><span class="n">nsamples</span> <span class="o">**</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="mf">7.839856</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ninside</span> <span class="o">*</span> <span class="n">noutside</span> <span class="o">/</span> <span class="n">nsamples</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">approximation</span><span class="p">,</span> <span class="n">error</span>
 
 
