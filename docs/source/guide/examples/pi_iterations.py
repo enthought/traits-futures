@@ -76,7 +76,7 @@ def pi_iterations(chunk_size):
         # https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval
         approximation = 4 * ninside / nsamples
         noutside = nsamples - ninside
-        error = 7.839856 * np.sqrt(ninside * noutside / (nsamples ** 3))
+        error = 7.839856 * np.sqrt(ninside * noutside / (nsamples**3))
         yield nsamples, approximation, error
 
 

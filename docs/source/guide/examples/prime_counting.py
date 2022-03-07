@@ -182,10 +182,10 @@ class PrimeCounter(HasStrictTraits):
     future = Instance(ProgressFuture)
 
     #: Number to count primes up to.
-    limit = Int(10 ** 6)
+    limit = Int(10**6)
 
     #: Chunk size to use for the calculation.
-    chunk_size = Int(10 ** 4)
+    chunk_size = Int(10**4)
 
     #: Button to start the calculation.
     count = Button()

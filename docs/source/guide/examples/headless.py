@@ -23,7 +23,7 @@ from traits_futures.api import (
 )
 
 
-def approximate_pi(sample_count=10 ** 8, report_interval=10 ** 6):
+def approximate_pi(sample_count=10**8, report_interval=10**6):
     """
     Yield successive approximations to π via Monte Carlo methods.
     """
