@@ -273,7 +273,7 @@ def current_platform():
     Return a string representing the current platform, in the format
     accepted by EDM.
     """
-    is_64bits = sys.maxsize > 2 ** 32
+    is_64bits = sys.maxsize > 2**32
     platform = sys.platform
     if platform.startswith("win32"):
         return "win-x86_64" if is_64bits else "win-x86"
