@@ -41,12 +41,12 @@ from traits_futures.api import (
 from traitsui.api import HGroup, Item, UItem, View
 
 
-def approximate_pi(sample_count=10 ** 8):
+def approximate_pi(sample_count=10**8):
     # approximate pi/4 by throwing points at a unit square and
     # counting the proportion that land in the quarter circle.
     inside = total = 0
     for i in range(sample_count):
-        if i > 0 and i % 10 ** 5 == 0:
+        if i > 0 and i % 10**5 == 0:
             yield 4 * inside / total  # <- partial result
         x, y = random.random(), random.random()
         inside += x * x + y * y < 1
@@ -62,7 +62,7 @@ class InterruptibleTaskExample(HasStrictTraits):
     future = Instance(IterationFuture)
 
     #: Number of points to use.
-    sample_count = Int(10 ** 8)
+    sample_count = Int(10**8)
 
     #: Message about state of calculation.
     message = Str("No previous calculation runs")
