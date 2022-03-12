@@ -27,7 +27,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
-    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
     <link rel="top" title="Traits Futures 0.3.1 documentation" href="../index.html" >
@@ -128,7 +128,7 @@ a running event loop.</p>
 <dl class="py class">
 <dt id="traits_futures.wx.event_loop_helper.EventLoopHelper">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">EventLoopHelper</span></code><a class="reference internal" href="../_modules/traits_futures/wx/event_loop_helper.html#EventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.event_loop_helper.EventLoopHelper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Support for running the wx event loop in unit tests.</p>
 <dl class="py method">
 <dt id="traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">
@@ -151,15 +151,15 @@ the trait changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
-<li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the trait to monitor for changes.</p></li>
+<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
+<li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the trait to monitor for changes.</p></li>
 <li><p><strong>condition</strong> – Single-argument callable, returning a boolean. This will be
 called with <em>object</em> as the only input.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Number of seconds to allow before timing out with an exception.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Number of seconds to allow before timing out with an exception.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.9)"><strong>RuntimeError</strong></a> – If timeout is reached, regardless of whether the condition is
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If timeout is reached, regardless of whether the condition is
     true or not at that point.</p>
 </dd>
 </dl>
@@ -176,10 +176,10 @@ from the main thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Object to set the given attribute on.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the attribute to set; typically this is
+<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Object to set the given attribute on.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the attribute to set; typically this is
 a traited attribute.</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Value to set the attribute to.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Value to set the attribute to.</p></li>
 </ul>
 </dd>
 </dl>
@@ -195,12 +195,12 @@ a traited attribute.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Timeout in seconds.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Timeout in seconds.</p></li>
 <li><p><strong>callback</strong> – Callable taking no arguments, to be executed when the timer
 times out.</p></li>
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>, <em>optional</em>) – Tuple of positional arguments to pass to the callable. If not
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>, <em>optional</em>) – Tuple of positional arguments to pass to the callable. If not
 provided, no positional arguments are passed.</p></li>
-<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – Dictionary of keyword arguments to pass to the callable. If not
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – Dictionary of keyword arguments to pass to the callable. If not
 provided, no keyword arguments are passed.</p></li>
 </ul>
 </dd>

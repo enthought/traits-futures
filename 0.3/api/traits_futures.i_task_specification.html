@@ -27,7 +27,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
-    <link rel="shortcut icon" href="../_static/img/favicon.ico">
+    <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
     <link rel="top" title="Traits Futures 0.3.1 documentation" href="../index.html" >
@@ -93,7 +93,7 @@ that the TraitsExecutor knows how to deal with.</p>
 <dl class="py class">
 <dt id="traits_futures.i_task_specification.IFuture">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">IFuture</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#IFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.IFuture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Interface for futures returned by the executor.</p>
 <p>This interface can be used to implement new background task types. It
 represents the knowledge that the executor needs to interact with futures.</p>
@@ -113,7 +113,7 @@ cancellation, False if the task was not cancellable (in which case
 this call did nothing).</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -126,14 +126,14 @@ this call did nothing).</p>
 use in testing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>final</strong> – True if the received message should be the last one ever received
 from the paired task.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -143,7 +143,7 @@ from the paired task.</p>
 <dl class="py class">
 <dt id="traits_futures.i_task_specification.ITaskSpecification">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_task_specification.</span></code><code class="sig-name descname"><span class="pre">ITaskSpecification</span></code><a class="reference internal" href="../_modules/traits_futures/i_task_specification.html#ITaskSpecification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_task_specification.ITaskSpecification" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Specify background task callable and foreground future for a task.</p>
 <p>An object implementing the ITaskSpecification interface describes how to
 create a background task and a corresponding foreground future to execute a
@@ -198,7 +198,7 @@ callable can use <code class="docutils literal notranslate"><span class="pre">se
 check whether cancellation has been requested.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
