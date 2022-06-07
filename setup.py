@@ -49,7 +49,11 @@ setup(
     extras_require={
         "pyqt5": ["pyqt5"],
         "pyside2": ["pyside2"],
-        "docs": ["enthought-sphinx-theme", "sphinx>=3.5,<4"],
+        "docs": [
+            "enthought-sphinx-theme",
+            "sphinx>=3.5,<4",
+            "Jinja2<3.1",
+        ],
     },
     packages=find_packages(exclude=["ci"]),
     classifiers=[
