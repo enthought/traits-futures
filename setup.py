@@ -51,7 +51,12 @@ setup(
         "pyside2": ["pyside2"],
         "docs": [
             "enthought-sphinx-theme",
+            # We pin Sphinx to avoid having to deal with the (unfortunately
+            # frequent) breakage that occurs when Sphinx is updated.
+            # xref: enthought/traits-futures#456
             "sphinx>=3.5,<4",
+            # Jinja2 is pinned for compatibility with the Sphinx pin.
+            # xref: sphinx-doc/sphinx#10291
             "Jinja2<3.1",
         ],
     },
