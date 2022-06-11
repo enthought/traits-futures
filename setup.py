@@ -58,6 +58,7 @@ setup(
             # Jinja2 is pinned for compatibility with the Sphinx pin.
             # xref: sphinx-doc/sphinx#10291
             "Jinja2<3.1",
+            "sphinx-copybutton",
         ],
     },
     packages=find_packages(exclude=["ci"]),
