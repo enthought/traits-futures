@@ -48,6 +48,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
+    "sphinx_copybutton",
     "traits.util.trait_documenter",
 ]
 
@@ -113,6 +114,13 @@ nitpick_ignore = [
     ("py:class", "pyface.qt.QtCore."),
     ("py:class", "wx."),
 ]
+
+# Options for Sphinx copybutton extension
+# ---------------------------------------
+
+# Matches prompts - "$ ", ">>>" and "..."
+copybutton_prompt_text = r">>> |\.\.\. |\$ "
+copybutton_prompt_is_regexp = True
 
 # -- Options for Napoleon extension ---------------------------------------
 
