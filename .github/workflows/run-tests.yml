@@ -38,7 +38,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies and local packages
       run: |
-        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install --upgrade pip
         python -m pip install .[pyside2]
     - name: Run the test suite
       uses: GabrielBB/xvfb-action@v1
