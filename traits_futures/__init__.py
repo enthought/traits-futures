@@ -7,7 +7,3 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-
-from traits_futures.version import version as __version__
-
-__all__ = ["__version__"]

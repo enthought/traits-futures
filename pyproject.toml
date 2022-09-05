@@ -1,5 +1,40 @@
+[project]
+name = 'traits-futures'
+description = 'Patterns for reactive background tasks'
+readme = 'README.rst'
+requires-python = '>=3.7'
+authors = [{name='Enthought', email='info@enthought.com'}]
+keywords = ['background', 'concurrency', 'futures', 'gui', 'traits', 'traitsui']
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+]
+dependencies = [
+    'pyface',
+    'traits>=6.2',
+]
+dynamic = ['version']
+
+[project.entry-points.'traits_futures.event_loops']
+qt = 'traits_futures.qt.event_loop:QtEventLoop'
+qt4 = 'traits_futures.qt.event_loop:QtEventLoop'
+wx = 'traits_futures.wx.event_loop:WxEventLoop'
+
+[project.optional-dependencies]
+docs = ['Sphinx', 'sphinx-copybutton', 'enthought-sphinx-theme']
+pyqt5 = ['pyqt5']
+pyside2 = ['pyside2']
+style = ['black', 'flake8', 'flake8-ets', 'isort']
+
+[project.urls]
+source = 'https://github.com/enthought/traits-futures'
+docs = 'https://docs.enthought.com/traits-futures/'
+
 [build-system]
-requires = ['setuptools', 'wheel']
+requires = ['setuptools>=61', 'setuptools-scm[toml]>=6.2', 'wheel']
 build-backend = 'setuptools.build_meta'
 
 [tool.black]
@@ -7,4 +42,16 @@ line-length = 79
 target-version = ['py36']
 # black introduces extra blank lines that we don't want in the Sphinx
 # rendering. xref: https://github.com/sphinx-doc/sphinx/issues/9407
-exclude = "/docs/source/guide/examples/fizz_buzz_task.py"
+exclude = '/docs/source/guide/examples/fizz_buzz_task.py'
+
+[tool.isort]
+profile = 'black'
+sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'ENTHOUGHT', 'FIRSTPARTY', 'LOCALFOLDER']
+known_third_party = ['wx']
+known_enthought = ['chaco', 'enable', 'pyface', 'traits', 'traitsui']
+line_length = 79
+order_by_type = false
+skip_glob = 'docs/source/guide/examples/*'
+
+[tool.setuptools_scm]
+version_scheme = 'release-branch-semver'

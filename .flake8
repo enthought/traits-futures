@@ -1,0 +1,7 @@
+[options]
+packages = find:
+
+[flake8]
+exclude = build
+max-line-length = 79
+per-file-ignores = docs/source/guide/examples/*:E402
