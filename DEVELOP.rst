@@ -44,5 +44,6 @@ To run a style check::
 To build the documentation::
 
     python -m pip install -r docs/requirements.txt
+    python -m pip install .
     cd docs
     python -m sphinx -b html -d doctrees source build
