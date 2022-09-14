@@ -43,6 +43,6 @@ To run a style check::
 
 To build the documentation::
 
-    python -m pip install ".[docs]"
+    python -m pip install -r docs/requirements.txt
     cd docs
     python -m sphinx -b html -d doctrees source build
