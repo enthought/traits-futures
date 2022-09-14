@@ -36,9 +36,10 @@ To run tests, do::
 
 To run a style check::
 
-    python -m pip install ".[style]"
+    python -m pip install -r style-requirements.txt
     python -m flake8
     python -m isort . --check --diff
+    python -m isort docs/source/guide/examples --check --diff
     python -m black . --check --diff
 
 To build the documentation::
