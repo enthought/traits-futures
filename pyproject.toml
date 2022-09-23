@@ -26,7 +26,7 @@ wx = 'traits_futures.wx.event_loop:WxEventLoop'
 [project.optional-dependencies]
 pyqt5 = ['pyqt5']
 pyside2 = ['pyside2']
-style = ['black', 'flake8', 'flake8-ets', 'isort']
+pyside6 = ['pyside6']
 
 [project.urls]
 source = 'https://github.com/enthought/traits-futures'
