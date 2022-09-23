@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.i_message_router module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>traits_futures.i_message_router module &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.i_parallel_context module" href="traits_futures.i_parallel_context.html" >
     <link rel="prev" title="traits_futures.i_event_loop_helper module" href="traits_futures.i_event_loop_helper.html" > 
@@ -53,7 +58,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
@@ -89,8 +94,8 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.i_message_router">
-<span id="traits-futures-i-message-router-module"></span><h1>traits_futures.i_message_router module<a class="headerlink" href="#module-traits_futures.i_message_router" title="Permalink to this headline">¶</a></h1>
+  <section id="module-traits_futures.i_message_router">
+<span id="traits-futures-i-message-router-module"></span><h1>traits_futures.i_message_router module<a class="headerlink" href="#module-traits_futures.i_message_router" title="Permalink to this heading">¶</a></h1>
 <p>Interfaces for message routers, senders and receivers.</p>
 <p>Background: messages from background tasks arrive in the foreground via
 a single channel (usually some flavour of thread-safe or process-safe queue),
@@ -107,8 +112,8 @@ background task and a foreground receiver.</p></li>
 <p>The message routing layer of Traits Futures provides no meaning or structure to
 the actual messages passed; that’s the job of the next layer up (the futures
 layer).</p>
-<div class="section" id="overview-of-the-apis">
-<h2>Overview of the APIs<a class="headerlink" href="#overview-of-the-apis" title="Permalink to this headline">¶</a></h2>
+<section id="overview-of-the-apis">
+<h2>Overview of the APIs<a class="headerlink" href="#overview-of-the-apis" title="Permalink to this heading">¶</a></h2>
 <p>An object implementing <a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter" title="traits_futures.i_message_router.IMessageRouter"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageRouter</span></code></a> has <a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.start" title="traits_futures.i_message_router.IMessageRouter.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageRouter.start</span></code></a>
 and <a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.stop" title="traits_futures.i_message_router.IMessageRouter.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageRouter.stop</span></code></a> methods to start and stop message routing.
 Pipes can only be created or disposed of in a running router.</p>
@@ -129,64 +134,64 @@ messages, and a <a class="reference internal" href="#traits_futures.i_message_ro
 called in the background task in order to undo any resources allocated or
 connections made in the <a class="reference internal" href="#traits_futures.i_message_router.IMessageSender.start" title="traits_futures.i_message_router.IMessageSender.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageSender.start</span></code></a> method.</p>
 <dl class="py class">
-<dt id="traits_futures.i_message_router.IMessageReceiver">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></code><code class="sig-name descname"><span class="pre">IMessageReceiver</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">adaptee</span></em>, <em class="sig-param"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.Interface</span></code></a></p>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageReceiver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageReceiver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adaptee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
 <p>Interface for the main-thread message receiver.</p>
 <dl class="py attribute">
-<dt id="traits_futures.i_message_router.IMessageReceiver.message">
-<code class="sig-name descname"><span class="pre">message</span></code><em class="property"> <span class="pre">=</span> <span class="pre">Event(Any())</span></em><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver.message" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageReceiver.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Event(Any())</span></em><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver.message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event fired when a message is received from the paired sender.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="traits_futures.i_message_router.IMessageRouter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></code><code class="sig-name descname"><span class="pre">IMessageRouter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">adaptee</span></em>, <em class="sig-param"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.Interface</span></code></a></p>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageRouter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adaptee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
 <p>Interface for the main-thread message router.</p>
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageRouter.close_pipe">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">close_pipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter.close_pipe">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close_pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">receiver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.close_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.close_pipe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the receiver end of a pipe produced by <code class="docutils literal notranslate"><span class="pre">pipe</span></code>.</p>
 <p>Removes the receiver from the routing table, so that no new messages
 can reach that receiver.</p>
 <p>Not thread safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.i_message_router.IMessageReceiver" title="traits_futures.i_message_router.IMessageReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageReceiver</span></code></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageRouter.pipe">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">pipe</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.pipe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter.pipe">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pipe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.pipe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a (sender, receiver) pair for sending and receiving messages.</p>
 <p>The sender will be passed to the background task and used to send
 messages, while the receiver remains in the foreground.</p>
 <p>Not thread safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><strong>sender</strong> (<a class="reference internal" href="#traits_futures.i_message_router.IMessageSender" title="traits_futures.i_message_router.IMessageSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageSender</span></code></a>) – Object to be passed to the background task.</p></li>
 <li><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.i_message_router.IMessageReceiver" title="traits_futures.i_message_router.IMessageReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageReceiver</span></code></a>) – Object kept in the foreground, which reacts to messages.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageRouter.route_until">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">route_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.route_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.route_until" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter.route_until">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">route_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.route_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.route_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manually drive the router until a given condition occurs, or timeout.</p>
 <p>This is primarily used as part of a clean shutdown.</p>
 <p>Note: this has the side-effect of moving the router from “event loop”
@@ -194,7 +199,7 @@ mode to “manual” mode. This mode switch is permanent, in the sense that
 after this point, the router will no longer respond to pings: any
 messages will need to be processed through this function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>condition</strong> – Zero-argument callable returning a boolean. When this condition
 becomes true, this method will stop routing messages. If the
@@ -202,29 +207,29 @@ condition is already true on entry, no messages will be routed.</p></li>
 <li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageRouter.start">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.start" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter.start">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start routing messages.</p>
 <p>This method must be called before any call to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or
 <code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> can be made.</p>
 <p>Not thread-safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageRouter.stop">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.stop" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter.stop">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop routing messages.</p>
 <p>This method should be called in the main thread after all pipes
 are finished with. Calls to <code class="docutils literal notranslate"><span class="pre">pipe</span></code> or <code class="docutils literal notranslate"><span class="pre">close_pipe</span></code> are
@@ -232,7 +237,7 @@ not permitted after this method has been called.</p>
 <p>Logs a warning if there are unclosed pipes.</p>
 <p>Not thread safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
 </dd>
 </dl>
@@ -241,53 +246,53 @@ not permitted after this method has been called.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="traits_futures.i_message_router.IMessageSender">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></code><code class="sig-name descname"><span class="pre">IMessageSender</span></code><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.AbstractContextManager" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.AbstractContextManager</span></code></a></p>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageSender">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageSender</span></span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.AbstractContextManager" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractContextManager</span></code></a></p>
 <p>Interface for objects used to send a message to the foreground.</p>
 <p>Typically an IMessageSender instance for a given router is created
 in the main thread by that router and then passed to the appropriate
 background task, which then effectively takes “ownership” of that sender.</p>
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageSender.send">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">send</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.send" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageSender.send">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a message to the router.</p>
 <p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
 all be called from the same thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageSender.start">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.start" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageSender.start">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do any setup necessary to prepare for sending messages.</p>
 <p>This method must be called before any messages can be sent
 using the <code class="docutils literal notranslate"><span class="pre">send</span></code> method.</p>
 <p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
 all be called from the same thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_message_router.IMessageSender.stop">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.stop" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageSender.stop">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do any teardown.</p>
 <p>After this method has been called, no more messages can be sent.</p>
 <p>Not thread-safe. The ‘start’, ‘send’ and ‘stop’ methods should
 all be called from the same thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
 </dd>
 </dl>
@@ -295,8 +300,8 @@ all be called from the same thread.</p>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -307,20 +312,26 @@ all be called from the same thread.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">traits_futures.i_message_router module</a><ul>
 <li><a class="reference internal" href="#overview-of-the-apis">Overview of the APIs</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.i_event_loop_helper.html"
-                        title="previous chapter">traits_futures.i_event_loop_helper module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.i_parallel_context.html"
-                        title="next chapter">traits_futures.i_parallel_context module</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="traits_futures.i_event_loop_helper.html"
+                          title="previous chapter">traits_futures.i_event_loop_helper module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="traits_futures.i_parallel_context.html"
+                          title="next chapter">traits_futures.i_parallel_context module</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.i_message_router.rst.txt"
@@ -330,12 +341,12 @@ all be called from the same thread.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -355,7 +366,7 @@ all be called from the same thread.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

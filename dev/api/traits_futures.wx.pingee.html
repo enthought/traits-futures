@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.wx.pingee module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>traits_futures.wx.pingee module &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="up" title="traits_futures.wx package" href="traits_futures.wx.html" >
     <link rel="next" title="Release 0.4.0" href="../changes.html" >
     <link rel="prev" title="traits_futures.wx.event_loop_helper module" href="traits_futures.wx.event_loop_helper.html" > 
@@ -53,7 +58,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
           <li class="active"><a href="traits_futures.wx.html" accesskey="U">traits_futures.wx package</a></li> 
@@ -90,15 +95,15 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.wx.pingee">
-<span id="traits-futures-wx-pingee-module"></span><h1>traits_futures.wx.pingee module<a class="headerlink" href="#module-traits_futures.wx.pingee" title="Permalink to this headline">¶</a></h1>
+  <section id="module-traits_futures.wx.pingee">
+<span id="traits-futures-wx-pingee-module"></span><h1>traits_futures.wx.pingee module<a class="headerlink" href="#module-traits_futures.wx.pingee" title="Permalink to this heading">¶</a></h1>
 <p>wxPython cross-thread pinger.</p>
 <p>This module provides a way for a background thread to request that
 the main thread execute a (fixed, parameterless) callback.</p>
 <dl class="py class">
-<dt id="traits_futures.wx.pingee.Pingee">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.pingee.</span></code><code class="sig-name descname"><span class="pre">Pingee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">wx.</span></code></p>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pingee">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.wx.pingee.</span></span><span class="sig-name descname"><span class="pre">Pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">EvtHandler</span></code></p>
 <p>Receiver for pings.</p>
 <p>Whenever a ping is received from a linked Pinger, the receiver
 calls the given fixed parameterless callable.</p>
@@ -106,26 +111,26 @@ calls the given fixed parameterless callable.</p>
 before use, and should call <code class="docutils literal notranslate"><span class="pre">disconnect</span></code> when it’s no longer
 expected to receive pings.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>on_ping</strong> – Zero-argument callable that’s called on the main thread
 every time a ping is received.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="traits_futures.wx.pingee.Pingee.connect">
-<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.connect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pingee.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare Pingee to receive pings.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.wx.pingee.Pingee.disconnect">
-<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pingee.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from the on_ping callable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.wx.pingee.Pingee.pinger">
-<code class="sig-name descname"><span class="pre">pinger</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.pinger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pingee.pinger">
+<span class="sig-name descname"><span class="pre">pinger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pingee.pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pingee.pinger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and return a new pinger linked to this pingee.</p>
 <p>This method is thread-safe. Typically the pingee will be passed to
 a background thread, and this method used within that background thread
@@ -133,10 +138,10 @@ to create a pinger.</p>
 <p>This method should only be called after the ‘connect’ method has
 been called.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pinger</strong> – New pinger, linked to this pingee.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#traits_futures.wx.pingee.Pinger" title="traits_futures.wx.pingee.Pinger"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pinger</span></code></a></p>
 </dd>
 </dl>
@@ -145,39 +150,39 @@ been called.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="traits_futures.wx.pingee.Pinger">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.wx.pingee.</span></code><code class="sig-name descname"><span class="pre">Pinger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pinger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.wx.pingee.</span></span><span class="sig-name descname"><span class="pre">Pinger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Ping emitter, which can send pings to a receiver in a thread-safe manner.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pingee</strong> (<a class="reference internal" href="#traits_futures.wx.pingee.Pingee" title="traits_futures.wx.pingee.Pingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pingee</span></code></a>) – The target receiver for the pings. The receiver must already be
 connected.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="traits_futures.wx.pingee.Pinger.connect">
-<code class="sig-name descname"><span class="pre">connect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger.connect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pinger.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to the ping receiver. No pings should be sent until
 this function is called.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.wx.pingee.Pinger.disconnect">
-<code class="sig-name descname"><span class="pre">disconnect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger.disconnect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pinger.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disconnect from the ping receiver. No pings should be sent
 after calling this function.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.wx.pingee.Pinger.ping">
-<code class="sig-name descname"><span class="pre">ping</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger.ping" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.wx.pingee.Pinger.ping">
+<span class="sig-name descname"><span class="pre">ping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/wx/pingee.html#Pinger.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.wx.pingee.Pinger.ping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a ping to the ping receiver.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -188,12 +193,16 @@ after calling this function.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.wx.event_loop_helper.html"
-                        title="previous chapter">traits_futures.wx.event_loop_helper module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../changes.html"
-                        title="next chapter">Release 0.4.0</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="traits_futures.wx.event_loop_helper.html"
+                          title="previous chapter">traits_futures.wx.event_loop_helper module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../changes.html"
+                          title="next chapter">Release 0.4.0</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.wx.pingee.rst.txt"
@@ -203,12 +212,12 @@ after calling this function.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -228,7 +237,7 @@ after calling this function.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

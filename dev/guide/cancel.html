@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Making tasks interruptible &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Making tasks interruptible &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="next" title="Contexts and multiprocessing" href="contexts.html" >
     <link rel="prev" title="Threading carefully" href="threading.html" > 
   </head>
@@ -52,7 +57,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	 
     </ul>
               
@@ -87,8 +92,8 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="making-tasks-interruptible">
-<h1>Making tasks interruptible<a class="headerlink" href="#making-tasks-interruptible" title="Permalink to this headline">¶</a></h1>
+  <section id="making-tasks-interruptible">
+<h1>Making tasks interruptible<a class="headerlink" href="#making-tasks-interruptible" title="Permalink to this heading">¶</a></h1>
 <p>All background tasks are cancellable in some form: calling the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method
 on the future for the task requests cancellation of the background task.
 However, for a basic callable submitted using <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>, the ability to
@@ -108,8 +113,8 @@ interruption points, and then execute that callable using <a class="reference in
 instead of <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>. In addition, each <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.10)"><span class="xref std std-ref">yield</span></a> statement can be used to
 provide progress information to the future. The following goes into this in
 more detail.</p>
-<div class="section" id="example-approximating">
-<h2>Example: approximating π<a class="headerlink" href="#example-approximating" title="Permalink to this headline">¶</a></h2>
+<section id="example-approximating">
+<h2>Example: approximating π<a class="headerlink" href="#example-approximating" title="Permalink to this heading">¶</a></h2>
 <p>We use a simplistic example to illustrate. The following code uses a Monte
 Carlo algorithm to compute (slowly and inefficiently) an approximation to π.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
@@ -262,9 +267,9 @@ don’t want to yield too often - as a guide, sending a message more than 100
 times per second is likely be inefficient. But conversely, if you yield too
 rarely, then the checks for cancellation will be spaced further apart, so you
 increase the latency for a response to a cancellation request.</p>
-</div>
-<div class="section" id="making-the-approximation-cancellable">
-<h2>Making the approximation cancellable<a class="headerlink" href="#making-the-approximation-cancellable" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="making-the-approximation-cancellable">
+<h2>Making the approximation cancellable<a class="headerlink" href="#making-the-approximation-cancellable" title="Permalink to this heading">¶</a></h2>
 <p>Here’s a modification of the above function that checks for cancellation every
 100 thousand iterations (which, for reference, worked out to around every 50th
 of a second when tested on a high-end 2018 laptop). It adds just two lines to
@@ -287,9 +292,9 @@ the original function.</p>
 executor, and we get an <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> instead of a <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a> in return.
 Just as with the <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, the eventual result of the <code class="docutils literal notranslate"><span class="pre">approximate_pi</span></code>
 call is supplied to the future on completion via the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a> attribute.</p>
-</div>
-<div class="section" id="sending-partial-results">
-<h2>Sending partial results<a class="headerlink" href="#sending-partial-results" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="sending-partial-results">
+<h2>Sending partial results<a class="headerlink" href="#sending-partial-results" title="Permalink to this heading">¶</a></h2>
 <p>As we mentioned above, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> also sends a message to the
 <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> whenever it encounters a <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.10)"><span class="xref std std-ref">yield</span></a>. That message carries
 whatever was yielded as a payload. That means that we can replace the plain
@@ -441,8 +446,8 @@ making use of the above.</p>
         <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -453,8 +458,9 @@ making use of the above.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Making tasks interruptible</a><ul>
 <li><a class="reference internal" href="#example-approximating">Example: approximating π</a></li>
 <li><a class="reference internal" href="#making-the-approximation-cancellable">Making the approximation cancellable</a></li>
@@ -463,12 +469,17 @@ making use of the above.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="threading.html"
-                        title="previous chapter">Threading carefully</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="contexts.html"
-                        title="next chapter">Contexts and multiprocessing</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="threading.html"
+                          title="previous chapter">Threading carefully</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="contexts.html"
+                          title="next chapter">Contexts and multiprocessing</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/guide/cancel.rst.txt"
@@ -478,12 +489,12 @@ making use of the above.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -503,7 +514,7 @@ making use of the above.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

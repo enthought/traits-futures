@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
     <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/clipboard.min.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="_static/img/favicon.png">
     <link rel="index" title="Index" href="genindex.html" >
     <link rel="search" title="Search" href="search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="#" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="#" >
     <link rel="next" title="Overview" href="guide/overview.html" > 
   </head>
   <body>
@@ -80,15 +85,15 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
-<h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Permalink to this headline">¶</a></h1>
-<p>Release v0.4.0.dev0.</p>
+  <section id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
+<h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Permalink to this heading">¶</a></h1>
+<p>Release v0.1.</p>
 <p>The <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> package provides a means to fire off a background
 calculation from a <a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI</a> application, and later respond to the result(s)
 of that calculation, leaving the main UI responsive for user interactions while
 the background calculation is in progress.</p>
-<div class="section" id="features">
-<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Supports simple calls, iterations, and progress-reporting functions. Can
 easily be extended to support other messaging patterns.</p></li>
@@ -99,7 +104,7 @@ easily be extended to support other messaging patterns.</p></li>
 <li><p>access to result(s) arriving from the background task</p></li>
 </ul>
 </li>
-<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
+<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
 into a TraitsUI application.</p></li>
 <li><p>No need to be a threading expert! Incoming results arrive as trait changes in
 the main thread. This eliminates a large class of potential issues with
@@ -107,17 +112,17 @@ traditional thread-based solutions (race conditions, deadlocks, and UI
 updates off the main thread).</p></li>
 <li><p>Cross-platform.</p></li>
 </ul>
-</div>
-<div class="section" id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
 UI event loop to be running in order to process results.</p></li>
-<li><p>Requires Python 3.6 or later.</p></li>
+<li><p>Requires Python 3.7 or later.</p></li>
 </ul>
-</div>
-<div class="section" id="quick-start">
-<h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this heading">¶</a></h2>
 <p>Here’s a <a class="reference download internal" download="" href="_downloads/8ff58e20f83ca045e85e09f8e4d69fce/quick_start.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">example</span></code></a> showing a
 minimal TraitsUI application that fires off a background computation when its
 “Calculate” button is pressed, and shows the result when it arrives.</p>
@@ -201,10 +206,10 @@ minimal TraitsUI application that fires off a background computation when its
         <span class="n">traits_executor</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="user-guide">
-<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+</section>
+</section>
+<section id="user-guide">
+<h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="guide/overview.html">Overview</a><ul>
@@ -273,9 +278,9 @@ minimal TraitsUI application that fires off a background computation when its
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="api-documentation">
-<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/traits_futures.html">traits_futures package</a><ul>
@@ -315,7 +320,6 @@ minimal TraitsUI application that fires off a background computation when its
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_context.html">traits_futures.multithreading_context module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_router.html">traits_futures.multithreading_router module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.version.html">traits_futures.version module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wrappers.html">traits_futures.wrappers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.asyncio.html">traits_futures.asyncio package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.event_loop.html">traits_futures.asyncio.event_loop module</a></li>
@@ -344,9 +348,9 @@ minimal TraitsUI application that fires off a background computation when its
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Release 0.4.0</a><ul>
@@ -391,15 +395,15 @@ minimal TraitsUI application that fires off a background computation when its
 <li class="toctree-l1"><a class="reference internal" href="changes.html#release-0-1-0">Release 0.1.0</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
           </div>
@@ -410,8 +414,9 @@ minimal TraitsUI application that fires off a background computation when its
             <p class="logo"><a href="#">
               <img class="logo" src="_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h3><a href="#">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Traits Futures: reactive background processing for Traits and TraitsUI</a><ul>
 <li><a class="reference internal" href="#features">Features</a></li>
 <li><a class="reference internal" href="#limitations">Limitations</a></li>
@@ -424,9 +429,12 @@ minimal TraitsUI application that fires off a background computation when its
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-  <h4>Next topic</h4>
-  <p class="topless"><a href="guide/overview.html"
-                        title="next chapter">Overview</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="guide/overview.html"
+                          title="next chapter">Overview</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="_sources/index.rst.txt"
@@ -436,12 +444,12 @@ minimal TraitsUI application that fires off a background computation when its
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -461,7 +469,7 @@ minimal TraitsUI application that fires off a background computation when its
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

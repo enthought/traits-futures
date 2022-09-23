@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.multiprocessing_context module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>traits_futures.multiprocessing_context module &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.multiprocessing_router module" href="traits_futures.multiprocessing_router.html" >
     <link rel="prev" title="traits_futures.i_task_specification module" href="traits_futures.i_task_specification.html" > 
@@ -53,7 +58,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
@@ -89,73 +94,73 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.multiprocessing_context">
-<span id="traits-futures-multiprocessing-context-module"></span><h1>traits_futures.multiprocessing_context module<a class="headerlink" href="#module-traits_futures.multiprocessing_context" title="Permalink to this headline">¶</a></h1>
+  <section id="module-traits_futures.multiprocessing_context">
+<span id="traits-futures-multiprocessing-context-module"></span><h1>traits_futures.multiprocessing_context module<a class="headerlink" href="#module-traits_futures.multiprocessing_context" title="Permalink to this heading">¶</a></h1>
 <p>Context providing multiprocessing-friendly worker pools, events, and routers.</p>
 <dl class="py class">
-<dt id="traits_futures.multiprocessing_context.MultiprocessingContext">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_context.</span></code><code class="sig-name descname"><span class="pre">MultiprocessingContext</span></code><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits_futures.i_parallel_context.IParallelContext</span></code></a></p>
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_context.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingContext</span></span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext" title="traits_futures.i_parallel_context.IParallelContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">IParallelContext</span></code></a></p>
 <p>Context for multiprocessing, suitable for use with the TraitsExecutor.</p>
 <dl class="py method">
-<dt id="traits_futures.multiprocessing_context.MultiprocessingContext.close">
-<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.close" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do any cleanup necessary before disposal of the context.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="traits_futures.multiprocessing_context.MultiprocessingContext.closed">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">closed</span></code><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.closed" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.closed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.closed" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if this context is closed, else False.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.multiprocessing_context.MultiprocessingContext.event">
-<code class="sig-name descname"><span class="pre">event</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.event" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.event">
+<span class="sig-name descname"><span class="pre">event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a shareable event suitable for this context.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>event</strong> – An event that can be shared safely with workers.
 The event should have the same API as <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Event" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Event</span></code></a>
 and <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Event" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">multiprocessing.Event</span></code></a>, providing at a minimum
 the <code class="docutils literal notranslate"><span class="pre">set</span></code> and <code class="docutils literal notranslate"><span class="pre">is_set</span></code> methods from that API.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.multiprocessing_context.MultiprocessingContext.message_router">
-<code class="sig-name descname"><span class="pre">message_router</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.message_router" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.message_router">
+<span class="sig-name descname"><span class="pre">message_router</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_loop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.message_router"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.message_router" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a message router suitable for use in this context.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>event_loop</strong> (<a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoop</span></code></a>) – The event loop to interact with.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>message_router</strong></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter" title="traits_futures.multiprocessing_router.MultiprocessingRouter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiprocessingRouter</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool">
-<code class="sig-name descname"><span class="pre">worker_pool</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.worker_pool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool">
+<span class="sig-name descname"><span class="pre">worker_pool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_context.html#MultiprocessingContext.worker_pool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a new worker pool suitable for this context.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>max_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <em>optional</em>) – Maximum number of workers to use. If not given, the choice is
 delegated to the ProcessPoolExecutor.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>executor</strong></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.Executor</span></code></a></p>
 </dd>
 </dl>
@@ -163,7 +168,7 @@ delegated to the ProcessPoolExecutor.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -174,12 +179,16 @@ delegated to the ProcessPoolExecutor.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.i_task_specification.html"
-                        title="previous chapter">traits_futures.i_task_specification module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.multiprocessing_router.html"
-                        title="next chapter">traits_futures.multiprocessing_router module</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="traits_futures.i_task_specification.html"
+                          title="previous chapter">traits_futures.i_task_specification module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="traits_futures.multiprocessing_router.html"
+                          title="next chapter">traits_futures.multiprocessing_router module</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.multiprocessing_context.rst.txt"
@@ -189,12 +198,12 @@ delegated to the ProcessPoolExecutor.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -214,7 +223,7 @@ delegated to the ProcessPoolExecutor.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

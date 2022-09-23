@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.i_event_loop_helper module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>traits_futures.i_event_loop_helper module &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.i_message_router module" href="traits_futures.i_message_router.html" >
     <link rel="prev" title="traits_futures.i_event_loop module" href="traits_futures.i_event_loop.html" > 
@@ -53,7 +58,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
@@ -89,52 +94,52 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.i_event_loop_helper">
-<span id="traits-futures-i-event-loop-helper-module"></span><h1>traits_futures.i_event_loop_helper module<a class="headerlink" href="#module-traits_futures.i_event_loop_helper" title="Permalink to this headline">¶</a></h1>
+  <section id="module-traits_futures.i_event_loop_helper">
+<span id="traits-futures-i-event-loop-helper-module"></span><h1>traits_futures.i_event_loop_helper module<a class="headerlink" href="#module-traits_futures.i_event_loop_helper" title="Permalink to this heading">¶</a></h1>
 <p>Interface for toolkit-specific event loop helper class.</p>
 <dl class="py class">
-<dt id="traits_futures.i_event_loop_helper.IEventLoopHelper">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.i_event_loop_helper.</span></code><code class="sig-name descname"><span class="pre">IEventLoopHelper</span></code><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop_helper.IEventLoopHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_event_loop_helper.</span></span><span class="sig-name descname"><span class="pre">IEventLoopHelper</span></span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Interface for toolkit-specific event loop helper class.</p>
 <p>An IEventLoopHelper instance provides a way to run the event loop
 programmatically until a given condition occurs. Its primary use
 is in testing.</p>
 <dl class="py method">
-<dt id="traits_futures.i_event_loop_helper.IEventLoopHelper.dispose">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">dispose</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop_helper.IEventLoopHelper.dispose">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dispose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.dispose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.dispose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dispose of any resources used by this object.</p>
 <p>This method is not thread-safe. It should always be called on the
 event loop’s thread.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_event_loop_helper.IEventLoopHelper.init">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">init</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.init" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop_helper.IEventLoopHelper.init">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare the event loop for use.</p>
 <p>This method is not thread-safe. It should always be called on the
 event loop’s thread.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_event_loop_helper.IEventLoopHelper.run_until">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">run_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.run_until" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop_helper.IEventLoopHelper.run_until">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.run_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run event loop until a given condition occurs, or timeout.</p>
 <p>The condition is re-evaluated, with the object as argument, every time
 the trait changes.</p>
 <p>This method is not thread-safe. It should always be called on the
 event loop’s thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
+<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
 <li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the trait to monitor for changes.</p></li>
 <li><p><strong>condition</strong> – Single-argument callable, returning a boolean. This will be
 called with <em>object</em> as the only input.</p></li>
 <li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Number of seconds to allow before timing out with an exception.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If timeout is reached, regardless of whether the condition is
     true or not at that point.</p>
 </dd>
@@ -142,15 +147,15 @@ called with <em>object</em> as the only input.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.i_event_loop_helper.IEventLoopHelper.setattr_soon">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">setattr_soon</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.setattr_soon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.setattr_soon" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.i_event_loop_helper.IEventLoopHelper.setattr_soon">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setattr_soon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop_helper.html#IEventLoopHelper.setattr_soon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop_helper.IEventLoopHelper.setattr_soon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arrange for an attribute to be set once the event loop is running.</p>
 <p>In typical usage, <em>obj</em> will be a <code class="docutils literal notranslate"><span class="pre">HasTraits</span></code> instance and
 <em>name</em> will be the name of a trait on <em>obj</em>.</p>
 <p>This method is not thread-safe. It should always be called on the
 event loop’s thread.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Object to set the given attribute on.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the attribute to set; typically this is
@@ -163,7 +168,7 @@ a traited attribute.</p></li>
 
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -174,12 +179,16 @@ a traited attribute.</p></li>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.i_event_loop.html"
-                        title="previous chapter">traits_futures.i_event_loop module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.i_message_router.html"
-                        title="next chapter">traits_futures.i_message_router module</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="traits_futures.i_event_loop.html"
+                          title="previous chapter">traits_futures.i_event_loop module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="traits_futures.i_message_router.html"
+                          title="next chapter">traits_futures.i_message_router module</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.i_event_loop_helper.rst.txt"
@@ -189,12 +198,12 @@ a traited attribute.</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -214,7 +223,7 @@ a traited attribute.</p></li>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

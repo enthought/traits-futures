@@ -40,7 +40,6 @@ traits\_futures package
    traits_futures.multithreading_context
    traits_futures.multithreading_router
    traits_futures.traits_executor
-   traits_futures.version
    traits_futures.wrappers
 
 

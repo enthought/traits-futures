@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.exception_handling module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>traits_futures.exception_handling module &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="up" title="traits_futures package" href="traits_futures.html" >
     <link rel="next" title="traits_futures.executor_states module" href="traits_futures.executor_states.html" >
     <link rel="prev" title="traits_futures.ets_event_loop module" href="traits_futures.ets_event_loop.html" > 
@@ -53,7 +58,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" accesskey="U">traits_futures package</a></li> 
     </ul>
@@ -89,29 +94,29 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.exception_handling">
-<span id="traits-futures-exception-handling-module"></span><h1>traits_futures.exception_handling module<a class="headerlink" href="#module-traits_futures.exception_handling" title="Permalink to this headline">¶</a></h1>
+  <section id="module-traits_futures.exception_handling">
+<span id="traits-futures-exception-handling-module"></span><h1>traits_futures.exception_handling module<a class="headerlink" href="#module-traits_futures.exception_handling" title="Permalink to this heading">¶</a></h1>
 <p>Support for transferring exception information from a background task.</p>
 <dl class="py function">
-<dt id="traits_futures.exception_handling.marshal_exception">
-<code class="sig-prename descclassname"><span class="pre">traits_futures.exception_handling.</span></code><code class="sig-name descname"><span class="pre">marshal_exception</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/exception_handling.html#marshal_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.exception_handling.marshal_exception" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.exception_handling.marshal_exception">
+<span class="sig-prename descclassname"><span class="pre">traits_futures.exception_handling.</span></span><span class="sig-name descname"><span class="pre">marshal_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/exception_handling.html#marshal_exception"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.exception_handling.marshal_exception" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn exception details into something that can be safely
 transmitted across thread / process boundaries.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>exception</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></a>) – The exception instance to be marshalled</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>exception_type, exception_value, exception_traceback</strong> – Strings representing the exception type, value and
 formatted traceback.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -122,12 +127,16 @@ formatted traceback.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.ets_event_loop.html"
-                        title="previous chapter">traits_futures.ets_event_loop module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.executor_states.html"
-                        title="next chapter">traits_futures.executor_states module</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="traits_futures.ets_event_loop.html"
+                          title="previous chapter">traits_futures.ets_event_loop module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="traits_futures.executor_states.html"
+                          title="next chapter">traits_futures.executor_states module</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.exception_handling.rst.txt"
@@ -137,12 +146,12 @@ formatted traceback.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -162,7 +171,7 @@ formatted traceback.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

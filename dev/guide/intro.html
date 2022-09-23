@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Introduction &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Introduction &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="next" title="Threading carefully" href="threading.html" >
     <link rel="prev" title="Overview" href="overview.html" > 
   </head>
@@ -52,7 +57,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	 
     </ul>
               
@@ -87,13 +92,13 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h1>
 <p>In this guide we’ll introduce the key players in the <a class="reference internal" href="../api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a>
 package. All classes and data items mentioned here can be imported directly
 from the <a class="reference internal" href="../api/traits_futures.api.html#module-traits_futures.api" title="traits_futures.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures.api</span></code></a> module.</p>
-<div class="section" id="submitting-background-tasks">
-<h2>Submitting background tasks<a class="headerlink" href="#submitting-background-tasks" title="Permalink to this headline">¶</a></h2>
+<section id="submitting-background-tasks">
+<h2>Submitting background tasks<a class="headerlink" href="#submitting-background-tasks" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> is the main point of entry to <a class="reference internal" href="../api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a>. Its job is
 to accept one or more task submissions. For each task submitted, it sends the
 computation to run in the background on a worker from a worker pool, and
@@ -153,9 +158,9 @@ how to interpret them.</p>
 <p>In the current version of Traits Futures, tasks may only be submitted from the
 main thread. An attempt to submit a task from a background thread will raise
 <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. This restriction may be removed in the future.</p>
-</div>
-<div class="section" id="working-with-future-objects">
-<h2>Working with future objects<a class="headerlink" href="#working-with-future-objects" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="working-with-future-objects">
+<h2>Working with future objects<a class="headerlink" href="#working-with-future-objects" title="Permalink to this heading">¶</a></h2>
 <p>The various submission methods described above are asynchronous: they return a
 “future” object immediately without waiting for the background task to
 complete. The returned “future” has three purposes:</p>
@@ -166,8 +171,8 @@ case of failure)</p></li>
 <li><p>it provides a way to request that a background task be cancelled</p></li>
 </ul>
 <p>In this section we describe these three topics in more detail.</p>
-<div class="section" id="future-states">
-<h3>Future states<a class="headerlink" href="#future-states" title="Permalink to this headline">¶</a></h3>
+<section id="future-states">
+<h3>Future states<a class="headerlink" href="#future-states" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> objects all provide a
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.state" title="traits_futures.base_future.BaseFuture.state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">state</span></code></a> trait, of trait type <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.FutureState" title="traits_futures.future_states.FutureState"><code class="xref py py-data docutils literal notranslate"><span class="pre">FutureState</span></code></a>, that represents the state of
 the underlying computation. That state has one of six possible different
@@ -221,9 +226,9 @@ background task: this happens even if cancellation is requested.</p>
     CANCELLING -&gt; CANCELLED [label=&quot;raised&quot;];
     CANCELLING -&gt; CANCELLED [label=&quot;returned&quot;];
 }</p></object></div>
-</div>
-<div class="section" id="getting-task-results">
-<h3>Getting task results<a class="headerlink" href="#getting-task-results" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="getting-task-results">
+<h3>Getting task results<a class="headerlink" href="#getting-task-results" title="Permalink to this heading">¶</a></h3>
 <p>Background task results can be retrieved directly from the corresponding
 futures.</p>
 <p>The <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> functions run callables that eventually
@@ -254,7 +259,7 @@ trait like this:</p>
 </div>
 <p>The <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> function is a little bit different: it produces a result
 on each iteration, but doesn’t necessarily give a final result. Its
-<a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event" title="traits_futures.background_iteration.IterationFuture.result_event"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result_event</span></code></a> is an <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/trait_types.html#traits.trait_types.Event" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.trait_types.Event</span></code></a> trait that you can hook
+<a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event" title="traits_futures.background_iteration.IterationFuture.result_event"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result_event</span></code></a> is an <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/trait_types.html#traits.trait_types.Event" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.trait_types.Event</span></code></a> trait that you can hook
 listeners up to in order to receive the iteration results. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;future:result_event&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
@@ -271,9 +276,9 @@ versions of the exception type, the exception value and the exception
 traceback.</p>
 <p>As with <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a>, an attempt to access <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception" title="traits_futures.base_future.BaseFuture.exception"><code class="xref py py-attr docutils literal notranslate"><span class="pre">exception</span></code></a> for a future that’s not in
 <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.FAILED" title="traits_futures.future_states.FAILED"><code class="xref py py-data docutils literal notranslate"><span class="pre">FAILED</span></code></a> state will give an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>.</p>
-</div>
-<div class="section" id="cancelling-the-background-task">
-<h3>Cancelling the background task<a class="headerlink" href="#cancelling-the-background-task" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="cancelling-the-background-task">
+<h3>Cancelling the background task<a class="headerlink" href="#cancelling-the-background-task" title="Permalink to this heading">¶</a></h3>
 <p>The <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> and <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> classes all have a
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method that allows the user to request cancellation of the
 corresponding background task. That request gets interpreted a little
@@ -300,10 +305,10 @@ results or exception information are received from a future in <a class="referen
 state. A cancelled future will never reach <a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.FAILED" title="traits_futures.future_states.FAILED"><code class="xref py py-data docutils literal notranslate"><span class="pre">FAILED</span></code></a> state, and will never
 record information from a background task exception that occurs after the
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> call.</p>
-</div>
-</div>
-<div class="section" id="stopping-the-executor">
-<h2>Stopping the executor<a class="headerlink" href="#stopping-the-executor" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="stopping-the-executor">
+<h2>Stopping the executor<a class="headerlink" href="#stopping-the-executor" title="Permalink to this heading">¶</a></h2>
 <p>To avoid unexpected side-effects during Python process finalization, it’s
 recommended to shut down a running <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> explicitly prior to process
 exit. Similarly, when writing a unit test that makes use of a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>,
@@ -311,8 +316,8 @@ that executor should be shut down at test exit, to avoid potential for
 unexpected interactions with other tests.</p>
 <p>This section describes the two methods available for executor shutdown:
 <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> and <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a>.</p>
-<div class="section" id="executor-states">
-<h3>Executor states<a class="headerlink" href="#executor-states" title="Permalink to this headline">¶</a></h3>
+<section id="executor-states">
+<h3>Executor states<a class="headerlink" href="#executor-states" title="Permalink to this heading">¶</a></h3>
 <p>Like the various future classes, a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> also has a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.state" title="traits_futures.traits_executor.TraitsExecutor.state"><code class="xref py py-attr docutils literal notranslate"><span class="pre">state</span></code></a>
 trait, of type <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.ExecutorState" title="traits_futures.executor_states.ExecutorState"><code class="xref py py-data docutils literal notranslate"><span class="pre">ExecutorState</span></code></a>. This state is one of the following:</p>
 <dl class="simple">
@@ -329,9 +334,9 @@ finished. An executor in <a class="reference internal" href="../api/traits_futur
 submissions, and cannot be restarted.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="executor-shutdown">
-<h3>Executor shutdown<a class="headerlink" href="#executor-shutdown" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="executor-shutdown">
+<h3>Executor shutdown<a class="headerlink" href="#executor-shutdown" title="Permalink to this heading">¶</a></h3>
 <p>Once a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> object is no longer needed (for example at application
 shutdown time), it can be shut down via its <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method. This method is
 blocking: it waits for all of the background tasks to complete before
@@ -347,18 +352,18 @@ method performs the following tasks, in order:</p>
 <p>If called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> simply returns
 without taking any action. If called on an executor in <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state,
 any of the above actions that have not already been taken will be taken.</p>
-</div>
-<div class="section" id="shutdown-with-a-timeout">
-<h3>Shutdown with a timeout<a class="headerlink" href="#shutdown-with-a-timeout" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="shutdown-with-a-timeout">
+<h3>Shutdown with a timeout<a class="headerlink" href="#shutdown-with-a-timeout" title="Permalink to this heading">¶</a></h3>
 <p>To avoid blocking indefinitely, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method also accepts a
 <code class="docutils literal notranslate"><span class="pre">timeout</span></code> parameter. That timeout is used when waiting for the background
 tasks to complete. If the background tasks fail to complete within the given
 timeout, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> and leave the executor in
 <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state. The worker pool used by the executor will not have been shut
 down.</p>
-</div>
-<div class="section" id="non-blocking-executor-shutdown">
-<h3>Non-blocking executor shutdown<a class="headerlink" href="#non-blocking-executor-shutdown" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="non-blocking-executor-shutdown">
+<h3>Non-blocking executor shutdown<a class="headerlink" href="#non-blocking-executor-shutdown" title="Permalink to this heading">¶</a></h3>
 <p>Occasionally, it may be desirable to shut down an executor during normal
 application execution, rather than at application shutdown time. In this
 situation calling <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> is problematic, since that method is blocking and
@@ -383,10 +388,10 @@ the <a class="reference internal" href="../api/traits_futures.executor_states.ht
 it’s always legal to call <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> on an executor, regardless of the current
 state of that executor. In particular, calling <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> after <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> is
 permissible, but calling <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> after <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> would be an error.</p>
-</div>
-</div>
-<div class="section" id="using-a-shared-worker-pool">
-<h2>Using a shared worker pool<a class="headerlink" href="#using-a-shared-worker-pool" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="using-a-shared-worker-pool">
+<h2>Using a shared worker pool<a class="headerlink" href="#using-a-shared-worker-pool" title="Permalink to this heading">¶</a></h2>
 <p>By default, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> creates its own worker pool, and shuts that
 worker pool down when its <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop" title="traits_futures.traits_executor.TraitsExecutor.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop</span></code></a> method is called. In a large multithreaded
 application, you might want to use a shared worker pool for multiple different
@@ -399,8 +404,8 @@ with an existing worker pool, which should be an instance of
 </div>
 <p>It’s then your responsibility to shut down the worker pool once it’s no longer
 needed.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -411,8 +416,9 @@ needed.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Introduction</a><ul>
 <li><a class="reference internal" href="#submitting-background-tasks">Submitting background tasks</a></li>
 <li><a class="reference internal" href="#working-with-future-objects">Working with future objects</a><ul>
@@ -433,12 +439,17 @@ needed.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="overview.html"
-                        title="previous chapter">Overview</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="threading.html"
-                        title="next chapter">Threading carefully</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="overview.html"
+                          title="previous chapter">Overview</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="threading.html"
+                          title="next chapter">Threading carefully</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/guide/intro.rst.txt"
@@ -448,12 +459,12 @@ needed.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -473,7 +484,7 @@ needed.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

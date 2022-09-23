@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Overview &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Overview &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="next" title="Introduction" href="intro.html" >
     <link rel="prev" title="Traits Futures: reactive background processing for Traits and TraitsUI" href="../index.html" > 
   </head>
@@ -52,7 +57,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	 
     </ul>
               
@@ -87,16 +92,16 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="why-traits-futures">
-<h2>Why Traits Futures?<a class="headerlink" href="#why-traits-futures" title="Permalink to this headline">¶</a></h2>
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
+<section id="why-traits-futures">
+<h2>Why Traits Futures?<a class="headerlink" href="#why-traits-futures" title="Permalink to this heading">¶</a></h2>
 <p>In a nutshell, Traits Futures allows GUI applications to execute one or more
 background tasks without blocking the main GUI, and then <em>safely</em> update the
 GUI in response to full or partial results from those background tasks. For
 more details and an explanation of why this is needed, read on.</p>
 <p>The GUI frameworks that we work with in the Enthought Tool Suite are
-essentially<a class="footnote-reference brackets" href="#f1" id="id1">1</a> single-threaded. When an application is started, the main
+essentially<a class="footnote-reference brackets" href="#f1" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> single-threaded. When an application is started, the main
 thread of the Python process enters the GUI framework’s event loop, for example
 via a call to <a class="reference external" href="https://doc.qt.io/qt-5/qapplication.html#exec">QApplication::exec</a>. That event loop then
 waits for relevant events (user interactions with widgets, external network
@@ -106,8 +111,8 @@ the form of callbacks into Python code.</p>
 <p>Traits-based GUIs that perform significant work in response to user
 interactions (for example, running a complex computation, or submitting a
 complex search query to a remote database) face two main problems.</p>
-<div class="section" id="problem-1-unresponsive-guis">
-<h3>Problem 1: unresponsive GUIs<a class="headerlink" href="#problem-1-unresponsive-guis" title="Permalink to this headline">¶</a></h3>
+<section id="problem-1-unresponsive-guis">
+<h3>Problem 1: unresponsive GUIs<a class="headerlink" href="#problem-1-unresponsive-guis" title="Permalink to this heading">¶</a></h3>
 <p>Thanks to the single-threaded nature of the GUI frameworks, the various
 callbacks into Python land are executed in serial rather than in parallel: only
 one callback can be executing at any given time, and that callback must
@@ -190,9 +195,9 @@ see a message update for that first <code class="docutils literal notranslate"><
 because the graphical update occurs as the result of another task sitting in
 the event loop’s task queue, and our current callback is blocking that task
 from executing.</p>
-</div>
-<div class="section" id="problem-2-safely-updating-the-gui">
-<h3>Problem 2: Safely updating the GUI<a class="headerlink" href="#problem-2-safely-updating-the-gui" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="problem-2-safely-updating-the-gui">
+<h3>Problem 2: Safely updating the GUI<a class="headerlink" href="#problem-2-safely-updating-the-gui" title="Permalink to this heading">¶</a></h3>
 <p>The solution to the responsiveness issue described in the previous section is
 straightforward: we move the calculation to a separate thread or process,
 freeing up the main thread so that the GUI can continue to respond to user
@@ -297,9 +302,9 @@ it’s still somewhat risky to have a trait (the <code class="docutils literal n
 from something other than the main thread: <em>any</em> listener attached to that
 event needs to be written to be thread safe, and it would be all too easy
 to accidentally introduce non-thread-safe listeners.</p>
-</div>
-<div class="section" id="solution-traits-futures">
-<h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="solution-traits-futures">
+<h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Permalink to this heading">¶</a></h3>
 <p>Traits Futures provides a pattern for solving the above problems. As with
 <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
 the time of submission a “future” object is returned. That “future” object acts
@@ -325,19 +330,20 @@ to receive expected updates from background tasks, and some care can be needed
 during application shutdown. See the <a class="reference internal" href="testing.html#guide-testing"><span class="std std-ref">Testing Traits Futures code</span></a> section for some hints on
 writing unit tests for code that uses Traits Futures.</p>
 <p class="rubric">Footnotes</p>
-<dl class="footnote brackets">
-<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>Note the weasel word “essentially”. Some frameworks, on some platforms, may
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="f1" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Note the weasel word “essentially”. Some frameworks, on some platforms, may
 start auxiliary threads in order to faciliate communication between the
 operating system and the GUI framework. Nevertheless, those auxiliary
 threads remain largely invisible to the user, and the “single-threaded”
 conceptual model remains a useful one for the purposes of understanding and
 reasoning about the GUI behavior.</p>
-</dd>
-</dl>
-</div>
-</div>
-</div>
+</aside>
+</aside>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -348,8 +354,9 @@ reasoning about the GUI behavior.</p>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Overview</a><ul>
 <li><a class="reference internal" href="#why-traits-futures">Why Traits Futures?</a><ul>
 <li><a class="reference internal" href="#problem-1-unresponsive-guis">Problem 1: unresponsive GUIs</a></li>
@@ -361,12 +368,17 @@ reasoning about the GUI behavior.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../index.html"
-                        title="previous chapter">Traits Futures: reactive background processing for Traits and TraitsUI</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="intro.html"
-                        title="next chapter">Introduction</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../index.html"
+                          title="previous chapter">Traits Futures: reactive background processing for Traits and TraitsUI</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="intro.html"
+                          title="next chapter">Introduction</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/guide/overview.rst.txt"
@@ -376,12 +388,12 @@ reasoning about the GUI behavior.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -401,7 +413,7 @@ reasoning about the GUI behavior.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>

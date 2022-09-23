@@ -3,19 +3,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>traits_futures.testing.test_assistant module &mdash; Traits Futures 0.4.0.dev0 documentation</title>
+    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>traits_futures.testing.test_assistant module &mdash; Traits Futures 0.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" >
     <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0.dev0',
+        VERSION:     '0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -23,8 +26,10 @@
         HAS_SOURCE:  true
       };
     </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -33,7 +38,7 @@
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="Traits Futures 0.4.0.dev0 documentation" href="../index.html" >
+    <link rel="top" title="Traits Futures 0.1 documentation" href="../index.html" >
     <link rel="up" title="traits_futures.testing package" href="traits_futures.testing.html" >
     <link rel="next" title="traits_futures.wx package" href="traits_futures.wx.html" >
     <link rel="prev" title="traits_futures.testing.optional_dependencies module" href="traits_futures.testing.optional_dependencies.html" > 
@@ -53,7 +58,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">Traits Futures 0.4.0.dev0 documentation</a></li>
+        <li class="active"><a href="../index.html">Traits Futures 0.1 documentation</a></li>
 	
           <li class="active"><a href="traits_futures.html" >traits_futures package</a></li>
           <li class="active"><a href="traits_futures.testing.html" accesskey="U">traits_futures.testing package</a></li> 
@@ -90,42 +95,42 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-traits_futures.testing.test_assistant">
-<span id="traits-futures-testing-test-assistant-module"></span><h1>traits_futures.testing.test_assistant module<a class="headerlink" href="#module-traits_futures.testing.test_assistant" title="Permalink to this headline">¶</a></h1>
+  <section id="module-traits_futures.testing.test_assistant">
+<span id="traits-futures-testing-test-assistant-module"></span><h1>traits_futures.testing.test_assistant module<a class="headerlink" href="#module-traits_futures.testing.test_assistant" title="Permalink to this heading">¶</a></h1>
 <p>Test support, providing the ability to run the event loop from within tests.</p>
 <dl class="py data">
-<dt id="traits_futures.testing.test_assistant.SAFETY_TIMEOUT">
-<code class="sig-prename descclassname"><span class="pre">traits_futures.testing.test_assistant.</span></code><code class="sig-name descname"><span class="pre">SAFETY_TIMEOUT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">5.0</span></em><a class="headerlink" href="#traits_futures.testing.test_assistant.SAFETY_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.SAFETY_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">traits_futures.testing.test_assistant.</span></span><span class="sig-name descname"><span class="pre">SAFETY_TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.0</span></em><a class="headerlink" href="#traits_futures.testing.test_assistant.SAFETY_TIMEOUT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum timeout for blocking calls, in seconds. A successful test should
 never hit this timeout - it’s there to prevent a failing test from hanging
 forever and blocking the rest of the test suite.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="traits_futures.testing.test_assistant.TestAssistant">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">traits_futures.testing.test_assistant.</span></code><code class="sig-name descname"><span class="pre">TestAssistant</span></code><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.testing.test_assistant.</span></span><span class="sig-name descname"><span class="pre">TestAssistant</span></span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Convenience mixin class for tests that need the event loop.</p>
 <p>This class is designed to be used as a mixin alongside unittest.TestCase
 for tests that need to run the event loop as part of the test.</p>
 <p>Most of the logic is devolved to a toolkit-specific EventLoopHelper class.</p>
 <dl class="py method">
-<dt id="traits_futures.testing.test_assistant.TestAssistant.event_loop_factory">
-<code class="sig-name descname"><span class="pre">event_loop_factory</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.event_loop_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.event_loop_factory" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant.event_loop_factory">
+<span class="sig-name descname"><span class="pre">event_loop_factory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.event_loop_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.event_loop_factory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Factory for the event loop.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>event_loop</strong></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop" title="traits_futures.i_event_loop.IEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">IEventLoop</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop">
-<code class="sig-name descname"><span class="pre">exercise_event_loop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.exercise_event_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop">
+<span class="sig-name descname"><span class="pre">exercise_event_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.exercise_event_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exercise the event loop.</p>
 <p>Places a new task on the event loop and runs the event loop
 until that task is complete. The goal is to flush out any other
@@ -138,15 +143,15 @@ pending event loop tasks to be processed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.testing.test_assistant.TestAssistant.run_until">
-<code class="sig-name descname"><span class="pre">run_until</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.run_until" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant.run_until">
+<span class="sig-name descname"><span class="pre">run_until</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.run_until"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.run_until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run event loop until the given condition holds true, or until timeout.</p>
 <p>The condition is re-evaluated, with the object as argument, every time
 the trait changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
+<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
 <li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the trait to monitor for changes.</p></li>
 <li><p><strong>condition</strong> – Single-argument callable, returning a boolean. This will be
 called with <em>object</em> as the only input.</p></li>
@@ -154,7 +159,7 @@ called with <em>object</em> as the only input.</p></li>
 The (somewhat arbitrary) default is 5 seconds.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If timeout is reached, regardless of whether the condition is
     true or not at that point.</p>
 </dd>
@@ -162,18 +167,18 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.testing.test_assistant.TestAssistant.setUp">
-<code class="sig-name descname"><span class="pre">setUp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.setUp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.setUp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="traits_futures.testing.test_assistant.TestAssistant.tearDown">
-<code class="sig-name descname"><span class="pre">tearDown</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.tearDown" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant.tearDown" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -184,12 +189,16 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="traits_futures.testing.optional_dependencies.html"
-                        title="previous chapter">traits_futures.testing.optional_dependencies module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="traits_futures.wx.html"
-                        title="next chapter">traits_futures.wx package</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="traits_futures.testing.optional_dependencies.html"
+                          title="previous chapter">traits_futures.testing.optional_dependencies module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="traits_futures.wx.html"
+                          title="next chapter">traits_futures.wx package</a></p>
+  </div>
   <h3>This Page</h3>
   <div>
     <a href="../_sources/api/traits_futures.testing.test_assistant.rst.txt"
@@ -199,12 +208,12 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         </div>
@@ -224,7 +233,7 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
       </li>
     </ul>
     </div>
