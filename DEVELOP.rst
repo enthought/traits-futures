@@ -13,45 +13,38 @@
 Traits Futures: for developers
 ==============================
 
-These instructions are aimed at developers working with Traits Futures
-within an EDM environment. However, note that it's not necessary to use
-EDM to work on Traits Futures.
+These instructions are aimed at developers working with Traits Futures.
 
 Getting started
 ---------------
-The ``ci`` helper package in the source repository aids in setting up a
-development environment and running tests and examples. It requires EDM, along
-with a Python bootstrap environment equipped with ``click`` and ``setuptools``.
 
-To create a development environment, run::
+You'll need a Python 3 environment for development. Any environment using
+Python >= 3.7 will do. For example, you could create and activate a new venv
+using something like::
 
-    python -m ci build
+    python3.10 -m venv ../traits-futures && source ../traits-futures/bin/activate
 
-from the top-level of the repository, within the Python bootstrap environment.
+Adjust the venv name and location to your taste.
 
-To run tests for the traits_futures EDM environment, do::
+To install the package into the current environment, in editable mode, do::
 
-    python -m ci test
+    pip install -e .
 
-To run tests under coverage::
+To run tests, do::
 
-    python -m ci coverage
+    python -m unittest
 
 To run a style check::
 
-    python -m ci style
+    python -m pip install -r style-requirements.txt
+    python -m flake8
+    python -m isort . --check --diff
+    python -m isort docs/source/guide/examples --check --diff
+    python -m black . --check --diff
 
 To build the documentation::
 
-    python -m ci doc
-
-The example scripts can be run with::
-
-    python -m ci example <example-name>
-
-Run ``python -m ci example`` to see the list of available examples.
-
-All of the above commands take two options. The ``--python-version`` option
-lets you specify the Python version to use for the development environment. The
-``--toolkit`` option allows you to specify a GUI backend. Run ``python -m ci
-<command> --help`` for more information on any of these commands.
+    python -m pip install -r docs/requirements.txt
+    python -m pip install .
+    cd docs
+    python -m sphinx -b html -d doctrees source build

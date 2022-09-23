@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
 
     runs-on: ${{ matrix.os }}
 
@@ -29,12 +29,9 @@ jobs:
         sudo apt-get install libxcb-xinerama0
       if: runner.os == 'Linux'
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip setuptools wheel
     - name: Install package and test dependencies from PyPI sdist (with PySide2)
       run: |
         python -m pip install --no-binary traits-futures traits-futures[pyside2]
@@ -57,7 +54,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
 
     runs-on: ${{ matrix.os }}
 
@@ -75,12 +72,9 @@ jobs:
         sudo apt-get install libxcb-xinerama0
       if: runner.os == 'Linux'
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip setuptools wheel
     - name: Install package and test dependencies from PyPI wheel (with PySide2)
       run: |
         python -m pip install --only-binary traits-futures traits-futures[pyside2]

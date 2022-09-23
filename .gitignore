@@ -3,5 +3,5 @@
 !/docs/source/api/traits_futures.api.rst
 /docs/build/
 /build/
-/coverage/
-*.egg-info/
+/dist/
+/traits_futures.egg-info/
