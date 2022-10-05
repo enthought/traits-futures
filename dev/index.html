@@ -31,6 +31,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="_static/clipboard.min.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <script type="text/javascript" src="_static/js/copybutton.js"></script>
@@ -295,53 +296,366 @@ minimal TraitsUI application that fires off a background computation when its
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.api.html#event-loops">Event loops</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_call.html">traits_futures.background_call module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_iteration.html">traits_futures.background_iteration module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_progress.html">traits_futures.background_progress module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.base_future.html">traits_futures.base_future module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.ets_event_loop.html">traits_futures.ets_event_loop module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.exception_handling.html">traits_futures.exception_handling module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.executor_states.html">traits_futures.executor_states module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.future_states.html">traits_futures.future_states module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_event_loop.html">traits_futures.i_event_loop module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html">traits_futures.i_event_loop_helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_call.html">traits_futures.background_call module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall"><code class="docutils literal notranslate"><span class="pre">BackgroundCall</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.args"><code class="docutils literal notranslate"><span class="pre">BackgroundCall.args</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.callable"><code class="docutils literal notranslate"><span class="pre">BackgroundCall.callable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.future"><code class="docutils literal notranslate"><span class="pre">BackgroundCall.future</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.kwargs"><code class="docutils literal notranslate"><span class="pre">BackgroundCall.kwargs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.BackgroundCall.task"><code class="docutils literal notranslate"><span class="pre">BackgroundCall.task</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallFuture"><code class="docutils literal notranslate"><span class="pre">CallFuture</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallTask"><code class="docutils literal notranslate"><span class="pre">CallTask</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.CallTask.run"><code class="docutils literal notranslate"><span class="pre">CallTask.run</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_call.html#traits_futures.background_call.submit_call"><code class="docutils literal notranslate"><span class="pre">submit_call</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_iteration.html">traits_futures.background_iteration module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration"><code class="docutils literal notranslate"><span class="pre">BackgroundIteration</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.args"><code class="docutils literal notranslate"><span class="pre">BackgroundIteration.args</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.callable"><code class="docutils literal notranslate"><span class="pre">BackgroundIteration.callable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future"><code class="docutils literal notranslate"><span class="pre">BackgroundIteration.future</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.kwargs"><code class="docutils literal notranslate"><span class="pre">BackgroundIteration.kwargs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.task"><code class="docutils literal notranslate"><span class="pre">BackgroundIteration.task</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.GENERATED"><code class="docutils literal notranslate"><span class="pre">GENERATED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture"><code class="docutils literal notranslate"><span class="pre">IterationFuture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event"><code class="docutils literal notranslate"><span class="pre">IterationFuture.result_event</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationTask"><code class="docutils literal notranslate"><span class="pre">IterationTask</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationTask.run"><code class="docutils literal notranslate"><span class="pre">IterationTask.run</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration"><code class="docutils literal notranslate"><span class="pre">submit_iteration</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.background_progress.html">traits_futures.background_progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress"><code class="docutils literal notranslate"><span class="pre">BackgroundProgress</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.args"><code class="docutils literal notranslate"><span class="pre">BackgroundProgress.args</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.callable"><code class="docutils literal notranslate"><span class="pre">BackgroundProgress.callable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.future"><code class="docutils literal notranslate"><span class="pre">BackgroundProgress.future</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.kwargs"><code class="docutils literal notranslate"><span class="pre">BackgroundProgress.kwargs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.BackgroundProgress.task"><code class="docutils literal notranslate"><span class="pre">BackgroundProgress.task</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.PROGRESS"><code class="docutils literal notranslate"><span class="pre">PROGRESS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture"><code class="docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture.progress"><code class="docutils literal notranslate"><span class="pre">ProgressFuture.progress</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter"><code class="docutils literal notranslate"><span class="pre">ProgressReporter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressReporter.report"><code class="docutils literal notranslate"><span class="pre">ProgressReporter.report</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask"><code class="docutils literal notranslate"><span class="pre">ProgressTask</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressTask.run"><code class="docutils literal notranslate"><span class="pre">ProgressTask.run</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress"><code class="docutils literal notranslate"><span class="pre">submit_progress</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.base_future.html">traits_futures.base_future module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.ABANDONED"><code class="docutils literal notranslate"><span class="pre">ABANDONED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture"><code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel"><code class="docutils literal notranslate"><span class="pre">BaseFuture.cancel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancellable"><code class="docutils literal notranslate"><span class="pre">BaseFuture.cancellable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch"><code class="docutils literal notranslate"><span class="pre">BaseFuture.dispatch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.done"><code class="docutils literal notranslate"><span class="pre">BaseFuture.done</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception"><code class="docutils literal notranslate"><span class="pre">BaseFuture.exception</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.receive"><code class="docutils literal notranslate"><span class="pre">BaseFuture.receive</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result"><code class="docutils literal notranslate"><span class="pre">BaseFuture.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.state"><code class="docutils literal notranslate"><span class="pre">BaseFuture.state</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask"><code class="docutils literal notranslate"><span class="pre">BaseTask</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled"><code class="docutils literal notranslate"><span class="pre">BaseTask.cancelled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.run"><code class="docutils literal notranslate"><span class="pre">BaseTask.run</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send"><code class="docutils literal notranslate"><span class="pre">BaseTask.send</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.FINAL_MESSAGES"><code class="docutils literal notranslate"><span class="pre">FINAL_MESSAGES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.RAISED"><code class="docutils literal notranslate"><span class="pre">RAISED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.RETURNED"><code class="docutils literal notranslate"><span class="pre">RETURNED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.SENT"><code class="docutils literal notranslate"><span class="pre">SENT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.STARTED"><code class="docutils literal notranslate"><span class="pre">STARTED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.TaskCancelled"><code class="docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.ets_event_loop.html">traits_futures.ets_event_loop module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop"><code class="docutils literal notranslate"><span class="pre">ETSEventLoop</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.helper"><code class="docutils literal notranslate"><span class="pre">ETSEventLoop.helper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.pingee"><code class="docutils literal notranslate"><span class="pre">ETSEventLoop.pingee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.toolkit_event_loop"><code class="docutils literal notranslate"><span class="pre">ETSEventLoop.toolkit_event_loop</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.exception_handling.html">traits_futures.exception_handling module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception"><code class="docutils literal notranslate"><span class="pre">marshal_exception</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.executor_states.html">traits_futures.executor_states module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.executor_states.html#traits_futures.executor_states.ExecutorState"><code class="docutils literal notranslate"><span class="pre">ExecutorState</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.executor_states.html#traits_futures.executor_states.RUNNING"><code class="docutils literal notranslate"><span class="pre">RUNNING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPED"><code class="docutils literal notranslate"><span class="pre">STOPPED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING"><code class="docutils literal notranslate"><span class="pre">STOPPING</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.future_states.html">traits_futures.future_states module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLABLE_STATES"><code class="docutils literal notranslate"><span class="pre">CANCELLABLE_STATES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLED"><code class="docutils literal notranslate"><span class="pre">CANCELLED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.CANCELLING"><code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.COMPLETED"><code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.DONE_STATES"><code class="docutils literal notranslate"><span class="pre">DONE_STATES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.EXECUTING"><code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.FAILED"><code class="docutils literal notranslate"><span class="pre">FAILED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.FutureState"><code class="docutils literal notranslate"><span class="pre">FutureState</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.future_states.html#traits_futures.future_states.WAITING"><code class="docutils literal notranslate"><span class="pre">WAITING</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_event_loop.html">traits_futures.i_event_loop module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop"><code class="docutils literal notranslate"><span class="pre">IEventLoop</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop.helper"><code class="docutils literal notranslate"><span class="pre">IEventLoop.helper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop.pingee"><code class="docutils literal notranslate"><span class="pre">IEventLoop.pingee</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html">traits_futures.i_event_loop_helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper"><code class="docutils literal notranslate"><span class="pre">IEventLoopHelper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.dispose"><code class="docutils literal notranslate"><span class="pre">IEventLoopHelper.dispose</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.init"><code class="docutils literal notranslate"><span class="pre">IEventLoopHelper.init</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.run_until"><code class="docutils literal notranslate"><span class="pre">IEventLoopHelper.run_until</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.setattr_soon"><code class="docutils literal notranslate"><span class="pre">IEventLoopHelper.setattr_soon</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_message_router.html">traits_futures.i_message_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_message_router.html#overview-of-the-apis">Overview of the APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageReceiver"><code class="docutils literal notranslate"><span class="pre">IMessageReceiver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageReceiver.message"><code class="docutils literal notranslate"><span class="pre">IMessageReceiver.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_parallel_context.html">traits_futures.i_parallel_context module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_pingee.html">traits_futures.i_pingee module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_task_specification.html">traits_futures.i_task_specification module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html">traits_futures.multiprocessing_context module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter"><code class="docutils literal notranslate"><span class="pre">IMessageRouter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.close_pipe"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.close_pipe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.pipe"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.pipe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.route_until"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.route_until</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.start"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageRouter.stop"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.stop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender"><code class="docutils literal notranslate"><span class="pre">IMessageSender</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender.send"><code class="docutils literal notranslate"><span class="pre">IMessageSender.send</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender.start"><code class="docutils literal notranslate"><span class="pre">IMessageSender.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_message_router.html#traits_futures.i_message_router.IMessageSender.stop"><code class="docutils literal notranslate"><span class="pre">IMessageSender.stop</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_parallel_context.html">traits_futures.i_parallel_context module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext"><code class="docutils literal notranslate"><span class="pre">IParallelContext</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.close"><code class="docutils literal notranslate"><span class="pre">IParallelContext.close</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.closed"><code class="docutils literal notranslate"><span class="pre">IParallelContext.closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.event"><code class="docutils literal notranslate"><span class="pre">IParallelContext.event</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.message_router"><code class="docutils literal notranslate"><span class="pre">IParallelContext.message_router</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.worker_pool"><code class="docutils literal notranslate"><span class="pre">IParallelContext.worker_pool</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_pingee.html">traits_futures.i_pingee module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee"><code class="docutils literal notranslate"><span class="pre">IPingee</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee.connect"><code class="docutils literal notranslate"><span class="pre">IPingee.connect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee.disconnect"><code class="docutils literal notranslate"><span class="pre">IPingee.disconnect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee.pinger"><code class="docutils literal notranslate"><span class="pre">IPingee.pinger</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPinger"><code class="docutils literal notranslate"><span class="pre">IPinger</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPinger.connect"><code class="docutils literal notranslate"><span class="pre">IPinger.connect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPinger.disconnect"><code class="docutils literal notranslate"><span class="pre">IPinger.disconnect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_pingee.html#traits_futures.i_pingee.IPinger.ping"><code class="docutils literal notranslate"><span class="pre">IPinger.ping</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.i_task_specification.html">traits_futures.i_task_specification module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture"><code class="docutils literal notranslate"><span class="pre">IFuture</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture.cancel"><code class="docutils literal notranslate"><span class="pre">IFuture.cancel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture.receive"><code class="docutils literal notranslate"><span class="pre">IFuture.receive</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification"><code class="docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.future"><code class="docutils literal notranslate"><span class="pre">ITaskSpecification.future</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification.task"><code class="docutils literal notranslate"><span class="pre">ITaskSpecification.task</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html">traits_futures.multiprocessing_context module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext"><code class="docutils literal notranslate"><span class="pre">MultiprocessingContext</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.close"><code class="docutils literal notranslate"><span class="pre">MultiprocessingContext.close</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.closed"><code class="docutils literal notranslate"><span class="pre">MultiprocessingContext.closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.event"><code class="docutils literal notranslate"><span class="pre">MultiprocessingContext.event</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.message_router"><code class="docutils literal notranslate"><span class="pre">MultiprocessingContext.message_router</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool"><code class="docutils literal notranslate"><span class="pre">MultiprocessingContext.worker_pool</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html">traits_futures.multiprocessing_router module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#overview-of-the-implementation">Overview of the implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingReceiver"><code class="docutils literal notranslate"><span class="pre">MultiprocessingReceiver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id"><code class="docutils literal notranslate"><span class="pre">MultiprocessingReceiver.connection_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingReceiver.message"><code class="docutils literal notranslate"><span class="pre">MultiprocessingReceiver.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_context.html">traits_futures.multithreading_context module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_router.html">traits_futures.multithreading_router module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wrappers.html">traits_futures.wrappers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.close_pipe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.event_loop</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.manager"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.manager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.pipe"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.pipe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.route_until"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.route_until</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.start"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.stop"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.stop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender.send"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender.send</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender.start"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender.stop"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender.stop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.monitor_queue"><code class="docutils literal notranslate"><span class="pre">monitor_queue</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_context.html">traits_futures.multithreading_context module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext"><code class="docutils literal notranslate"><span class="pre">MultithreadingContext</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.close"><code class="docutils literal notranslate"><span class="pre">MultithreadingContext.close</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.closed"><code class="docutils literal notranslate"><span class="pre">MultithreadingContext.closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.event"><code class="docutils literal notranslate"><span class="pre">MultithreadingContext.event</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router"><code class="docutils literal notranslate"><span class="pre">MultithreadingContext.message_router</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.worker_pool"><code class="docutils literal notranslate"><span class="pre">MultithreadingContext.worker_pool</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.multithreading_router.html">traits_futures.multithreading_router module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingReceiver"><code class="docutils literal notranslate"><span class="pre">MultithreadingReceiver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingReceiver.connection_id"><code class="docutils literal notranslate"><span class="pre">MultithreadingReceiver.connection_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingReceiver.message"><code class="docutils literal notranslate"><span class="pre">MultithreadingReceiver.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.close_pipe"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter.close_pipe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.event_loop"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter.event_loop</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.pipe"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter.pipe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.route_until"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter.route_until</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.start"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.stop"><code class="docutils literal notranslate"><span class="pre">MultithreadingRouter.stop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender"><code class="docutils literal notranslate"><span class="pre">MultithreadingSender</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.send"><code class="docutils literal notranslate"><span class="pre">MultithreadingSender.send</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.start"><code class="docutils literal notranslate"><span class="pre">MultithreadingSender.start</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.stop"><code class="docutils literal notranslate"><span class="pre">MultithreadingSender.stop</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.traits_executor.html">traits_futures.traits_executor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.running"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.running</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.shutdown</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.state"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.state</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.stop</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stopped"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.stopped</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.submit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_call"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.submit_call</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_iteration"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.submit_iteration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_progress"><code class="docutils literal notranslate"><span class="pre">TraitsExecutor.submit_progress</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wrappers.html">traits_futures.wrappers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper"><code class="docutils literal notranslate"><span class="pre">FutureWrapper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.done"><code class="docutils literal notranslate"><span class="pre">FutureWrapper.done</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.future"><code class="docutils literal notranslate"><span class="pre">FutureWrapper.future</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper.receiver"><code class="docutils literal notranslate"><span class="pre">FutureWrapper.receiver</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wrappers.html#traits_futures.wrappers.run_background_task"><code class="docutils literal notranslate"><span class="pre">run_background_task</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.asyncio.html">traits_futures.asyncio package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.event_loop.html">traits_futures.asyncio.event_loop module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.event_loop_helper.html">traits_futures.asyncio.event_loop_helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.pingee.html">traits_futures.asyncio.pingee module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.event_loop.html">traits_futures.asyncio.event_loop module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.event_loop_helper.html">traits_futures.asyncio.event_loop_helper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.asyncio.event_loop_helper.html#traits_futures.asyncio.event_loop_helper.EventLoopHelper"><code class="docutils literal notranslate"><span class="pre">EventLoopHelper</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.asyncio.pingee.html">traits_futures.asyncio.pingee module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee"><code class="docutils literal notranslate"><span class="pre">Pingee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pinger"><code class="docutils literal notranslate"><span class="pre">Pinger</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.qt.html">traits_futures.qt package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.event_loop.html">traits_futures.qt.event_loop module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.event_loop_helper.html">traits_futures.qt.event_loop_helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.pingee.html">traits_futures.qt.pingee module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.event_loop.html">traits_futures.qt.event_loop module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.event_loop.html#traits_futures.qt.event_loop.QtEventLoop"><code class="docutils literal notranslate"><span class="pre">QtEventLoop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.event_loop_helper.html">traits_futures.qt.event_loop_helper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.AttributeSetter"><code class="docutils literal notranslate"><span class="pre">AttributeSetter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper"><code class="docutils literal notranslate"><span class="pre">EventLoopHelper</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.qt.pingee.html">traits_futures.qt.pingee module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee"><code class="docutils literal notranslate"><span class="pre">Pingee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger"><code class="docutils literal notranslate"><span class="pre">Pinger</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.testing.html">traits_futures.testing package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.testing.optional_dependencies.html">traits_futures.testing.optional_dependencies module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.testing.test_assistant.html">traits_futures.testing.test_assistant module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.testing.optional_dependencies.html">traits_futures.testing.optional_dependencies module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.testing.optional_dependencies.html#traits_futures.testing.optional_dependencies.requires_qt"><code class="docutils literal notranslate"><span class="pre">requires_qt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.testing.optional_dependencies.html#traits_futures.testing.optional_dependencies.requires_wx"><code class="docutils literal notranslate"><span class="pre">requires_wx</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.testing.test_assistant.html">traits_futures.testing.test_assistant module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.SAFETY_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">SAFETY_TIMEOUT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant"><code class="docutils literal notranslate"><span class="pre">TestAssistant</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/traits_futures.wx.html">traits_futures.wx package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.event_loop.html">traits_futures.wx.event_loop module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.event_loop_helper.html">traits_futures.wx.event_loop_helper module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.pingee.html">traits_futures.wx.pingee module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.event_loop.html">traits_futures.wx.event_loop module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.event_loop.html#traits_futures.wx.event_loop.WxEventLoop"><code class="docutils literal notranslate"><span class="pre">WxEventLoop</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.event_loop_helper.html">traits_futures.wx.event_loop_helper module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting"><code class="docutils literal notranslate"><span class="pre">AppForTesting</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AttributeSetter"><code class="docutils literal notranslate"><span class="pre">AttributeSetter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper"><code class="docutils literal notranslate"><span class="pre">EventLoopHelper</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer"><code class="docutils literal notranslate"><span class="pre">TimeoutTimer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/traits_futures.wx.pingee.html">traits_futures.wx.pingee module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pingee"><code class="docutils literal notranslate"><span class="pre">Pingee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/traits_futures.wx.pingee.html#traits_futures.wx.pingee.Pinger"><code class="docutils literal notranslate"><span class="pre">Pinger</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -469,7 +783,7 @@ minimal TraitsUI application that fires off a background computation when its
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.2.3.
       </li>
     </ul>
     </div>

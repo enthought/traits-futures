@@ -31,6 +31,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
@@ -129,6 +130,7 @@ the <code class="docutils literal notranslate"><span class="pre">Multiprocessing
 queue, inspects it to determine which receiver it should be sent to, and
 sends it to that receiver</p></li>
 </ul>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.multiprocessing_router.MultiprocessingReceiver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.multiprocessing_router.</span></span><span class="sig-name descname"><span class="pre">MultiprocessingReceiver</span></span><a class="reference internal" href="../_modules/traits_futures/multiprocessing_router.html#MultiprocessingReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver" title="Permalink to this definition">¶</a></dt>
@@ -354,7 +356,6 @@ a message pending.</p></li>
 </dd></dl>
 
 </section>
-</section>
 
 
           </div>
@@ -370,6 +371,28 @@ a message pending.</p></li>
     <ul>
 <li><a class="reference internal" href="#">traits_futures.multiprocessing_router module</a><ul>
 <li><a class="reference internal" href="#overview-of-the-implementation">Overview of the implementation</a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver"><code class="docutils literal notranslate"><span class="pre">MultiprocessingReceiver</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.connection_id"><code class="docutils literal notranslate"><span class="pre">MultiprocessingReceiver.connection_id</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingReceiver.message"><code class="docutils literal notranslate"><span class="pre">MultiprocessingReceiver.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.close_pipe</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.event_loop"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.event_loop</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.manager"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.manager</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.pipe"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.pipe</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.route_until"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.route_until</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.start"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.start</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingRouter.stop"><code class="docutils literal notranslate"><span class="pre">MultiprocessingRouter.stop</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingSender"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingSender.send"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender.send</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingSender.start"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender.start</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.MultiprocessingSender.stop"><code class="docutils literal notranslate"><span class="pre">MultiprocessingSender.stop</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.multiprocessing_router.monitor_queue"><code class="docutils literal notranslate"><span class="pre">monitor_queue</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -419,7 +442,7 @@ a message pending.</p></li>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.2.3.
       </li>
     </ul>
     </div>

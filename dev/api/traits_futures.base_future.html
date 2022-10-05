@@ -31,6 +31,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
@@ -353,6 +354,39 @@ The argument is always <code class="docutils literal notranslate"><span class="p
               <img class="logo" src="../_static/img/e-logo.png" alt="Logo">
             </a></p>
   <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">traits_futures.base_future module</a><ul>
+<li><a class="reference internal" href="#traits_futures.base_future.ABANDONED"><code class="docutils literal notranslate"><span class="pre">ABANDONED</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture"><code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.cancel"><code class="docutils literal notranslate"><span class="pre">BaseFuture.cancel</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.cancellable"><code class="docutils literal notranslate"><span class="pre">BaseFuture.cancellable</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.dispatch"><code class="docutils literal notranslate"><span class="pre">BaseFuture.dispatch</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.done"><code class="docutils literal notranslate"><span class="pre">BaseFuture.done</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.exception"><code class="docutils literal notranslate"><span class="pre">BaseFuture.exception</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.receive"><code class="docutils literal notranslate"><span class="pre">BaseFuture.receive</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.result"><code class="docutils literal notranslate"><span class="pre">BaseFuture.result</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseFuture.state"><code class="docutils literal notranslate"><span class="pre">BaseFuture.state</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseTask"><code class="docutils literal notranslate"><span class="pre">BaseTask</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseTask.cancelled"><code class="docutils literal notranslate"><span class="pre">BaseTask.cancelled</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseTask.run"><code class="docutils literal notranslate"><span class="pre">BaseTask.run</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.BaseTask.send"><code class="docutils literal notranslate"><span class="pre">BaseTask.send</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.base_future.FINAL_MESSAGES"><code class="docutils literal notranslate"><span class="pre">FINAL_MESSAGES</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.RAISED"><code class="docutils literal notranslate"><span class="pre">RAISED</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.RETURNED"><code class="docutils literal notranslate"><span class="pre">RETURNED</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.SENT"><code class="docutils literal notranslate"><span class="pre">SENT</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.STARTED"><code class="docutils literal notranslate"><span class="pre">STARTED</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.base_future.TaskCancelled"><code class="docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="traits_futures.background_progress.html"
                           title="previous chapter">traits_futures.background_progress module</a></p>
@@ -396,7 +430,7 @@ The argument is always <code class="docutils literal notranslate"><span class="p
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.2.3.
       </li>
     </ul>
     </div>

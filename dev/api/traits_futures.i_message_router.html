@@ -31,6 +31,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
@@ -133,6 +134,7 @@ must be called in the background task before the sender can be used to send
 messages, and a <a class="reference internal" href="#traits_futures.i_message_router.IMessageSender.stop" title="traits_futures.i_message_router.IMessageSender.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageSender.stop</span></code></a> method, which should also be
 called in the background task in order to undo any resources allocated or
 connections made in the <a class="reference internal" href="#traits_futures.i_message_router.IMessageSender.start" title="traits_futures.i_message_router.IMessageSender.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IMessageSender.start</span></code></a> method.</p>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageReceiver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageReceiver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adaptee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver" title="Permalink to this definition">¶</a></dt>
@@ -301,7 +303,6 @@ all be called from the same thread.</p>
 </dd></dl>
 
 </section>
-</section>
 
 
           </div>
@@ -317,6 +318,24 @@ all be called from the same thread.</p>
     <ul>
 <li><a class="reference internal" href="#">traits_futures.i_message_router module</a><ul>
 <li><a class="reference internal" href="#overview-of-the-apis">Overview of the APIs</a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageReceiver"><code class="docutils literal notranslate"><span class="pre">IMessageReceiver</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageReceiver.message"><code class="docutils literal notranslate"><span class="pre">IMessageReceiver.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter"><code class="docutils literal notranslate"><span class="pre">IMessageRouter</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.close_pipe"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.close_pipe</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.pipe"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.pipe</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.route_until"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.route_until</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.start"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.start</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageRouter.stop"><code class="docutils literal notranslate"><span class="pre">IMessageRouter.stop</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageSender"><code class="docutils literal notranslate"><span class="pre">IMessageSender</span></code></a><ul>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageSender.send"><code class="docutils literal notranslate"><span class="pre">IMessageSender.send</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageSender.start"><code class="docutils literal notranslate"><span class="pre">IMessageSender.start</span></code></a></li>
+<li><a class="reference internal" href="#traits_futures.i_message_router.IMessageSender.stop"><code class="docutils literal notranslate"><span class="pre">IMessageSender.stop</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -366,7 +385,7 @@ all be called from the same thread.</p>
         &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.1.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.2.3.
       </li>
     </ul>
     </div>
