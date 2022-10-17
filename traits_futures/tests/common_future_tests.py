@@ -100,7 +100,7 @@ class CommonFutureTests:
         # Record initial, synthesize some state changes, then record final.
         record_states()
         future._task_started(None)
-        future._task_returned(self.fake_exception())
+        future._task_returned(23)
         record_states()
 
         # Check consistency.
