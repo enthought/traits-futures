@@ -142,7 +142,7 @@ can reach that receiver.</p>
 <dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.multithreading_router.MultithreadingReceiver" title="traits_futures.multithreading_router.MultithreadingReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultithreadingReceiver</span></code></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -169,7 +169,7 @@ messages, while the receiver remains in the foreground.</p>
 </p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -189,11 +189,11 @@ messages will need to be processed through this function.</p>
 <li><p><strong>condition</strong> – Zero-argument callable returning a boolean. When this condition
 becomes true, this method will stop routing messages. If the
 condition is already true on entry, no messages will be routed.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -207,7 +207,7 @@ condition is already true on entry, no messages will be routed.</p></li>
 <p>Not thread-safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -223,7 +223,7 @@ not permitted after this method has been called.</p>
 <p>Not thread safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,7 +233,7 @@ not permitted after this method has been called.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.multithreading_router.MultithreadingSender">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.multithreading_router.</span></span><span class="sig-name descname"><span class="pre">MultithreadingSender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pingee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/multithreading_router.html#MultithreadingSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.multithreading_router.MultithreadingSender" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Object allowing the worker to send messages.</p>
 <p>This class will be instantiated in the main thread, and the instance passed
 to the worker thread to allow the worker to communicate back to the main
@@ -241,10 +241,10 @@ thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Id of the matching receiver; used for message routing.</p></li>
+<li><p><strong>connection_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Id of the matching receiver; used for message routing.</p></li>
 <li><p><strong>pingee</strong> (<a class="reference internal" href="traits_futures.i_pingee.html#traits_futures.i_pingee.IPingee" title="traits_futures.i_pingee.IPingee"><code class="xref py py-class docutils literal notranslate"><span class="pre">IPingee</span></code></a>) – Recipient for pings, used to notify the event loop that there’s
 a message pending.</p></li>
-<li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a>) – Thread-safe queue for passing messages to the foreground.</p></li>
+<li><p><strong>message_queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a>) – Thread-safe queue for passing messages to the foreground.</p></li>
 </ul>
 </dd>
 </dl>
@@ -256,10 +256,10 @@ a message pending.</p></li>
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -274,7 +274,7 @@ using the <code class="docutils literal notranslate"><span class="pre">send</spa
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -288,7 +288,7 @@ all be called from the same thread.</p>
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -154,7 +154,7 @@ without any arguments. (#467)</p></li>
 <p>This is a feature release of Traits Futures, with a some minor backwards
 incompatible changes that users should be aware of. New features include
 multiprocessing support, wxPython support, support for delivering events using
-an <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop in place of a GUI toolkit event loop, and better
+an <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop in place of a GUI toolkit event loop, and better
 support for synchronous executor shutdown.</p>
 </section>
 <section id="migration-guide">
@@ -166,7 +166,7 @@ changes for anyone making use of the <a class="reference internal" href="api/tra
 their own background task types. For the <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.ITaskSpecification" title="traits_futures.i_task_specification.ITaskSpecification"><code class="xref py py-class docutils literal notranslate"><span class="pre">ITaskSpecification</span></code></a> changes, see
 the detailed PR-by-PR change list below.</p>
 <ul class="simple">
-<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method on a future no longer raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> exception
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method on a future no longer raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> exception
 when a future is not cancellable; instead, it silently does nothing. Code
 that needs to distinguish can use the new return value of the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method
 to determine whether the <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> call actually caused cancellation to occur.
@@ -207,7 +207,7 @@ and interactions, to aid in post-mortem debugging. (#296, #293)</p></li>
 <section id="id2">
 <h2>Changes<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
 <ul>
-<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
+<li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> method of a future no longer raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> when a
 future is not cancellable. If a task has already completed, or has previously
 been cancelled, calling <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.cancel" title="traits_futures.base_future.BaseFuture.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancel</span></code></a> on the associated future does not change
 the state of the future, and the call returns <code class="docutils literal notranslate"><span class="pre">False</span></code>. Otherwise it changes
@@ -225,7 +225,7 @@ restriction may be enforced in a future version of the library. (#409)</p></li>
 <code class="docutils literal notranslate"><span class="pre">&quot;traits.trait_errors.TraitError&quot;</span></code>. (#391)</p></li>
 <li><p>Tasks may now only be submitted to a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> on the main thread.
 An attempt to submit a task from a thread other than the main thread will
-raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. (#305)</p></li>
+raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. (#305)</p></li>
 <li><p>There are a number of backwards-incompatible changes to the machinery used
 for creating custom task types and futures. The API for creating custom
 task types should be considered provisional: it may change in future
@@ -266,14 +266,14 @@ future releases. (#298, #300)</p></li>
 <ul class="simple">
 <li><p>The message routing machinery will no longer block indefinitely in the
 (hypothetical) event that no message exists to be retrieved on the message
-queue. Instead, it will fail fast with a <a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Empty" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">queue.Empty</span></code></a> exception. This
+queue. Instead, it will fail fast with a <a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Empty" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">queue.Empty</span></code></a> exception. This
 situation should never happen in normal use; please report it if you ever
 witness it. (#413)</p></li>
 <li><p>The <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.TaskCancelled" title="traits_futures.base_future.TaskCancelled"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a> exception used by the background task submitted
 via <a class="reference internal" href="api/traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> is now public and exposed in <a class="reference internal" href="api/traits_futures.api.html#module-traits_futures.api" title="traits_futures.api"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures.api</span></code></a>, in
 case that task needs to catch the exception. (#449, #317)</p></li>
 <li><p>The <a class="reference internal" href="api/traits_futures.exception_handling.html#traits_futures.exception_handling.marshal_exception" title="traits_futures.exception_handling.marshal_exception"><code class="xref py py-func docutils literal notranslate"><span class="pre">marshal_exception</span></code></a> function has been fixed not to rely on the global
-<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.exc_info" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.exc_info</span></code></a> state. (#390)</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.exc_info" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sys.exc_info</span></code></a> state. (#390)</p></li>
 <li><p>A spurious “message” trait that never did anything has been removed from
 <a class="reference internal" href="api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a>. (#394)</p></li>
 <li><p>The cancellation callback supplied to a <a class="reference internal" href="api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance is now always
@@ -335,7 +335,7 @@ dependencies such as <code class="docutils literal notranslate"><span class="pre
 <section id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>The test suite now uses the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop for the majority of
+<li><p>The test suite now uses the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop for the majority of
 its tests. It uses the Qt or Wx event loop only for tests specific to
 those toolkits. (#321, #319, #315)</p></li>
 <li><p>Most tests now use the new <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method for executor shutdown. (#386)</p></li>
@@ -379,7 +379,7 @@ include the copyright headers. (#326)</p></li>
 Previously it was giving incorrect results as a result of NumPy integer
 overflow. (#249)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">prime_counting</span></code> example has been fixed to avoid an occasional
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> under unusual timing conditions. (#450)</p></li>
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> under unusual timing conditions. (#450)</p></li>
 <li><p>Miscellaneous cleanups and minor fixes. (#421, #455, #292, #223, #221)</p></li>
 </ul>
 </section>
@@ -454,7 +454,7 @@ that reflects the internal state. (#163)</p></li>
 <li><p>The default number of workers in an owned worker pool (that is, a worker pool
 created by a <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>) has changed. Previously it was
 hard-coded as <code class="docutils literal notranslate"><span class="pre">4</span></code>. Now it defaults to whatever Python’s
-<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> executors give, but can be controlled by passing
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> executors give, but can be controlled by passing
 the <code class="docutils literal notranslate"><span class="pre">max_workers</span></code> argument. (#125)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">submit_call</span></code>, <code class="docutils literal notranslate"><span class="pre">submit_iteration</span></code> and <code class="docutils literal notranslate"><span class="pre">submit_progress</span></code>
 methods on the <a class="reference internal" href="api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> have been deprecated. Use the
@@ -479,7 +479,7 @@ and has been tested with Python 3.5 through Python 3.9. (#123, #130, #131,
 <ul class="simple">
 <li><p>Fix some intermittent test failures due to test interactions. (#176)</p></li>
 <li><p>The ‘null’ backend that’s used for testing in the absence of a Qt backend
-now uses a <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>-based event loop instead of a custom event loop.
+now uses a <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a>-based event loop instead of a custom event loop.
 (#107, #179)</p></li>
 <li><p>Rewrite the Qt <code class="docutils literal notranslate"><span class="pre">GuiTestAssistant</span></code> to react rather than polling. This
 significantly speeds up the test run. (#153)</p></li>

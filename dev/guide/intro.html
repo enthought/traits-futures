@@ -150,7 +150,7 @@ next call to <code class="docutils literal notranslate"><span class="pre">progre
 <p>The computation consists of <code class="docutils literal notranslate"><span class="pre">n</span></code> steps: a progress report is sent before
 each step, and after the end of the computation. The <code class="docutils literal notranslate"><span class="pre">progress</span></code> callable
 accepts a single Python object, but of course that Python object can be a
-compound object like a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>. It’s up to you to
+compound object like a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>. It’s up to you to
 choose the format of the objects you want to send. They’ll arrive in exactly
 the same format in the <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a>, and then your application can choose
 how to interpret them.</p>
@@ -158,7 +158,7 @@ how to interpret them.</p>
 </ul>
 <p>In the current version of Traits Futures, tasks may only be submitted from the
 main thread. An attempt to submit a task from a background thread will raise
-<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. This restriction may be removed in the future.</p>
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. This restriction may be removed in the future.</p>
 </section>
 <section id="working-with-future-objects">
 <h2>Working with future objects<a class="headerlink" href="#working-with-future-objects" title="Permalink to this heading">¶</a></h2>
@@ -244,7 +244,7 @@ you might use this as follows:</p>
 </pre></div>
 </div>
 <p>Any attempt to access the future’s <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a> before the future completes
-successfully will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>. This includes the cases where
+successfully will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>. This includes the cases where
 the background task was cancelled, or failed with an exception, as well
 as the cases where the task is still executing or has yet to start running.</p>
 <p>A <a class="reference internal" href="../api/traits_futures.background_progress.html#traits_futures.background_progress.ProgressFuture" title="traits_futures.background_progress.ProgressFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressFuture</span></code></a> object also receives progress information send by the
@@ -276,7 +276,7 @@ This information takes the form of a tuple of length 3, containing stringified
 versions of the exception type, the exception value and the exception
 traceback.</p>
 <p>As with <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.result" title="traits_futures.base_future.BaseFuture.result"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result</span></code></a>, an attempt to access <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.exception" title="traits_futures.base_future.BaseFuture.exception"><code class="xref py py-attr docutils literal notranslate"><span class="pre">exception</span></code></a> for a future that’s not in
-<a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.FAILED" title="traits_futures.future_states.FAILED"><code class="xref py py-data docutils literal notranslate"><span class="pre">FAILED</span></code></a> state will give an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>.</p>
+<a class="reference internal" href="../api/traits_futures.future_states.html#traits_futures.future_states.FAILED" title="traits_futures.future_states.FAILED"><code class="xref py py-data docutils literal notranslate"><span class="pre">FAILED</span></code></a> state will give an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>.</p>
 </section>
 <section id="cancelling-the-background-task">
 <h3>Cancelling the background task<a class="headerlink" href="#cancelling-the-background-task" title="Permalink to this heading">¶</a></h3>
@@ -359,7 +359,7 @@ any of the above actions that have not already been taken will be taken.</p>
 <p>To avoid blocking indefinitely, the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> method also accepts a
 <code class="docutils literal notranslate"><span class="pre">timeout</span></code> parameter. That timeout is used when waiting for the background
 tasks to complete. If the background tasks fail to complete within the given
-timeout, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> and leave the executor in
+timeout, <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown" title="traits_futures.traits_executor.TraitsExecutor.shutdown"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shutdown</span></code></a> will raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> and leave the executor in
 <a class="reference internal" href="../api/traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state. The worker pool used by the executor will not have been shut
 down.</p>
 </section>
@@ -398,7 +398,7 @@ worker pool down when its <a class="reference internal" href="../api/traits_futu
 application, you might want to use a shared worker pool for multiple different
 application components. In that case, you can instantiate the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>
 with an existing worker pool, which should be an instance of
-<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.ThreadPoolExecutor</span></code></a>:</p>
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.ThreadPoolExecutor</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">worker_pool</span> <span class="o">=</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
 <span class="n">executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">(</span><span class="n">worker_pool</span><span class="o">=</span><span class="n">worker_pool</span><span class="p">)</span>
 </pre></div>

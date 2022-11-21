@@ -98,7 +98,7 @@
 <p>Each <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> requires a running event loop to communicate results from
 background tasks to the foreground. In a typical GUI application, that event
 loop will be the event loop from the current GUI toolkit - for example Qt or
-Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
+Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
 Python’s standard library. This is potentially useful when writing automated
 tests, or when using Traits Futures in a headless setting (for example within
 a compute job).</p>
@@ -122,13 +122,13 @@ explicitly designed for working in a GUI-based setting, in situations where you
 don’t want your computational or other tasks to block the GUI event loop and
 generate the impression of an unresponsive GUI. Instead, you might execute
 your tasks directly in the main thread or, if you need to take advantage
-of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
+of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
 directly.</p>
 <p>However, you may find yourself in a situation where you already have Traits
 Futures-based code that was written for a GUI setting, but that you want to be
 able to execute in a environment that doesn’t have the Qt or Wx toolkits
 available. In that case, Traits Futures can use the <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> to
-deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
+deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
 a GUI framework’s event loop.</p>
 <p>Here’s an <a class="reference download internal" download="" href="../_downloads/29ab09bdeb400827f4e78ea14e57d284/headless.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">script</span></code></a> that uses the
 <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> in order to execute Traits Futures tasks within the context
