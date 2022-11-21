@@ -50,7 +50,7 @@ jobs:
         working-directory: testdir
         run: python -m unittest discover -v traits_futures
 
-   :
+  test-pypi-wheel:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
