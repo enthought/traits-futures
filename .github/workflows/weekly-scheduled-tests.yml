@@ -73,7 +73,7 @@ jobs:
       run: cd testdir && xvfb-run -a python -X faulthandler -m unittest discover -v traits_futures
       if: matrix.os == 'ubuntu-latest'
     - name: Run the test suite (Windows/macOS)
-      run: cd testdir && xvfb-run -a python -X faulthandler -m unittest discover -v traits_futures
+      run: cd testdir && python -X faulthandler -m unittest discover -v traits_futures
       if: matrix.os != 'ubuntu-latest'
 
   notify-on-failure:
