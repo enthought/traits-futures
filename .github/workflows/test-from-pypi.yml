@@ -19,36 +19,37 @@ jobs:
     - name: Install Linux packages for Qt 5 support
       run: |
         sudo apt-get update
-        sudo apt-get install qt5-default
+        sudo apt-get install libegl1
         sudo apt-get install libxkbcommon-x11-0
         sudo apt-get install libxcb-icccm4
         sudo apt-get install libxcb-image0
         sudo apt-get install libxcb-keysyms1
         sudo apt-get install libxcb-randr0
         sudo apt-get install libxcb-render-util0
-        sudo apt-get install libxcb-xinerama0
-      if: runner.os == 'Linux'
+        sudo apt-get install libxcb-shape0
+      if: matrix.os == 'ubuntu-latest'
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install package and test dependencies from PyPI sdist (with PySide2)
+    - name: Install package and test dependencies from PyPI sdist (with PySide6)
       run: |
-        python -m pip install --no-binary traits-futures traits-futures[pyside2]
+        python -m pip install --no-binary traits-futures traits-futures[pyside6]
       if: ${{ matrix.python-version != '3.11' }}
-    - name: Install package and test dependencies from PyPI sdist (no PySide2)
-      # PySide2 does not yet work on Python 3.11; test without it.
+    - name: Install package and test dependencies from PyPI sdist (no PySide6)
+      # PySide6 does not yet work on Python 3.11; test without it.
       run: |
         python -m pip install --no-binary traits-futures traits-futures
       if: ${{ matrix.python-version == '3.11' }}
     - name: Create clean test directory
       run: |
         mkdir testdir
-    - name: Run the test suite
-      uses: GabrielBB/xvfb-action@v1
-      with:
-        working-directory: testdir
-        run: python -m unittest discover -v traits_futures
+    - name: Run the test suite (Linux)
+      run: cd testdir && xvfb-run -a python -X faulthandler -m unittest discover -v traits_futures
+      if: matrix.os == 'ubuntu-latest'
+    - name: Run the test suite (Windows/macOS)
+      run: cd testdir && xvfb-run -a python -X faulthandler -m unittest discover -v traits_futures
+      if: matrix.os != 'ubuntu-latest'
 
   test-pypi-wheel:
     strategy:
@@ -62,33 +63,34 @@ jobs:
     - name: Install Linux packages for Qt 5 support
       run: |
         sudo apt-get update
-        sudo apt-get install qt5-default
+        sudo apt-get install libegl1
         sudo apt-get install libxkbcommon-x11-0
         sudo apt-get install libxcb-icccm4
         sudo apt-get install libxcb-image0
         sudo apt-get install libxcb-keysyms1
         sudo apt-get install libxcb-randr0
         sudo apt-get install libxcb-render-util0
-        sudo apt-get install libxcb-xinerama0
-      if: runner.os == 'Linux'
+        sudo apt-get install libxcb-shape0
+      if: matrix.os == 'ubuntu-latest'
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install package and test dependencies from PyPI wheel (with PySide2)
+    - name: Install package and test dependencies from PyPI wheel (with PySide6)
       run: |
-        python -m pip install --only-binary traits-futures traits-futures[pyside2]
+        python -m pip install --only-binary traits-futures traits-futures[pyside6]
       if: ${{ matrix.python-version != '3.11' }}
-    - name: Install package and test dependencies from PyPI wheel (no PySide2)
-      # PySide2 does not yet work on Python 3.11; test without it.
+    - name: Install package and test dependencies from PyPI wheel (no PySide6)
+      # PySide6 does not yet work on Python 3.11; test without it.
       run: |
         python -m pip install --only-binary traits-futures traits-futures
       if: ${{ matrix.python-version == '3.11' }}
     - name: Create clean test directory
       run: |
         mkdir testdir
-    - name: Run the test suite
-      uses: GabrielBB/xvfb-action@v1
-      with:
-        working-directory: testdir
-        run: python -m unittest discover -v traits_futures
+    - name: Run the test suite (Linux)
+      run: cd testdir && xvfb-run -a python -X faulthandler -m unittest discover -v traits_futures
+      if: matrix.os == 'ubuntu-latest'
+    - name: Run the test suite (Windows/macOS)
+      run: cd testdir && xvfb-run -a python -X faulthandler -m unittest discover -v traits_futures
+      if: matrix.os != 'ubuntu-latest'
