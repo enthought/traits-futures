@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.multithreading_router</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -140,7 +137,7 @@
 
 <div class="viewcode-block" id="MultithreadingSender"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender">[docs]</a><span class="nd">@IMessageSender</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">MultithreadingSender</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object allowing the worker to send messages.</span>
 
 <span class="sd">    This class will be instantiated in the main thread, and the instance passed</span>
@@ -166,7 +163,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="MultithreadingSender.start"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do any setup necessary to prepare for sending messages.</span>
 
 <span class="sd">        This method must be called before any messages can be sent</span>
@@ -191,7 +188,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_OPEN</span></div>
 
 <div class="viewcode-block" id="MultithreadingSender.send"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a message to the router.</span>
 
 <span class="sd">        Not thread-safe. The &#39;start&#39;, &#39;send&#39; and &#39;stop&#39; methods should</span>
@@ -217,7 +214,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pinger</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="MultithreadingSender.stop"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingSender.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do any teardown.</span>
 
 <span class="sd">        After this method has been called, no more messages can be sent.</span>
@@ -251,7 +248,7 @@
 
 <div class="viewcode-block" id="MultithreadingReceiver"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingReceiver">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageReceiver</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MultithreadingReceiver</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the IMessageReceiver interface for the case where the</span>
 <span class="sd">    sender will be in a background thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -265,7 +262,7 @@
 
 <div class="viewcode-block" id="MultithreadingRouter"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter">[docs]</a><span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageRouter</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MultithreadingRouter</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the IMessageRouter interface for the case where the</span>
 <span class="sd">    sender will be in a background thread.</span>
 
@@ -277,7 +274,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MultithreadingRouter.start"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start routing messages.</span>
 
 <span class="sd">        This method must be called before any call to ``pipe`` or</span>
@@ -300,7 +297,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> started&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.stop"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop routing messages.</span>
 
 <span class="sd">        This method should be called in the main thread after all pipes</span>
@@ -330,7 +327,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> stopped&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.pipe"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.pipe">[docs]</a>    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a (sender, receiver) pair for sending and receiving messages.</span>
 
 <span class="sd">        The sender will be passed to the background task and used to send</span>
@@ -367,7 +364,7 @@
         <span class="k">return</span> <span class="n">sender</span><span class="p">,</span> <span class="n">receiver</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.close_pipe"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.close_pipe">[docs]</a>    <span class="k">def</span> <span class="nf">close_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the receiver end of a pipe produced by ``pipe``.</span>
 
 <span class="sd">        Removes the receiver from the routing table, so that no new messages</span>
@@ -395,7 +392,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultithreadingRouter.route_until"><a class="viewcode-back" href="../../api/traits_futures.multithreading_router.html#traits_futures.multithreading_router.MultithreadingRouter.route_until">[docs]</a>    <span class="k">def</span> <span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Manually drive the router until a given condition occurs, or timeout.</span>
 
 <span class="sd">        This is primarily used as part of a clean shutdown.</span>
@@ -462,7 +459,7 @@
     <span class="c1"># Private methods #########################################################</span>
 
     <span class="k">def</span> <span class="nf">_link_to_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Link this router to the event loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span><span class="p">:</span>
@@ -475,7 +472,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_unlink_from_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unlink this router from the event loop, if it&#39;s linked.</span>
 
 <span class="sd">        After this call, the router will no longer react to any pending</span>
@@ -493,7 +490,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get and dispatch a message from the local message queue.</span>
 
 <span class="sd">        Parameters</span>
@@ -563,10 +560,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

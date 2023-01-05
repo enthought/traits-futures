@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.qt.pingee</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -108,7 +105,7 @@
 
 
 <span class="k">class</span> <span class="nc">_Signaller</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Private object used to send signals to the corresponding Qt receiver.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -117,7 +114,7 @@
 
 <div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">Pingee</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Receiver for pings.</span>
 
 <span class="sd">    Whenever a ping is received from a linked Pinger, the receiver</span>
@@ -145,19 +142,19 @@
             <span class="n">callback</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare Pingee to receive pings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect from the on_ping callable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span></div>
 
 <div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return a new pinger linked to this pingee.</span>
 
 <span class="sd">        This method is thread-safe. Typically the pingee will be passed to</span>
@@ -177,7 +174,7 @@
 
 <div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">Pinger</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ping emitter, which can send pings to a receiver in a thread-safe manner.</span>
 
 <span class="sd">    Parameters</span>
@@ -191,7 +188,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span> <span class="o">=</span> <span class="n">pingee</span>
 
 <div class="viewcode-block" id="Pinger.connect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to the ping receiver. No pings should be sent until</span>
 <span class="sd">        this function is called.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -202,7 +199,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Pinger.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect from the ping receiver. No pings should be sent</span>
 <span class="sd">        after calling this function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -211,7 +208,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span></div>
 
 <div class="viewcode-block" id="Pinger.ping"><a class="viewcode-back" href="../../../api/traits_futures.qt.pingee.html#traits_futures.qt.pingee.Pinger.ping">[docs]</a>    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a ping to the receiver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_signaller</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div></div>
@@ -251,10 +248,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.traits_executor</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -167,7 +164,7 @@
 
 
 <span class="k">class</span> <span class="nc">_StateTransitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception used to indicate a bad state transition.</span>
 
 <span class="sd">    Users should never see this exception. It always indicates an error in the</span>
@@ -176,7 +173,7 @@
 
 
 <div class="viewcode-block" id="TraitsExecutor"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor">[docs]</a><span class="k">class</span> <span class="nc">TraitsExecutor</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executor to initiate and manage background tasks.</span>
 
 <span class="sd">    Parameters</span>
@@ -272,7 +269,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> running&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TraitsExecutor.submit_call"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_call">[docs]</a>    <span class="k">def</span> <span class="nf">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience function to submit a background call.</span>
 
 <span class="sd">        .. deprecated:: 0.2</span>
@@ -301,7 +298,7 @@
         <span class="k">return</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TraitsExecutor.submit_iteration"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_iteration">[docs]</a>    <span class="k">def</span> <span class="nf">submit_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience function to submit a background iteration.</span>
 
 <span class="sd">        .. deprecated:: 0.2</span>
@@ -330,7 +327,7 @@
         <span class="k">return</span> <span class="n">submit_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TraitsExecutor.submit_progress"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit_progress">[docs]</a>    <span class="k">def</span> <span class="nf">submit_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience function to submit a background progress call.</span>
 
 <span class="sd">        .. deprecated:: 0.2</span>
@@ -362,7 +359,7 @@
         <span class="k">return</span> <span class="n">submit_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TraitsExecutor.submit"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Submit a task to the executor, and return the corresponding future.</span>
 
 <span class="sd">        This method is not thread-safe. It may only be used from the main</span>
@@ -407,7 +404,7 @@
         <span class="k">return</span> <span class="n">future</span></div>
 
 <div class="viewcode-block" id="TraitsExecutor.shutdown"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wait for all tasks to complete and then shut this executor down.</span>
 
 <span class="sd">        All waiting or executing background tasks that are cancellable will be</span>
@@ -458,7 +455,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_complete_stop</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TraitsExecutor.stop"><a class="viewcode-back" href="../../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initiate stop: cancel existing jobs and prevent new ones.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
@@ -488,7 +485,7 @@
     <span class="c1"># State transitions #######################################################</span>
 
     <span class="k">def</span> <span class="nf">_initiate_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prevent new tasks from being submitted and cancel existing tasks.</span>
 
 <span class="sd">        Internal state: RUNNING -&gt; STOPPING</span>
@@ -504,7 +501,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_complete_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Move to stopped state when all remaining futures have completed.</span>
 
 <span class="sd">        Internal state:</span>
@@ -528,7 +525,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_initiate_manual_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Move into manual stopping mode (_TERMINATING internal state).</span>
 
 <span class="sd">        This differs from the STOPPING internal state in its handling of</span>
@@ -550,7 +547,7 @@
     <span class="c1"># Private methods #########################################################</span>
 
     <span class="k">def</span> <span class="nf">_cancel_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel all currently running tasks.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelling incomplete tasks&quot;</span><span class="p">)</span>
@@ -560,7 +557,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> cancelled </span><span class="si">{</span><span class="n">cancel_count</span><span class="si">}</span><span class="s2"> tasks&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_stop_router</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the message router.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_have_message_router</span><span class="p">:</span>
@@ -571,7 +568,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> message router stopped&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_close_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the context, if we own it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_context</span><span class="p">:</span>
@@ -581,7 +578,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_shutdown_worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shut down the worker pool, if we own it.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_own_worker_pool</span><span class="p">:</span>
@@ -627,20 +624,20 @@
     <span class="c1"># Private methods #########################################################</span>
 
     <span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;state&quot; trait.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property getter for the &quot;state&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_INTERNAL_STATE_TO_EXECUTOR_STATE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;running&quot; trait.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property getter for the &quot;running&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_RUNNING_INTERNAL_STATES</span>
 
     <span class="k">def</span> <span class="nf">_get_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property getter for the &quot;stopped&quot; trait.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property getter for the &quot;stopped&quot; trait.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_state</span> <span class="ow">in</span> <span class="n">_STOPPED_INTERNAL_STATES</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;_internal_state&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_update_property_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trait change handler for the &quot;_internal_state&quot; trait.&quot;&quot;&quot;</span>
         <span class="n">old_internal_state</span><span class="p">,</span> <span class="n">new_internal_state</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">old</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -717,10 +714,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

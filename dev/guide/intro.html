@@ -27,9 +27,6 @@
       };
     </script>
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
@@ -138,7 +135,7 @@ next call to <code class="docutils literal notranslate"><span class="pre">progre
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.TaskCancelled" title="traits_futures.base_future.TaskCancelled"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a> exception.</p>
 <p>For example, your callable might look like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">interruptible_sum_of_squares</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Compute the sum of squares of integers smaller than n.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Compute the sum of squares of integers smaller than n.&quot;&quot;&quot;</span>
     <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="c1"># Send a pair of the form (steps_completed, total_steps)</span>
@@ -482,10 +479,10 @@ needed.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

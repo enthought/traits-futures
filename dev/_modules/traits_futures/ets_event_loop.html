@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.ets_event_loop</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -109,7 +106,7 @@
 
 <div class="viewcode-block" id="ETSEventLoop"><a class="viewcode-back" href="../../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop">[docs]</a><span class="nd">@IEventLoop</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">ETSEventLoop</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    IEventLoop implementation with lazily-determined toolkit.</span>
 
 <span class="sd">    The first time this event loop is used, an appropriate toolkit will</span>
@@ -126,7 +123,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolkit_event_loop</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ETSEventLoop.pingee"><a class="viewcode-back" href="../../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.pingee">[docs]</a>    <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new pingee.</span>
 
 <span class="sd">        Parameters</span>
@@ -143,7 +140,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolkit_event_loop</span><span class="o">.</span><span class="n">pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ETSEventLoop.helper"><a class="viewcode-back" href="../../api/traits_futures.ets_event_loop.html#traits_futures.ets_event_loop.ETSEventLoop.helper">[docs]</a>    <span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new event loop helper.</span>
 
 <span class="sd">        Returns</span>
@@ -154,7 +151,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">toolkit_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find and fix the toolkit, using the same mechanism that Pyface uses to</span>
 <span class="sd">        find its toolkits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -203,10 +200,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

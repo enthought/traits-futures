@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.wrappers</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -111,7 +108,7 @@
 
 
 <div class="viewcode-block" id="FutureWrapper"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper">[docs]</a><span class="k">class</span> <span class="nc">FutureWrapper</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for the IFuture.</span>
 
 <span class="sd">    Passes on messages received for this future.</span>
@@ -130,7 +127,7 @@
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;receiver:message&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_dispatch_to_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pass on a message to the future.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
@@ -140,7 +137,7 @@
 
 
 <div class="viewcode-block" id="run_background_task"><a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.run_background_task">[docs]</a><span class="k">def</span> <span class="nf">run_background_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper for callables submitted to the underlying executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -199,10 +196,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

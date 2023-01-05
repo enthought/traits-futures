@@ -27,9 +27,6 @@
       };
     </script>
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
@@ -139,7 +136,7 @@ calculation. In this case, the slowness is simulated via a call to
 
 
 <span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Square a number, slowly.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Simulate a slow calculation</span>
@@ -148,7 +145,7 @@ calculation. In this case, the slowness is simulated via a call to
 
 
 <span class="k">class</span> <span class="nc">SlowSquareUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GUI wrapper for the slow_square computation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -229,7 +226,7 @@ the GUI remains responsive and usable while a background job is executing.</p>
 
 
 <span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Square a number, slowly.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Simulate a slow calculation</span>
@@ -238,7 +235,7 @@ the GUI remains responsive and usable while a background job is executing.</p>
 
 
 <span class="k">class</span> <span class="nc">SlowSquareUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GUI wrapper for the slow_square computation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -261,7 +258,7 @@ the GUI remains responsive and usable while a background job is executing.</p>
         <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the status when the background calculation completes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
@@ -411,10 +408,10 @@ reasoning about the GUI behavior.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

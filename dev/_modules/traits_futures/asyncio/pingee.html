@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.asyncio.pingee</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -107,7 +104,7 @@
 
 <div class="viewcode-block" id="Pingee"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee">[docs]</a><span class="nd">@IPingee</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">Pingee</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Receiver for pings.</span>
 
 <span class="sd">    Whenever a ping is received from a linked Pinger, the receiver</span>
@@ -132,7 +129,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
 
     <span class="k">def</span> <span class="nf">_execute_ping_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the ping callback, if this pingee is connected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">callback</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_on_ping&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -140,19 +137,19 @@
             <span class="n">callback</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Pingee.connect"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare Pingee to receive pings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Pingee.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect from the on_ping callable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_ping</span></div>
 
 <div class="viewcode-block" id="Pingee.pinger"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pingee.pinger">[docs]</a>    <span class="k">def</span> <span class="nf">pinger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return a new pinger linked to this pingee.</span>
 
 <span class="sd">        This method is thread-safe. Typically the pingee will be passed to</span>
@@ -172,7 +169,7 @@
 
 <div class="viewcode-block" id="Pinger"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pinger">[docs]</a><span class="nd">@IPinger</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">Pinger</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ping emitter, which can send pings to a receiver in a thread-safe manner.</span>
 
 <span class="sd">    Parameters</span>
@@ -189,21 +186,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span> <span class="o">=</span> <span class="n">event_loop</span>
 
 <div class="viewcode-block" id="Pinger.connect"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pinger.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connect to the ping receiver. No pings should be sent until</span>
 <span class="sd">        this function is called.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Pinger.disconnect"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pinger.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disconnect from the ping receiver. No pings should be sent</span>
 <span class="sd">        after calling this function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">pingee</span></div>
 
 <div class="viewcode-block" id="Pinger.ping"><a class="viewcode-back" href="../../../api/traits_futures.asyncio.pingee.html#traits_futures.asyncio.pingee.Pinger.ping">[docs]</a>    <span class="k">def</span> <span class="nf">ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a ping to the receiver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span><span class="o">.</span><span class="n">call_soon_threadsafe</span><span class="p">(</span>
@@ -245,10 +242,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

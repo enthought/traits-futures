@@ -27,9 +27,6 @@
       };
     </script>
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
@@ -144,7 +141,7 @@ inputs.</p>
 
 
 <span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the square of an integer, slowly and unreliably.</span>
 
 <span class="sd">    The input should be in the range 0-100. The larger</span>
@@ -306,7 +303,7 @@ runs.</p>
 
 
 <span class="k">def</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deliberately inefficient recursive implementation of the Fibonacci series.</span>
 
 <span class="sd">    Parameters</span>
@@ -323,7 +320,7 @@ runs.</p>
 
 
 <span class="k">class</span> <span class="nc">NonClosableDialog</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Modification of QDialog that does nothing on attempts to close.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -332,13 +329,13 @@ runs.</p>
     <span class="c1"># &#39;reject&#39; method, so we can override that method to prevent closing.</span>
 
     <span class="k">def</span> <span class="nf">reject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do nothing on close.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
 
 <span class="k">class</span> <span class="nc">SlowCallDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Pyface dialog showing a progress bar, a title, and nothing else</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -365,14 +362,14 @@ runs.</p>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_close_dialog_on_future_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the dialog when the background task completes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">FibonacciCalculator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GUI with a &#39;calculate&#39; button that runs a blocking calculation.</span>
 
 <span class="sd">    While the blocking operation is running, a minimal progress</span>
@@ -444,7 +441,7 @@ GUI as the background computation progresses.</p>
 
 
 <span class="k">class</span> <span class="nc">ProgressDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dialog showing progress of the prime-counting operation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -461,7 +458,7 @@ GUI as the background computation progresses.</p>
     <span class="n">value</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the running future when the cancel button is pressed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -540,7 +537,7 @@ GUI as the background computation progresses.</p>
 
 
 <span class="k">def</span> <span class="nf">isqrt</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the integer square root of a positive integer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">n</span>
@@ -552,14 +549,14 @@ GUI as the background computation progresses.</p>
 
 
 <span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine whether a nonnegative integer is prime.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">isqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">count_primes_less_than</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Count how many primes there are smaller than n.</span>
 
 <span class="sd">    Uses a deliberately inefficient algorithm.</span>
@@ -579,7 +576,7 @@ GUI as the background computation progresses.</p>
 
 
 <span class="k">class</span> <span class="nc">PrimeCounter</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    UI to compute primes less than a given number.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -704,7 +701,7 @@ updated live with each new value reported by the background task.</p>
 
 
 <span class="k">def</span> <span class="nf">pi_iterations</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate successive approximations to pi via a Monte Carlo method.</span>
 
 <span class="sd">    Infinite iterator producing successive approximations to pi, via the usual</span>
@@ -744,7 +741,7 @@ updated live with each new value reported by the background task.</p>
 
 
 <span class="k">class</span> <span class="nc">PiIterator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    View and plot of pi approximation running in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -932,10 +929,10 @@ updated live with each new value reported by the background task.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

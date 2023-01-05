@@ -27,9 +27,6 @@
       };
     </script>
     <script type="text/javascript" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/clipboard.min.js"></script>
@@ -174,7 +171,7 @@ and to check whether the user has requested cancellation.</p>
 
 
 <span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Background task for Fizz Buzz</span>
 
 <span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
@@ -237,7 +234,7 @@ to process each message by firing a corresponding event on the future.</p>
 
 
 <span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -282,12 +279,12 @@ looks like this:</p>
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
 
 <span class="sd">        Parameters</span>
@@ -306,7 +303,7 @@ looks like this:</p>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
 <span class="sd">        Returns</span>
@@ -327,7 +324,7 @@ a <a class="reference internal" href="../api/traits_futures.traits_executor.html
 <code class="docutils literal notranslate"><span class="pre">BackgroundFizzBuzz</span></code> to <code class="docutils literal notranslate"><span class="pre">executor.submit</span></code>. For convenience, we can
 encapsulate that operation in a function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -377,7 +374,7 @@ from putting together the above snippets:</p>
 
 
 <span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Background task for Fizz Buzz</span>
 
 <span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
@@ -418,7 +415,7 @@ from putting together the above snippets:</p>
 
 
 <span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -453,12 +450,12 @@ from putting together the above snippets:</p>
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
 
 <span class="sd">        Parameters</span>
@@ -477,7 +474,7 @@ from putting together the above snippets:</p>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
 <span class="sd">        Returns</span>
@@ -493,7 +490,7 @@ from putting together the above snippets:</p>
 
 <span class="c1"># -- start submit_fizz_buzz</span>
 <span class="k">def</span> <span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -676,10 +673,10 @@ of the new background task type:</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

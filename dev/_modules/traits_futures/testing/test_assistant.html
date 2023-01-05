@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.testing.test_assistant</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -113,7 +110,7 @@
 
 
 <span class="k">class</span> <span class="nc">_HasBool</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple HasTraits class with a single mutable trait.</span>
 
 <span class="sd">    Used in tests that need something mutable and observable.</span>
@@ -124,7 +121,7 @@
 
 
 <div class="viewcode-block" id="TestAssistant"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant">[docs]</a><span class="k">class</span> <span class="nc">TestAssistant</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience mixin class for tests that need the event loop.</span>
 
 <span class="sd">    This class is designed to be used as a mixin alongside unittest.TestCase</span>
@@ -134,7 +131,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="TestAssistant.event_loop_factory"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.event_loop_factory">[docs]</a>    <span class="k">def</span> <span class="nf">event_loop_factory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Factory for the event loop.</span>
 
 <span class="sd">        Returns</span>
@@ -156,7 +153,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop</span></div>
 
 <div class="viewcode-block" id="TestAssistant.run_until"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">SAFETY_TIMEOUT</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
 <span class="sd">        The condition is re-evaluated, with the object as argument, every time</span>
@@ -184,7 +181,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_event_loop_helper</span><span class="o">.</span><span class="n">run_until</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestAssistant.exercise_event_loop"><a class="viewcode-back" href="../../../api/traits_futures.testing.test_assistant.html#traits_futures.testing.test_assistant.TestAssistant.exercise_event_loop">[docs]</a>    <span class="k">def</span> <span class="nf">exercise_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exercise the event loop.</span>
 
 <span class="sd">        Places a new task on the event loop and runs the event loop</span>
@@ -236,10 +233,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>

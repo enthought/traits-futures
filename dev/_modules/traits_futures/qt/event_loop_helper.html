@@ -26,9 +26,6 @@
       };
     </script>
     <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../../../_static/clipboard.min.js"></script>
@@ -85,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.qt.event_loop_helper</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2022 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -106,14 +103,14 @@
 
 
 <div class="viewcode-block" id="AttributeSetter"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.AttributeSetter">[docs]</a><span class="k">class</span> <span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple QObject that allows us to set object attributes from with</span>
 <span class="sd">    a running event loop.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@Slot</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Slot for setting an arbitrary attribute value on an object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -124,12 +121,12 @@
 
 <div class="viewcode-block" id="EventLoopHelper"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper">[docs]</a><span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Support for running the Qt event loop in unit tests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="EventLoopHelper.init"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the event loop for use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">qt_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
@@ -143,7 +140,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="o">.</span><span class="n">setattr</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span>
@@ -154,7 +151,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">qt_app</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.setattr_soon"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>    <span class="k">def</span> <span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Arrange for an attribute to be set once the event loop is running.</span>
 
 <span class="sd">        In typical usage, *obj* will be a ``HasTraits`` instance and</span>
@@ -176,7 +173,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="o">.</span><span class="n">setattr</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EventLoopHelper.run_until"><a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
 <span class="sd">        The condition is re-evaluated, with the object as argument, every time</span>
@@ -283,10 +280,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2022 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 5.3.0.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.0.
       </li>
     </ul>
     </div>
