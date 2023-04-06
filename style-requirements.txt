@@ -1,5 +1,5 @@
 # Requirements for CI style checks
-black
+black ~= 22.0
 flake8
 flake8-ets
 isort
