@@ -1,4 +1,4 @@
-# (C) Copyright 2018-2023 Enthought, Inc., Austin, TX
+# (C) Copyright 2018-2024 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -61,7 +61,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Traits Futures"
-copyright = "2018-2023 Enthought, Inc., Austin, TX"
+copyright = "2018-2024 Enthought, Inc., Austin, TX"
 author = "Enthought"
 
 # The version info for the project you're documenting, acts as replacement for
