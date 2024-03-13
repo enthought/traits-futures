@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Toolkits and running headless &mdash; Traits Futures 1.1 documentation</title>
     
@@ -91,16 +91,16 @@
           <div class="body" id="spc-section-body" role="main">
             
   <section id="toolkits-and-running-headless">
-<h1>Toolkits and running headless<a class="headerlink" href="#toolkits-and-running-headless" title="Permalink to this heading">¶</a></h1>
+<h1>Toolkits and running headless<a class="headerlink" href="#toolkits-and-running-headless" title="Link to this heading">¶</a></h1>
 <p>Each <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> requires a running event loop to communicate results from
 background tasks to the foreground. In a typical GUI application, that event
 loop will be the event loop from the current GUI toolkit - for example Qt or
-Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
+Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
 Python’s standard library. This is potentially useful when writing automated
 tests, or when using Traits Futures in a headless setting (for example within
 a compute job).</p>
 <section id="specifying-a-toolkit">
-<h2>Specifying a toolkit<a class="headerlink" href="#specifying-a-toolkit" title="Permalink to this heading">¶</a></h2>
+<h2>Specifying a toolkit<a class="headerlink" href="#specifying-a-toolkit" title="Link to this heading">¶</a></h2>
 <p>To explicitly specify which toolkit to use, you need to provide the
 <code class="docutils literal notranslate"><span class="pre">event_loop</span></code> parameter when instantiating the <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a>. The library
 currently provides four different event loops: <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a>,
@@ -112,20 +112,20 @@ on whether any other part of the ETS machinery has already “fixed” the toolk
 and on which toolkits are available in the current Python environment.</p>
 </section>
 <section id="running-traits-futures-in-a-headless-setting">
-<h2>Running Traits Futures in a headless setting<a class="headerlink" href="#running-traits-futures-in-a-headless-setting" title="Permalink to this heading">¶</a></h2>
+<h2>Running Traits Futures in a headless setting<a class="headerlink" href="#running-traits-futures-in-a-headless-setting" title="Link to this heading">¶</a></h2>
 <p>In general, if you’re writing code that’s not GUI-oriented, you
 probably don’t want to be using Traits Futures at all: the library is
 explicitly designed for working in a GUI-based setting, in situations where you
 don’t want your computational or other tasks to block the GUI event loop and
 generate the impression of an unresponsive GUI. Instead, you might execute
 your tasks directly in the main thread or, if you need to take advantage
-of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
+of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
 directly.</p>
 <p>However, you may find yourself in a situation where you already have Traits
 Futures-based code that was written for a GUI setting, but that you want to be
 able to execute in a environment that doesn’t have the Qt or Wx toolkits
 available. In that case, Traits Futures can use the <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> to
-deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
+deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
 a GUI framework’s event loop.</p>
 <p>Here’s an <a class="reference download internal" download="" href="../_downloads/29ab09bdeb400827f4e78ea14e57d284/headless.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">script</span></code></a> that uses the
 <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> in order to execute Traits Futures tasks within the context
@@ -258,10 +258,10 @@ of an asyncio event loop.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

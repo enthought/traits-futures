@@ -82,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.wx.event_loop_helper</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2024 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -114,7 +114,9 @@
 <span class="c1"># XXX We should be using Pyface&#39;s own CallbackTimer instead of creating</span>
 <span class="c1"># our own, but we were running into segfaults.</span>
 <span class="c1"># xref: enthought/pyface#815, enthought/traits-futures#251</span>
-<div class="viewcode-block" id="TimeoutTimer"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer">[docs]</a><span class="k">class</span> <span class="nc">TimeoutTimer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Timer</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutTimer">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer">[docs]</a>
+<span class="k">class</span> <span class="nc">TimeoutTimer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Timer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single-shot timer that executes a given callback on completion.</span>
 
@@ -140,33 +142,47 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">kwargs</span>
 
-<div class="viewcode-block" id="TimeoutTimer.start"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeoutTimer.start">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the timer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timeout_in_ms</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">StartOnce</span><span class="p">(</span><span class="n">milliseconds</span><span class="o">=</span><span class="n">timeout_in_ms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TimeoutTimer.stop"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TimeoutTimer.stop">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.stop">[docs]</a>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the timer if it hasn&#39;t already expired. The callback</span>
 <span class="sd">        will not be executed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Stop</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TimeoutTimer.Notify"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.Notify">[docs]</a>    <span class="k">def</span> <span class="nf">Notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TimeoutTimer.Notify">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.TimeoutTimer.Notify">[docs]</a>
+    <span class="k">def</span> <span class="nf">Notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the callback when the timer completes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AppForTesting"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting">[docs]</a><span class="k">class</span> <span class="nc">AppForTesting</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AppForTesting">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting">[docs]</a>
+<span class="k">class</span> <span class="nc">AppForTesting</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Subclass of wx.App used for testing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="AppForTesting.OnInit"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AppForTesting.OnInit">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.OnInit">[docs]</a>
+    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Override base class to ensure we have at least one window.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -177,7 +193,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">Show</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="AppForTesting.exit"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AppForTesting.exit">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.exit">[docs]</a>
+    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exit the application main event loop with a given exit code.</span>
 
@@ -187,15 +206,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">exit_code</span> <span class="o">=</span> <span class="n">exit_code</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ExitMainLoop</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="AppForTesting.close"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AppForTesting.close">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AppForTesting.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clean up when the object is no longer needed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span></div></div>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AttributeSetter"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AttributeSetter">[docs]</a><span class="k">class</span> <span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AttributeSetter">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.AttributeSetter">[docs]</a>
+<span class="k">class</span> <span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EvtHandler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Event handler that allows us to set object attributes from with</span>
 <span class="sd">    a running event loop.</span>
@@ -205,13 +231,18 @@
         <span class="nb">setattr</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="EventLoopHelper"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper">[docs]</a><span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
+
+<div class="viewcode-block" id="EventLoopHelper">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper">[docs]</a>
+<span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Support for running the wx event loop in unit tests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="EventLoopHelper.init"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EventLoopHelper.init">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the event loop for use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -225,7 +256,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span> <span class="o">=</span> <span class="n">attribute_setter</span></div>
 
-<div class="viewcode-block" id="EventLoopHelper.dispose"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">[docs]</a>    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EventLoopHelper.dispose">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.dispose">[docs]</a>
+    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -239,7 +273,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">wx_app</span></div>
 
-<div class="viewcode-block" id="EventLoopHelper.setattr_soon"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>    <span class="k">def</span> <span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EventLoopHelper.setattr_soon">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>
+    <span class="k">def</span> <span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Arrange for an attribute to be set once the event loop is running.</span>
 
@@ -266,7 +303,10 @@
         <span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">PostEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EventLoopHelper.run_until"><a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.run_until">[docs]</a>    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+
+<div class="viewcode-block" id="EventLoopHelper.run_until">
+<a class="viewcode-back" href="../../../api/traits_futures.wx.event_loop_helper.html#traits_futures.wx.event_loop_helper.EventLoopHelper.run_until">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
@@ -322,7 +362,9 @@
                 <span class="s2">&quot;At timeout, condition was </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">timeout</span><span class="p">,</span> <span class="n">condition</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span></div></div>
+            <span class="p">)</span></div>
+</div>
+
 </pre></div>
 
           </div>
@@ -359,10 +401,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>traits_futures.base_future module &mdash; Traits Futures 1.1 documentation</title>
     
@@ -93,29 +93,29 @@
           <div class="body" id="spc-section-body" role="main">
             
   <section id="module-traits_futures.base_future">
-<span id="traits-futures-base-future-module"></span><h1>traits_futures.base_future module<a class="headerlink" href="#module-traits_futures.base_future" title="Permalink to this heading">¶</a></h1>
+<span id="traits-futures-base-future-module"></span><h1>traits_futures.base_future module<a class="headerlink" href="#module-traits_futures.base_future" title="Link to this heading">¶</a></h1>
 <p>Base class providing common pieces of the Future machinery.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="traits_futures.base_future.ABANDONED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">ABANDONED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'abandoned'</span></em><a class="headerlink" href="#traits_futures.base_future.ABANDONED" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">ABANDONED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'abandoned'</span></em><a class="headerlink" href="#traits_futures.base_future.ABANDONED" title="Link to this definition">¶</a></dt>
 <dd><p>Control message sent when the callable is abandoned before execution.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseFuture</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseFuture</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a></p>
 <p>Convenience base class for the various flavours of Future.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.cancel">
-<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.cancel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.cancel" title="Link to this definition">¶</a></dt>
 <dd><p>Request cancellation of the background task.</p>
 <p>A task in <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state will immediately be moved
 to <code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code> state. If the task is not in <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or
 <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state, this function does nothing.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.3.0: </span>This method no longer raises for a task that isn’t cancellable.
-In previous versions, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> was raised.</p>
+In previous versions, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> was raised.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -123,14 +123,14 @@ In previous versions, <a class="reference external" href="https://docs.python.or
 cancellable.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.cancellable">
-<span class="sig-name descname"><span class="pre">cancellable</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.cancellable" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cancellable</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.cancellable" title="Link to this definition">¶</a></dt>
 <dd><p>True if cancellation of the background task can be requested, else
 False. Cancellation of the background task can be requested only if
 the future’s <code class="docutils literal notranslate"><span class="pre">state</span></code> is either <code class="docutils literal notranslate"><span class="pre">WAITING</span></code> or <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code>.</p>
@@ -138,7 +138,7 @@ the future’s <code class="docutils literal notranslate"><span class="pre">stat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.dispatch">
-<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.dispatch" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.dispatch" title="Link to this definition">¶</a></dt>
 <dd><p>Dispatch a message arriving from the associated BaseTask.</p>
 <p>This is a convenience function, and may be safely overridden by
 subclasses that want to use a different dispatch mechanism. For
@@ -148,7 +148,7 @@ that method. Subclasses then only need to provide the appropriate
 <code class="docutils literal notranslate"><span class="pre">_process_&lt;msgtype&gt;</span></code> methods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Message sent by the background task. The default implementation of
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Message sent by the background task. The default implementation of
 this method expects the message to be in the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span>
 <span class="pre">message_args)</span></code> with <code class="docutils literal notranslate"><span class="pre">message_type</span></code> a string.</p>
 </dd>
@@ -157,7 +157,7 @@ this method expects the message to be in the form <code class="docutils literal 
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.done">
-<span class="sig-name descname"><span class="pre">done</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.done" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">done</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.done" title="Link to this definition">¶</a></dt>
 <dd><p>True when communications from the background task are complete.
 At that point, no further state changes can occur for this future.
 This trait has value True if the <code class="docutils literal notranslate"><span class="pre">state</span></code> is one of <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>,
@@ -168,7 +168,7 @@ its value will be consistent with that of the <code class="docutils literal notr
 
 <dl class="py property">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.exception">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exception</span></span><a class="headerlink" href="#traits_futures.base_future.BaseFuture.exception" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exception</span></span><a class="headerlink" href="#traits_futures.base_future.BaseFuture.exception" title="Link to this definition">¶</a></dt>
 <dd><p>Information about any exception raised by the background task.</p>
 <p>This attribute is only available if the state of this future is
 <code class="docutils literal notranslate"><span class="pre">FAILED</span></code>. If the future has not reached the <code class="docutils literal notranslate"><span class="pre">FAILED</span></code> state, any
@@ -179,10 +179,10 @@ attempt to access this attribute will raise an <code class="docutils literal not
 (exception type, exception value, formatted traceback).</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or completed
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or completed
     without raising an exception.</p>
 </dd>
 </dl>
@@ -190,27 +190,27 @@ attempt to access this attribute will raise an <code class="docutils literal not
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.receive">
-<span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.receive" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture.receive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture.receive" title="Link to this definition">¶</a></dt>
 <dd><p>Receive and process a message from the task associated to this future.</p>
 <p>This method is primarily for use by the executors, but may also be of
 use in testing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>final</strong> – True if the received message should be the last one ever received
 from the paired task.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.result">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">result</span></span><a class="headerlink" href="#traits_futures.base_future.BaseFuture.result" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">result</span></span><a class="headerlink" href="#traits_futures.base_future.BaseFuture.result" title="Link to this definition">¶</a></dt>
 <dd><p>Result of the background task.</p>
 <p>This attribute is only available if the state of the future is
 <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>. If the future has not reached the <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code> state,
@@ -220,10 +220,10 @@ any attempt to access this attribute will raise an <code class="docutils literal
 <dd class="field-odd"><p><strong>result</strong> – The result obtained from the background task.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or raised an
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or raised an
     exception instead of returning a result.</p>
 </dd>
 </dl>
@@ -231,7 +231,7 @@ any attempt to access this attribute will raise an <code class="docutils literal
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.state">
-<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">message</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.state" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">message</span></em><a class="headerlink" href="#traits_futures.base_future.BaseFuture.state" title="Link to this definition">¶</a></dt>
 <dd><p>The state of the background task, to the best of the knowledge of
 this future. One of the six constants <code class="docutils literal notranslate"><span class="pre">WAITING</span></code>, <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code>,
 <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>, <code class="docutils literal notranslate"><span class="pre">FAILED</span></code>, <code class="docutils literal notranslate"><span class="pre">CANCELLING</span></code> or <code class="docutils literal notranslate"><span class="pre">CANCELLED</span></code>.</p>
@@ -241,8 +241,8 @@ this future. One of the six constants <code class="docutils literal notranslate"
 
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseTask</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseTask</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Mixin for background task classes, making those classes callable.</p>
 <p>This class provides a callable wrapper allowing subclasses to easily
 provide a background callable task.</p>
@@ -253,20 +253,20 @@ task has started, completed, or raised, and delegate to the <code class="docutil
 for execution of the background task and sending of any custom messages.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask.cancelled">
-<span class="sig-name descname"><span class="pre">cancelled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.cancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.cancelled" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cancelled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.cancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.cancelled" title="Link to this definition">¶</a></dt>
 <dd><p>Determine whether the user has requested cancellation.</p>
 <p>Returns True if the user has requested cancellation via the associated
 future’s <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method, and False otherwise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask.run">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.run" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.run" title="Link to this definition">¶</a></dt>
 <dd><p>Run the body of the background task.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -274,21 +274,21 @@ future’s <code class="docutils literal notranslate"><span class="pre">cancel</
 future’s <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask.send">
-<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.send" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask.send" title="Link to this definition">¶</a></dt>
 <dd><p>Send a message to the associated future.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The type of the message. This is used by <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> when
+<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The type of the message. This is used by <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> when
 dispatching messages to appropriate handlers.</p></li>
-<li><p><strong>message_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>, <em>optional</em>) – Message argument, if any. If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is used.</p></li>
+<li><p><strong>message_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>, <em>optional</em>) – Message argument, if any. If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is used.</p></li>
 </ul>
 </dd>
 </dl>
@@ -298,28 +298,28 @@ dispatching messages to appropriate handlers.</p></li>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="traits_futures.base_future.FINAL_MESSAGES">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">FINAL_MESSAGES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'abandoned',</span> <span class="pre">'raised',</span> <span class="pre">'returned'}</span></em><a class="headerlink" href="#traits_futures.base_future.FINAL_MESSAGES" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">FINAL_MESSAGES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'abandoned',</span> <span class="pre">'raised',</span> <span class="pre">'returned'}</span></em><a class="headerlink" href="#traits_futures.base_future.FINAL_MESSAGES" title="Link to this definition">¶</a></dt>
 <dd><p>Message types that indicate a “final” message. After a message of this
 type is received, no more messages will be received.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="traits_futures.base_future.RAISED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">RAISED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'raised'</span></em><a class="headerlink" href="#traits_futures.base_future.RAISED" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">RAISED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'raised'</span></em><a class="headerlink" href="#traits_futures.base_future.RAISED" title="Link to this definition">¶</a></dt>
 <dd><p>Control message sent when an exception was raised by the background
 callable. The argument is a tuple containing exception information.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="traits_futures.base_future.RETURNED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">RETURNED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'returned'</span></em><a class="headerlink" href="#traits_futures.base_future.RETURNED" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">RETURNED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'returned'</span></em><a class="headerlink" href="#traits_futures.base_future.RETURNED" title="Link to this definition">¶</a></dt>
 <dd><p>Control message sent to indicate that the background callable succeeded
 and returned a result. The argument is that result.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="traits_futures.base_future.SENT">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">SENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sent'</span></em><a class="headerlink" href="#traits_futures.base_future.SENT" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">SENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'sent'</span></em><a class="headerlink" href="#traits_futures.base_future.SENT" title="Link to this definition">¶</a></dt>
 <dd><p>Custom message from the future. The argument is a pair
 (message_type, message_args); the message type and message args
 are interpreted by the future.</p>
@@ -327,15 +327,15 @@ are interpreted by the future.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="traits_futures.base_future.STARTED">
-<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">STARTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'started'</span></em><a class="headerlink" href="#traits_futures.base_future.STARTED" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">STARTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'started'</span></em><a class="headerlink" href="#traits_futures.base_future.STARTED" title="Link to this definition">¶</a></dt>
 <dd><p>Control message sent before we start to process the target callable.
 The argument is always <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="traits_futures.base_future.TaskCancelled">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">TaskCancelled</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#TaskCancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.TaskCancelled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">TaskCancelled</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#TaskCancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.TaskCancelled" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Exception raised within the background task on cancellation.</p>
 </dd></dl>
 
@@ -424,10 +424,10 @@ The argument is always <code class="docutils literal notranslate"><span class="p
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

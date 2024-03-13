@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>traits_futures.traits_executor module &mdash; Traits Futures 1.1 documentation</title>
     
@@ -93,27 +93,27 @@
           <div class="body" id="spc-section-body" role="main">
             
   <section id="module-traits_futures.traits_executor">
-<span id="traits-futures-traits-executor-module"></span><h1>traits_futures.traits_executor module<a class="headerlink" href="#module-traits_futures.traits_executor" title="Permalink to this heading">¶</a></h1>
+<span id="traits-futures-traits-executor-module"></span><h1>traits_futures.traits_executor module<a class="headerlink" href="#module-traits_futures.traits_executor" title="Link to this heading">¶</a></h1>
 <p>Executor to submit background tasks.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.traits_executor.</span></span><span class="sig-name descname"><span class="pre">TraitsExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.traits_executor.</span></span><span class="sig-name descname"><span class="pre">TraitsExecutor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">worker_pool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">traits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a></p>
 <p>Executor to initiate and manage background tasks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>thread_pool</strong> (<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.Executor</span></code></a>, <em>optional</em>) – <p>Deprecated alias for worker_pool.</p>
+<li><p><strong>thread_pool</strong> (<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.Executor</span></code></a>, <em>optional</em>) – <p>Deprecated alias for worker_pool.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use <code class="docutils literal notranslate"><span class="pre">worker_pool</span></code> instead.</p>
 </div>
 </p></li>
-<li><p><strong>worker_pool</strong> (<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.Executor</span></code></a>, <em>optional</em>) – If supplied, provides the underlying worker pool executor to use. In
+<li><p><strong>worker_pool</strong> (<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.Executor" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">concurrent.futures.Executor</span></code></a>, <em>optional</em>) – If supplied, provides the underlying worker pool executor to use. In
 this case, the creator of the TraitsExecutor is responsible for
 shutting down the worker pool once it’s no longer needed. If not
 supplied, a new private worker pool will be created, and this object’s
 <code class="docutils literal notranslate"><span class="pre">stop</span></code> method will shut down that worker pool.</p></li>
-<li><p><strong>max_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <em>optional</em>) – Maximum number of workers for the private worker pool. This parameter
+<li><p><strong>max_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <em>optional</em>) – Maximum number of workers for the private worker pool. This parameter
 is mutually exclusive with <code class="docutils literal notranslate"><span class="pre">worker_pool</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 which delegates the choice of number of workers to Python’s
 <code class="docutils literal notranslate"><span class="pre">concurrent.futures</span></code> module.</p></li>
@@ -131,30 +131,30 @@ environment variable.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.running">
-<span class="sig-name descname"><span class="pre">running</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.running" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">running</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.running" title="Link to this definition">¶</a></dt>
 <dd><p>Derived state: true if this executor is running; False if it’s
 stopped or stopping.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.shutdown">
-<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.shutdown" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.shutdown" title="Link to this definition">¶</a></dt>
 <dd><p>Wait for all tasks to complete and then shut this executor down.</p>
 <p>All waiting or executing background tasks that are cancellable will be
 cancelled, and then this executor will wait for all tasks to complete.
 If a timeout is given and that timeout is reached before all tasks
-complete, then <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> will be raised and the executor will
+complete, then <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> will be raised and the executor will
 remain in <a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.STOPPING" title="traits_futures.executor_states.STOPPING"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPING</span></code></a> state. Otherwise, on return from this
 method the executor will be in <a class="reference internal" href="traits_futures.executor_states.html#traits_futures.executor_states.STOPPED" title="traits_futures.executor_states.STOPPED"><code class="xref py py-data docutils literal notranslate"><span class="pre">STOPPED</span></code></a> state</p>
 <p>This method may be called at any time. If called on an executor
 that’s already stopped, this method does nothing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum time to wait for background tasks to complete, in seconds.
+<dd class="field-odd"><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum time to wait for background tasks to complete, in seconds.
 If not given, this method will wait indefinitely.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If a timeout is given, and the background tasks fail to complete
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If a timeout is given, and the background tasks fail to complete
     within the given timeout.</p>
 </dd>
 </dl>
@@ -162,26 +162,26 @@ If not given, this method will wait indefinitely.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.state">
-<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(ExecutorState)</span></em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.state" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(ExecutorState)</span></em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.state" title="Link to this definition">¶</a></dt>
 <dd><p>Current state of this executor.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stop" title="Link to this definition">¶</a></dt>
 <dd><p>Initiate stop: cancel existing jobs and prevent new ones.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.stopped">
-<span class="sig-name descname"><span class="pre">stopped</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stopped" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">stopped</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Property(Bool())</span></em><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.stopped" title="Link to this definition">¶</a></dt>
 <dd><p>Derived state: true if this executor is stopped and it’s safe
 to dispose of related resources (like the worker pool).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.submit">
-<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit" title="Link to this definition">¶</a></dt>
 <dd><p>Submit a task to the executor, and return the corresponding future.</p>
 <p>This method is not thread-safe. It may only be used from the main
 thread.</p>
@@ -200,7 +200,7 @@ thread.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.submit_call">
-<span class="sig-name descname"><span class="pre">submit_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_call" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">submit_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_call" title="Link to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background call.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use the <a class="reference internal" href="traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a> function instead.</p>
@@ -224,7 +224,7 @@ thread.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.submit_iteration">
-<span class="sig-name descname"><span class="pre">submit_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_iteration" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">submit_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_iteration" title="Link to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background iteration.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use the <a class="reference internal" href="traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> function instead.</p>
@@ -248,7 +248,7 @@ thread.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.traits_executor.TraitsExecutor.submit_progress">
-<span class="sig-name descname"><span class="pre">submit_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_progress" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">submit_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/traits_executor.html#TraitsExecutor.submit_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.traits_executor.TraitsExecutor.submit_progress" title="Link to this definition">¶</a></dt>
 <dd><p>Convenience function to submit a background progress call.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.2: </span>Use the <a class="reference internal" href="traits_futures.background_progress.html#traits_futures.background_progress.submit_progress" title="traits_futures.background_progress.submit_progress"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_progress</span></code></a> function instead.</p>
@@ -348,10 +348,10 @@ call the “progress” object to report progress.</p></li>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

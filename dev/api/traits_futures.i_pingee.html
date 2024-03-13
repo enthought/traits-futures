@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>traits_futures.i_pingee module &mdash; Traits Futures 1.1 documentation</title>
     
@@ -93,12 +93,12 @@
           <div class="body" id="spc-section-body" role="main">
             
   <section id="module-traits_futures.i_pingee">
-<span id="traits-futures-i-pingee-module"></span><h1>traits_futures.i_pingee module<a class="headerlink" href="#module-traits_futures.i_pingee" title="Permalink to this heading">¶</a></h1>
+<span id="traits-futures-i-pingee-module"></span><h1>traits_futures.i_pingee module<a class="headerlink" href="#module-traits_futures.i_pingee" title="Link to this heading">¶</a></h1>
 <p>Interface for the toolkit-specific pingee and pinger classes.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPingee">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_pingee.</span></span><span class="sig-name descname"><span class="pre">IPingee</span></span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_pingee.</span></span><span class="sig-name descname"><span class="pre">IPingee</span></span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Interface for toolkit-specific pingee classes.</p>
 <p>An IPingee instance provides a toolkit-specific cross-thread pinging
 mechanism. The pingee is owned by the main thread, but may be shared
@@ -116,14 +116,14 @@ every time a ping is received.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPingee.connect">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.connect" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.connect" title="Link to this definition">¶</a></dt>
 <dd><p>Prepare pingee to receive pings.</p>
 <p>Not thread-safe. This method should only be called in the main thread.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPingee.disconnect">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.disconnect" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.disconnect" title="Link to this definition">¶</a></dt>
 <dd><p>Disconnect from the on_ping callable.</p>
 <p>Pings that are received after this method is called will be ignored.</p>
 <p>Not thread-safe. This method should only be called in the main thread.</p>
@@ -131,7 +131,7 @@ every time a ping is received.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPingee.pinger">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pinger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.pinger" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pinger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPingee.pinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPingee.pinger" title="Link to this definition">¶</a></dt>
 <dd><p>Create and return a new pinger linked to this pingee.</p>
 <p>This method is thread-safe. Typically the pingee will be passed to
 a background thread, and this method used within that background thread
@@ -152,8 +152,8 @@ been called.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPinger">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_pingee.</span></span><span class="sig-name descname"><span class="pre">IPinger</span></span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_pingee.</span></span><span class="sig-name descname"><span class="pre">IPinger</span></span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Interface for toolkit-specific pinger classes.</p>
 <p>An IPinger instance emits pings targeting a particular IPingee instance.</p>
 <dl class="field-list simple">
@@ -164,21 +164,21 @@ be connected.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPinger.connect">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger.connect" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger.connect" title="Link to this definition">¶</a></dt>
 <dd><p>Connect to the ping receiver. No pings should be sent before
 this method is called.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPinger.disconnect">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger.disconnect" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger.disconnect" title="Link to this definition">¶</a></dt>
 <dd><p>Disconnect from the ping receiver. No pings should be sent after
 calling this method.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_pingee.IPinger.ping">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger.ping" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_pingee.html#IPinger.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_pingee.IPinger.ping" title="Link to this definition">¶</a></dt>
 <dd><p>Send a ping to the receiver.</p>
 </dd></dl>
 
@@ -257,10 +257,10 @@ calling this method.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

@@ -82,7 +82,7 @@
           <div class="body" id="spc-section-body" role="main">
             
   <h1>Source code for traits_futures.i_event_loop</h1><div class="highlight"><pre>
-<span></span><span class="c1"># (C) Copyright 2018-2023 Enthought, Inc., Austin, TX</span>
+<span></span><span class="c1"># (C) Copyright 2018-2024 Enthought, Inc., Austin, TX</span>
 <span class="c1"># All rights reserved.</span>
 <span class="c1">#</span>
 <span class="c1"># This software is provided without warranty under the terms of the BSD</span>
@@ -99,7 +99,9 @@
 <span class="kn">import</span> <span class="nn">abc</span>
 
 
-<div class="viewcode-block" id="IEventLoop"><a class="viewcode-back" href="../../api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop">[docs]</a><span class="k">class</span> <span class="nc">IEventLoop</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="IEventLoop">
+<a class="viewcode-back" href="../../api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop">[docs]</a>
+<span class="k">class</span> <span class="nc">IEventLoop</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface for toolkit-specific event-loop details.</span>
 
@@ -108,7 +110,9 @@
 <span class="sd">    by a GUI toolkit).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="IEventLoop.pingee"><a class="viewcode-back" href="../../api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop.pingee">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<div class="viewcode-block" id="IEventLoop.pingee">
+<a class="viewcode-back" href="../../api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop.pingee">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new pingee.</span>
@@ -125,7 +129,10 @@
 <span class="sd">        pingee : IPingee</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="IEventLoop.helper"><a class="viewcode-back" href="../../api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop.helper">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+
+<div class="viewcode-block" id="IEventLoop.helper">
+<a class="viewcode-back" href="../../api/traits_futures.i_event_loop.html#traits_futures.i_event_loop.IEventLoop.helper">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a new event loop helper.</span>
@@ -133,7 +140,9 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        event_loop_helper : IEventLoopHelper</span>
-<span class="sd">        &quot;&quot;&quot;</span></div></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+</div>
+
 </pre></div>
 
           </div>
@@ -170,10 +179,10 @@
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

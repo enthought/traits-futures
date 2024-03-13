@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>traits_futures.i_event_loop module &mdash; Traits Futures 1.1 documentation</title>
     
@@ -93,19 +93,19 @@
           <div class="body" id="spc-section-body" role="main">
             
   <section id="module-traits_futures.i_event_loop">
-<span id="traits-futures-i-event-loop-module"></span><h1>traits_futures.i_event_loop module<a class="headerlink" href="#module-traits_futures.i_event_loop" title="Permalink to this heading">¶</a></h1>
+<span id="traits-futures-i-event-loop-module"></span><h1>traits_futures.i_event_loop module<a class="headerlink" href="#module-traits_futures.i_event_loop" title="Link to this heading">¶</a></h1>
 <p>Interface for toolkit-specific event-loop details.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_event_loop.IEventLoop">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_event_loop.</span></span><span class="sig-name descname"><span class="pre">IEventLoop</span></span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_event_loop.</span></span><span class="sig-name descname"><span class="pre">IEventLoop</span></span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Interface for toolkit-specific event-loop details.</p>
 <p>An instance of this class provides consistent mechanisms to get
 objects related to a particular event loop (for example, that provided
 by a GUI toolkit).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_event_loop.IEventLoop.helper">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop.helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop.helper" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">helper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop.helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop.helper" title="Link to this definition">¶</a></dt>
 <dd><p>Return a new event loop helper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -119,7 +119,7 @@ by a GUI toolkit).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_event_loop.IEventLoop.pingee">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop.pingee" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pingee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_ping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_event_loop.html#IEventLoop.pingee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_event_loop.IEventLoop.pingee" title="Link to this definition">¶</a></dt>
 <dd><p>Return a new pingee.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -204,10 +204,10 @@ callable is ignored.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>

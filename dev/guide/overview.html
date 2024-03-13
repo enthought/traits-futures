@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Overview &mdash; Traits Futures 1.1 documentation</title>
     
@@ -91,9 +91,9 @@
           <div class="body" id="spc-section-body" role="main">
             
   <section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
 <section id="why-traits-futures">
-<h2>Why Traits Futures?<a class="headerlink" href="#why-traits-futures" title="Permalink to this heading">¶</a></h2>
+<h2>Why Traits Futures?<a class="headerlink" href="#why-traits-futures" title="Link to this heading">¶</a></h2>
 <p>In a nutshell, Traits Futures allows GUI applications to execute one or more
 background tasks without blocking the main GUI, and then <em>safely</em> update the
 GUI in response to full or partial results from those background tasks. For
@@ -110,7 +110,7 @@ the form of callbacks into Python code.</p>
 interactions (for example, running a complex computation, or submitting a
 complex search query to a remote database) face two main problems.</p>
 <section id="problem-1-unresponsive-guis">
-<h3>Problem 1: unresponsive GUIs<a class="headerlink" href="#problem-1-unresponsive-guis" title="Permalink to this heading">¶</a></h3>
+<h3>Problem 1: unresponsive GUIs<a class="headerlink" href="#problem-1-unresponsive-guis" title="Link to this heading">¶</a></h3>
 <p>Thanks to the single-threaded nature of the GUI frameworks, the various
 callbacks into Python land are executed in serial rather than in parallel: only
 one callback can be executing at any given time, and that callback must
@@ -121,7 +121,7 @@ example) from within a GUI.</p>
 <p>The following <a class="reference download internal" download="" href="../_downloads/94e32031bc02da6c1f63c0ff6c1d435b/calculate_in_main_thread.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">code</span></code></a>
 demonstrates this effect. It provides a simple GUI wrapper for a slow
 calculation. In this case, the slowness is simulated via a call to
-<a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
+<a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Example of GUI that runs a time-consuming calculation in the main thread.</span>
 
@@ -195,12 +195,12 @@ the event loop’s task queue, and our current callback is blocking that task
 from executing.</p>
 </section>
 <section id="problem-2-safely-updating-the-gui">
-<h3>Problem 2: Safely updating the GUI<a class="headerlink" href="#problem-2-safely-updating-the-gui" title="Permalink to this heading">¶</a></h3>
+<h3>Problem 2: Safely updating the GUI<a class="headerlink" href="#problem-2-safely-updating-the-gui" title="Link to this heading">¶</a></h3>
 <p>The solution to the responsiveness issue described in the previous section is
 straightforward: we move the calculation to a separate thread or process,
 freeing up the main thread so that the GUI can continue to respond to user
 interactions. This in itself doesn’t require Traits Futures: it could be
-accomplished directly by submitting the squaring jobs to a <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>
+accomplished directly by submitting the squaring jobs to a <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>
 worker pool, for example.</p>
 <p>But as soon as we move the calculation to a background thread, we run into a
 second issue: GUI toolkits generally require that their objects (widgets, etc.)
@@ -302,9 +302,9 @@ event needs to be written to be thread safe, and it would be all too easy
 to accidentally introduce non-thread-safe listeners.</p>
 </section>
 <section id="solution-traits-futures">
-<h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Permalink to this heading">¶</a></h3>
+<h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Link to this heading">¶</a></h3>
 <p>Traits Futures provides a pattern for solving the above problems. As with
-<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
 the time of submission a “future” object is returned. That “future” object acts
 as the main thread’s “view” of the state of the background task. The key
 differences are:</p>
@@ -329,7 +329,7 @@ during application shutdown. See the <a class="reference internal" href="testing
 writing unit tests for code that uses Traits Futures.</p>
 <p class="rubric">Footnotes</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="f1" role="note">
+<aside class="footnote brackets" id="f1" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Note the weasel word “essentially”. Some frameworks, on some platforms, may
 start auxiliary threads in order to faciliate communication between the
@@ -408,10 +408,10 @@ reasoning about the GUI behavior.</p>
     <div class="row-fluid">
     <ul class="inline pull-left">
       <li>
-        &copy; Copyright 2018-2023 Enthought, Inc., Austin, TX
+        &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 6.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
       </li>
     </ul>
     </div>
