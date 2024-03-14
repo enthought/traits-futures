@@ -1,5 +1,5 @@
 ..
-   (C) Copyright 2018-2023 Enthought, Inc., Austin, TX
+   (C) Copyright 2018-2024 Enthought, Inc., Austin, TX
    All rights reserved.
 
    This software is provided without warranty under the terms of the BSD
@@ -45,7 +45,7 @@ Limitations
 
 - By design, and unlike :mod:`concurrent.futures`, |traits_futures| requires the
   UI event loop to be running in order to process results.
-- Requires Python 3.7 or later.
+- Requires Python 3.8 or later.
 
 
 Quick start

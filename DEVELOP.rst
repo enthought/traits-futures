@@ -1,5 +1,5 @@
 ..
-   (C) Copyright 2018-2023 Enthought, Inc., Austin, TX
+   (C) Copyright 2018-2024 Enthought, Inc., Austin, TX
    All rights reserved.
 
    This software is provided without warranty under the terms of the BSD
@@ -19,7 +19,7 @@ Getting started
 ---------------
 
 You'll need a Python 3 environment for development. Any environment using
-Python >= 3.7 will do. For example, you could create and activate a new venv
+Python >= 3.8 will do. For example, you could create and activate a new venv
 using something like::
 
     python3.10 -m venv ../traits-futures && source ../traits-futures/bin/activate
