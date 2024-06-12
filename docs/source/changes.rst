@@ -39,6 +39,14 @@ Changes
   pass an explicit event loop. Instantiating an ``AsyncioEventLoop`` without
   an ``asyncio`` event loop is deprecated. (#492)
 
+Features
+~~~~~~~~
+
+* New "steps" background task type for cancellable progress-reporting tasks.
+  This has a richer interface than the existing progress background task type.
+  It can be used via the new |submit_steps| convenience function, which
+  returns a |StepsFuture| object. (#484)
+
 Documentation
 ~~~~~~~~~~~~~
 
@@ -495,9 +503,11 @@ and progress-reporting tasks for Traits UI applications based on Qt.
 .. |run| replace:: :meth:`~.BaseTask.run`
 .. |send| replace:: :meth:`~.BaseTask.send`
 .. |shutdown| replace:: :meth:`~.TraitsExecutor.shutdown`
+.. |StepsFuture| replace:: :class:`~.StepsFuture`
 .. |submit_call| replace:: :func:`~.submit_call`
 .. |submit_iteration| replace:: :func:`~.submit_iteration`
 .. |submit_progress| replace:: :func:`~.submit_progress`
+.. |submit_steps| replace:: :func:`~.submit_steps`
 .. |task| replace:: :meth:`~.ITaskSpecification.task`
 .. |TaskCancelled| replace:: :exc:`~.TaskCancelled`
 .. |TestAssistant| replace:: :exc:`~.TestAssistant`
