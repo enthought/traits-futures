@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Check out the main branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       # We need a full clone rather than a shallow clone so that setuptools-scm
       # can compute the right version number for the docs.
       # xref: https://github.com/pypa/setuptools_scm/issues/431
