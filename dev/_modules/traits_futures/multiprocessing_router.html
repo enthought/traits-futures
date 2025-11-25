@@ -130,15 +130,15 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">collections.abc</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">multiprocessing.managers</span>
-<span class="kn">import</span> <span class="nn">queue</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections.abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing.managers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">queue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
@@ -150,13 +150,13 @@
     <span class="n">provides</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop</span> <span class="kn">import</span> <span class="n">IEventLoop</span>
-<span class="kn">from</span> <span class="nn">traits_futures.i_message_router</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.i_event_loop</span><span class="w"> </span><span class="kn">import</span> <span class="n">IEventLoop</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.i_message_router</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">IMessageReceiver</span><span class="p">,</span>
     <span class="n">IMessageRouter</span><span class="p">,</span>
     <span class="n">IMessageSender</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.i_pingee</span> <span class="kn">import</span> <span class="n">IPingee</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.i_pingee</span><span class="w"> </span><span class="kn">import</span> <span class="n">IPingee</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -173,7 +173,7 @@
 <div class="viewcode-block" id="MultiprocessingSender">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender">[docs]</a>
 <span class="nd">@IMessageSender</span><span class="o">.</span><span class="n">register</span>
-<span class="k">class</span> <span class="nc">MultiprocessingSender</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiprocessingSender</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object allowing the worker to send messages.</span>
 
@@ -189,14 +189,14 @@
 <span class="sd">        Process-safe queue for passing messages to the foreground.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_id</span><span class="p">,</span> <span class="n">message_queue</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection_id</span><span class="p">,</span> <span class="n">message_queue</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connection_id</span> <span class="o">=</span> <span class="n">connection_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_queue</span> <span class="o">=</span> <span class="n">message_queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_INITIAL</span>
 
 <div class="viewcode-block" id="MultiprocessingSender.start">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender.start">[docs]</a>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do any setup necessary to prepare for sending messages.</span>
 
@@ -221,7 +221,7 @@
 
 <div class="viewcode-block" id="MultiprocessingSender.send">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender.send">[docs]</a>
-    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Send a message to the router.</span>
 
@@ -249,7 +249,7 @@
 
 <div class="viewcode-block" id="MultiprocessingSender.stop">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingSender.stop">[docs]</a>
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do any teardown.</span>
 
@@ -272,11 +272,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_CLOSED</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_info</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_info</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 
 
@@ -284,7 +284,7 @@
 <div class="viewcode-block" id="MultiprocessingReceiver">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingReceiver">[docs]</a>
 <span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageReceiver</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MultiprocessingReceiver</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiprocessingReceiver</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the IMessageReceiver interface for the case where the</span>
 <span class="sd">    sender will be in a background process.</span>
@@ -301,7 +301,7 @@
 <div class="viewcode-block" id="MultiprocessingRouter">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter">[docs]</a>
 <span class="nd">@provides</span><span class="p">(</span><span class="n">IMessageRouter</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MultiprocessingRouter</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiprocessingRouter</span><span class="p">(</span><span class="n">HasRequiredTraits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of the IMessageRouter interface for the case where the</span>
 <span class="sd">    sender will be in a background process.</span>
@@ -316,7 +316,7 @@
 
 <div class="viewcode-block" id="MultiprocessingRouter.start">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.start">[docs]</a>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start routing messages.</span>
 
@@ -353,7 +353,7 @@
 
 <div class="viewcode-block" id="MultiprocessingRouter.stop">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.stop">[docs]</a>
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop routing messages.</span>
 
@@ -398,7 +398,7 @@
 
 <div class="viewcode-block" id="MultiprocessingRouter.pipe">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.pipe">[docs]</a>
-    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a (sender, receiver) pair for sending and receiving messages.</span>
 
@@ -438,7 +438,7 @@
 
 <div class="viewcode-block" id="MultiprocessingRouter.close_pipe">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.close_pipe">[docs]</a>
-    <span class="k">def</span> <span class="nf">close_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the receiver end of a pipe produced by ``pipe``.</span>
 
@@ -469,7 +469,7 @@
 
 <div class="viewcode-block" id="MultiprocessingRouter.route_until">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.MultiprocessingRouter.route_until">[docs]</a>
-    <span class="k">def</span> <span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">route_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Manually drive the router until a given condition occurs, or timeout.</span>
 
@@ -546,7 +546,7 @@
 
     <span class="c1"># Private methods #########################################################</span>
 
-    <span class="k">def</span> <span class="nf">_link_to_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_link_to_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Link this router to the event loop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -559,7 +559,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_unlink_from_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unlink_from_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unlink this router from the event loop, if it&#39;s linked.</span>
 
@@ -577,7 +577,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_pingee</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linked</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_route_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get and dispatch a message from the local message queue.</span>
 
@@ -610,14 +610,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">receiver</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
 
-    <span class="k">def</span> <span class="nf">__connection_ids_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__connection_ids_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span></div>
 
 
 
 <div class="viewcode-block" id="monitor_queue">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_router.html#traits_futures.multiprocessing_router.monitor_queue">[docs]</a>
-<span class="k">def</span> <span class="nf">monitor_queue</span><span class="p">(</span><span class="n">process_queue</span><span class="p">,</span> <span class="n">local_queue</span><span class="p">,</span> <span class="n">pingee</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">monitor_queue</span><span class="p">(</span><span class="n">process_queue</span><span class="p">,</span> <span class="n">local_queue</span><span class="p">,</span> <span class="n">pingee</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Move incoming child process messages to the local queue.</span>
 
@@ -667,7 +667,7 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -675,7 +675,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -696,7 +696,7 @@
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

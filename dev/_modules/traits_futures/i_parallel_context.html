@@ -96,12 +96,12 @@
 <span class="sd">Interface for the parallelism context needed by the TraitsExecutor</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
 
 
 <div class="viewcode-block" id="IParallelContext">
 <a class="viewcode-back" href="../../api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext">[docs]</a>
-<span class="k">class</span> <span class="nc">IParallelContext</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IParallelContext</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface for the parallelism context needed by the TraitsExecutor.</span>
 
@@ -114,7 +114,7 @@
 <div class="viewcode-block" id="IParallelContext.worker_pool">
 <a class="viewcode-back" href="../../api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.worker_pool">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Provide a worker pool suitable for this context.</span>
 
@@ -135,7 +135,7 @@
 <div class="viewcode-block" id="IParallelContext.event">
 <a class="viewcode-back" href="../../api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.event">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a shareable event suitable for this context.</span>
 
@@ -152,7 +152,7 @@
 <div class="viewcode-block" id="IParallelContext.message_router">
 <a class="viewcode-back" href="../../api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.message_router">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a message router suitable for use in this context.</span>
 
@@ -170,7 +170,7 @@
 <div class="viewcode-block" id="IParallelContext.close">
 <a class="viewcode-back" href="../../api/traits_futures.i_parallel_context.html#traits_futures.i_parallel_context.IParallelContext.close">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do any cleanup necessary before disposal of the context.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -178,7 +178,7 @@
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        True if this context is closed, else False.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -193,7 +193,7 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -201,7 +201,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -222,7 +222,7 @@
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

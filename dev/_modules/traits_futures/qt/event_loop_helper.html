@@ -96,22 +96,22 @@
 <span class="sd">Test support, providing the ability to run the event loop from tests.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">pyface.qt.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QTimer</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">Slot</span>
-<span class="kn">from</span> <span class="nn">pyface.qt.QtGui</span> <span class="kn">import</span> <span class="n">QApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QTimer</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">Slot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.i_event_loop_helper</span> <span class="kn">import</span> <span class="n">IEventLoopHelper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.i_event_loop_helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">IEventLoopHelper</span>
 
 
 <div class="viewcode-block" id="AttributeSetter">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.AttributeSetter">[docs]</a>
-<span class="k">class</span> <span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple QObject that allows us to set object attributes from with</span>
 <span class="sd">    a running event loop.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@Slot</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Slot for setting an arbitrary attribute value on an object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -125,14 +125,14 @@
 <div class="viewcode-block" id="EventLoopHelper">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper">[docs]</a>
 <span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
-<span class="k">class</span> <span class="nc">EventLoopHelper</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EventLoopHelper</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Support for running the Qt event loop in unit tests.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="EventLoopHelper.init">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.init">[docs]</a>
-    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the event loop for use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -149,7 +149,7 @@
 
 <div class="viewcode-block" id="EventLoopHelper.dispose">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.dispose">[docs]</a>
-    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -163,7 +163,7 @@
 
 <div class="viewcode-block" id="EventLoopHelper.setattr_soon">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>
-    <span class="k">def</span> <span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Arrange for an attribute to be set once the event loop is running.</span>
 
@@ -188,7 +188,7 @@
 
 <div class="viewcode-block" id="EventLoopHelper.run_until">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.run_until">[docs]</a>
-    <span class="k">def</span> <span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
@@ -221,10 +221,10 @@
         <span class="n">timeout_timer</span><span class="o">.</span><span class="n">setSingleShot</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">timeout_timer</span><span class="o">.</span><span class="n">setInterval</span><span class="p">(</span><span class="n">timeout_in_ms</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">stop_on_timeout</span><span class="p">():</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">stop_on_timeout</span><span class="p">():</span>
             <span class="n">qt_app</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">stop_if_condition</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">stop_if_condition</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
                 <span class="n">qt_app</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
@@ -272,7 +272,7 @@
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
@@ -280,7 +280,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -301,7 +301,7 @@
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

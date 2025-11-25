@@ -165,12 +165,12 @@ callable which can be used to check for cancellation requests.</p>
 <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.send" title="traits_futures.base_future.BaseTask.send"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send</span></code></a> and <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseTask.cancelled" title="traits_futures.base_future.BaseTask.cancelled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cancelled</span></code></a> to send messages to the associated <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance
 and to check whether the user has requested cancellation.</p>
 <p>Here’s the <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> callable.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseTask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTask</span>
 
 
-<span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Background task for Fizz Buzz</span>
 
@@ -187,7 +187,7 @@ and to check whether the user has requested cancellation.</p>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
 
@@ -215,7 +215,7 @@ any exception raised during execution will be made available under the
 <h3>The foreground Future<a class="headerlink" href="#the-foreground-future" title="Link to this heading">¶</a></h3>
 <p>Now we define a dedicated future class <code class="docutils literal notranslate"><span class="pre">FizzBuzzFuture</span></code> for this background
 task type. The most convenient way to do this is to inherit from the
-<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> class, which is a <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a> subclass that provides the
+<a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> class, which is a <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a> subclass that provides the
 <a class="reference internal" href="../api/traits_futures.i_task_specification.html#traits_futures.i_task_specification.IFuture" title="traits_futures.i_task_specification.IFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IFuture</span></code></a> interface. Messages coming into the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture" title="traits_futures.base_future.BaseFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFuture</span></code></a> instance from the
 background task are processed by the <a class="reference internal" href="../api/traits_futures.base_future.html#traits_futures.base_future.BaseFuture.dispatch" title="traits_futures.base_future.BaseFuture.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch</span></code></a> method. The default
 implementation of this method expects incoming messages to have the form
@@ -229,11 +229,11 @@ dispatch mechanism, so all we need to do is to define methods
 <code class="docutils literal notranslate"><span class="pre">_process_fizz</span></code>, <code class="docutils literal notranslate"><span class="pre">_process_buzz</span></code> and <code class="docutils literal notranslate"><span class="pre">_process_fizz_buzz</span></code> to handle
 messages of types <code class="docutils literal notranslate"><span class="pre">FIZZ</span></code>, <code class="docutils literal notranslate"><span class="pre">BUZZ</span></code> and <code class="docutils literal notranslate"><span class="pre">FIZZ_BUZZ</span></code> respectively. We choose
 to process each message by firing a corresponding event on the future.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFuture</span>
 
 
-<span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -252,13 +252,13 @@ to process each message by firing a corresponding event on the future.</p>
 
     <span class="c1"># Private methods #########################################################</span>
 
-    <span class="k">def</span> <span class="nf">_process_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fizz</span> <span class="o">=</span> <span class="n">n</span>
 
-    <span class="k">def</span> <span class="nf">_process_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buzz</span> <span class="o">=</span> <span class="n">n</span>
 
-    <span class="k">def</span> <span class="nf">_process_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">n</span>
 </pre></div>
 </div>
@@ -274,16 +274,16 @@ callable. For the background task, we want to return (but not call!) the
 <code class="docutils literal notranslate"><span class="pre">fizz_buzz</span></code> function that we defined above. For the future, we create and
 return a new <code class="docutils literal notranslate"><span class="pre">FizzBuzzFuture</span></code> instance. So our task specification
 looks like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
-<span class="k">class</span> <span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
 
@@ -302,7 +302,7 @@ looks like this:</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
@@ -323,7 +323,7 @@ looks like this:</p>
 a <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> <code class="docutils literal notranslate"><span class="pre">executor</span></code> by passing an instance of
 <code class="docutils literal notranslate"><span class="pre">BackgroundFizzBuzz</span></code> to <code class="docutils literal notranslate"><span class="pre">executor.submit</span></code>. For convenience, we can
 encapsulate that operation in a function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
 
@@ -368,12 +368,12 @@ from putting together the above snippets:</p>
 
 
 <span class="c1"># -- start fizz_buzz --</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseTask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTask</span>
 
 
-<span class="k">class</span> <span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Background task for Fizz Buzz</span>
 
@@ -390,7 +390,7 @@ from putting together the above snippets:</p>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
 
@@ -410,11 +410,11 @@ from putting together the above snippets:</p>
 
 
 <span class="c1"># -- start FizzBuzzFuture --</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">BaseFuture</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Int</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFuture</span>
 
 
-<span class="k">class</span> <span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -433,28 +433,28 @@ from putting together the above snippets:</p>
 
     <span class="c1"># Private methods #########################################################</span>
 
-    <span class="k">def</span> <span class="nf">_process_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fizz</span> <span class="o">=</span> <span class="n">n</span>
 
-    <span class="k">def</span> <span class="nf">_process_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buzz</span> <span class="o">=</span> <span class="n">n</span>
 
-    <span class="k">def</span> <span class="nf">_process_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fizz_buzz</span> <span class="o">=</span> <span class="n">n</span>
 <span class="c1"># -- end FizzBuzzFuture --</span>
 
 
 <span class="c1"># -- start BackgroundFizzBuzz --</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">ITaskSpecification</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">ITaskSpecification</span>
 
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
-<span class="k">class</span> <span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a Future for the background task.</span>
 
@@ -473,7 +473,7 @@ from putting together the above snippets:</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
@@ -489,7 +489,7 @@ from putting together the above snippets:</p>
 
 
 <span class="c1"># -- start submit_fizz_buzz</span>
-<span class="k">def</span> <span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
 
@@ -516,7 +516,7 @@ of the new background task type:</p>
 <span class="sd">Example of a custom background job type.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
@@ -525,13 +525,13 @@ of the new background task type:</p>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">TraitsExecutor</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraitsExecutor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
 
-<span class="kn">from</span> <span class="nn">fizz_buzz_task</span> <span class="kn">import</span> <span class="n">FizzBuzzFuture</span><span class="p">,</span> <span class="n">submit_fizz_buzz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fizz_buzz_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">FizzBuzzFuture</span><span class="p">,</span> <span class="n">submit_fizz_buzz</span>
 
 
-<span class="k">class</span> <span class="nc">FizzBuzzUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
@@ -550,36 +550,36 @@ of the new background task type:</p>
     <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.cancellable&quot;</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Running&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_cancel_running_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cancel_running_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelling&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:fizz&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Fizz </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:buzz&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Buzz </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:fizz_buzz&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;FIZZ BUZZ! </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_reset_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Ready&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_can_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancellable</span>
 
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
@@ -647,7 +647,7 @@ of the new background task type:</p>
     <a href="../_sources/guide/advanced.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -655,7 +655,7 @@ of the new background task type:</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -676,7 +676,7 @@ of the new background task type:</p>
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

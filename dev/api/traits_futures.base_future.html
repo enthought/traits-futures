@@ -104,7 +104,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseFuture</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseFuture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseFuture" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasStrictTraits" title="(in traits v7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasStrictTraits</span></code></a></p>
 <p>Convenience base class for the various flavours of Future.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseFuture.cancel">
@@ -115,7 +115,7 @@ to <code class="docutils literal notranslate"><span class="pre">CANCELLING</span
 <code class="docutils literal notranslate"><span class="pre">EXECUTING</span></code> state, this function does nothing.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.3.0: </span>This method no longer raises for a task that isn’t cancellable.
-In previous versions, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> was raised.</p>
+In previous versions, <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> was raised.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -123,7 +123,7 @@ In previous versions, <a class="reference external" href="https://docs.python.or
 cancellable.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -148,7 +148,7 @@ that method. Subclasses then only need to provide the appropriate
 <code class="docutils literal notranslate"><span class="pre">_process_&lt;msgtype&gt;</span></code> methods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Message sent by the background task. The default implementation of
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Message sent by the background task. The default implementation of
 this method expects the message to be in the form <code class="docutils literal notranslate"><span class="pre">(message_type,</span>
 <span class="pre">message_args)</span></code> with <code class="docutils literal notranslate"><span class="pre">message_type</span></code> a string.</p>
 </dd>
@@ -179,10 +179,10 @@ attempt to access this attribute will raise an <code class="docutils literal not
 (exception type, exception value, formatted traceback).</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or completed
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.14)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or completed
     without raising an exception.</p>
 </dd>
 </dl>
@@ -196,14 +196,14 @@ attempt to access this attribute will raise an <code class="docutils literal not
 use in testing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – The message received from the associated task.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>final</strong> – True if the received message should be the last one ever received
 from the paired task.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -220,10 +220,10 @@ any attempt to access this attribute will raise an <code class="docutils literal
 <dd class="field-odd"><p><strong>result</strong> – The result obtained from the background task.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.12)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or raised an
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.14)"><strong>AttributeError</strong></a> – If the task is still executing, or was cancelled, or raised an
     exception instead of returning a result.</p>
 </dd>
 </dl>
@@ -242,7 +242,7 @@ this future. One of the six constants <code class="docutils literal notranslate"
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.base_future.BaseTask">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">BaseTask</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#BaseTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.BaseTask" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Mixin for background task classes, making those classes callable.</p>
 <p>This class provides a callable wrapper allowing subclasses to easily
 provide a background callable task.</p>
@@ -259,7 +259,7 @@ for execution of the background task and sending of any custom messages.</p>
 future’s <code class="docutils literal notranslate"><span class="pre">cancel</span></code> method, and False otherwise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -274,7 +274,7 @@ future’s <code class="docutils literal notranslate"><span class="pre">cancel</
 future’s <code class="docutils literal notranslate"><span class="pre">result</span></code> attribute.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,9 +286,9 @@ future’s <code class="docutils literal notranslate"><span class="pre">result</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The type of the message. This is used by <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> when
+<li><p><strong>message_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The type of the message. This is used by <code class="docutils literal notranslate"><span class="pre">BaseFuture</span></code> when
 dispatching messages to appropriate handlers.</p></li>
-<li><p><strong>message_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>, <em>optional</em>) – Message argument, if any. If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is used.</p></li>
+<li><p><strong>message_arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>, <em>optional</em>) – Message argument, if any. If not given, <code class="docutils literal notranslate"><span class="pre">None</span></code> is used.</p></li>
 </ul>
 </dd>
 </dl>
@@ -335,7 +335,7 @@ The argument is always <code class="docutils literal notranslate"><span class="p
 <dl class="py exception">
 <dt class="sig sig-object py" id="traits_futures.base_future.TaskCancelled">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.base_future.</span></span><span class="sig-name descname"><span class="pre">TaskCancelled</span></span><a class="reference internal" href="../_modules/traits_futures/base_future.html#TaskCancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.base_future.TaskCancelled" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Exception raised within the background task on cancellation.</p>
 </dd></dl>
 
@@ -398,7 +398,7 @@ The argument is always <code class="docutils literal notranslate"><span class="p
     <a href="../_sources/api/traits_futures.base_future.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -406,7 +406,7 @@ The argument is always <code class="docutils literal notranslate"><span class="p
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -427,7 +427,7 @@ The argument is always <code class="docutils literal notranslate"><span class="p
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

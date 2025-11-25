@@ -96,27 +96,27 @@
 <span class="sd">Context providing multiprocessing-friendly worker pools, events, and routers.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">concurrent.futures</span>
-<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">concurrent.futures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
 
-<span class="kn">from</span> <span class="nn">traits_futures.i_parallel_context</span> <span class="kn">import</span> <span class="n">IParallelContext</span>
-<span class="kn">from</span> <span class="nn">traits_futures.multiprocessing_router</span> <span class="kn">import</span> <span class="n">MultiprocessingRouter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.i_parallel_context</span><span class="w"> </span><span class="kn">import</span> <span class="n">IParallelContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.multiprocessing_router</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiprocessingRouter</span>
 
 
 <div class="viewcode-block" id="MultiprocessingContext">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext">[docs]</a>
-<span class="k">class</span> <span class="nc">MultiprocessingContext</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiprocessingContext</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context for multiprocessing, suitable for use with the TraitsExecutor.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MultiprocessingContext.worker_pool">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.worker_pool">[docs]</a>
-    <span class="k">def</span> <span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Provide a new worker pool suitable for this context.</span>
 
@@ -135,7 +135,7 @@
 
 <div class="viewcode-block" id="MultiprocessingContext.event">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.event">[docs]</a>
-    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a shareable event suitable for this context.</span>
 
@@ -152,7 +152,7 @@
 
 <div class="viewcode-block" id="MultiprocessingContext.message_router">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.message_router">[docs]</a>
-    <span class="k">def</span> <span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a message router suitable for use in this context.</span>
 
@@ -173,7 +173,7 @@
 
 <div class="viewcode-block" id="MultiprocessingContext.close">
 <a class="viewcode-back" href="../../api/traits_futures.multiprocessing_context.html#traits_futures.multiprocessing_context.MultiprocessingContext.close">[docs]</a>
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do any cleanup necessary before disposal of the context.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -182,7 +182,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        True if this context is closed, else False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -198,7 +198,7 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/img/e-logo.png" alt="Logo">
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -206,7 +206,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -227,7 +227,7 @@
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

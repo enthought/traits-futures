@@ -103,11 +103,11 @@ running simultaneously, and displays the state of all previously submitted
 calculations in a table. Each “calculation” is a squaring operation; the
 calculation may fail randomly, with an increased chance of failure for larger
 inputs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
@@ -118,7 +118,7 @@ inputs.</p>
     <span class="n">Range</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CallFuture</span><span class="p">,</span>
     <span class="n">CANCELLED</span><span class="p">,</span>
     <span class="n">CANCELLING</span><span class="p">,</span>
@@ -129,7 +129,7 @@ inputs.</p>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
     <span class="n">WAITING</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">HGroup</span><span class="p">,</span>
     <span class="n">Item</span><span class="p">,</span>
     <span class="n">TabularAdapter</span><span class="p">,</span>
@@ -140,7 +140,7 @@ inputs.</p>
 <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the square of an integer, slowly and unreliably.</span>
 
@@ -158,7 +158,7 @@ inputs.</p>
         <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
 
 
-<span class="k">class</span> <span class="nc">JobTabularAdapter</span><span class="p">(</span><span class="n">TabularAdapter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">JobTabularAdapter</span><span class="p">(</span><span class="n">TabularAdapter</span><span class="p">):</span>
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s2">&quot;Job State&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">),</span>
     <span class="p">]</span>
@@ -178,10 +178,10 @@ inputs.</p>
     <span class="c1">#: Text to be displayed for the state column.</span>
     <span class="n">state_text</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Str</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_get_bg_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_bg_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">state</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_state_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_state_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">item</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">state</span>
         <span class="n">state_text</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
@@ -192,7 +192,7 @@ inputs.</p>
         <span class="k">return</span> <span class="n">state_text</span>
 
 
-<span class="k">class</span> <span class="nc">SquaringHelper</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SquaringHelper</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The Traits executor for the background jobs.</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
@@ -212,22 +212,22 @@ inputs.</p>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_do_slow_square</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_slow_square</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel_all&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_cancel_all_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cancel_all_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="p">:</span>
             <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;clear_finished&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_clear_finished_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_finished_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">default_traits_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_traits_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">View</span><span class="p">(</span>
             <span class="n">HGroup</span><span class="p">(</span>
                 <span class="n">VGroup</span><span class="p">(</span>
@@ -295,14 +295,14 @@ runs.</p>
 <span class="sd">in use, Qt will often animate the progress bar.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">pyface.api</span> <span class="kn">import</span> <span class="n">Dialog</span>
-<span class="kn">from</span> <span class="nn">pyface.qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">Range</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="n">CallFuture</span><span class="p">,</span> <span class="n">submit_call</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyface.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">Range</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallFuture</span><span class="p">,</span> <span class="n">submit_call</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
 
 
-<span class="k">def</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fibonacci</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deliberately inefficient recursive implementation of the Fibonacci series.</span>
 
@@ -319,7 +319,7 @@ runs.</p>
     <span class="k">return</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">NonClosableDialog</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NonClosableDialog</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Modification of QDialog that does nothing on attempts to close.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -328,13 +328,13 @@ runs.</p>
     <span class="c1"># the &quot;ESC&quot; key is pressed. Both actions are routed through the dialog&#39;s</span>
     <span class="c1"># &#39;reject&#39; method, so we can override that method to prevent closing.</span>
 
-    <span class="k">def</span> <span class="nf">reject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Do nothing on close.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">SlowCallDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SlowCallDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple Pyface dialog showing a progress bar, a title, and nothing else</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -342,7 +342,7 @@ runs.</p>
     <span class="c1">#: The future representing the running background task.</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">CallFuture</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_create_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="c1"># Override base class implementation to provide a simple progress bar.</span>
         <span class="n">progress_bar</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QProgressBar</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="n">progress_bar</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -350,7 +350,7 @@ runs.</p>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">progress_bar</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_create_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="c1"># Override base class implementation in order to customize title hints,</span>
         <span class="c1"># and in particular to remove the close button.</span>
         <span class="n">dlg</span> <span class="o">=</span> <span class="n">NonClosableDialog</span><span class="p">(</span>
@@ -361,14 +361,14 @@ runs.</p>
         <span class="k">return</span> <span class="n">dlg</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_close_dialog_on_future_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_close_dialog_on_future_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close the dialog when the background task completes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">FibonacciCalculator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FibonacciCalculator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GUI with a &#39;calculate&#39; button that runs a blocking calculation.</span>
 
@@ -386,7 +386,7 @@ runs.</p>
     <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">&quot;Calculate&quot;</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">SlowCallDialog</span><span class="p">(</span>
             <span class="n">future</span><span class="o">=</span><span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">fibonacci</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">),</span>
             <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Calculating Fib(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2">). Please wait.&quot;</span><span class="p">,</span>
@@ -417,9 +417,9 @@ GUI as the background computation progresses.</p>
 <span class="sd">Example showing progress reporting from a background computation, with a</span>
 <span class="sd">modal progress dialog.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">pyface.qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
-<span class="kn">from</span> <span class="nn">pyface.ui.qt4.dialog</span> <span class="kn">import</span> <span class="n">Dialog</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyface.ui.qt4.dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
@@ -430,17 +430,17 @@ GUI as the background computation progresses.</p>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CANCELLED</span><span class="p">,</span>
     <span class="n">COMPLETED</span><span class="p">,</span>
     <span class="n">ProgressFuture</span><span class="p">,</span>
     <span class="n">submit_progress</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
 
 
-<span class="k">class</span> <span class="nc">ProgressDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProgressDialog</span><span class="p">(</span><span class="n">Dialog</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dialog showing progress of the prime-counting operation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -457,7 +457,7 @@ GUI as the background computation progresses.</p>
     <span class="c1">#: The current step.</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cancel the running future when the cancel button is pressed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -476,14 +476,14 @@ GUI as the background computation progresses.</p>
 
     <span class="c1"># Private methods #########################################################</span>
 
-    <span class="k">def</span> <span class="nf">_create_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_message</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">layout</span><span class="p">))</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_progress_bar</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">layout</span><span class="p">))</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_cancel_button</span><span class="p">(</span><span class="n">parent</span><span class="p">))</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_create_cancel_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_cancel_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">buttons</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QDialogButtonBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cancel_button</span> <span class="o">=</span> <span class="n">buttons</span><span class="o">.</span><span class="n">addButton</span><span class="p">(</span>
             <span class="s2">&quot;Cancel&quot;</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">RejectRole</span>
@@ -492,37 +492,37 @@ GUI as the background computation progresses.</p>
         <span class="n">buttons</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">QueuedConnection</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">buttons</span>
 
-    <span class="k">def</span> <span class="nf">_create_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_control</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="n">dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_control</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span>
             <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_control</span>
 
-    <span class="k">def</span> <span class="nf">_create_progress_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_progress_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialog</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_progress_bar</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QProgressBar</span><span class="p">(</span><span class="n">dialog</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress_bar</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_message_control</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;maximum&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_update_progress_bar_maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_progress_bar_maximum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">maximum</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress_bar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">maximum</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_update_progress_bar_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_progress_bar_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_progress_bar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_progress_bar</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:progress&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">progress_info</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
         <span class="n">current_step</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">,</span> <span class="n">count_so_far</span> <span class="o">=</span> <span class="n">progress_info</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">max_steps</span>
@@ -532,11 +532,11 @@ GUI as the background computation progresses.</p>
         <span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_respond_to_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_respond_to_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">isqrt</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isqrt</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the integer square root of a positive integer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -548,14 +548,14 @@ GUI as the background computation progresses.</p>
         <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
 
 
-<span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine whether a nonnegative integer is prime.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">isqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">count_primes_less_than</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_primes_less_than</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Count how many primes there are smaller than n.</span>
 
@@ -575,7 +575,7 @@ GUI as the background computation progresses.</p>
     <span class="k">return</span> <span class="n">prime_count</span>
 
 
-<span class="k">class</span> <span class="nc">PrimeCounter</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrimeCounter</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    UI to compute primes less than a given number.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -605,7 +605,7 @@ GUI as the background computation progresses.</p>
     <span class="n">_last_limit</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_count_primes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_count_primes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_progress</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span>
@@ -621,11 +621,11 @@ GUI as the background computation progresses.</p>
         <span class="p">)</span>
         <span class="n">dialog</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_count_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_count_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">done</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
         <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">COMPLETED</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result_message</span> <span class="o">=</span> <span class="s2">&quot;There are </span><span class="si">{}</span><span class="s2"> primes smaller than </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -635,7 +635,7 @@ GUI as the background computation progresses.</p>
         <span class="k">elif</span> <span class="n">future</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">CANCELLED</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result_message</span> <span class="o">=</span> <span class="s2">&quot;Run cancelled&quot;</span>
 
-    <span class="k">def</span> <span class="nf">default_traits_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_traits_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">View</span><span class="p">(</span>
             <span class="n">VGroup</span><span class="p">(</span>
                 <span class="n">HGroup</span><span class="p">(</span>
@@ -675,12 +675,12 @@ updated live with each new value reported by the background task.</p>
 
 <span class="sd">Note: this example requires NumPy and Chaco.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">chaco.api</span> <span class="kn">import</span> <span class="n">ArrayPlotData</span><span class="p">,</span> <span class="n">Plot</span>
-<span class="kn">from</span> <span class="nn">chaco.overlays.coordinate_line_overlay</span> <span class="kn">import</span> <span class="n">CoordinateLineOverlay</span>
-<span class="kn">from</span> <span class="nn">enable.component_editor</span> <span class="kn">import</span> <span class="n">ComponentEditor</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chaco.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayPlotData</span><span class="p">,</span> <span class="n">Plot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chaco.overlays.coordinate_line_overlay</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoordinateLineOverlay</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enable.component_editor</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComponentEditor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">Float</span><span class="p">,</span>
@@ -692,15 +692,15 @@ updated live with each new value reported by the background task.</p>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">IterationFuture</span><span class="p">,</span>
     <span class="n">submit_iteration</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">VGroup</span><span class="p">,</span> <span class="n">View</span>
 
 
-<span class="k">def</span> <span class="nf">pi_iterations</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pi_iterations</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate successive approximations to pi via a Monte Carlo method.</span>
 
@@ -740,7 +740,7 @@ updated live with each new value reported by the background task.</p>
         <span class="k">yield</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">approximation</span><span class="p">,</span> <span class="n">error</span>
 
 
-<span class="k">class</span> <span class="nc">PiIterator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PiIterator</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    View and plot of pi approximation running in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -779,32 +779,32 @@ updated live with each new value reported by the background task.</p>
     <span class="n">plot</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Plot</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;approximate&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_calculate_pi_approximately</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_pi_approximately</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_iteration</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">pi_iterations</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span>
         <span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_cancel_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cancel_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_reset_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:result_event&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_record_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_plot_data</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_approximate_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_approximate_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">done</span>
 
-    <span class="k">def</span> <span class="nf">_get_cancel_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cancel_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancellable</span>
 
-    <span class="k">def</span> <span class="nf">_update_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">recent_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_points</span> <span class="p">:]</span>  <span class="c1"># noqa: E203</span>
         <span class="c1"># We need the reshape for the case where the results list is empty.</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">recent_results</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
@@ -816,7 +816,7 @@ updated live with each new value reported by the background task.</p>
             <span class="n">lower</span><span class="o">=</span><span class="n">approx</span> <span class="o">-</span> <span class="n">errors</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_plot_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">plot</span> <span class="o">=</span> <span class="n">Plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_plot_data</span><span class="p">()</span>
         <span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="s2">&quot;counts&quot;</span><span class="p">,</span> <span class="s2">&quot;approx&quot;</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
@@ -839,7 +839,7 @@ updated live with each new value reported by the background task.</p>
 
         <span class="k">return</span> <span class="n">plot</span>
 
-    <span class="k">def</span> <span class="nf">default_traits_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_traits_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">View</span><span class="p">(</span>
             <span class="n">HGroup</span><span class="p">(</span>
                 <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;plot&quot;</span><span class="p">,</span> <span class="n">editor</span><span class="o">=</span><span class="n">ComponentEditor</span><span class="p">()),</span>
@@ -903,7 +903,7 @@ updated live with each new value reported by the background task.</p>
     <a href="../_sources/guide/examples.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -911,7 +911,7 @@ updated live with each new value reported by the background task.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -932,7 +932,7 @@ updated live with each new value reported by the background task.</p>
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

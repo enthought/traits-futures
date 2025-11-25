@@ -134,8 +134,8 @@ connections made in the <a class="reference internal" href="#traits_futures.i_me
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageReceiver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageReceiver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adaptee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageReceiver</span></span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageReceiver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageReceiver" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
 <p>Interface for the main-thread message receiver.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageReceiver.message">
@@ -147,8 +147,8 @@ connections made in the <a class="reference internal" href="#traits_futures.i_me
 
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageRouter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adaptee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default=&lt;class</span> <span class="pre">'traits.adaptation.adaptation_error.AdaptationError'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageRouter</span></span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageRouter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageRouter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.Interface" title="(in traits v7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
 <p>Interface for the main-thread message router.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageRouter.close_pipe">
@@ -162,7 +162,7 @@ can reach that receiver.</p>
 <dd class="field-odd"><p><strong>receiver</strong> (<a class="reference internal" href="#traits_futures.i_message_router.IMessageReceiver" title="traits_futures.i_message_router.IMessageReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMessageReceiver</span></code></a>) – Receiver half of the pair returned by the <code class="docutils literal notranslate"><span class="pre">pipe</span></code> method.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -183,7 +183,7 @@ messages, while the receiver remains in the foreground.</p>
 </p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the router is not currently running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -203,11 +203,11 @@ messages will need to be processed through this function.</p>
 <li><p><strong>condition</strong> – Zero-argument callable returning a boolean. When this condition
 becomes true, this method will stop routing messages. If the
 condition is already true on entry, no messages will be routed.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Maximum number of seconds to route messages for.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the condition did not become true before timeout.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -221,7 +221,7 @@ condition is already true on entry, no messages will be routed.</p></li>
 <p>Not thread-safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the router has already been started.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -237,7 +237,7 @@ not permitted after this method has been called.</p>
 <p>Not thread safe. Must always be called in the main thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the router is not running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -247,7 +247,7 @@ not permitted after this method has been called.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.i_message_router.IMessageSender">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.i_message_router.</span></span><span class="sig-name descname"><span class="pre">IMessageSender</span></span><a class="reference internal" href="../_modules/traits_futures/i_message_router.html#IMessageSender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.i_message_router.IMessageSender" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.AbstractContextManager" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractContextManager</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.AbstractContextManager" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractContextManager</span></code></a></p>
 <p>Interface for objects used to send a message to the foreground.</p>
 <p>Typically an IMessageSender instance for a given router is created
 in the main thread by that router and then passed to the appropriate
@@ -260,10 +260,10 @@ background task, which then effectively takes “ownership” of that sender.</p
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – Typically this will be immutable, small, and pickleable.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -278,7 +278,7 @@ using the <code class="docutils literal notranslate"><span class="pre">send</spa
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the sender has previously been started.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -292,7 +292,7 @@ all be called from the same thread.</p>
 all be called from the same thread.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the sender has not been started, or has already been stopped.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -353,7 +353,7 @@ all be called from the same thread.</p>
     <a href="../_sources/api/traits_futures.i_message_router.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -361,7 +361,7 @@ all be called from the same thread.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -382,7 +382,7 @@ all be called from the same thread.</p>
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

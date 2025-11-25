@@ -107,7 +107,7 @@ forever and blocking the rest of the test suite.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="traits_futures.testing.test_assistant.TestAssistant">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">traits_futures.testing.test_assistant.</span></span><span class="sig-name descname"><span class="pre">TestAssistant</span></span><a class="reference internal" href="../_modules/traits_futures/testing/test_assistant.html#TestAssistant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#traits_futures.testing.test_assistant.TestAssistant" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Convenience mixin class for tests that need the event loop.</p>
 <p>This class is designed to be used as a mixin alongside unittest.TestCase
 for tests that need to run the event loop as part of the test.</p>
@@ -149,16 +149,16 @@ the trait changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v6.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
-<li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the trait to monitor for changes.</p></li>
+<li><p><strong>object</strong> (<a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">traits.has_traits.HasTraits</span></code></a>) – Object whose trait we monitor.</p></li>
+<li><p><strong>trait</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the trait to monitor for changes.</p></li>
 <li><p><strong>condition</strong> – Single-argument callable, returning a boolean. This will be
 called with <em>object</em> as the only input.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Number of seconds to allow before timing out with an exception.
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – Number of seconds to allow before timing out with an exception.
 The (somewhat arbitrary) default is 5 seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If timeout is reached, regardless of whether the condition is
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If timeout is reached, regardless of whether the condition is
     true or not at that point.</p>
 </dd>
 </dl>
@@ -220,7 +220,7 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
     <a href="../_sources/api/traits_futures.testing.test_assistant.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -228,7 +228,7 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -249,7 +249,7 @@ The (somewhat arbitrary) default is 5 seconds.</p></li>
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>

@@ -106,18 +106,18 @@ background task must cooperate, meaning that the code for that task must be
 modified. Fortunately, that modification can be very simple.</p>
 <p>This section describes how to modify the callable for a background task to make
 it possible to interrupt mid-calculation. In brief, you turn your callable into
-a <a class="reference external" href="https://docs.python.org/3/glossary.html#term-generator" title="(in Python v3.12)"><span class="xref std std-term">generator function</span></a> by inserting <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> statements representing possible
+a <a class="reference external" href="https://docs.python.org/3/glossary.html#term-generator" title="(in Python v3.14)"><span class="xref std std-term">generator function</span></a> by inserting <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> statements representing possible
 interruption points, and then execute that callable using <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a>
-instead of <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>. In addition, each <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> statement can be used to
+instead of <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>. In addition, each <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> statement can be used to
 provide progress information to the future. The following goes into this in
 more detail.</p>
 <section id="example-approximating">
 <h2>Example: approximating π<a class="headerlink" href="#example-approximating" title="Link to this heading">¶</a></h2>
 <p>We use a simplistic example to illustrate. The following code uses a Monte
 Carlo algorithm to compute (slowly and inefficiently) an approximation to π.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
-<span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">):</span>
     <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
     <span class="c1"># counting the proportion that land in the quarter circle.</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
@@ -145,9 +145,9 @@ however, that the GUI will remain responsive and usable during those seconds.</p
 <span class="sd">CANCELLED state until the background computation is complete.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
@@ -157,7 +157,7 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CallFuture</span><span class="p">,</span>
     <span class="n">CANCELLED</span><span class="p">,</span>
     <span class="n">COMPLETED</span><span class="p">,</span>
@@ -165,10 +165,10 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="n">submit_call</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
 
 
-<span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">):</span>
     <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
     <span class="c1"># counting the proportion that land in the quarter circle.</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
@@ -179,7 +179,7 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">/</span> <span class="n">total</span>
 
 
-<span class="k">class</span> <span class="nc">NonInterruptibleTaskExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NonInterruptibleTaskExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
@@ -201,19 +201,19 @@ however, that the GUI will remain responsive and usable during those seconds.</p
     <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.cancellable&quot;</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating π&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_count</span>
         <span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_request_cancellation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_request_cancellation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelling&quot;</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">CANCELLED</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelled&quot;</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAILED</span><span class="p">:</span>
@@ -226,10 +226,10 @@ however, that the GUI will remain responsive and usable during those seconds.</p
             <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Impossible state: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_can_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancellable</span>
 
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
@@ -256,11 +256,11 @@ however, that the GUI will remain responsive and usable during those seconds.</p
 <p>However, with two simple changes, we can allow the <code class="docutils literal notranslate"><span class="pre">approximate_pi</span></code> function
 to cancel mid-calculation. Those two changes are:</p>
 <ul class="simple">
-<li><p>insert a <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> statement at possible interruption points</p></li>
+<li><p>insert a <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> statement at possible interruption points</p></li>
 <li><p>submit the background task via <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> instead of <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a>.</p></li>
 </ul>
 <p>The implementation of <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> not only checks for cancellation, but
-also sends a message to the future at every <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> point. For that reason, you
+also sends a message to the future at every <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> point. For that reason, you
 don’t want to yield too often - as a guide, sending a message more than 100
 times per second is likely be inefficient. But conversely, if you yield too
 rarely, then the checks for cancellation will be spaced further apart, so you
@@ -272,7 +272,7 @@ increase the latency for a response to a cancellation request.</p>
 100 thousand iterations (which, for reference, worked out to around every 50th
 of a second when tested on a high-end 2018 laptop). It adds just two lines to
 the original function.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">):</span>
     <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
     <span class="c1"># counting the proportion that land in the quarter circle.</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
@@ -285,7 +285,7 @@ the original function.</p>
     <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">/</span> <span class="n">total</span>
 </pre></div>
 </div>
-<p>Adding the <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> changes the function type: it’s now a Python <a class="reference external" href="https://docs.python.org/3/glossary.html#term-generator" title="(in Python v3.12)"><span class="xref std std-term">generator function</span></a>, returning a <a class="reference external" href="https://docs.python.org/3/glossary.html#term-generator-iterator" title="(in Python v3.12)"><span class="xref std std-term">generator</span></a> when called. So we need to use
+<p>Adding the <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> changes the function type: it’s now a Python <a class="reference external" href="https://docs.python.org/3/glossary.html#term-generator" title="(in Python v3.14)"><span class="xref std std-term">generator function</span></a>, returning a <a class="reference external" href="https://docs.python.org/3/glossary.html#term-generator-iterator" title="(in Python v3.14)"><span class="xref std std-term">generator</span></a> when called. So we need to use
 <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> instead of <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.submit_call" title="traits_futures.background_call.submit_call"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_call</span></code></a> to send this function to the
 executor, and we get an <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> instead of a <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a> in return.
 Just as with the <a class="reference internal" href="../api/traits_futures.background_call.html#traits_futures.background_call.CallFuture" title="traits_futures.background_call.CallFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallFuture</span></code></a>, the eventual result of the <code class="docutils literal notranslate"><span class="pre">approximate_pi</span></code>
@@ -294,9 +294,9 @@ call is supplied to the future on completion via the <a class="reference interna
 <section id="sending-partial-results">
 <h2>Sending partial results<a class="headerlink" href="#sending-partial-results" title="Link to this heading">¶</a></h2>
 <p>As we mentioned above, <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration" title="traits_futures.background_iteration.submit_iteration"><code class="xref py py-func docutils literal notranslate"><span class="pre">submit_iteration</span></code></a> also sends a message to the
-<a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> whenever it encounters a <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a>. That message carries
+<a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> whenever it encounters a <a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a>. That message carries
 whatever was yielded as a payload. That means that we can replace the plain
-<a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> to yield an expression, providing information to the future. That
+<a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> to yield an expression, providing information to the future. That
 information could contain progress information, partial results, log messages,
 or any useful information you want to provide (though ideally, whatever Python
 object you yield should be both immutable and pickleable). Every time you do a
@@ -304,8 +304,8 @@ object you yield should be both immutable and pickleable). Every time you do a
 <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture.result_event" title="traits_futures.background_iteration.IterationFuture.result_event"><code class="xref py py-attr docutils literal notranslate"><span class="pre">result_event</span></code></a> trait on the <a class="reference internal" href="../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture" title="traits_futures.background_iteration.IterationFuture"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationFuture</span></code></a> object, making it easy to listen
 for those results.</p>
 <p>Here’s a version of the approximation code that yields partial results at each
-<a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.12)"><span class="xref std std-ref">yield</span></a> point.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">):</span>
+<a class="reference external" href="https://docs.python.org/3/reference/simple_stmts.html#yield" title="(in Python v3.14)"><span class="xref std std-ref">yield</span></a> point.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">8</span><span class="p">):</span>
     <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
     <span class="c1"># counting the proportion that land in the quarter circle.</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
@@ -330,9 +330,9 @@ making use of the above.</p>
 <span class="sd">information to the UI.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bool</span><span class="p">,</span>
     <span class="n">Button</span><span class="p">,</span>
     <span class="n">HasStrictTraits</span><span class="p">,</span>
@@ -342,7 +342,7 @@ making use of the above.</p>
     <span class="n">Property</span><span class="p">,</span>
     <span class="n">Str</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traits_futures.api</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CANCELLED</span><span class="p">,</span>
     <span class="n">COMPLETED</span><span class="p">,</span>
     <span class="n">FAILED</span><span class="p">,</span>
@@ -350,10 +350,10 @@ making use of the above.</p>
     <span class="n">submit_iteration</span><span class="p">,</span>
     <span class="n">TraitsExecutor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traitsui.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">UItem</span><span class="p">,</span> <span class="n">View</span>
 
 
-<span class="k">def</span> <span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">):</span>
     <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
     <span class="c1"># counting the proportion that land in the quarter circle.</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
@@ -366,7 +366,7 @@ making use of the above.</p>
     <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">inside</span> <span class="o">/</span> <span class="n">total</span>
 
 
-<span class="k">class</span> <span class="nc">InterruptibleTaskExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InterruptibleTaskExample</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
     <span class="c1">#: The executor to submit tasks to.</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">TraitsExecutor</span><span class="p">)</span>
 
@@ -388,19 +388,19 @@ making use of the above.</p>
     <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.cancellable&quot;</span><span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating π&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_iteration</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_count</span>
         <span class="p">)</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_request_cancellation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_request_cancellation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelling&quot;</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">CANCELLED</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelled&quot;</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAILED</span><span class="p">:</span>
@@ -414,13 +414,13 @@ making use of the above.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:result_event&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_report_partial_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_partial_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Running: π ≈ </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_can_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancellable</span>
 
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
@@ -483,7 +483,7 @@ making use of the above.</p>
     <a href="../_sources/guide/cancel.rst.txt"
        rel="nofollow">Show Source</a>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -491,7 +491,7 @@ making use of the above.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -512,7 +512,7 @@ making use of the above.</p>
         &copy; Copyright 2018-2024 Enthought, Inc., Austin, TX
       </li>
       <li>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 7.2.6.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 8.1.3.
       </li>
     </ul>
     </div>
