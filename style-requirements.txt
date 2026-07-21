@@ -1,5 +1,6 @@
 # Requirements for CI style checks
 black ~= 22.0
 flake8
-flake8-ets
+# 1.1.0 adds "--copyright-end-year current" support.
+flake8-ets >= 1.1.0
 isort
