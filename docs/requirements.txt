@@ -3,5 +3,5 @@ Sphinx
 enthought-sphinx-theme
 sphinx-copybutton
 # traits 7.1.0's TraitDocumenter fails on module-level traits (e.g.
-# ExecutorState); see enthought/traits. Remove once fixed upstream.
+# ExecutorState); see enthought/traits#1883. Remove once fixed upstream.
 traits < 7.1.0
