@@ -5,20 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 1.1 documentation</title>
+    <title>Traits Futures: reactive background processing for Traits and TraitsUI &mdash; Traits Futures 1.0 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="_static/css/spc-extend.css">
     <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" >
-    <link rel="stylesheet" href="_static/enthought.css" type="text/css" >
-    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" >
-    <link rel="stylesheet" href="_static/copybutton.css" type="text/css" >
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/enthought.css?v=1c73b1d4" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1',
+        VERSION:     '1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -26,17 +26,17 @@
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/sphinx_highlight.js"></script>
-    <script type="text/javascript" src="_static/clipboard.min.js"></script>
-    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=fd10adb8"></script>
     <script type="text/javascript" src="_static/js/copybutton.js"></script>
     <script type="text/javascript" src="_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="_static/img/favicon.png">
     <link rel="index" title="Index" href="genindex.html" >
     <link rel="search" title="Search" href="search.html" >
-    <link rel="top" title="Traits Futures 1.1 documentation" href="#" >
+    <link rel="top" title="Traits Futures 1.0 documentation" href="#" >
     <link rel="next" title="Overview" href="guide/overview.html" > 
   </head>
   <body>
@@ -85,7 +85,7 @@
             
   <section id="traits-futures-reactive-background-processing-for-traits-and-traitsui">
 <h1>Traits Futures: reactive background processing for Traits and TraitsUI<a class="headerlink" href="#traits-futures-reactive-background-processing-for-traits-and-traitsui" title="Link to this heading">¶</a></h1>
-<p>Release v1.1.</p>
+<p>Release v1.0.</p>
 <p>The <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> package provides a means to fire off a background
 calculation from a <a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI</a> application, and later respond to the result(s)
 of that calculation, leaving the main UI responsive for user interactions while
@@ -102,7 +102,7 @@ easily be extended to support other messaging patterns.</p></li>
 <li><p>access to result(s) arriving from the background task</p></li>
 </ul>
 </li>
-<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
+<li><p>Future objects are <a class="reference external" href="https://docs.enthought.com/traits/traits_api_reference/has_traits.html#traits.has_traits.HasTraits" title="(in traits v7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">HasTraits</span></code></a> instances, suitable for integration
 into a TraitsUI application.</p></li>
 <li><p>No need to be a threading expert! Incoming results arrive as trait changes in
 the main thread. This eliminates a large class of potential issues with
