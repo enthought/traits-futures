@@ -38,7 +38,7 @@ build-backend = 'setuptools.build_meta'
 
 [tool.black]
 line-length = 79
-target-version = ['py36']
+target-version = ['py310']
 # black introduces extra blank lines that we don't want in the Sphinx
 # rendering. xref: https://github.com/sphinx-doc/sphinx/issues/9407
 exclude = '/docs/source/guide/examples/fizz_buzz_task.py'
