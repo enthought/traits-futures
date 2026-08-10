@@ -38,7 +38,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.10']
+        # Development versions of our dependencies (traits and PySide6)
+        # require Python >= 3.10, so we can't exercise the bleeding edge
+        # on the older Python versions that traits-futures still supports.
+        python-version: ['3.10', '3.11']
 
     runs-on: ${{ matrix.os }}
 
