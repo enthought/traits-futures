@@ -26,6 +26,9 @@ Features
 Changes
 ~~~~~~~
 
+* Support for Python 3.8 and Python 3.9 has been dropped. Traits Futures now
+  requires Python 3.10 or later, following the corresponding change in Traits.
+  (#537)
 * The "asyncio" and "null" entry points for the "traits_futures.event_loops"
   entry point group have been removed. Their behaviour was ill-defined, and
   dependent on ``asyncio.get_event_loop``, which is deprecated in Python.
