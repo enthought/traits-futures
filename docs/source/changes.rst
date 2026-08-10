@@ -56,6 +56,8 @@ Continuous integration and build
 
 * Add cron-job-based workflow to validate installation of the latest
   wheel and sdist from PyPI. (#465)
+* Extend the test matrices to cover Python 3.12, Python 3.13 and
+  Python 3.14. (#537)
 
 
 Release 0.3.1
