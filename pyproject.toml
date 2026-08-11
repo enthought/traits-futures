@@ -14,7 +14,7 @@ classifiers = [
 ]
 dependencies = [
     'pyface',
-    'traits>=6.2',
+    'traits>=6.3',
 ]
 dynamic = ['version']
 
