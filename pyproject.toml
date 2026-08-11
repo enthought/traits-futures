@@ -2,7 +2,7 @@
 name = 'traits-futures'
 description = 'Patterns for reactive background tasks'
 readme = 'README.rst'
-requires-python = '>=3.8'
+requires-python = '>=3.10'
 authors = [{name='Enthought', email='info@enthought.com'}]
 keywords = ['background', 'concurrency', 'futures', 'gui', 'traits', 'traitsui']
 classifiers = [
@@ -14,7 +14,7 @@ classifiers = [
 ]
 dependencies = [
     'pyface',
-    'traits>=6.2',
+    'traits>=6.3',
 ]
 dynamic = ['version']
 
@@ -38,7 +38,7 @@ build-backend = 'setuptools.build_meta'
 
 [tool.black]
 line-length = 79
-target-version = ['py36']
+target-version = ['py310']
 # black introduces extra blank lines that we don't want in the Sphinx
 # rendering. xref: https://github.com/sphinx-doc/sphinx/issues/9407
 exclude = '/docs/source/guide/examples/fizz_buzz_task.py'
