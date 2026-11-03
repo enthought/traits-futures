@@ -27,9 +27,8 @@ wx = 'traits_futures.wx.event_loop:WxEventLoop'
 pyqt5 = ['pyqt5']
 pyside2 = ['pyside2']
 pyside6 = [
-    # The PySide6 6.12.0 Linux wheels drop a reference to True on every
-    # Signal.emit() and disconnect() call on Python 3.10 and 3.11, which
-    # eventually aborts the interpreter (PYSIDE-3474, fixed in 6.12.1).
+    # PySide6 6.12.0 segfaults on Python < 3.12. See
+    # https://qt-project.atlassian.net/browse/PYSIDE-3474
     'pyside6; python_version >= "3.12"',
     'pyside6 < 6.12; python_version < "3.12"',
 ]
