@@ -93,9 +93,9 @@ leaked threads and potential for test interactions.</p></li>
 <h2>An example test<a class="headerlink" href="#an-example-test" title="Link to this heading">¶</a></h2>
 <p>Here’s an <a class="reference download internal" download="" href="../_downloads/35410d1ee97c5aa911c8104f1509595a/test_future.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span></code></a> of testing a simple
 future.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Example of testing a simple future using the GuiTestAssistant.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
 
@@ -103,14 +103,14 @@ future.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">traits_futures.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">submit_call</span><span class="p">,</span> <span class="n">TraitsExecutor</span>
 
 <span class="c1">#: Maximum timeout for blocking calls, in seconds. A successful test should</span>
-<span class="c1">#: never hit this timeout - it&#39;s there to prevent a failing test from hanging</span>
+<span class="c1">#: never hit this timeout - it's there to prevent a failing test from hanging</span>
 <span class="c1">#: forever and blocking the rest of the test suite.</span>
 <span class="n">SAFETY_TIMEOUT</span> <span class="o">=</span> <span class="mf">5.0</span>
 
 
 <span class="c1">#: Note that the GuiTestAssistant is currently only available for Qt, not</span>
-<span class="c1">#: for wxPython. To run this unit test, you&#39;ll need PyQt or PySide 2 installed.</span>
-<span class="n">GuiTestAssistant</span> <span class="o">=</span> <span class="n">toolkit_object</span><span class="p">(</span><span class="s2">&quot;util.gui_test_assistant:GuiTestAssistant&quot;</span><span class="p">)</span>
+<span class="c1">#: for wxPython. To run this unit test, you'll need PyQt or PySide 2 installed.</span>
+<span class="n">GuiTestAssistant</span> <span class="o">=</span> <span class="n">toolkit_object</span><span class="p">(</span><span class="s2">"util.gui_test_assistant:GuiTestAssistant"</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">TestMyFuture</span><span class="p">(</span><span class="n">GuiTestAssistant</span><span class="p">,</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
@@ -134,7 +134,7 @@ future.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="mi">243</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>

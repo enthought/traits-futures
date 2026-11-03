@@ -83,7 +83,7 @@
 <p>Each <a class="reference internal" href="../api/traits_futures.traits_executor.html#traits_futures.traits_executor.TraitsExecutor" title="traits_futures.traits_executor.TraitsExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraitsExecutor</span></code></a> requires a running event loop to communicate results from
 background tasks to the foreground. In a typical GUI application, that event
 loop will be the event loop from the current GUI toolkit - for example Qt or
-Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
+Wx. However, one can also use the main thread <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.15)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop from
 Python’s standard library. This is potentially useful when writing automated
 tests, or when using Traits Futures in a headless setting (for example within
 a compute job).</p>
@@ -107,20 +107,20 @@ explicitly designed for working in a GUI-based setting, in situations where you
 don’t want your computational or other tasks to block the GUI event loop and
 generate the impression of an unresponsive GUI. Instead, you might execute
 your tasks directly in the main thread or, if you need to take advantage
-of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
+of thread-based parallelism, use the <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.15)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a> framework
 directly.</p>
 <p>However, you may find yourself in a situation where you already have Traits
 Futures-based code that was written for a GUI setting, but that you want to be
 able to execute in a environment that doesn’t have the Qt or Wx toolkits
 available. In that case, Traits Futures can use the <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> to
-deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
+deliver results to the main thread’s <a class="reference external" href="https://docs.python.org/3/library/asyncio.html#module-asyncio" title="(in Python v3.15)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code></a> event loop instead of to
 a GUI framework’s event loop.</p>
 <p>Here’s an <a class="reference download internal" download="" href="../_downloads/29ab09bdeb400827f4e78ea14e57d284/headless.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">script</span></code></a> that uses the
 <a class="reference internal" href="../api/traits_futures.asyncio.event_loop.html#traits_futures.asyncio.event_loop.AsyncioEventLoop" title="traits_futures.asyncio.event_loop.AsyncioEventLoop"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncioEventLoop</span></code></a> in order to execute Traits Futures tasks within the context
 of an asyncio event loop.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Running Traits Futures without a GUI, using the asyncio event loop.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
@@ -133,9 +133,9 @@ of an asyncio event loop.</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">approximate_pi</span><span class="p">(</span><span class="n">sample_count</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">8</span><span class="p">,</span> <span class="n">report_interval</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">6</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Yield successive approximations to π via Monte Carlo methods.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># approximate pi/4 by throwing points at a unit square and</span>
     <span class="c1"># counting the proportion that land in the quarter circle.</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
@@ -149,9 +149,9 @@ of an asyncio event loop.</p>
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">future_wrapper</span><span class="p">(</span><span class="n">traits_future</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Wrap a Traits Futures future as a schedulable coroutine.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">set_result</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
         <span class="n">traits_future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
@@ -159,25 +159,25 @@ of an asyncio event loop.</p>
 
     <span class="n">asyncio_future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">create_future</span><span class="p">()</span>
 
-    <span class="n">traits_future</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">set_result</span><span class="p">,</span> <span class="s2">&quot;done&quot;</span><span class="p">)</span>
+    <span class="n">traits_future</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">set_result</span><span class="p">,</span> <span class="s2">"done"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio_future</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">print_progress</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Progress reporter for the π calculation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;π is approximately </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"π is approximately </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">asyncio_event_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">(</span>
         <span class="n">event_loop</span><span class="o">=</span><span class="n">AsyncioEventLoop</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="n">asyncio_event_loop</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">traits_future</span> <span class="o">=</span> <span class="n">submit_iteration</span><span class="p">(</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">approximate_pi</span><span class="p">)</span>
-    <span class="n">traits_future</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">print_progress</span><span class="p">,</span> <span class="s2">&quot;result_event&quot;</span><span class="p">)</span>
+    <span class="n">traits_future</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">print_progress</span><span class="p">,</span> <span class="s2">"result_event"</span><span class="p">)</span>
 
     <span class="n">asyncio_event_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">future_wrapper</span><span class="p">(</span><span class="n">traits_future</span><span class="p">))</span>
 </pre></div>

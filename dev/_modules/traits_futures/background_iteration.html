@@ -80,9 +80,9 @@
 <span class="c1">#</span>
 <span class="c1"># Thanks for using Enthought open source!</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Background task that sends results from an iteration.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">HasStrictTraits</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Tuple</span>
 
@@ -91,15 +91,15 @@
 
 <span class="c1">#: Message sent whenever the iteration yields a result.</span>
 <span class="c1">#: The message argument is the result generated.</span>
-<span class="n">GENERATED</span> <span class="o">=</span> <span class="s2">&quot;generated&quot;</span>
+<span class="n">GENERATED</span> <span class="o">=</span> <span class="s2">"generated"</span>
 
 
 <div class="viewcode-block" id="IterationTask">
 <a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationTask">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IterationTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Iteration to be executed in the background.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">callable</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callable</span> <span class="o">=</span> <span class="nb">callable</span>
@@ -123,7 +123,7 @@
                 <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">GENERATED</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-            <span class="c1"># Don&#39;t keep a reference around until the next iteration.</span>
+            <span class="c1"># Don't keep a reference around until the next iteration.</span>
             <span class="k">del</span> <span class="n">result</span></div>
 </div>
 
@@ -132,9 +132,9 @@
 <div class="viewcode-block" id="IterationFuture">
 <a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.IterationFuture">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IterationFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Foreground representation of an iteration executing in the background.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: Event fired whenever a result arrives from the background</span>
     <span class="c1">#: iteration.</span>
@@ -151,9 +151,9 @@
 <a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration">[docs]</a>
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackgroundIteration</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Object representing the background iteration to be executed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: The callable to be executed. This should return something iterable.</span>
     <span class="nb">callable</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">()</span>
@@ -167,14 +167,14 @@
 <div class="viewcode-block" id="BackgroundIteration.future">
 <a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.future">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a Future for the background task.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cancel</span>
 <span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
-<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            future's ``cancel`` method should call this to request cancellation</span>
 <span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
@@ -182,14 +182,14 @@
 <span class="sd">        future : IterationFuture</span>
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">IterationFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BackgroundIteration.task">
 <a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.BackgroundIteration.task">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
 <span class="sd">        Returns</span>
@@ -198,7 +198,7 @@
 <span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">IterationTask</span><span class="p">(</span>
             <span class="nb">callable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">callable</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
@@ -211,7 +211,7 @@
 <div class="viewcode-block" id="submit_iteration">
 <a class="viewcode-back" href="../../api/traits_futures.background_iteration.html#traits_futures.background_iteration.submit_iteration">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">submit_iteration</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="nb">callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Submit an iteration to an executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -233,7 +233,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    future : IterationFuture</span>
 <span class="sd">        Object representing the state of the background iteration.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundIteration</span><span class="p">(</span><span class="nb">callable</span><span class="o">=</span><span class="nb">callable</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
 

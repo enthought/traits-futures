@@ -109,13 +109,13 @@ example) from within a GUI.</p>
 <p>The following <a class="reference download internal" download="" href="../_downloads/94e32031bc02da6c1f63c0ff6c1d435b/calculate_in_main_thread.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">code</span></code></a>
 demonstrates this effect. It provides a simple GUI wrapper for a slow
 calculation. In this case, the slowness is simulated via a call to
-<a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.14)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<a class="reference external" href="https://docs.python.org/3/library/time.html#time.sleep" title="(in Python v3.15)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.sleep</span></code></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Example of GUI that runs a time-consuming calculation in the main thread.</span>
 
 <span class="sd">This example demonstrates that the GUI is unresponsive while the calculation</span>
 <span class="sd">is running.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
@@ -124,43 +124,43 @@ calculation. In this case, the slowness is simulated via a call to
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">slow_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Square a number, slowly.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Simulate a slow calculation</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">input</span> <span class="o">*</span> <span class="nb">input</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">SlowSquareUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    GUI wrapper for the slow_square computation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: Value to square.</span>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
 
     <span class="c1">#: Status message.</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;Click the button to square the input&quot;</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">"Click the button to square the input"</span><span class="p">)</span>
 
     <span class="c1">#: Button to start calculation.</span>
-    <span class="n">square</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="n">square</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">"square"</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"square"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_run_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Calculating square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> ...&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Calculating square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> ..."</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">slow_square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"The square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="n">view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
-        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">),</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">"input"</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"readonly"</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"square"</span><span class="p">),</span>
         <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">SlowSquareUI</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -188,7 +188,7 @@ from executing.</p>
 straightforward: we move the calculation to a separate thread or process,
 freeing up the main thread so that the GUI can continue to respond to user
 interactions. This in itself doesn’t require Traits Futures: it could be
-accomplished directly by submitting the squaring jobs to a <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>
+accomplished directly by submitting the squaring jobs to a <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.15)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>
 worker pool, for example.</p>
 <p>But as soon as we move the calculation to a background thread, we run into a
 second issue: GUI toolkits generally require that their objects (widgets, etc.)
@@ -199,12 +199,12 @@ calling <code class="docutils literal notranslate"><span class="pre">label.setTe
 <p>To demonstrate this, here’s a <a class="reference download internal" download="" href="../_downloads/002fa2a944be97018cc8e001fdc0b1cf/calculate_in_worker_thread.py"><code class="xref download docutils literal notranslate"><span class="pre">variation</span></code></a> of the example script above that
 dispatches squaring jobs to a background thread. Unlike the previous version,
 the GUI remains responsive and usable while a background job is executing.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Example of GUI that runs a time-consuming calculation in the background.</span>
 
 <span class="sd">This example demonstrates the difficulties of updating the</span>
 <span class="sd">main GUI in response to the results of the background task.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">concurrent.futures</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
@@ -214,18 +214,18 @@ the GUI remains responsive and usable while a background job is executing.</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">slow_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Square a number, slowly.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Simulate a slow calculation</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">input</span> <span class="o">*</span> <span class="nb">input</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">SlowSquareUI</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    GUI wrapper for the slow_square computation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: concurrent.futures executor providing the worker pool.</span>
     <span class="n">worker_pool</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Executor</span><span class="p">)</span>
@@ -234,33 +234,33 @@ the GUI remains responsive and usable while a background job is executing.</p>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
 
     <span class="c1">#: Status message.</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;Click the button to square the input&quot;</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">"Click the button to square the input"</span><span class="p">)</span>
 
     <span class="c1">#: Button to start calculation.</span>
-    <span class="n">square</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="n">square</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s2">"square"</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"square"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_run_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Calculating square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> ...&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Calculating square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> ..."</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
         <span class="n">future</span><span class="o">.</span><span class="n">add_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_message</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update the status when the background calculation completes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"The square of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="n">view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
-        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">),</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">"input"</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"readonly"</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"square"</span><span class="p">),</span>
         <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">worker_pool</span><span class="p">:</span>
         <span class="n">SlowSquareUI</span><span class="p">(</span><span class="n">worker_pool</span><span class="o">=</span><span class="n">worker_pool</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
@@ -292,7 +292,7 @@ to accidentally introduce non-thread-safe listeners.</p>
 <section id="solution-traits-futures">
 <h3>Solution: Traits Futures<a class="headerlink" href="#solution-traits-futures" title="Link to this heading">¶</a></h3>
 <p>Traits Futures provides a pattern for solving the above problems. As with
-<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
+<a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.15)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, background tasks are submitted to a worker pool and at
 the time of submission a “future” object is returned. That “future” object acts
 as the main thread’s “view” of the state of the background task. The key
 differences are:</p>

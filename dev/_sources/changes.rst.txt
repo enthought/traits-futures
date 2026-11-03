@@ -60,6 +60,9 @@ Continuous integration and build
   wheel and sdist from PyPI. (#465)
 * Extend the test matrices to cover Python 3.12, Python 3.13 and
   Python 3.14. (#537)
+* Restrict the ``pyside6`` extra to PySide6 versions below 6.12 on Python
+  3.10 and 3.11, working around a reference-counting bug in the PySide6
+  6.12.0 Linux wheels that aborts the interpreter at shutdown. (#541)
 
 
 Release 0.3.1

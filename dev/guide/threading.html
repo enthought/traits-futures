@@ -169,7 +169,7 @@ background task.</p>
 </pre></div>
 </div>
 <p>Best:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computation represented by a &quot;pure&quot; function with no access to</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computation represented by a "pure" function with no access to</span>
 <span class="c1"># shared state.</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">do_square</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
@@ -182,7 +182,7 @@ background task.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">submit_background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Do the attribute access in the main thread; pass the result</span>
-        <span class="c1"># of that access to the worker. Now we&#39;re no longer sharing</span>
+        <span class="c1"># of that access to the worker. Now we're no longer sharing</span>
         <span class="c1"># mutable state between threads.</span>
 
         <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>

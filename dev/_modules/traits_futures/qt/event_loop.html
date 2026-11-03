@@ -80,9 +80,9 @@
 <span class="c1">#</span>
 <span class="c1"># Thanks for using Enthought open source!</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">IEventLoop implementation for the Qt event loop.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># We import QtCore to force an ImportError if Qt is not installed.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>  <span class="c1"># noqa: F401</span>
 
@@ -95,14 +95,14 @@
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop.html#traits_futures.qt.event_loop.QtEventLoop">[docs]</a>
 <span class="nd">@IEventLoop</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">QtEventLoop</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    IEventLoop implementation for the Qt event loop.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="QtEventLoop.pingee">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop.html#traits_futures.qt.event_loop.QtEventLoop.pingee">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pingee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_ping</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a new pingee.</span>
 
 <span class="sd">        Parameters</span>
@@ -115,20 +115,20 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        pingee : IPingee</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">Pingee</span><span class="p">(</span><span class="n">on_ping</span><span class="o">=</span><span class="n">on_ping</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QtEventLoop.helper">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop.html#traits_futures.qt.event_loop.QtEventLoop.helper">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">helper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a new event loop helper.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        event_loop_helper : IEventLoopHelper</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">EventLoopHelper</span><span class="p">()</span></div>
 </div>
 

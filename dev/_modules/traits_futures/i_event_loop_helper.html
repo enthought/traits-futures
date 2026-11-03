@@ -80,9 +80,9 @@
 <span class="c1">#</span>
 <span class="c1"># Thanks for using Enthought open source!</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Interface for toolkit-specific event loop helper class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
 
@@ -90,50 +90,50 @@
 <div class="viewcode-block" id="IEventLoopHelper">
 <a class="viewcode-back" href="../../api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IEventLoopHelper</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Interface for toolkit-specific event loop helper class.</span>
 
 <span class="sd">    An IEventLoopHelper instance provides a way to run the event loop</span>
 <span class="sd">    programmatically until a given condition occurs. Its primary use</span>
 <span class="sd">    is in testing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="IEventLoopHelper.init">
 <a class="viewcode-back" href="../../api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.init">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Prepare the event loop for use.</span>
 
 <span class="sd">        This method is not thread-safe. It should always be called on the</span>
-<span class="sd">        event loop&#39;s thread.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        event loop's thread.</span>
+<span class="sd">        """</span></div>
 
 
 <div class="viewcode-block" id="IEventLoopHelper.dispose">
 <a class="viewcode-back" href="../../api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.dispose">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
 
 <span class="sd">        This method is not thread-safe. It should always be called on the</span>
-<span class="sd">        event loop&#39;s thread.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        event loop's thread.</span>
+<span class="sd">        """</span></div>
 
 
 <div class="viewcode-block" id="IEventLoopHelper.setattr_soon">
 <a class="viewcode-back" href="../../api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.setattr_soon">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Arrange for an attribute to be set once the event loop is running.</span>
 
 <span class="sd">        In typical usage, *obj* will be a ``HasTraits`` instance and</span>
 <span class="sd">        *name* will be the name of a trait on *obj*.</span>
 
 <span class="sd">        This method is not thread-safe. It should always be called on the</span>
-<span class="sd">        event loop&#39;s thread.</span>
+<span class="sd">        event loop's thread.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -144,21 +144,21 @@
 <span class="sd">            a traited attribute.</span>
 <span class="sd">        value : object</span>
 <span class="sd">            Value to set the attribute to.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 
 <div class="viewcode-block" id="IEventLoopHelper.run_until">
 <a class="viewcode-back" href="../../api/traits_futures.i_event_loop_helper.html#traits_futures.i_event_loop_helper.IEventLoopHelper.run_until">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Run event loop until a given condition occurs, or timeout.</span>
 
 <span class="sd">        The condition is re-evaluated, with the object as argument, every time</span>
 <span class="sd">        the trait changes.</span>
 
 <span class="sd">        This method is not thread-safe. It should always be called on the</span>
-<span class="sd">        event loop&#39;s thread.</span>
+<span class="sd">        event loop's thread.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -177,7 +177,7 @@
 <span class="sd">        RuntimeError</span>
 <span class="sd">            If timeout is reached, regardless of whether the condition is</span>
 <span class="sd">            true or not at that point.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 </div>
 
 </pre></div>

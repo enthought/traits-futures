@@ -134,9 +134,9 @@ a string that’s valid as a Python identifier, while the message argument can b
 any Python object (though it should usually be pickleable and immutable).</p>
 <p>We first define named constants representing our three message types. This
 isn’t strictly necessary, but it makes the code cleaner.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz&quot;</span>
-<span class="n">BUZZ</span> <span class="o">=</span> <span class="s2">&quot;buzz&quot;</span>
-<span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">"fizz"</span>
+<span class="n">BUZZ</span> <span class="o">=</span> <span class="s2">"buzz"</span>
+<span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">"fizz_buzz"</span>
 </pre></div>
 </div>
 </section>
@@ -159,7 +159,7 @@ and to check whether the user has requested cancellation.</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Background task for Fizz Buzz</span>
 
 <span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
@@ -174,7 +174,7 @@ and to check whether the user has requested cancellation.</p>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
@@ -222,9 +222,9 @@ to process each message by firing a corresponding event on the future.</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: Event fired whenever we get a FIZZ message. The payload is the</span>
     <span class="c1">#: corresponding integer.</span>
@@ -267,19 +267,19 @@ looks like this:</p>
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a Future for the background task.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cancel</span>
 <span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
-<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            future's ``cancel`` method should call this to request cancellation</span>
 <span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
@@ -287,11 +287,11 @@ looks like this:</p>
 <span class="sd">        FizzBuzzFuture</span>
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
 <span class="sd">        Returns</span>
@@ -300,7 +300,7 @@ looks like this:</p>
 <span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -312,7 +312,7 @@ a <a class="reference internal" href="../api/traits_futures.traits_executor.html
 <code class="docutils literal notranslate"><span class="pre">BackgroundFizzBuzz</span></code> to <code class="docutils literal notranslate"><span class="pre">executor.submit</span></code>. For convenience, we can
 encapsulate that operation in a function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -325,7 +325,7 @@ encapsulate that operation in a function:</p>
 <span class="sd">    future : FizzBuzzFuture</span>
 <span class="sd">        The future for the background task, allowing monitoring and</span>
 <span class="sd">        cancellation of the background task.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundFizzBuzz</span><span class="p">()</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">future</span>
@@ -336,22 +336,22 @@ encapsulate that operation in a function:</p>
 <h3>An example GUI<a class="headerlink" href="#an-example-gui" title="Link to this heading">¶</a></h3>
 <p>Here’s the <a class="reference download internal" download="" href="../_downloads/c3ba6c80aacc0c4457e8c865f82049cf/fizz_buzz_task.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">script</span></code></a> obtained
 from putting together the above snippets:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Example of a user-created background task type.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="c1"># This Python file provides supporting code for the &quot;advanced&quot; section of the</span>
-<span class="c1"># user guide. Because we&#39;re using pieces of the file for documentation</span>
-<span class="c1"># snippets, the overall structure of this file is a little odd, and doesn&#39;t</span>
+<span class="c1"># This Python file provides supporting code for the "advanced" section of the</span>
+<span class="c1"># user guide. Because we're using pieces of the file for documentation</span>
+<span class="c1"># snippets, the overall structure of this file is a little odd, and doesn't</span>
 <span class="c1"># follow standard style guidelines (for example, placing imports at the top</span>
-<span class="c1"># of the file). The various &#39;# -- start&#39; and &#39;# -- end&#39; markers are there</span>
+<span class="c1"># of the file). The various '# -- start' and '# -- end' markers are there</span>
 <span class="c1"># to allow the documentation build to extract the appropriate pieces.</span>
 
 
 <span class="c1"># -- start message types</span>
-<span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz&quot;</span>
-<span class="n">BUZZ</span> <span class="o">=</span> <span class="s2">&quot;buzz&quot;</span>
-<span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">&quot;fizz_buzz&quot;</span>
+<span class="n">FIZZ</span> <span class="o">=</span> <span class="s2">"fizz"</span>
+<span class="n">BUZZ</span> <span class="o">=</span> <span class="s2">"buzz"</span>
+<span class="n">FIZZ_BUZZ</span> <span class="o">=</span> <span class="s2">"fizz_buzz"</span>
 <span class="c1"># -- end message types</span>
 
 
@@ -362,7 +362,7 @@ from putting together the above snippets:</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzTask</span><span class="p">(</span><span class="n">BaseTask</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Background task for Fizz Buzz</span>
 
 <span class="sd">    Counts slowly from 1, sending FIZZ / BUZZ messages to the foreground.</span>
@@ -377,7 +377,7 @@ from putting together the above snippets:</p>
 <span class="sd">        Callable accepting no arguments and returning a boolean result. It</span>
 <span class="sd">        returns ``True`` if cancellation has been requested, and ``False``</span>
 <span class="sd">        otherwise.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">():</span>
@@ -403,9 +403,9 @@ from putting together the above snippets:</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FizzBuzzFuture</span><span class="p">(</span><span class="n">BaseFuture</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Object representing the front-end handle to a running fizz_buzz call.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: Event fired whenever we get a FIZZ message. The payload is the</span>
     <span class="c1">#: corresponding integer.</span>
@@ -438,19 +438,19 @@ from putting together the above snippets:</p>
 
 <span class="nd">@ITaskSpecification</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackgroundFizzBuzz</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Task specification for Fizz Buzz background tasks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancel</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a Future for the background task.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cancel</span>
 <span class="sd">            Zero-argument callable, returning no useful result. The returned</span>
-<span class="sd">            future&#39;s ``cancel`` method should call this to request cancellation</span>
+<span class="sd">            future's ``cancel`` method should call this to request cancellation</span>
 <span class="sd">            of the associated background task.</span>
 
 <span class="sd">        Returns</span>
@@ -458,11 +458,11 @@ from putting together the above snippets:</p>
 <span class="sd">        FizzBuzzFuture</span>
 <span class="sd">            Future object that can be used to monitor the status of the</span>
 <span class="sd">            background task.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">FizzBuzzFuture</span><span class="p">(</span><span class="n">_cancel</span><span class="o">=</span><span class="n">cancel</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a background callable for this task specification.</span>
 
 <span class="sd">        Returns</span>
@@ -471,14 +471,14 @@ from putting together the above snippets:</p>
 <span class="sd">            Callable accepting arguments ``send`` and ``cancelled``. The</span>
 <span class="sd">            callable can use ``send`` to send messages and ``cancelled`` to</span>
 <span class="sd">            check whether cancellation has been requested.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">FizzBuzzTask</span><span class="p">()</span>
 <span class="c1"># -- end BackgroundFizzBuzz</span>
 
 
 <span class="c1"># -- start submit_fizz_buzz</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">submit_fizz_buzz</span><span class="p">(</span><span class="n">executor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Convenience function to submit a Fizz buzz task to an executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -491,7 +491,7 @@ from putting together the above snippets:</p>
 <span class="sd">    future : FizzBuzzFuture</span>
 <span class="sd">        The future for the background task, allowing monitoring and</span>
 <span class="sd">        cancellation of the background task.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">BackgroundFizzBuzz</span><span class="p">()</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">future</span>
@@ -500,9 +500,9 @@ from putting together the above snippets:</p>
 </div>
 <p>And here’s an <a class="reference download internal" download="" href="../_downloads/7ccb602d9eec5511385b374338d26b47/fizz_buzz_ui.py"><code class="xref download docutils literal notranslate"><span class="pre">example</span> <span class="pre">GUI</span></code></a> that makes use
 of the new background task type:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Example of a custom background job type.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">traits.api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bool</span><span class="p">,</span>
@@ -527,41 +527,41 @@ of the new background task type:</p>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">FizzBuzzFuture</span><span class="p">)</span>
 
     <span class="c1">#: Status message showing current state or the last-received result.</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;Ready&quot;</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">"Ready"</span><span class="p">)</span>
 
     <span class="c1">#: Button to calculate, plus its enabled state.</span>
     <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
-    <span class="n">can_calculate</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future&quot;</span><span class="p">)</span>
+    <span class="n">can_calculate</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">"future"</span><span class="p">)</span>
 
     <span class="c1">#: Button to cancel, plus its enabled state.</span>
     <span class="n">cancel</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
-    <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future.cancellable&quot;</span><span class="p">)</span>
+    <span class="n">can_cancel</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">"future.cancellable"</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"calculate"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_submit_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Running&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"Running"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"cancel"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_cancel_running_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cancelling&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"Cancelling"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:fizz&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"future:fizz"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_report_fizz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Fizz </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"Fizz </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:buzz&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"future:buzz"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_report_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Buzz </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"Buzz </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:fizz_buzz&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"future:fizz_buzz"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_report_fizz_buzz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;FIZZ BUZZ! </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"FIZZ BUZZ! </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">new</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"future:done"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_reset_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Ready&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"Ready"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_can_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -571,16 +571,16 @@ of the new background task type:</p>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">cancellable</span>
 
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"readonly"</span><span class="p">),</span>
         <span class="n">HGroup</span><span class="p">(</span>
-            <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">&quot;can_calculate&quot;</span><span class="p">),</span>
-            <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;cancel&quot;</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">&quot;can_cancel&quot;</span><span class="p">),</span>
+            <span class="n">UItem</span><span class="p">(</span><span class="s2">"calculate"</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">"can_calculate"</span><span class="p">),</span>
+            <span class="n">UItem</span><span class="p">(</span><span class="s2">"cancel"</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">"can_cancel"</span><span class="p">),</span>
         <span class="p">),</span>
         <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">FizzBuzzUI</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>

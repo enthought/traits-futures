@@ -80,9 +80,9 @@
 <span class="c1">#</span>
 <span class="c1"># Thanks for using Enthought open source!</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Test support, providing the ability to run the event loop from tests.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QTimer</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">Slot</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyface.qt.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
@@ -93,16 +93,16 @@
 <div class="viewcode-block" id="AttributeSetter">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.AttributeSetter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AttributeSetter</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Simple QObject that allows us to set object attributes from with</span>
 <span class="sd">    a running event loop.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="nd">@Slot</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Slot for setting an arbitrary attribute value on an object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="c1">#: Signal used to trigger setattr operations.</span>
@@ -114,16 +114,16 @@
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper">[docs]</a>
 <span class="nd">@IEventLoopHelper</span><span class="o">.</span><span class="n">register</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">EventLoopHelper</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Support for running the Qt event loop in unit tests.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="EventLoopHelper.init">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.init">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Prepare the event loop for use.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">qt_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">qt_app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qt_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">([])</span>
@@ -138,9 +138,9 @@
 <div class="viewcode-block" id="EventLoopHelper.dispose">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.dispose">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Dispose of any resources used by this object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="o">.</span><span class="n">setattr</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="o">.</span><span class="n">_on_setattr</span>
         <span class="p">)</span>
@@ -152,13 +152,13 @@
 <div class="viewcode-block" id="EventLoopHelper.setattr_soon">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.setattr_soon">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setattr_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Arrange for an attribute to be set once the event loop is running.</span>
 
 <span class="sd">        In typical usage, *obj* will be a ``HasTraits`` instance and</span>
 <span class="sd">        *name* will be the name of a trait on *obj*.</span>
 
-<span class="sd">        This method is not thread-safe. It&#39;s designed to be called</span>
+<span class="sd">        This method is not thread-safe. It's designed to be called</span>
 <span class="sd">        from the main thread.</span>
 
 <span class="sd">        Parameters</span>
@@ -170,14 +170,14 @@
 <span class="sd">            a traited attribute.</span>
 <span class="sd">        value : object</span>
 <span class="sd">            Value to set the attribute to.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attribute_setter</span><span class="o">.</span><span class="n">setattr</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EventLoopHelper.run_until">
 <a class="viewcode-back" href="../../../api/traits_futures.qt.event_loop_helper.html#traits_futures.qt.event_loop_helper.EventLoopHelper.run_until">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Run event loop until the given condition holds true, or until timeout.</span>
 
 <span class="sd">        The condition is re-evaluated, with the object as argument, every time</span>
@@ -200,7 +200,7 @@
 <span class="sd">        RuntimeError</span>
 <span class="sd">            If timeout is reached, regardless of whether the condition is</span>
 <span class="sd">            true or not at that point.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">qt_app</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qt_app</span>
 
@@ -227,9 +227,9 @@
                 <span class="n">timeout_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># Qt wrapper support is a bit of a mess here. PyQt6 has</span>
-                    <span class="c1"># only &quot;exec&quot;. PyQt5 and PySide6 support both &quot;exec&quot; and</span>
-                    <span class="c1"># &quot;exec_&quot;, with &quot;exec&quot; the preferred spelling. PyQt4 and</span>
-                    <span class="c1"># PySide2 support only &quot;exec_&quot;.</span>
+                    <span class="c1"># only "exec". PyQt5 and PySide6 support both "exec" and</span>
+                    <span class="c1"># "exec_", with "exec" the preferred spelling. PyQt4 and</span>
+                    <span class="c1"># PySide2 support only "exec_".</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">exec_method</span> <span class="o">=</span> <span class="n">qt_app</span><span class="o">.</span><span class="n">exec</span>
                     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -243,8 +243,8 @@
 
         <span class="k">if</span> <span class="n">timed_out</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;run_until timed out after </span><span class="si">{}</span><span class="s2"> seconds. &quot;</span>
-                <span class="s2">&quot;At timeout, condition was </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">"run_until timed out after </span><span class="si">{}</span><span class="s2"> seconds. "</span>
+                <span class="s2">"At timeout, condition was </span><span class="si">{}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">timeout</span><span class="p">,</span> <span class="n">condition</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span></div>

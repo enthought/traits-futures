@@ -80,9 +80,9 @@
 <span class="c1">#</span>
 <span class="c1"># Thanks for using Enthought open source!</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Context providing multithreading-friendly worker pools, events, and routers.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">concurrent.futures</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
@@ -94,9 +94,9 @@
 <div class="viewcode-block" id="MultithreadingContext">
 <a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MultithreadingContext</span><span class="p">(</span><span class="n">IParallelContext</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Context for multithreading, suitable for use with the TraitsExecutor.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
@@ -104,7 +104,7 @@
 <div class="viewcode-block" id="MultithreadingContext.worker_pool">
 <a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.worker_pool">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">worker_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Provide a new worker pool suitable for this context.</span>
 
 <span class="sd">        Parameters</span>
@@ -116,14 +116,14 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        executor : concurrent.futures.Executor</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MultithreadingContext.event">
 <a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.event">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a shareable event suitable for this context.</span>
 
 <span class="sd">        Returns</span>
@@ -133,14 +133,14 @@
 <span class="sd">            The event should have the same API as :class:`threading.Event`</span>
 <span class="sd">            and :class:`multiprocessing.Event`, providing at a minimum</span>
 <span class="sd">            the ``set`` and ``is_set`` methods from that API.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MultithreadingContext.message_router">
 <a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.message_router">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">message_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_loop</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a message router suitable for use in this context.</span>
 
 <span class="sd">        Parameters</span>
@@ -151,24 +151,24 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        message_router : MultithreadingRouter</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">MultithreadingRouter</span><span class="p">(</span><span class="n">event_loop</span><span class="o">=</span><span class="n">event_loop</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MultithreadingContext.close">
 <a class="viewcode-back" href="../../api/traits_futures.multithreading_context.html#traits_futures.multithreading_context.MultithreadingContext.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Do any cleanup necessary before disposal of the context.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        True if this context is closed, else False.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span></div>
 
 </pre></div>

@@ -115,17 +115,17 @@ a multiprocessing context:</p>
 </pre></div>
 </div>
 <p>Here’s a <a class="reference download internal" download="" href="../_downloads/1e2f6aa6cf7b307b85302f1707c82168/background_processes.py"><code class="xref download docutils literal notranslate"><span class="pre">complete</span> <span class="pre">TraitsUI</span> <span class="pre">example</span></code></a> that makes use of this.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Complete example showing how to use the MultiprocessingContext to execute</span>
 <span class="sd">background jobs in separate processes instead of separate threads.</span>
 
-<span class="sd">The &quot;jobs&quot; in this case are slow, unreliable squaring operations. The</span>
+<span class="sd">The "jobs" in this case are slow, unreliable squaring operations. The</span>
 <span class="sd">GUI allows multiple jobs to execute simultaneously, and shows the status</span>
 <span class="sd">of each of the currently-running and completed jobs.</span>
 
 <span class="sd">Requires TraitsUI to run, in addition to the usual Traits Futures</span>
 <span class="sd">dependencies.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
@@ -165,18 +165,18 @@ a multiprocessing context:</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Compute the square of an integer, slowly and unreliably.</span>
 
 <span class="sd">    The input should be in the range 0-100. The larger</span>
 <span class="sd">    the input, the longer the expected time to complete the operation,</span>
 <span class="sd">    and the higher the likelihood of timeout.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">mean_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">5.0</span>
     <span class="n">sleep_time</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">expovariate</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">mean_time</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sleep_time</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Calculation took too long.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Calculation took too long."</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
@@ -184,7 +184,7 @@ a multiprocessing context:</p>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">JobTabularAdapter</span><span class="p">(</span><span class="n">TabularAdapter</span><span class="p">):</span>
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;Job State&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"Job State"</span><span class="p">,</span> <span class="s2">"state"</span><span class="p">),</span>
     <span class="p">]</span>
 
     <span class="c1">#: Row colors for the table.</span>
@@ -210,9 +210,9 @@ a multiprocessing context:</p>
         <span class="n">state</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">state</span>
         <span class="n">state_text</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">COMPLETED</span><span class="p">:</span>
-            <span class="n">state_text</span> <span class="o">+=</span> <span class="s2">&quot;: result=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">state_text</span> <span class="o">+=</span> <span class="s2">": result=</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="n">FAILED</span><span class="p">:</span>
-            <span class="n">state_text</span> <span class="o">+=</span> <span class="s2">&quot;: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">exception</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">state_text</span> <span class="o">+=</span> <span class="s2">": </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">exception</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">state_text</span>
 
 
@@ -232,20 +232,20 @@ a multiprocessing context:</p>
     <span class="c1">#: Clear completed jobs from the list of current jobs.</span>
     <span class="n">clear_finished</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
-    <span class="c1">#: Value that we&#39;ll square.</span>
+    <span class="c1">#: Value that we'll square.</span>
     <span class="nb">input</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"square"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_do_slow_square</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;cancel_all&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"cancel_all"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_cancel_all_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="p">:</span>
             <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;clear_finished&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"clear_finished"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_clear_finished_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_futures</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">:</span>
@@ -255,14 +255,14 @@ a multiprocessing context:</p>
         <span class="k">return</span> <span class="n">View</span><span class="p">(</span>
             <span class="n">HGroup</span><span class="p">(</span>
                 <span class="n">VGroup</span><span class="p">(</span>
-                    <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
-                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;square&quot;</span><span class="p">),</span>
-                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;cancel_all&quot;</span><span class="p">),</span>
-                    <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;clear_finished&quot;</span><span class="p">),</span>
+                    <span class="n">Item</span><span class="p">(</span><span class="s2">"input"</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">"square"</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">"cancel_all"</span><span class="p">),</span>
+                    <span class="n">UItem</span><span class="p">(</span><span class="s2">"clear_finished"</span><span class="p">),</span>
                 <span class="p">),</span>
                 <span class="n">VGroup</span><span class="p">(</span>
                     <span class="n">UItem</span><span class="p">(</span>
-                        <span class="s2">&quot;current_futures&quot;</span><span class="p">,</span>
+                        <span class="s2">"current_futures"</span><span class="p">,</span>
                         <span class="n">editor</span><span class="o">=</span><span class="n">TabularEditor</span><span class="p">(</span>
                             <span class="n">adapter</span><span class="o">=</span><span class="n">JobTabularAdapter</span><span class="p">(),</span>
                             <span class="n">auto_update</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -277,9 +277,9 @@ a multiprocessing context:</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Demonstrate a GUI that hands off background tasks to a separate process.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">MultiprocessingContext</span><span class="p">()</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -290,7 +290,7 @@ a multiprocessing context:</p>
         <span class="n">context</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>

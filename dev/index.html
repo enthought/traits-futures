@@ -102,7 +102,7 @@ updates off the main thread).</p></li>
 <section id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
+<li><p>By design, and unlike <a class="reference external" href="https://docs.python.org/3/library/concurrent.futures.html#module-concurrent.futures" title="(in Python v3.15)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code></a>, <a class="reference internal" href="api/traits_futures.html#module-traits_futures" title="traits_futures"><code class="xref py py-mod docutils literal notranslate"><span class="pre">traits_futures</span></code></a> requires the
 UI event loop to be running in order to process results.</p></li>
 <li><p>Requires Python 3.10 or later.</p></li>
 </ul>
@@ -129,7 +129,7 @@ minimal TraitsUI application that fires off a background computation when its
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">slow_square</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Square the given input, slowly.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Square the given input, slowly."""</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
 
@@ -148,28 +148,28 @@ minimal TraitsUI application that fires off a background computation when its
     <span class="n">input_for_calculation</span> <span class="o">=</span> <span class="n">Int</span><span class="p">()</span>
 
     <span class="c1">#: Message about state of calculation.</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">&quot;No previous calculation runs&quot;</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s2">"No previous calculation runs"</span><span class="p">)</span>
 
     <span class="c1">#: Button to start the calculation.</span>
     <span class="n">calculate</span> <span class="o">=</span> <span class="n">Button</span><span class="p">()</span>
 
-    <span class="c1">#: Boolean used to decide whether to enable the &quot;calculate&quot; button.</span>
-    <span class="n">no_running_future</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="c1">#: Boolean used to decide whether to enable the "calculate" button.</span>
+    <span class="n">no_running_future</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">Bool</span><span class="p">(),</span> <span class="n">observe</span><span class="o">=</span><span class="s2">"future:done"</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"calculate"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_submit_background_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="c1"># Returns immediately.</span>
         <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Calculating square of </span><span class="si">{}</span><span class="s2"> ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"Calculating square of </span><span class="si">{}</span><span class="s2"> ..."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="o">=</span> <span class="n">submit_call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits_executor</span><span class="p">,</span> <span class="n">slow_square</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
         <span class="c1"># Keep a record so that we can present messages accurately.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span> <span class="o">=</span> <span class="nb">input</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;future:done&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"future:done"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_report_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">object</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;The square of </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">"The square of </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_for_calculation</span><span class="p">,</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span>
         <span class="p">)</span>
 
@@ -177,14 +177,14 @@ minimal TraitsUI application that fires off a background computation when its
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">done</span>
 
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
-        <span class="n">Item</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;readonly&quot;</span><span class="p">),</span>
-        <span class="n">UItem</span><span class="p">(</span><span class="s2">&quot;calculate&quot;</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">&quot;no_running_future&quot;</span><span class="p">),</span>
+        <span class="n">Item</span><span class="p">(</span><span class="s2">"input"</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">"readonly"</span><span class="p">),</span>
+        <span class="n">UItem</span><span class="p">(</span><span class="s2">"calculate"</span><span class="p">,</span> <span class="n">enabled_when</span><span class="o">=</span><span class="s2">"no_running_future"</span><span class="p">),</span>
         <span class="n">resizable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">traits_executor</span> <span class="o">=</span> <span class="n">TraitsExecutor</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">QuickStartExample</span><span class="p">(</span><span class="n">traits_executor</span><span class="o">=</span><span class="n">traits_executor</span><span class="p">)</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>

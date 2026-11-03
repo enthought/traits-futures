@@ -80,11 +80,11 @@
 <span class="c1">#</span>
 <span class="c1"># Thanks for using Enthought open source!</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Wrappers for the background task callable and the foreground future.</span>
 
 <span class="sd">These are used by the TraitsExecutor machinery.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
@@ -98,11 +98,11 @@
 <div class="viewcode-block" id="FutureWrapper">
 <a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.FutureWrapper">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FutureWrapper</span><span class="p">(</span><span class="n">HasStrictTraits</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Wrapper for the IFuture.</span>
 
 <span class="sd">    Passes on messages received for this future.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1">#: The Traits Futures future being wrapped</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">IFuture</span><span class="p">)</span>
@@ -115,11 +115,11 @@
     <span class="c1">#: its own internal state.</span>
     <span class="n">done</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="nd">@observe</span><span class="p">(</span><span class="s2">&quot;receiver:message&quot;</span><span class="p">)</span>
+    <span class="nd">@observe</span><span class="p">(</span><span class="s2">"receiver:message"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_dispatch_to_future</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Pass on a message to the future.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">new</span>
         <span class="n">done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">future</span><span class="o">.</span><span class="n">receive</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
@@ -130,7 +130,7 @@
 <div class="viewcode-block" id="run_background_task">
 <a class="viewcode-back" href="../../api/traits_futures.wrappers.html#traits_futures.wrappers.run_background_task">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">run_background_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Wrapper for callables submitted to the underlying executor.</span>
 
 <span class="sd">    Parameters</span>
@@ -143,15 +143,15 @@
 <span class="sd">    cancelled</span>
 <span class="sd">        Zero-argument callable returning bool. This can be called to check</span>
 <span class="sd">        whether cancellation has been requested.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">sender</span><span class="p">:</span>
             <span class="n">task</span><span class="p">(</span><span class="n">sender</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="n">cancelled</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-        <span class="c1"># We&#39;ll only ever get here in the case of a coding error. But in</span>
-        <span class="c1"># case that happens, it&#39;s useful to have the exception logged to</span>
+        <span class="c1"># We'll only ever get here in the case of a coding error. But in</span>
+        <span class="c1"># case that happens, it's useful to have the exception logged to</span>
         <span class="c1"># help the developer.</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Unexpected exception in background task.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Unexpected exception in background task."</span><span class="p">)</span>
         <span class="k">raise</span></div>
 
 </pre></div>
